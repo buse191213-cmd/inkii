@@ -1,0 +1,73 @@
+// INKII — Datenbankmodell
+// PostgreSQL — für lokale Entwicklung und Produktion (Vercel) identisch.
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Category {
+  id        String    @id @default(cuid())
+  slug      String    @unique
+  name      String
+  products  Product[]
+  createdAt DateTime  @default(now())
+}
+
+model Product {
+  id          String   @id @default(cuid())
+  code        String   @unique
+  name        String
+  subtitle    String   @default("")
+  description String   @default("")
+  icon        String   @default("box")
+  priceCents  Int?     // null = "Preis auf Anfrage"
+  stock       Int      @default(0)
+  status      String   @default("active") // active | draft
+  isNew       Boolean  @default(false)
+  isEco       Boolean  @default(false)
+  colors      String   @default("") // kommagetrennt, z. B. "blau,schwarz"
+  material    String   @default("") // kommagetrennt, z. B. "metall,kunststoff"
+  images      String   @default("") // kommagetrennte Bild-URLs (max. 5)
+  categoryId  String
+  category    Category @relation(fields: [categoryId], references: [id])
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model Inquiry {
+  id        String   @id @default(cuid())
+  name      String
+  email     String
+  phone     String   @default("")
+  company   String   @default("")
+  subject   String
+  message   String   @default("")
+  status    String   @default("new") // new | progress | done
+  createdAt DateTime @default(now())
+}
+
+// Hochgeladene Bilder/Videos für Startseite, Bereiche & Hero.
+// key = Slot-ID (z. B. "cat-1", "area-1", "nh-hero") oder "hero-video".
+model SiteImage {
+  key       String   @id
+  url       String
+  updatedAt DateTime @updatedAt
+}
+
+// Team-Mitglieder für die "Über Uns"-Seite.
+// Admin verwaltet Abteilung, Name, Rolle, E-Mail und Foto.
+model TeamMember {
+  id         String   @id @default(cuid())
+  department String   // Pflicht: Hauptzeile (z. B. "Grafik & Design")
+  name       String   @default("")  // optional: Person (z. B. "Anna Müller")
+  role       String   @default("")  // optional: Untertitel (z. B. "Layout & Datencheck")
+  email      String   @default("")
+  photoUrl   String   @default("")  // Vercel-Blob-URL
+  sortOrder  Int      @default(0)
+  createdAt  DateTime @default(now())
+}

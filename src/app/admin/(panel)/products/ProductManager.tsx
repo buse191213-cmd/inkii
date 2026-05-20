@@ -1,0 +1,618 @@
+"use client";
+
+import { useState, useMemo, useRef } from "react";
+import { useRouter } from "next/navigation";
+import { ProductIcon } from "@/lib/icons";
+import { formatPrice, centsToInput, formatNumber } from "@/lib/format";
+import { PRODUCT_COLORS, PRODUCT_MATERIALS } from "@/lib/catalog-options";
+import { saveProduct, deleteProduct } from "@/app/admin/actions";
+import RichEditor from "@/components/admin/RichEditor";
+
+export type AdminProduct = {
+  id: string;
+  code: string;
+  name: string;
+  subtitle: string;
+  description: string;
+  icon: string;
+  priceCents: number | null;
+  stock: number;
+  status: string;
+  isNew: boolean;
+  isEco: boolean;
+  colors: string;
+  material: string;
+  images: string;
+  categoryId: string;
+  categoryName: string;
+  createdAt?: string;
+};
+
+export type AdminCategory = { id: string; name: string };
+
+/** Ein Bild im Editor: entweder bereits gespeichert (url) oder neu (file). */
+type ImgItem = { key: string; url?: string; file?: File; preview: string };
+
+const MAX_IMAGES = 5;
+
+const EMPTY: AdminProduct = {
+  id: "", code: "VS-", name: "", subtitle: "", description: "", icon: "box",
+  priceCents: null, stock: 0, status: "active", isNew: false, isEco: false,
+  colors: "", material: "", images: "", categoryId: "", categoryName: "",
+};
+
+const SORTS = [
+  { key: "newest", label: "Neueste zuerst" },
+  { key: "oldest", label: "Älteste zuerst" },
+  { key: "name-asc", label: "Name A–Z" },
+  { key: "name-desc", label: "Name Z–A" },
+  { key: "stock-desc", label: "Lagerbestand: hoch → niedrig" },
+  { key: "stock-asc", label: "Lagerbestand: niedrig → hoch" },
+  { key: "price-desc", label: "Preis: hoch → niedrig" },
+  { key: "price-asc", label: "Preis: niedrig → hoch" },
+];
+
+function splitImages(s: string): string[] {
+  return s ? s.split(",").map((x) => x.trim()).filter(Boolean) : [];
+}
+
+function splitCsv(s: string): string[] {
+  return s ? s.split(",").map((x) => x.trim()).filter(Boolean) : [];
+}
+
+/** Kürzt einen Text auf max. n Zeichen und ergänzt … */
+function truncate(s: string, n: number): string {
+  if (!s) return "";
+  return s.length > n ? s.slice(0, n).trimEnd() + "…" : s;
+}
+
+export default function ProductManager({
+  products,
+  categories,
+}: {
+  products: AdminProduct[];
+  categories: AdminCategory[];
+}) {
+  const router = useRouter();
+  const [filter, setFilter] = useState("all");
+  const [search, setSearch] = useState("");
+  const [sort, setSort] = useState("newest");
+  const [modal, setModal] = useState<AdminProduct | null>(null);
+  const [error, setError] = useState("");
+  const [busy, setBusy] = useState(false);
+  const [images, setImages] = useState<ImgItem[]>([]);
+  const [selColors, setSelColors] = useState<string[]>([]);
+  const [selMaterials, setSelMaterials] = useState<string[]>([]);
+  const [matInput, setMatInput] = useState("");
+  const fileInput = useRef<HTMLInputElement>(null);
+
+  const list = useMemo(() => {
+    const q = search.trim().toLowerCase();
+    const filtered = products.filter(
+      (p) =>
+        (filter === "all" || p.status === filter) &&
+        (!q || (p.name + p.code).toLowerCase().includes(q))
+    );
+    const sorted = [...filtered];
+    const byName = (a: AdminProduct, b: AdminProduct) =>
+      a.name.localeCompare(b.name, "de");
+    const byStock = (a: AdminProduct, b: AdminProduct) => a.stock - b.stock;
+    const byPrice = (a: AdminProduct, b: AdminProduct) =>
+      (a.priceCents ?? -1) - (b.priceCents ?? -1);
+    switch (sort) {
+      case "oldest":
+        sorted.reverse();
+        break;
+      case "name-asc":
+        sorted.sort(byName);
+        break;
+      case "name-desc":
+        sorted.sort((a, b) => byName(b, a));
+        break;
+      case "stock-asc":
+        sorted.sort(byStock);
+        break;
+      case "stock-desc":
+        sorted.sort((a, b) => byStock(b, a));
+        break;
+      case "price-asc":
+        sorted.sort(byPrice);
+        break;
+      case "price-desc":
+        sorted.sort((a, b) => byPrice(b, a));
+        break;
+      // "newest" – Standard, bereits per createdAt desc geladen
+    }
+    return sorted;
+  }, [products, filter, search, sort]);
+
+  function revokeAll(items: ImgItem[]) {
+    items.forEach((it) => it.file && URL.revokeObjectURL(it.preview));
+  }
+
+  function openNew() {
+    setError("");
+    revokeAll(images);
+    setImages([]);
+    setSelColors([]);
+    setSelMaterials([]);
+    setModal({ ...EMPTY, categoryId: categories[0]?.id ?? "" });
+  }
+  function openEdit(p: AdminProduct) {
+    setError("");
+    revokeAll(images);
+    setImages(
+      splitImages(p.images).map((url, i) => ({ key: `e${i}-${url}`, url, preview: url }))
+    );
+    setSelColors(splitCsv(p.colors));
+    setSelMaterials(splitCsv(p.material));
+    setModal({ ...p });
+  }
+
+  function toggleColor(k: string) {
+    setSelColors((cur) => (cur.includes(k) ? cur.filter((x) => x !== k) : [...cur, k]));
+  }
+  function toggleMaterial(k: string) {
+    setSelMaterials((cur) => (cur.includes(k) ? cur.filter((x) => x !== k) : [...cur, k]));
+  }
+  function closeModal() {
+    revokeAll(images);
+    setImages([]);
+    setModal(null);
+  }
+
+  function pickFiles(e: React.ChangeEvent<HTMLInputElement>) {
+    const picked = Array.from(e.target.files ?? []).filter((f) =>
+      f.type.startsWith("image/")
+    );
+    setImages((cur) => {
+      const free = MAX_IMAGES - cur.length;
+      const add = picked.slice(0, free).map((file, i) => ({
+        key: `n${Date.now()}-${i}-${Math.random().toString(36).slice(2, 6)}`,
+        file,
+        preview: URL.createObjectURL(file),
+      }));
+      return [...cur, ...add];
+    });
+    if (fileInput.current) fileInput.current.value = "";
+  }
+  function removeImage(i: number) {
+    setImages((cur) => {
+      const copy = [...cur];
+      const [gone] = copy.splice(i, 1);
+      if (gone?.file) URL.revokeObjectURL(gone.preview);
+      return copy;
+    });
+  }
+  function makeMain(i: number) {
+    setImages((cur) => {
+      if (i <= 0 || i >= cur.length) return cur;
+      const copy = [...cur];
+      const [picked] = copy.splice(i, 1);
+      copy.unshift(picked);
+      return copy;
+    });
+  }
+
+  async function handleSave(e: React.FormEvent<HTMLFormElement>) {
+    e.preventDefault();
+    setBusy(true);
+    setError("");
+    const fd = new FormData(e.currentTarget);
+    // Reihenfolge der Bilder als Tokens übergeben
+    const order: string[] = [];
+    images.forEach((img) => {
+      if (img.url) {
+        order.push("e:" + img.url);
+      } else if (img.file) {
+        order.push("n");
+        fd.append("newImages", img.file);
+      }
+    });
+    fd.set("imageOrder", JSON.stringify(order));
+    fd.set("colors", selColors.join(","));
+    fd.set("material", selMaterials.join(","));
+
+    const res = await saveProduct(fd);
+    setBusy(false);
+    if (res.ok) {
+      closeModal();
+      router.refresh();
+    } else {
+      setError(res.error ?? "Fehler beim Speichern.");
+    }
+  }
+
+  async function handleDelete(p: AdminProduct) {
+    if (!confirm(`„${p.name}" wirklich löschen?`)) return;
+    const res = await deleteProduct(p.id);
+    if (res.ok) router.refresh();
+    else alert(res.error ?? "Löschen fehlgeschlagen.");
+  }
+
+  return (
+    <>
+      <p className="crumb">
+        Admin <b>/ Produkte</b>
+      </p>
+
+      <div className="toolbar">
+        <div style={{ display: "flex", gap: 14, alignItems: "center", flexWrap: "wrap" }}>
+          <div className="filter-tabs">
+            {[
+              ["all", "Alle"],
+              ["active", "Aktiv"],
+              ["draft", "Entwurf"],
+            ].map(([k, label]) => (
+              <button
+                key={k}
+                className={filter === k ? "active" : ""}
+                onClick={() => setFilter(k)}
+              >
+                {label}
+              </button>
+            ))}
+          </div>
+          <input
+            className="status-select"
+            style={{ minWidth: 200 }}
+            type="text"
+            placeholder="Produkt suchen …"
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+          />
+          <select
+            className="status-select"
+            value={sort}
+            onChange={(e) => setSort(e.target.value)}
+            title="Sortierung"
+          >
+            {SORTS.map((s) => (
+              <option key={s.key} value={s.key}>
+                {s.label}
+              </option>
+            ))}
+          </select>
+        </div>
+        <button className="btn-primary" onClick={openNew}>
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={3}>
+            <path d="M12 5v14M5 12h14" />
+          </svg>
+          Neues Produkt
+        </button>
+      </div>
+
+      <div className="panel">
+        <div className="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>Produkt</th>
+                <th>Kategorie</th>
+                <th>Bilder</th>
+                <th>Preis</th>
+                <th>Lagerbestand</th>
+                <th>Status</th>
+                <th>Aktion</th>
+              </tr>
+            </thead>
+            <tbody>
+              {list.length === 0 && (
+                <tr>
+                  <td colSpan={7}>
+                    <div className="empty">Keine Produkte gefunden.</div>
+                  </td>
+                </tr>
+              )}
+              {list.map((p) => {
+                const imgs = splitImages(p.images);
+                return (
+                  <tr key={p.id}>
+                    <td>
+                      <div className="cell-prod">
+                        <div className="t-thumb">
+                          {imgs.length > 0 ? (
+                            // eslint-disable-next-line @next/next/no-img-element
+                            <img src={imgs[0]} alt={p.name} />
+                          ) : (
+                            <ProductIcon name={p.icon} />
+                          )}
+                        </div>
+                        <div>
+                          <div className="t-name">{p.name}</div>
+                          <div className="t-code">
+                            {p.code}
+                            {p.subtitle ? " · " + truncate(p.subtitle, 80) : ""}
+                          </div>
+                        </div>
+                      </div>
+                    </td>
+                    <td>{p.categoryName}</td>
+                    <td>
+                      {imgs.length > 0 ? (
+                        <span className="tag blue">
+                          {imgs.length} Bild{imgs.length > 1 ? "er" : ""}
+                        </span>
+                      ) : (
+                        <span className="tag gray">—</span>
+                      )}
+                    </td>
+                    <td>{formatPrice(p.priceCents)}</td>
+                    <td>{formatNumber(p.stock)} Stk</td>
+                    <td>
+                      <span className={`tag ${p.status === "active" ? "green" : "gray"}`}>
+                        {p.status === "active" ? "Aktiv" : "Entwurf"}
+                      </span>
+                    </td>
+                    <td>
+                      <div className="row-act">
+                        <a
+                          className="icon-act"
+                          title="Im Shop ansehen"
+                          href={`/werbemittel/${p.id}`}
+                          target="_blank"
+                          rel="noreferrer"
+                        >
+                          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2}>
+                            <path d="M1 12s4-7 11-7 11 7 11 7-4 7-11 7-11-7-11-7z" />
+                            <circle cx="12" cy="12" r="3" />
+                          </svg>
+                        </a>
+                        <button
+                          className="icon-act"
+                          title="Bearbeiten"
+                          onClick={() => openEdit(p)}
+                        >
+                          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2}>
+                            <path d="M12 20h9M16.5 3.5a2.1 2.1 0 013 3L7 19l-4 1 1-4z" />
+                          </svg>
+                        </button>
+                        <button
+                          className="icon-act del"
+                          title="Löschen"
+                          onClick={() => handleDelete(p)}
+                        >
+                          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2}>
+                            <path d="M3 6h18M8 6V4h8v2M6 6l1 14h10l1-14" />
+                          </svg>
+                        </button>
+                      </div>
+                    </td>
+                  </tr>
+                );
+              })}
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      {modal && (
+        <div className="modal-bg" onClick={(e) => e.target === e.currentTarget && closeModal()}>
+          <div className="modal">
+            <form onSubmit={handleSave}>
+              <div className="modal-head">
+                <h3>{modal.id ? "Produkt bearbeiten" : "Neues Produkt"}</h3>
+                <button type="button" className="x" onClick={closeModal}>
+                  ✕
+                </button>
+              </div>
+              <div className="modal-body">
+                {error && <div className="form-err">{error}</div>}
+                <input type="hidden" name="id" defaultValue={modal.id} />
+                <input type="hidden" name="icon" defaultValue={modal.icon} />
+
+                <div className="field-row">
+                  <div className="field">
+                    <label>Artikelnummer</label>
+                    <input name="code" defaultValue={modal.code} required />
+                  </div>
+                  <div className="field">
+                    <label>Status</label>
+                    <select name="status" defaultValue={modal.status}>
+                      <option value="active">Aktiv</option>
+                      <option value="draft">Entwurf</option>
+                    </select>
+                  </div>
+                </div>
+                <div className="field">
+                  <label>Produktname</label>
+                  <input name="name" defaultValue={modal.name} required />
+                </div>
+                <div className="field">
+                  <label>Kurzbeschreibung</label>
+                  <input name="subtitle" defaultValue={modal.subtitle} />
+                </div>
+
+                {/* --- Produktbilder --- */}
+                <div className="field">
+                  <label>Produktbilder (max. {MAX_IMAGES})</label>
+                  <div className="img-manager">
+                    {images.map((img, i) => (
+                      <div className={`img-thumb${i === 0 ? " is-main" : ""}`} key={img.key}>
+                        {/* eslint-disable-next-line @next/next/no-img-element */}
+                        <img src={img.preview} alt="" />
+                        {img.file && <span className="img-new">neu</span>}
+                        {i === 0 ? (
+                          <span className="img-main">★ Vitrine</span>
+                        ) : (
+                          <button
+                            type="button"
+                            className="img-star"
+                            title="Als Hauptbild (Vitrine) setzen"
+                            onClick={() => makeMain(i)}
+                          >
+                            ★
+                          </button>
+                        )}
+                        <button
+                          type="button"
+                          className="img-del"
+                          title="Bild entfernen"
+                          onClick={() => removeImage(i)}
+                        >
+                          ✕
+                        </button>
+                      </div>
+                    ))}
+                    {images.length < MAX_IMAGES && (
+                      <label className="img-add">
+                        <span>+</span>
+                        <small>Bild wählen</small>
+                        <input
+                          ref={fileInput}
+                          type="file"
+                          accept="image/png,image/jpeg,image/webp,image/gif"
+                          multiple
+                          onChange={pickFiles}
+                        />
+                      </label>
+                    )}
+                  </div>
+                  <p className="form-note">
+                    JPG, PNG, WebP oder GIF · max. 4 MB pro Bild · {images.length}/
+                    {MAX_IMAGES} belegt. Mit dem <b>★</b> wählst du das Vitrinen-Bild
+                    (erscheint zuerst im Katalog).
+                  </p>
+                </div>
+
+                <div className="field">
+                  <label>Kategorie</label>
+                  <select name="categoryId" defaultValue={modal.categoryId} required>
+                    {categories.map((c) => (
+                      <option key={c.id} value={c.id}>
+                        {c.name}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+                <div className="field-row">
+                  <div className="field">
+                    <label>Preis (€) — leer = auf Anfrage</label>
+                    <input
+                      name="price"
+                      defaultValue={centsToInput(modal.priceCents)}
+                      placeholder="6,90"
+                    />
+                  </div>
+                  <div className="field">
+                    <label>Lagerbestand (Stk)</label>
+                    <input name="stock" type="number" defaultValue={modal.stock} />
+                  </div>
+                </div>
+                <div className="field">
+                  <label>Farben</label>
+                  <div className="opt-palette">
+                    {PRODUCT_COLORS.map((c) => (
+                      <button
+                        type="button"
+                        key={c.key}
+                        className={`opt-swatch${selColors.includes(c.key) ? " on" : ""}`}
+                        onClick={() => toggleColor(c.key)}
+                        title={c.label}
+                      >
+                        <span className="opt-dot" style={{ background: c.hex }} />
+                        {c.label}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+                <div className="field">
+                  <label>Material</label>
+                  <div className="opt-chips">
+                    {PRODUCT_MATERIALS.map((m) => (
+                      <button
+                        type="button"
+                        key={m.key}
+                        className={`opt-chip${selMaterials.includes(m.key) ? " on" : ""}`}
+                        onClick={() => toggleMaterial(m.key)}
+                      >
+                        {m.label}
+                      </button>
+                    ))}
+                    {selMaterials
+                      .filter((k) => !PRODUCT_MATERIALS.some((m) => m.key === k))
+                      .map((k) => (
+                        <button
+                          type="button"
+                          key={k}
+                          className="opt-chip on opt-chip-custom"
+                          onClick={() => toggleMaterial(k)}
+                          title="Klicken zum Entfernen"
+                        >
+                          {k.charAt(0).toUpperCase() + k.slice(1)}
+                          <span className="opt-x">×</span>
+                        </button>
+                      ))}
+                  </div>
+                  <div className="opt-add-row">
+                    <input
+                      type="text"
+                      placeholder="Eigenes Material hinzufügen (z. B. Bambus, Leinen) …"
+                      value={matInput}
+                      onChange={(e) => setMatInput(e.target.value)}
+                      onKeyDown={(e) => {
+                        if (e.key === "Enter") {
+                          e.preventDefault();
+                          const v = matInput.trim().toLowerCase();
+                          if (v && !selMaterials.includes(v)) {
+                            setSelMaterials((cur) => [...cur, v]);
+                          }
+                          setMatInput("");
+                        }
+                      }}
+                    />
+                    <button
+                      type="button"
+                      className="btn-ghost btn-sm"
+                      onClick={() => {
+                        const v = matInput.trim().toLowerCase();
+                        if (v && !selMaterials.includes(v)) {
+                          setSelMaterials((cur) => [...cur, v]);
+                        }
+                        setMatInput("");
+                      }}
+                    >
+                      + Hinzufügen
+                    </button>
+                  </div>
+                </div>
+                <div className="field">
+                  <label>Beschreibung</label>
+                  <RichEditor
+                    key={modal.id || "new"}
+                    name="description"
+                    initial={modal.description}
+                    minHeight={320}
+                  />
+                  <p className="form-note" style={{ marginTop: 6 }}>
+                    Hier kommt die ausführliche Produktbeschreibung. Über die
+                    Buttons formatieren: Überschriften, Listen, Fettdruck usw.
+                    Untertitel oben drüber bleibt als kurze Zeile (max. 1–2
+                    Sätze).
+                  </p>
+                </div>
+                <div className="checkrow">
+                  <label>
+                    <input type="checkbox" name="isNew" defaultChecked={modal.isNew} /> Als „Neu"
+                    markieren
+                  </label>
+                  <label>
+                    <input type="checkbox" name="isEco" defaultChecked={modal.isEco} /> Öko-Artikel
+                  </label>
+                </div>
+              </div>
+              <div className="modal-foot">
+                <button type="button" className="btn-ghost" onClick={closeModal}>
+                  Abbrechen
+                </button>
+                <button type="submit" className="btn-primary" disabled={busy}>
+                  {busy ? "Speichern …" : "Speichern"}
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
+    </>
+  );
+}
