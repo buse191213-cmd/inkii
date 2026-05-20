@@ -20,3 +20,6 @@ next-env.d.ts
 # Hochgeladene Startseiten-Bilder
 /public/uploads/home/*
 !/public/uploads/home/.gitkeep
+
+# Vercel CLI
+/.vercel

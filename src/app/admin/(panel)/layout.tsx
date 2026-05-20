@@ -19,7 +19,9 @@ export default async function PanelLayout({
       <div className="admin-body">
         <div className="topbar">
           <div className="topbar-left">
-            <h1>INKII Admin</h1>
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img src="/inkii-logo.png" alt="INKII WORKS" className="topbar-logo" />
+            <span className="topbar-sep">Admin</span>
           </div>
           <div className="tb-right">
             <a className="btn-ghost btn-sm" href="/" target="_blank" rel="noreferrer">

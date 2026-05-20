@@ -11,8 +11,8 @@ export default function LoginForm() {
   return (
     <form className="login-card" action={formAction}>
       <div className="login-logo" translate="no">
-        <span className="logo-name">INKII</span>
-        <span className="logo-tag">WORKS</span>
+        {/* eslint-disable-next-line @next/next/no-img-element */}
+        <img src="/inkii-logo.png" alt="INKII WORKS" />
       </div>
       <p className="sub">Admin-Panel — bitte anmelden</p>
 

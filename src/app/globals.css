@@ -197,7 +197,7 @@ h2.big{font-family:var(--display);font-weight:800;letter-spacing:-.025em;
 .team-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:22px;margin-top:44px}
 .team-card{background:var(--white);border:1px solid var(--line);text-align:center;transition:.22s}
 .team-card:hover{border-color:var(--leaf);box-shadow:0 16px 32px rgba(28,39,34,.07);transform:translateY(-4px)}
-.team-av{height:170px;background:var(--mist);display:grid;place-items:center;color:var(--leaf-deep)}
+.team-av{aspect-ratio:1;background:var(--mist);display:grid;place-items:center;color:var(--leaf-deep);overflow:hidden}
 .team-card .t-body{padding:20px}
 .team-card h3{font-family:var(--display);font-size:1.1rem}
 .team-card span{color:var(--muted);font-size:.88rem}
@@ -1081,3 +1081,13 @@ footer.site ul a:hover{color:var(--leaf)}
 .team-thumb img{width:100%;height:100%;object-fit:cover;display:block}
 .team-thumb-fb{color:var(--muted);font-size:1.6rem;line-height:1}
 .team-thumb-lg{width:96px;height:96px}
+
+/* Login-Seite — Logo als Bild */
+.login-logo img{height:50px;width:auto;display:block;margin:0 auto}
+
+/* Admin-Topbar — Logo statt Text */
+.topbar-left{display:flex;align-items:center;gap:14px}
+.topbar-logo{height:32px;width:auto;display:block}
+.topbar-sep{font-family:var(--display);font-weight:600;font-size:.82rem;
+  letter-spacing:.22em;text-transform:uppercase;color:var(--muted);
+  padding-left:14px;border-left:1px solid var(--line)}
