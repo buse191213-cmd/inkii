@@ -246,13 +246,16 @@ export default function TeamManager({ members }: { members: AdminTeamMember[] })
               </div>
 
               <div className="field">
-                <label>Abteilung *</label>
+                <label>Abteilung</label>
                 <input
                   name="department"
                   defaultValue={modal.department}
-                  required
-                  placeholder="z. B. Projektleitung"
+                  placeholder="z. B. Projektleitung (optional)"
                 />
+                <p className="form-note" style={{ marginTop: 4 }}>
+                  Optional. Wenn leer, erscheint nur der Name auf der Karte.
+                  Mindestens Name oder Abteilung muss gesetzt sein.
+                </p>
               </div>
 
               <div className="field-row">

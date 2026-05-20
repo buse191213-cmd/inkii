@@ -98,7 +98,16 @@ export default async function UeberUnsPage() {
         <div className="wrap">
           <div className="section-head reveal">
             <span className="kicker">{u.teamKicker}</span>
-            <h2 className="big">{u.teamTitle}</h2>
+            <h2 className="big">
+              {u.teamTitle.split("INKII").map((part, i, arr) => (
+                <span key={i}>
+                  {part}
+                  {i < arr.length - 1 && (
+                    <span className="brand-mark" translate="no">INKII</span>
+                  )}
+                </span>
+              ))}
+            </h2>
           </div>
           <div className="team-grid">
             {dbTeam.length > 0
@@ -113,8 +122,12 @@ export default async function UeberUnsPage() {
                       )}
                     </div>
                     <div className="t-body">
-                      <h3>{m.department}</h3>
-                      {m.name && <span className="t-name-line">{m.name}</span>}
+                      {m.department && <h3>{m.department}</h3>}
+                      {m.name && (
+                        <span className={m.department ? "t-name-line" : "t-name-main"}>
+                          {m.name}
+                        </span>
+                      )}
                       {m.role && <span>{m.role}</span>}
                       {m.email && (
                         <a href={`mailto:${m.email}`} className="t-mail">

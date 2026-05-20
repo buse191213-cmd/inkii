@@ -1093,3 +1093,9 @@ footer.site ul a:hover{color:var(--leaf)}
 .topbar-sep{font-family:var(--display);font-weight:600;font-size:.82rem;
   letter-spacing:.22em;text-transform:uppercase;color:var(--muted);
   padding-left:14px;border-left:1px solid var(--line)}
+
+/* INKII-Markenschriftzug innerhalb von Überschriften — passt zur Logo-Optik */
+.brand-mark{font-family:var(--display);font-weight:800;letter-spacing:.12em;display:inline-block}
+/* Fällt Abteilung weg, wird der Name zur Hauptzeile (gleiche Optik wie h3) */
+.team-card .t-body .t-name-main{font-family:var(--display);font-weight:800;font-size:1.05rem;
+  letter-spacing:.14em;text-transform:uppercase;color:var(--ink);line-height:1.1;display:block}

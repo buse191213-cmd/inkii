@@ -375,8 +375,9 @@ export async function logout() {
 export async function saveTeamMember(formData: FormData): Promise<ActionResult> {
   const id = String(formData.get("id") ?? "").trim();
   const department = String(formData.get("department") ?? "").trim();
-  if (!department) {
-    return { ok: false, error: "Abteilung ist Pflicht." };
+  const nameRaw = String(formData.get("name") ?? "").trim();
+  if (!department && !nameRaw) {
+    return { ok: false, error: "Bitte mindestens Abteilung oder Name angeben." };
   }
   const data: {
     department: string;
@@ -387,7 +388,7 @@ export async function saveTeamMember(formData: FormData): Promise<ActionResult> 
     photoUrl?: string;
   } = {
     department,
-    name: String(formData.get("name") ?? "").trim(),
+    name: nameRaw,
     role: String(formData.get("role") ?? "").trim(),
     email: String(formData.get("email") ?? "").trim(),
     sortOrder: parseInt(String(formData.get("sortOrder") ?? "0"), 10) || 0,
