@@ -49,7 +49,6 @@ export default function SiteFooter({
           <span>
             © {new Date().getFullYear()} <span translate="no">INKII</span> — {t.copyright}
           </span>
-          <span translate="no">Next.js · TypeScript · Prisma</span>
         </div>
         <p className="foot-note">{t.note}</p>
       </div>
