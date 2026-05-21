@@ -48,7 +48,14 @@ export async function getAllNavItems(): Promise<NavItemResolved[]> {
   type Row = { key: string; active: boolean; sortOrder: number };
   let rows: Row[] = [];
   try {
-    rows = (await db.navSetting.findMany()) as Row[];
+    // Vorsichtig: das Modell wird ggf. noch nicht in der DB existieren
+    // (z. B. wenn `prisma db push` noch nicht gelaufen ist). In dem Fall
+    // schweigend mit Defaults weitermachen, statt das ganze Layout zu killen.
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const ns = (db as any).navSetting;
+    if (ns && typeof ns.findMany === "function") {
+      rows = (await ns.findMany()) as Row[];
+    }
   } catch {
     rows = [];
   }
