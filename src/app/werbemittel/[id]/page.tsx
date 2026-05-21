@@ -10,12 +10,12 @@ import { formatPrice, formatNumber } from "@/lib/format";
 import { ProductIcon } from "@/lib/icons";
 import { SITE_URL } from "@/lib/site";
 import { productSchema, breadcrumbSchema } from "@/lib/schema";
-import { colorHex, colorLabel, materialLabel } from "@/lib/catalog-options";
+import { materialLabel } from "@/lib/catalog-options";
 import { getLocale } from "@/lib/i18n-server";
 import { getDictionary } from "@/dictionaries";
 import DOMPurify from "isomorphic-dompurify";
 
-function renderDescription(raw: string | null | undefined): string {
+function renderDescription(raw: string): string {
   if (!raw) return "";
   const hasHtml = /<\/?[a-z][\s\S]*>/i.test(raw);
   const html = hasHtml
@@ -26,7 +26,22 @@ function renderDescription(raw: string | null | undefined): string {
 
 export const dynamic = "force-dynamic";
 
-function split(s: string | null | undefined): string[] {
+const COLORS: Record<string, { hex: string; label: string }> = {
+  weiss: { hex: "#ffffff", label: "Weiß" },
+  schwarz: { hex: "#1c2722", label: "Schwarz" },
+  blau: { hex: "#2f5fd0", label: "Blau" },
+  navy: { hex: "#16306b", label: "Navy" },
+  rot: { hex: "#d8442f", label: "Rot" },
+  gruen: { hex: "#3f9c5c", label: "Grün" },
+  grau: { hex: "#8b948d", label: "Grau" },
+  silber: { hex: "#c9cdc9", label: "Silber" },
+  natur: { hex: "#d6c39a", label: "Natur" },
+  gelb: { hex: "#f2c200", label: "Gelb" },
+  orange: { hex: "#e8732f", label: "Orange" },
+  pink: { hex: "#d8569a", label: "Pink" },
+};
+
+function split(s: string): string[] {
   return s ? s.split(",").map((x) => x.trim()).filter(Boolean) : [];
 }
 
@@ -74,9 +89,7 @@ export default async function ProductDetailPage({
   const images = split(product.images);
   const colors = split(product.colors);
   const materials = split(product.material);
-  const hasPrice = product.priceCents != null;
 
-  // === Cross-Sell ===
   const sameCategory = await db.product.findMany({
     where: { categoryId: product.categoryId, status: "active", id: { not: product.id } },
     take: 4,
@@ -105,8 +118,6 @@ export default async function ProductDetailPage({
   }
   related = related.slice(0, 4);
 
-  const descHtml = renderDescription(product.description);
-
   return (
     <SiteShell>
       <JsonLd
@@ -114,7 +125,7 @@ export default async function ProductDetailPage({
           id: product.id,
           name: product.name,
           code: product.code,
-          description: product.description ?? "",
+          description: product.description,
           images,
           priceCents: product.priceCents,
           stock: product.stock,
@@ -128,154 +139,116 @@ export default async function ProductDetailPage({
           { name: product.name, url: `${SITE_URL}/werbemittel/${product.id}` },
         ])}
       />
+      <div className="wrap" style={{ paddingTop: 28 }}>
+        <div className="breadcrumb" style={{ marginBottom: 24 }}>
+          <Link href="/">{d.nav.home}</Link> <span>/</span>
+          <Link href="/werbemittel"> {d.nav.werbemittel}</Link> <span>/</span>
+          <span> {product.category.name}</span>
+        </div>
 
-      <section className="mm-detail">
-        <div className="wrap">
+        <div className="detail-grid">
+          <ProductGallery images={images} name={product.name} iconName={product.icon} />
 
-          {/* Breadcrumb */}
-          <div className="mm-crumb mm-detail-crumb">
-            <Link href="/werbemittel">ALLE PRODUKTE</Link>
-            <span className="mm-dot">•</span>
-            <Link href="/werbemittel">{product.category.name.toUpperCase()}</Link>
-            <span className="mm-dot">•</span>
-            <span className="active">{product.name.toUpperCase()}</span>
-          </div>
+          <div className="detail-info">
+            <div className="detail-badges">
+              {product.isNew && <span className="d-badge new">{d.common.badgeNew}</span>}
+              {product.isEco && <span className="d-badge eco">{d.common.badgeEco}</span>}
+              {product.status === "draft" && (
+                <span className="d-badge draft">{dt.badgeDraft}</span>
+              )}
+            </div>
+            <div className="detail-code">{dt.artNr} {product.code}</div>
+            <h1 className="detail-name">{product.name}</h1>
+            {product.subtitle && <p className="detail-sub">{product.subtitle}</p>}
 
-          <div className="mm-detail-grid">
-
-            {/* === Galerie === */}
-            <div className="mm-detail-gallery">
-              <div className="mm-detail-tags">
-                {product.isNew && <span className="mm-tag tag-new">NEU</span>}
-                {product.stock > 0 && <span className="mm-tag tag-stock">AB LAGER</span>}
-                {product.isEco && <span className="mm-tag tag-eco">✦ NACHHALTIG</span>}
-              </div>
-              <ProductGallery images={images} name={product.name} iconName={product.icon} />
+            <div className="detail-price">{formatPrice(product.priceCents)}</div>
+            <div className="detail-stock">
+              <span className="dot-stock" /> {dt.stockLabel}{" "}
+              <b>{formatNumber(product.stock)} {dt.stockUnit}</b>
             </div>
 
-            {/* === Info === */}
-            <div className="mm-detail-info">
-              <h1 className="mm-detail-h1">{product.name}</h1>
-              {product.subtitle && <p className="mm-detail-sub">{product.subtitle}</p>}
-              <p className="mm-detail-meta">
-                Produktionszeit: <strong>Auf Anfrage</strong> · exkl. Versand
-              </p>
-
-              {/* Beschreibung */}
-              {descHtml && (
-                <div className="mm-detail-section">
-                  <h2 className="mm-detail-h2">ÜBERSICHT</h2>
-                  <div
-                    className="mm-tab-prose"
-                    dangerouslySetInnerHTML={{ __html: descHtml }}
-                  />
-                </div>
-              )}
-
-              {/* Details */}
-              <div className="mm-detail-section">
-                <h2 className="mm-detail-h2">DETAILS</h2>
-                <div className="mm-detail-specs">
-                  <div className="mm-spec-row">
-                    <span>{dt.specArtNr}</span>
-                    <strong>{product.code}</strong>
-                  </div>
-                  <div className="mm-spec-row">
-                    <span>{dt.specCategory}</span>
-                    <strong>{product.category.name}</strong>
-                  </div>
-                  <div className="mm-spec-row">
-                    <span>{dt.specStock}</span>
-                    <strong>{formatNumber(product.stock)} {dt.stockUnit}</strong>
-                  </div>
-                  {materials.length > 0 && (
-                    <div className="mm-spec-row">
-                      <span>{dt.specMaterial}</span>
-                      <strong>{materials.map((m) => materialLabel(m)).join(", ")}</strong>
-                    </div>
-                  )}
-                  {colors.length > 0 && (
-                    <div className="mm-spec-row">
-                      <span>{dt.colorsLabel}</span>
-                      <strong>{colors.map((c) => colorLabel(c)).join(", ")}</strong>
-                    </div>
-                  )}
+            {colors.length > 0 && (
+              <div className="detail-block">
+                <span className="detail-label">{dt.colorsLabel}</span>
+                <div className="detail-colors">
+                  {colors.map((c) => (
+                    <span key={c} className="detail-color">
+                      <span className="dot-color" style={{ background: COLORS[c]?.hex ?? "#ccc" }} />
+                      {COLORS[c]?.label ?? c}
+                    </span>
+                  ))}
                 </div>
               </div>
+            )}
 
-              {/* Farbauswahl-Box */}
-              {colors.length > 0 && (
-                <div className="mm-detail-colorbox">
-                  <div className="mm-detail-cbhead">
-                    <span className="mm-detail-cbnum">1.</span>{" "}
-                    <span>Farben:</span>{" "}
-                    <strong>{colorLabel(colors[0])}</strong>
-                  </div>
-                  <div className="mm-detail-colorgrid">
-                    {colors.map((c) => (
-                      <span
-                        key={c}
-                        className="mm-detail-colortile"
-                        style={{ background: colorHex(c) }}
-                        title={colorLabel(c)}
-                      />
-                    ))}
-                  </div>
-                </div>
-              )}
-
-              {/* CTA */}
-              <div className="mm-detail-cta">
-                <Link href="/kontakt" className="mm-detail-cta-btn">
-                  <span>Anfrage senden</span>
-                  <span className="mm-detail-cta-price">
-                    {hasPrice ? <>ab {formatPrice(product.priceCents)}</> : "Preis auf Anfrage"}
-                  </span>
-                </Link>
-                <div className="mm-detail-cta-row">
-                  <MerkenButton
-                    id={product.id}
-                    code={product.code}
-                    name={product.name}
-                    image={images[0] ?? null}
-                    labelOn={d.common.gemerktLong}
-                    labelOff={d.common.merkenLong}
-                  />
-                  <Link className="mm-detail-cta-back" href="/werbemittel">
-                    ← {dt.backToCatalog}
-                  </Link>
-                </div>
+            {product.description && (
+              <div className="detail-block">
+                <span className="detail-label">{dt.descLabel}</span>
+                <div
+                  className="detail-desc-html"
+                  dangerouslySetInnerHTML={{ __html: renderDescription(product.description) }}
+                />
               </div>
+            )}
 
-              <div className="mm-detail-trust">
-                <div><strong>✓</strong> Kostenlose Designvorschläge</div>
-                <div><strong>✓</strong> Angebot in 24 Stunden</div>
-                <div><strong>✓</strong> Persönliche Beratung</div>
-              </div>
+            <div className="detail-actions">
+              <MerkenButton
+                id={product.id}
+                code={product.code}
+                name={product.name}
+                image={images[0] ?? null}
+                labelOn={d.common.gemerktLong}
+                labelOff={d.common.merkenLong}
+              />
+              <Link className="btn btn-primary" href="/kontakt">
+                Anfrage senden
+              </Link>
+              <Link className="btn btn-ghost" href="/werbemittel">
+                {dt.backToCatalog}
+              </Link>
             </div>
 
+            <div className="detail-specs">
+              <div className="spec-row">
+                <span>{dt.specArtNr}</span>
+                <b>{product.code}</b>
+              </div>
+              <div className="spec-row">
+                <span>{dt.specCategory}</span>
+                <b>{product.category.name}</b>
+              </div>
+              <div className="spec-row">
+                <span>{dt.specStock}</span>
+                <b>{formatNumber(product.stock)} {dt.stockUnit}</b>
+              </div>
+              {materials.length > 0 && (
+                <div className="spec-row">
+                  <span>{dt.specMaterial}</span>
+                  <b>{materials.map((m) => materialLabel(m)).join(", ")}</b>
+                </div>
+              )}
+              <div className="spec-row">
+                <span>{dt.specVeredelung}</span>
+                <b>{dt.specVeredelungValue}</b>
+              </div>
+            </div>
           </div>
         </div>
-      </section>
+      </div>
 
-      {/* ÄHNLICHE ARTIKEL */}
       {related.length > 0 && (
-        <section className="mm-detail-related">
+        <section style={{ paddingTop: 80 }}>
           <div className="wrap">
             <div className="section-head">
               <span className="kicker">{dt.relatedKicker}</span>
               <h2 className="big">{dt.relatedTitle}</h2>
             </div>
-            <div className="mm-grid">
+            <div className="related-grid">
               {related.map((r) => {
                 const rImgs = split(r.images);
                 return (
-                  <Link key={r.id} href={`/werbemittel/${r.id}`} className="mm-card mm-card-related">
-                    <div className="mm-card-tags">
-                      {r.isNew && <span className="mm-tag tag-new">NEU</span>}
-                      {r.isEco && <span className="mm-tag tag-eco">✦ NACHHALTIG</span>}
-                    </div>
-                    <div className="mm-card-img">
+                  <Link key={r.id} href={`/werbemittel/${r.id}`} className="related-card">
+                    <div className="related-img">
                       {rImgs.length > 0 ? (
                         // eslint-disable-next-line @next/next/no-img-element
                         <img src={rImgs[0]} alt={r.name} />
@@ -283,9 +256,10 @@ export default async function ProductDetailPage({
                         <ProductIcon name={r.icon} />
                       )}
                     </div>
-                    <div className="mm-card-name">{r.name}</div>
-                    <div className="mm-card-price">
-                      {r.priceCents != null ? <>Ab {formatPrice(r.priceCents)}</> : "Preis auf Anfrage"}
+                    <div className="related-body">
+                      <div className="pc-code">{r.code}</div>
+                      <div className="pc-name">{r.name}</div>
+                      <div className="pc-price">{formatPrice(r.priceCents)}</div>
                     </div>
                   </Link>
                 );

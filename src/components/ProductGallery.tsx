@@ -3,8 +3,6 @@
 import { useState } from "react";
 import { ProductIcon } from "@/lib/icons";
 
-/** Galerie im Monday-Merch-Stil:
- *  vertikale Thumbs links, großes Hauptbild rechts. */
 export default function ProductGallery({
   images,
   name,
@@ -18,8 +16,8 @@ export default function ProductGallery({
 
   if (images.length === 0) {
     return (
-      <div className="mm-gallery">
-        <div className="mm-gallery-main mm-gallery-empty">
+      <div className="gallery">
+        <div className="gallery-main gallery-empty">
           <ProductIcon name={iconName} />
         </div>
       </div>
@@ -27,16 +25,19 @@ export default function ProductGallery({
   }
 
   return (
-    <div className="mm-gallery">
+    <div className="gallery">
+      <div className="gallery-main">
+        {/* eslint-disable-next-line @next/next/no-img-element */}
+        <img src={images[active]} alt={name} />
+      </div>
       {images.length > 1 && (
-        <div className="mm-gallery-thumbs">
+        <div className="gallery-thumbs">
           {images.map((url, i) => (
             <button
               key={url}
-              className={`mm-gallery-thumb${i === active ? " active" : ""}`}
+              className={`gallery-thumb${i === active ? " active" : ""}`}
               onClick={() => setActive(i)}
               aria-label={`Bild ${i + 1}`}
-              type="button"
             >
               {/* eslint-disable-next-line @next/next/no-img-element */}
               <img src={url} alt="" />
@@ -44,10 +45,6 @@ export default function ProductGallery({
           ))}
         </div>
       )}
-      <div className="mm-gallery-main">
-        {/* eslint-disable-next-line @next/next/no-img-element */}
-        <img src={images[active]} alt={name} />
-      </div>
     </div>
   );
 }
