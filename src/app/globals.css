@@ -1167,8 +1167,8 @@ body:has(.hero-full) header.site .burger span{background:#fff}
 .btn-hero-outline:hover{background:#fff;color:#0b0d0c}
 
 /* 2 große Bildkacheln (Individuelle Bekleidung / Taschen) — direkt unter Hero */
-.home-tiles{display:grid;grid-template-columns:1fr 1fr;gap:0;
-  background:#fff;width:100%}
+.home-tiles{display:grid;grid-template-columns:1fr 1fr;gap:3px;
+  background:#fff;width:100%;padding-top:3px}
 .home-tile{position:relative;aspect-ratio:1/1;overflow:hidden;
   display:block;text-decoration:none;cursor:pointer}
 .home-tile-img{position:absolute;inset:0;background-size:cover;
@@ -1184,8 +1184,8 @@ body:has(.hero-full) header.site .burger span{background:#fff}
   z-index:1;pointer-events:none}
 
 /* 4 Service-Boxen — direkt unter den Kacheln */
-.home-services{display:grid;grid-template-columns:repeat(4,1fr);gap:0;
-  width:100%;background:#0b0d0c}
+.home-services{display:grid;grid-template-columns:repeat(4,1fr);gap:3px;
+  width:100%;background:#fff;padding-top:3px}
 .svc-box{position:relative;aspect-ratio:1/1;overflow:hidden;
   display:block;text-decoration:none;cursor:pointer}
 .svc-img{position:absolute;inset:0;background-size:cover;
@@ -1197,6 +1197,10 @@ body:has(.hero-full) header.site .burger span{background:#fff}
 .svc-label{position:absolute;bottom:32px;left:32px;
   font-family:var(--display);font-weight:700;font-size:clamp(1.1rem,1.9vw,1.7rem);
   letter-spacing:.06em;color:#fff;line-height:1}
+
+/* Home: Such- und Account-Icons im Header ausblenden, Footer-Abstand entfernen */
+body:has(.hero-full) header.site .icon-btn{display:none}
+body:has(.home-services) footer.site{margin-top:0}
 
 /* Mobile Anpassungen */
 @media (max-width:860px){
