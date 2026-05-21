@@ -1,17 +1,17 @@
 import type { Metadata } from "next";
-import { Bricolage_Grotesque, Hanken_Grotesk } from "next/font/google";
+import { Montserrat } from "next/font/google";
 import { SITE_URL } from "@/lib/site";
 import { getLocale } from "@/lib/i18n-server";
 import { organizationSchema } from "@/lib/schema";
 import JsonLd from "@/components/JsonLd";
 import "./globals.css";
 
-const display = Bricolage_Grotesque({
+const display = Montserrat({
   subsets: ["latin"],
-  weight: ["400", "600", "700", "800"],
+  weight: ["500", "600", "700", "800", "900"],
   variable: "--font-display",
 });
-const body = Hanken_Grotesk({
+const body = Montserrat({
   subsets: ["latin"],
   weight: ["400", "500", "600", "700"],
   variable: "--font-body",

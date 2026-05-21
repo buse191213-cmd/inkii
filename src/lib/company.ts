@@ -13,8 +13,7 @@ export const COMPANY = {
   name: "INKII",
 
   // Vollständiger rechtlicher Name inkl. Rechtsform.
-  // TODO: z. B. "INKII Textilveredelung GmbH" oder "Max Mustermann e. K."
-  legalName: "",
+  legalName: "INKII Works",
 
   // Kurzbeschreibung des Unternehmens
   description:
@@ -22,20 +21,19 @@ export const COMPANY = {
 
   url: SITE_URL,
 
-  // Pfad zum Logo in /public, z. B. "/logo.png". Leer = wird ausgelassen.
-  // TODO: Logo-Datei in den Ordner /public legen und Pfad hier eintragen.
-  logo: "",
+  // Pfad zum Logo in /public
+  logo: "/inkii-logo.png",
 
   // --- Kontakt ---
-  email: "", // TODO: z. B. "info@inkii.de"
-  phone: "", // TODO: international, z. B. "+49 221 1234567"
+  email: "info@inkiiworks.de",
+  phone: "+49 160 6767001",
 
-  // --- Adresse (nur bei festem Standort ausfüllen) ---
+  // --- Adresse ---
   address: {
-    street: "", // TODO: Straße + Hausnummer
-    postalCode: "", // TODO: PLZ
-    city: "", // TODO: Ort
-    region: "", // optional: Bundesland
+    street: "Westuferstr. 25",
+    postalCode: "45356",
+    city: "Essen",
+    region: "Nordrhein-Westfalen",
     country: "DE",
   },
 

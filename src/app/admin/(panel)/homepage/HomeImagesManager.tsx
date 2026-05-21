@@ -10,6 +10,7 @@ export default function HomeImagesManager({
 }: {
   images: Record<string, string | null>;
 }) {
+  const tiles = HOME_SLOTS.filter((s) => s.group === "home-tiles");
   const cats = HOME_SLOTS.filter((s) => s.group === "category");
   const feats = HOME_SLOTS.filter((s) => s.group === "feature");
   const nh = HOME_SLOTS.filter((s) => s.group === "nachhaltigkeit");
@@ -22,6 +23,23 @@ export default function HomeImagesManager({
       <p className="crumb">
         Admin <b>/ Startseite</b>
       </p>
+
+      <div className="panel" style={{ marginBottom: 18 }}>
+        <div className="panel-head">
+          <h3>Startseite — Große Bildkacheln</h3>
+        </div>
+        <div className="panel-body">
+          <p className="hero-vid-state">
+            Die zwei großen Hauptbilder direkt unter dem Hero-Video.
+            Empfohlen: hochauflösende Fotos, querformat (z. B. 1600×1100 px).
+          </p>
+          <div className="home-img-grid">
+            {tiles.map((s) => (
+              <Slot key={s.slot} slot={s.slot} label={s.label} current={images[s.slot] ?? null} />
+            ))}
+          </div>
+        </div>
+      </div>
 
       <div className="panel" style={{ marginBottom: 18 }}>
         <div className="panel-head">

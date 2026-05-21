@@ -4,10 +4,12 @@
 export type HomeSlot = {
   slot: string;
   label: string;
-  group: "category" | "feature" | "nachhaltigkeit" | "leistungen" | "bereiche" | "page";
+  group: "home-tiles" | "category" | "feature" | "nachhaltigkeit" | "leistungen" | "bereiche" | "page";
 };
 
 export const HOME_SLOTS: HomeSlot[] = [
+  { slot: "home-tile-1", label: "Startseite — Großes Bild links (z. B. Bekleidung)", group: "home-tiles" },
+  { slot: "home-tile-2", label: "Startseite — Großes Bild rechts (z. B. Taschen)", group: "home-tiles" },
   { slot: "cat-1", label: "Kategorie 1 — Firmen- & Arbeitskleidung", group: "category" },
   { slot: "cat-2", label: "Kategorie 2 — Werbeartikel & Merchandise", group: "category" },
   { slot: "cat-3", label: "Kategorie 3 — Team- & Sportbekleidung", group: "category" },
