@@ -21,8 +21,8 @@ button,input,select,textarea{font-family:var(--body)}
 .wrap{max-width:var(--max);margin:0 auto;padding:0 28px}
 
 /* ---------- UTILITY BAR ---------- */
-.utility{position:absolute;top:0;left:0;right:0;z-index:60;
-  background:rgba(11,13,12,.88);color:rgba(255,255,255,.78);font-size:.78rem;
+.utility{position:sticky;top:0;left:0;right:0;z-index:60;
+  background:#0b0d0c;color:rgba(255,255,255,.78);font-size:.78rem;
   border-bottom:1px solid rgba(255,255,255,.08)}
 .utility-inner{display:grid;grid-template-columns:1fr auto 1fr;align-items:center;
   height:38px;padding:0 28px;max-width:none;gap:24px}
@@ -34,12 +34,12 @@ button,input,select,textarea{font-family:var(--body)}
 .utility a:hover{color:#fff}
 
 /* ---------- HEADER ---------- */
-header.site{position:absolute;top:38px;left:0;right:0;z-index:50;
-  background:transparent;border-bottom:none;box-shadow:none}
-.head-row{display:flex;align-items:center;justify-content:space-between;height:56px}
+header.site{position:sticky;top:38px;z-index:50;background:#fff;
+  border-bottom:1px solid var(--line);box-shadow:0 1px 4px rgba(0,0,0,.04)}
+.head-row{display:flex;align-items:center;justify-content:space-between;height:64px}
 .logo{display:inline-flex;align-items:center;text-decoration:none;cursor:pointer}
-.logo img{height:34px;width:auto;display:block;filter:brightness(0) invert(1)}
-@media(max-width:600px){.logo img{height:30px}}
+.logo img{height:38px;width:auto;display:block}
+@media(max-width:600px){.logo img{height:32px}}
 /* Admin-Seitenleiste verwendet weiterhin Text-Logo: */
 .logo-name{font-weight:800;font-size:1.5rem;letter-spacing:.15em;margin-right:-.15em;
   font-family:var(--display);color:var(--ink);line-height:1}
@@ -47,19 +47,19 @@ header.site{position:absolute;top:38px;left:0;right:0;z-index:50;
   margin-top:5px;align-self:flex-end;color:var(--ink);font-family:var(--display);line-height:1}
 .logo .dot{width:38px;height:38px;background:var(--leaf);display:grid;place-items:center;color:#fff;font-size:1.05rem}
 nav.main{display:flex;gap:0;align-items:center}
-nav.main a{font-weight:600;font-size:.92rem;color:rgba(255,255,255,.92);padding:11px 14px;
+nav.main a{font-weight:600;font-size:.92rem;color:var(--ink);padding:11px 14px;
   transition:.15s;border-bottom:3px solid transparent}
-nav.main a:hover{background:rgba(255,255,255,.08);color:#fff}
-nav.main a.active{border-bottom-color:#fff;color:#fff}
+nav.main a:hover{background:var(--mist)}
+nav.main a.active{border-bottom-color:var(--leaf);color:var(--leaf-deep)}
 .head-actions{display:flex;align-items:center;gap:12px}
-.icon-btn{width:42px;height:42px;border:1px solid rgba(255,255,255,.4);display:grid;
-  place-items:center;background:transparent;cursor:pointer;transition:.15s;color:#fff}
-.icon-btn:hover{background:rgba(255,255,255,.15);color:#fff;border-color:rgba(255,255,255,.6)}
-.cart-pill{display:flex;align-items:center;gap:9px;background:rgba(255,255,255,.15);color:#fff;
-  padding:11px 17px;font-weight:600;font-size:.9rem;border:1px solid rgba(255,255,255,.4)}
+.icon-btn{width:42px;height:42px;border:1px solid var(--line);display:grid;
+  place-items:center;background:#fff;cursor:pointer;transition:.15s;color:var(--ink)}
+.icon-btn:hover{background:var(--mist);color:var(--ink);border-color:var(--line)}
+.cart-pill{display:flex;align-items:center;gap:9px;background:var(--ink);color:#fff;
+  padding:11px 17px;font-weight:600;font-size:.9rem}
 .burger{display:none;flex-direction:column;gap:5px;cursor:pointer;width:42px;height:42px;
-  border:1px solid rgba(255,255,255,.4);align-items:center;justify-content:center;background:transparent}
-.burger span{width:18px;height:2px;background:#fff}
+  border:1px solid var(--line);align-items:center;justify-content:center;background:#fff}
+.burger span{width:18px;height:2px;background:var(--ink)}
 
 /* ---------- HERO ---------- */
 .hero{position:relative;padding:96px 0 104px;
@@ -102,7 +102,7 @@ h2.big{font-family:var(--display);font-weight:800;letter-spacing:-.025em;
 .section-head p{color:var(--muted);font-size:1.08rem;line-height:1.65}
 
 /* ---------- PAGE HEADER ---------- */
-.page-hero{padding:140px 0 52px;
+.page-hero{padding:48px 0 52px;
   background:linear-gradient(180deg,var(--lime-soft),transparent 70%),var(--white);
   border-bottom:1px solid var(--line)}
 .breadcrumb{font-size:.85rem;color:var(--muted);display:flex;gap:8px;align-items:center}
@@ -907,7 +907,7 @@ footer.site ul a:hover{color:var(--leaf)}
 .img-hero-deco svg{position:absolute;inset:0;width:100%;height:100%;display:block}
 .img-hero-overlay{position:absolute;inset:0;
   background:linear-gradient(180deg,rgba(18,38,26,.10),rgba(18,38,26,.80))}
-.img-hero-inner{position:relative;padding:160px 0 56px;max-width:780px}
+.img-hero-inner{position:relative;padding:110px 0 56px;max-width:780px}
 .img-hero .breadcrumb{color:rgba(255,255,255,.72)}
 .img-hero .breadcrumb span{color:rgba(255,255,255,.72)}
 .img-hero .breadcrumb a{color:rgba(255,255,255,.9)}
@@ -1122,13 +1122,29 @@ footer.site ul a:hover{color:var(--leaf)}
    damit es zwischen Hero, Kacheln und Services keine Lücken gibt. */
 .hero-full,.home-tiles,.home-services{padding:0;margin:0}
 
+/* === Nur Startseite: transparente Navbar über dem Video === */
+body:has(.hero-full) .utility{position:absolute;top:0;background:rgba(11,13,12,.88)}
+body:has(.hero-full) header.site{position:absolute;top:38px;background:transparent;
+  border-bottom:none;box-shadow:none}
+body:has(.hero-full) header.site .head-row{height:56px}
+body:has(.hero-full) header.site .logo img{filter:brightness(0) invert(1);height:34px}
+body:has(.hero-full) header.site nav.main a{color:rgba(255,255,255,.92)}
+body:has(.hero-full) header.site nav.main a:hover{background:rgba(255,255,255,.08);color:#fff}
+body:has(.hero-full) header.site nav.main a.active{color:#fff;border-bottom-color:#fff}
+body:has(.hero-full) header.site .icon-btn{display:none}
+body:has(.hero-full) header.site .cart-pill{color:#fff;
+  background:rgba(255,255,255,.15);border:1px solid rgba(255,255,255,.4)}
+body:has(.hero-full) header.site .burger{border-color:rgba(255,255,255,.4);background:transparent}
+body:has(.hero-full) header.site .burger span{background:#fff}
+body:has(.home-services) footer.site{margin-top:0}
+
 /* Hero Vollbild — Video bedeckt den gesamten sichtbaren Bereich.
    Da Header & Utility absolut über dem Hero schweben, nutzt der Hero
    die volle Viewport-Höhe. */
 .hero-full{position:relative;width:100%;height:100vh;min-height:600px;
-  display:flex;align-items:flex-end;justify-content:flex-start;
+  display:flex;align-items:center;justify-content:flex-start;
   overflow:hidden;background:#0b0d0c;color:#fff;
-  padding:120px clamp(60px,11vw,220px) clamp(80px,14vh,180px)}
+  padding:80px clamp(60px,11vw,220px)}
 .hero-bg-video,.hero-bg-fallback{position:absolute;inset:0;
   width:100%;height:100%;object-fit:cover;z-index:0}
 .hero-bg-fallback{background:linear-gradient(135deg,#1d2825 0%,#2f4439 50%,#1d2825 100%)}
@@ -1184,8 +1200,7 @@ footer.site ul a:hover{color:var(--leaf)}
   font-family:var(--display);font-weight:700;font-size:clamp(1.1rem,1.9vw,1.7rem);
   letter-spacing:.06em;color:#fff;line-height:1}
 
-/* Home: Footer-Abstand entfernen */
-body:has(.home-services) footer.site{margin-top:0}
+/* Home: Footer-Abstand entfernen — siehe oben */
 
 /* Mobile Anpassungen */
 @media (max-width:860px){
@@ -1200,7 +1215,7 @@ body:has(.home-services) footer.site{margin-top:0}
 }
 
 /* === Impressum / Datenschutz — saubere Lesetypografie === */
-.legal-prose{max-width:780px;margin:0 auto;padding:140px 0 60px;color:var(--ink);
+.legal-prose{max-width:780px;margin:0 auto;padding:60px 0 60px;color:var(--ink);
   font-size:1rem;line-height:1.7}
 .legal-crumb{font-size:.85rem;color:var(--muted);margin:0 0 18px;
   display:flex;gap:8px;align-items:center}
@@ -1222,7 +1237,7 @@ body:has(.home-services) footer.site{margin-top:0}
 /* ===========================================================
    KONTAKT-SEITE — Monday Merch Stil: links Text, rechts Formular
    =========================================================== */
-.kontakt-page{padding:160px 0 100px;background:#fff}
+.kontakt-page{padding:60px 0 100px;background:#fff}
 .kontakt-grid{max-width:1320px;margin:0 auto;padding:0 clamp(24px,5vw,80px);
   display:grid;grid-template-columns:1fr 1fr;gap:clamp(40px,6vw,100px);
   align-items:start}
@@ -1261,7 +1276,7 @@ body:has(.home-services) footer.site{margin-top:0}
 
 @media (max-width:880px){
   .kontakt-grid{grid-template-columns:1fr;gap:48px}
-  .kontakt-page{padding:130px 0 60px}
+  .kontakt-page{padding:48px 0 60px}
 }
 
 /* === Kontakt-Avatare + erweiterte Form === */
