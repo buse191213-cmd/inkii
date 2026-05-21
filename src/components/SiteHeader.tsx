@@ -42,14 +42,18 @@ export default function SiteHeader({
   return (
     <>
       <div className="utility">
-        <div className="wrap">
-          <span>
-            {t.hotline} <a href="tel:+490000000000">0000 – 000 00 00</a> · {t.hours}
+        <div className="utility-inner">
+          <span className="u-left">
+            <span className="u-star">★</span> Premium Werbemittel-Service
+          </span>
+          <span className="u-center">
+            Kostenlose Designs &amp; unverbindliches Angebot in 24 Stunden
           </span>
           <div className="u-right">
-            <Link href="/kontakt">{t.login}</Link>
-            <Link href="/merkzettel">{t.merkzettel}</Link>
-            <Link href="/kontakt">{t.rueckruf}</Link>
+            <Link href="/ueber-uns">Über Uns</Link>
+            <Link href="/nachhaltigkeit">Nachhaltigkeit</Link>
+            <Link href="/bereiche">Bereiche</Link>
+            <Link href="/kontakt">Kontakt</Link>
             <LangSwitcher current={locale} />
           </div>
         </div>
