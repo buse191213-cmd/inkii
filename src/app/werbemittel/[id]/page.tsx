@@ -86,12 +86,16 @@ export default async function ProductDetailPage({
   });
   if (!product) notFound();
 
+  // Defensive: falls category irgendwie fehlt (z. B. gelöschte Beziehung)
+  const categoryName = product.category?.name ?? "Werbemittel";
+  const categoryId = product.categoryId;
+
   const images = split(product.images);
   const colors = split(product.colors);
   const materials = split(product.material);
 
   const sameCategory = await db.product.findMany({
-    where: { categoryId: product.categoryId, status: "active", id: { not: product.id } },
+    where: { categoryId: categoryId, status: "active", id: { not: product.id } },
     take: 4,
     orderBy: { createdAt: "desc" },
   });
@@ -135,7 +139,7 @@ export default async function ProductDetailPage({
         data={breadcrumbSchema([
           { name: "Home", url: SITE_URL },
           { name: "Werbemittel", url: `${SITE_URL}/werbemittel` },
-          { name: product.category.name, url: `${SITE_URL}/werbemittel` },
+          { name: categoryName, url: `${SITE_URL}/werbemittel` },
           { name: product.name, url: `${SITE_URL}/werbemittel/${product.id}` },
         ])}
       />
@@ -143,7 +147,7 @@ export default async function ProductDetailPage({
         <div className="breadcrumb" style={{ marginBottom: 24 }}>
           <Link href="/">{d.nav.home}</Link> <span>/</span>
           <Link href="/werbemittel"> {d.nav.werbemittel}</Link> <span>/</span>
-          <span> {product.category.name}</span>
+          <span> {categoryName}</span>
         </div>
 
         <div className="detail-grid">
@@ -215,7 +219,7 @@ export default async function ProductDetailPage({
               </div>
               <div className="spec-row">
                 <span>{dt.specCategory}</span>
-                <b>{product.category.name}</b>
+                <b>{categoryName}</b>
               </div>
               <div className="spec-row">
                 <span>{dt.specStock}</span>
