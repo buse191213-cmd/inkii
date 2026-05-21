@@ -38,6 +38,11 @@ const NAV = [
     icon: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="9" cy="8" r="3.2"/><path d="M3 20c0-3.3 2.7-6 6-6s6 2.7 6 6"/><circle cx="17" cy="9" r="2.6"/><path d="M14.5 20c0-2.5 2-4.5 4.5-4.5"/></svg>',
   },
   {
+    href: "/admin/navigation",
+    label: "Navigation",
+    icon: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="4" y1="7" x2="20" y2="7"/><line x1="4" y1="12" x2="20" y2="12"/><line x1="4" y1="17" x2="20" y2="17"/></svg>',
+  },
+  {
     href: "/admin/settings",
     label: "Einstellungen",
     group: "System",

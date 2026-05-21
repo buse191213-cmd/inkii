@@ -8,6 +8,7 @@ import { db } from "@/lib/db";
 import { SESSION_COOKIE } from "@/lib/auth";
 import { parsePriceToCents, slugify } from "@/lib/format";
 import { HOME_SLOT_IDS } from "@/lib/home-slots";
+import { NAV_KEYS, type NavKey, getAllNavItems } from "@/lib/nav";
 
 export type ActionResult = { ok: boolean; error?: string };
 
@@ -481,5 +482,66 @@ export async function removeTeamPhoto(id: string): Promise<ActionResult> {
     return { ok: true };
   } catch {
     return { ok: false, error: "Foto konnte nicht entfernt werden." };
+  }
+}
+
+// === Header-Navigation verwalten ===
+
+function isNavKey(k: string): k is NavKey {
+  return (NAV_KEYS as readonly string[]).includes(k);
+}
+
+/** Einen Navigationspunkt aktivieren oder deaktivieren. */
+export async function toggleNavItem(key: string, active: boolean): Promise<ActionResult> {
+  if (!isNavKey(key)) {
+    return { ok: false, error: "Unbekannter Navigationsschlüssel." };
+  }
+  try {
+    const existing = await db.navSetting.findUnique({ where: { key } });
+    const sortOrder = existing
+      ? existing.sortOrder
+      : (NAV_KEYS.indexOf(key as NavKey) + 1) * 10;
+    await db.navSetting.upsert({
+      where: { key },
+      update: { active },
+      create: { key, active, sortOrder },
+    });
+    revalidatePath("/", "layout");
+    return { ok: true };
+  } catch {
+    return { ok: false, error: "Speichern fehlgeschlagen." };
+  }
+}
+
+/** Reihenfolge nach oben oder unten verschieben (Swap mit Nachbar). */
+export async function moveNavItem(key: string, direction: "up" | "down"): Promise<ActionResult> {
+  if (!isNavKey(key)) {
+    return { ok: false, error: "Unbekannter Navigationsschlüssel." };
+  }
+  try {
+    const all = await getAllNavItems();
+    const idx = all.findIndex((n) => n.key === key);
+    if (idx < 0) return { ok: false, error: "Eintrag nicht gefunden." };
+    const swapIdx = direction === "up" ? idx - 1 : idx + 1;
+    if (swapIdx < 0 || swapIdx >= all.length) {
+      return { ok: true }; // schon ganz oben/unten – ignoriert
+    }
+    const a = all[idx];
+    const b = all[swapIdx];
+    // Wir schreiben beide Einträge in die DB (upsert).
+    await db.navSetting.upsert({
+      where: { key: a.key },
+      update: { sortOrder: b.sortOrder },
+      create: { key: a.key, active: a.active, sortOrder: b.sortOrder },
+    });
+    await db.navSetting.upsert({
+      where: { key: b.key },
+      update: { sortOrder: a.sortOrder },
+      create: { key: b.key, active: b.active, sortOrder: a.sortOrder },
+    });
+    revalidatePath("/", "layout");
+    return { ok: true };
+  } catch {
+    return { ok: false, error: "Verschieben fehlgeschlagen." };
   }
 }

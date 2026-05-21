@@ -8,7 +8,9 @@ import LangSwitcher from "./LangSwitcher";
 import type { Locale } from "@/lib/i18n";
 import type { Dictionary } from "@/dictionaries/types";
 
-const NAV: { href: string; key: keyof Dictionary["nav"] }[] = [
+type NavItem = { href: string; key: keyof Dictionary["nav"] };
+
+const FALLBACK_NAV: NavItem[] = [
   { href: "/", key: "home" },
   { href: "/veredelung", key: "veredelung" },
   { href: "/werbemittel", key: "werbemittel" },
@@ -23,11 +25,14 @@ export default function SiteHeader({
   locale,
   nav,
   t,
+  navItems,
 }: {
   locale: Locale;
   nav: Dictionary["nav"];
   t: Dictionary["header"];
+  navItems?: NavItem[];
 }) {
+  const NAV = navItems && navItems.length > 0 ? navItems : FALLBACK_NAV;
   const pathname = usePathname();
   const [open, setOpen] = useState(false);
   const { count } = useMerkliste();

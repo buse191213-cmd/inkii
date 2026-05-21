@@ -1099,3 +1099,10 @@ footer.site ul a:hover{color:var(--leaf)}
 /* Fällt Abteilung weg, wird der Name zur Hauptzeile (gleiche Optik wie h3) */
 .team-card .t-body .t-name-main{font-family:var(--display);font-weight:800;font-size:1.05rem;
   letter-spacing:.14em;text-transform:uppercase;color:var(--ink);line-height:1.1;display:block}
+
+/* Navigation-Verwaltung — Aktiv/Passiv-Schalter */
+.nav-toggle{display:inline-flex;align-items:center;gap:8px;cursor:pointer;font-size:.88rem}
+.nav-toggle input{width:16px;height:16px;cursor:pointer;accent-color:var(--leaf-deep)}
+.nav-toggle input:not(:checked) + span{color:var(--muted)}
+.prod-table tr.row-muted{background:#fafafa}
+.prod-table tr.row-muted .t-name{color:var(--muted);text-decoration:line-through}

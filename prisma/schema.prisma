@@ -71,3 +71,11 @@ model TeamMember {
   sortOrder  Int      @default(0)
   createdAt  DateTime @default(now())
 }
+
+// Header-Navigation: pro Schlüssel ein Eintrag. Wenn keine Zeile existiert,
+// gilt der Eintrag als aktiv (Standard für frische Installation).
+model NavSetting {
+  key       String  @id            // z. B. "home", "werbemittel"
+  active    Boolean @default(true)
+  sortOrder Int     @default(0)
+}
