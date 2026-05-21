@@ -21,7 +21,9 @@ button,input,select,textarea{font-family:var(--body)}
 .wrap{max-width:var(--max);margin:0 auto;padding:0 28px}
 
 /* ---------- UTILITY BAR ---------- */
-.utility{background:#0b0d0c;color:rgba(255,255,255,.78);font-size:.78rem;border-bottom:1px solid rgba(255,255,255,.08)}
+.utility{position:absolute;top:0;left:0;right:0;z-index:60;
+  background:rgba(11,13,12,.88);color:rgba(255,255,255,.78);font-size:.78rem;
+  border-bottom:1px solid rgba(255,255,255,.08)}
 .utility-inner{display:grid;grid-template-columns:1fr auto 1fr;align-items:center;
   height:38px;padding:0 28px;max-width:none;gap:24px}
 .utility .u-left{justify-self:start;display:flex;align-items:center;gap:6px;font-weight:500;color:rgba(255,255,255,.85)}
@@ -32,12 +34,12 @@ button,input,select,textarea{font-family:var(--body)}
 .utility a:hover{color:#fff}
 
 /* ---------- HEADER ---------- */
-header.site{position:sticky;top:0;z-index:50;background:rgba(255,255,255,.95);
-  backdrop-filter:blur(12px);border-bottom:1px solid var(--line)}
-.head-row{display:flex;align-items:center;justify-content:space-between;height:64px}
+header.site{position:absolute;top:38px;left:0;right:0;z-index:50;
+  background:transparent;border-bottom:none;box-shadow:none}
+.head-row{display:flex;align-items:center;justify-content:space-between;height:56px}
 .logo{display:inline-flex;align-items:center;text-decoration:none;cursor:pointer}
-.logo img{height:46px;width:auto;display:block}
-@media(max-width:600px){.logo img{height:38px}}
+.logo img{height:34px;width:auto;display:block;filter:brightness(0) invert(1)}
+@media(max-width:600px){.logo img{height:30px}}
 /* Admin-Seitenleiste verwendet weiterhin Text-Logo: */
 .logo-name{font-weight:800;font-size:1.5rem;letter-spacing:.15em;margin-right:-.15em;
   font-family:var(--display);color:var(--ink);line-height:1}
@@ -45,19 +47,19 @@ header.site{position:sticky;top:0;z-index:50;background:rgba(255,255,255,.95);
   margin-top:5px;align-self:flex-end;color:var(--ink);font-family:var(--display);line-height:1}
 .logo .dot{width:38px;height:38px;background:var(--leaf);display:grid;place-items:center;color:#fff;font-size:1.05rem}
 nav.main{display:flex;gap:0;align-items:center}
-nav.main a{font-weight:600;font-size:.92rem;color:var(--ink);padding:11px 14px;
+nav.main a{font-weight:600;font-size:.92rem;color:rgba(255,255,255,.92);padding:11px 14px;
   transition:.15s;border-bottom:3px solid transparent}
-nav.main a:hover{background:var(--mist)}
-nav.main a.active{border-bottom-color:var(--leaf);color:var(--leaf-deep)}
+nav.main a:hover{background:rgba(255,255,255,.08);color:#fff}
+nav.main a.active{border-bottom-color:#fff;color:#fff}
 .head-actions{display:flex;align-items:center;gap:12px}
-.icon-btn{width:42px;height:42px;border:1px solid var(--line);display:grid;
-  place-items:center;background:var(--white);cursor:pointer;transition:.15s;color:var(--ink)}
-.icon-btn:hover{background:var(--leaf);color:#fff;border-color:var(--leaf)}
-.cart-pill{display:flex;align-items:center;gap:9px;background:var(--ink);color:#fff;
-  padding:11px 17px;font-weight:600;font-size:.9rem}
+.icon-btn{width:42px;height:42px;border:1px solid rgba(255,255,255,.4);display:grid;
+  place-items:center;background:transparent;cursor:pointer;transition:.15s;color:#fff}
+.icon-btn:hover{background:rgba(255,255,255,.15);color:#fff;border-color:rgba(255,255,255,.6)}
+.cart-pill{display:flex;align-items:center;gap:9px;background:rgba(255,255,255,.15);color:#fff;
+  padding:11px 17px;font-weight:600;font-size:.9rem;border:1px solid rgba(255,255,255,.4)}
 .burger{display:none;flex-direction:column;gap:5px;cursor:pointer;width:42px;height:42px;
-  border:1px solid var(--line);align-items:center;justify-content:center;background:var(--white)}
-.burger span{width:18px;height:2px;background:var(--ink)}
+  border:1px solid rgba(255,255,255,.4);align-items:center;justify-content:center;background:transparent}
+.burger span{width:18px;height:2px;background:#fff}
 
 /* ---------- HERO ---------- */
 .hero{position:relative;padding:96px 0 104px;
@@ -1119,36 +1121,6 @@ footer.site ul a:hover{color:var(--leaf)}
 /* Wichtig: globale `section{padding:100px 0}`-Regel deaktivieren,
    damit es zwischen Hero, Kacheln und Services keine Lücken gibt. */
 .hero-full,.home-tiles,.home-services{padding:0;margin:0}
-
-/* Auf JEDER Seite: Utility-Leiste UND Header schweben über dem ersten Hero.
-   Funktioniert für Startseite (.hero-full) und alle anderen Seiten mit PageHero (.img-hero). */
-body:has(.hero-full) .utility,
-body:has(.img-hero) .utility{position:absolute;top:0;left:0;right:0;z-index:60;
-  background:rgba(11,13,12,.88);border-bottom:1px solid rgba(255,255,255,.08)}
-body:has(.hero-full) header.site,
-body:has(.img-hero) header.site{position:absolute;top:38px;left:0;right:0;
-  z-index:50;background:transparent;border-bottom:none;box-shadow:none}
-body:has(.hero-full) header.site .head-row,
-body:has(.img-hero) header.site .head-row{height:56px}
-body:has(.hero-full) header.site nav.main a,
-body:has(.img-hero) header.site nav.main a{color:rgba(255,255,255,.92);
-  border-bottom:2px solid transparent}
-body:has(.hero-full) header.site nav.main a.active,
-body:has(.img-hero) header.site nav.main a.active{color:#fff;border-bottom-color:#fff}
-body:has(.hero-full) header.site nav.main a:hover,
-body:has(.img-hero) header.site nav.main a:hover{background:rgba(255,255,255,.08);color:#fff}
-body:has(.hero-full) header.site .logo img,
-body:has(.img-hero) header.site .logo img{filter:brightness(0) invert(1);height:34px}
-body:has(.hero-full) header.site .icon-btn,
-body:has(.img-hero) header.site .icon-btn{color:#fff;background:transparent;
-  border:1px solid rgba(255,255,255,.4)}
-body:has(.hero-full) header.site .icon-btn:hover,
-body:has(.img-hero) header.site .icon-btn:hover{background:rgba(255,255,255,.15)}
-body:has(.hero-full) header.site .cart-pill,
-body:has(.img-hero) header.site .cart-pill{color:#fff;
-  background:rgba(255,255,255,.15);border:1px solid rgba(255,255,255,.4)}
-body:has(.hero-full) header.site .burger span,
-body:has(.img-hero) header.site .burger span{background:#fff}
 
 /* Hero Vollbild — Video bedeckt den gesamten sichtbaren Bereich.
    Da Header & Utility absolut über dem Hero schweben, nutzt der Hero
