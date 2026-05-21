@@ -1,33 +1,27 @@
 import SiteShell from "@/components/SiteShell";
-import PageHero from "@/components/PageHero";
 import Link from "next/link";
 import type { Metadata } from "next";
-import { getLocale } from "@/lib/i18n-server";
-import { getDictionary } from "@/dictionaries";
 
 export const metadata: Metadata = {
-  title: "Impressum | INKII",
-  description: "Impressum und Allgemeine Geschäftsbedingungen der INKIISTUDIO.",
+  title: "Impressum | INKII Works",
+  description: "Impressum und Allgemeine Geschäftsbedingungen der INKII Works.",
   robots: { index: true, follow: true },
 };
 
 export default async function ImpressumPage() {
-  const locale = await getLocale();
-  const d = getDictionary(locale);
   return (
     <SiteShell>
-      <PageHero
-        image={null}
-        crumbs={[{ label: d.nav.home, href: "/" }, { label: "Impressum" }]}
-        title="Impressum"
-        intro="Rechtliche Angaben gemäß § 5 TMG sowie Allgemeine Geschäftsbedingungen, Widerrufsbelehrung und Muster-Widerrufsformular."
-      />
-
       <section>
         <div className="wrap legal-prose">
-          <h2>INKIISTUDIO — Rechtstexte &amp; Website-Inhalte</h2>
+          <p className="legal-crumb">
+            <Link href="/">Startseite</Link> <span>/</span> Impressum
+          </p>
+
+          <h1 className="legal-h1">Impressum</h1>
+
+          <h2>INKII WORKS — Rechtstexte &amp; Website-Inhalte</h2>
           <p>
-            <strong>INKIISTUDIO</strong>
+            <strong>INKII WORKS</strong>
             <br />Inhaber: Sener Kirli
             <br />Westuferstr. 25
             <br />45356 Essen
@@ -35,7 +29,7 @@ export default async function ImpressumPage() {
           </p>
 
           <p>
-            E-Mail: <a href="mailto:info@inkiistudio.de">info@inkiistudio.de</a>
+            E-Mail: <a href="mailto:info@inkiiworks.de">info@inkiiworks.de</a>
             <br />Telefon: <a href="tel:+4920184362510">0201 / 84362510</a>
             <br />Mobil: <a href="tel:+491606767001">0160 / 6767001</a>
           </p>
@@ -64,13 +58,13 @@ export default async function ImpressumPage() {
 
           <h3>1. Geltungsbereich</h3>
           <p>
-            Diese AGB gelten für alle Lieferungen und Leistungen der INKIISTUDIO an
+            Diese AGB gelten für alle Lieferungen und Leistungen der INKII WORKS an
             Verbraucher (§ 13 BGB) und Unternehmer (§ 14 BGB).
           </p>
 
           <h3>2. Vertragspartner</h3>
           <p>
-            INKIISTUDIO, Inhaber Sener Kirli, Westuferstr. 25, 45356 Essen.
+            INKII WORKS, Inhaber Sener Kirli, Westuferstr. 25, 45356 Essen.
           </p>
 
           <h3>3. Angebot und Vertragsschluss</h3>
@@ -123,8 +117,8 @@ export default async function ImpressumPage() {
             Ihnen benannter Dritter die Waren in Besitz genommen haben.
           </p>
           <p>
-            Um Ihr Widerrufsrecht auszuüben, müssen Sie uns (INKIISTUDIO, Westuferstr. 25,
-            45356 Essen, <a href="mailto:info@inkiistudio.de">info@inkiistudio.de</a>)
+            Um Ihr Widerrufsrecht auszuüben, müssen Sie uns (INKII WORKS, Westuferstr. 25,
+            45356 Essen, <a href="mailto:info@inkiiworks.de">info@inkiiworks.de</a>)
             mittels einer eindeutigen Erklärung (z. B. per Brief oder E-Mail) informieren.
           </p>
           <p>
@@ -135,8 +129,8 @@ export default async function ImpressumPage() {
 
           <h2>Muster-Widerrufsformular</h2>
           <p>
-            An INKIISTUDIO, Westuferstr. 25, 45356 Essen,{" "}
-            <a href="mailto:info@inkiistudio.de">info@inkiistudio.de</a>
+            An INKII WORKS, Westuferstr. 25, 45356 Essen,{" "}
+            <a href="mailto:info@inkiiworks.de">info@inkiiworks.de</a>
           </p>
           <p>
             Hiermit widerrufe(n) ich/wir den von mir/uns abgeschlossenen Vertrag über

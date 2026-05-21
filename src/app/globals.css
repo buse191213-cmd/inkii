@@ -1200,8 +1200,14 @@ body:has(.home-services) footer.site{margin-top:0}
 }
 
 /* === Impressum / Datenschutz — saubere Lesetypografie === */
-.legal-prose{max-width:780px;margin:0 auto;padding:60px 0 20px;color:var(--ink);
+.legal-prose{max-width:780px;margin:0 auto;padding:140px 0 60px;color:var(--ink);
   font-size:1rem;line-height:1.7}
+.legal-crumb{font-size:.85rem;color:var(--muted);margin:0 0 18px;
+  display:flex;gap:8px;align-items:center}
+.legal-crumb a{color:var(--leaf-deep);font-weight:600;text-decoration:none}
+.legal-crumb a:hover{text-decoration:underline}
+.legal-h1{font-family:var(--display);font-weight:800;font-size:clamp(2rem,4vw,2.8rem);
+  letter-spacing:-.02em;line-height:1.08;color:var(--ink);margin:0 0 36px}
 .legal-prose h2{font-family:var(--display);font-weight:700;font-size:1.4rem;
   letter-spacing:-.005em;margin:42px 0 14px;color:var(--ink)}
 .legal-prose h3{font-family:var(--display);font-weight:600;font-size:1.05rem;
