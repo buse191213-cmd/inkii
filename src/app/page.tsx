@@ -2,7 +2,6 @@ import Link from "next/link";
 import SiteShell from "@/components/SiteShell";
 import { getHeroVideoSrc } from "@/lib/hero-video";
 import { getHomeImage } from "@/lib/home-images";
-import { COMPANY } from "@/lib/company";
 
 export const dynamic = "force-dynamic";
 
@@ -55,18 +54,6 @@ export default async function HomePage() {
             <Link href="/kontakt" className="btn-hero-outline">
               Kontakt
             </Link>
-          </div>
-          <div className="hero-contact-row">
-            <a href={`tel:${COMPANY.phone.replace(/\s+/g, "")}`}>
-              {COMPANY.phone}
-            </a>
-            <span className="hero-dot">·</span>
-            <a href={`mailto:${COMPANY.email}`}>{COMPANY.email}</a>
-            <span className="hero-dot">·</span>
-            <span>
-              {COMPANY.address.street}, {COMPANY.address.postalCode}{" "}
-              {COMPANY.address.city}
-            </span>
           </div>
         </div>
       </section>

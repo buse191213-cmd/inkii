@@ -13,10 +13,12 @@ export const metadata: Metadata = {
     "Sie haben ein Projekt? Kontaktieren Sie INKII für ein unverbindliches Angebot rund um Textilveredelung und Werbemittel.",
 };
 
-// Kontaktdaten – Platzhalter, sprachunabhängig.
-const PHONE = "0000 – 000 00 00";
-const EMAIL = "info@inkii.de";
-const ADDRESS = "Musterstraße 12, 00000 Musterstadt";
+import { COMPANY } from "@/lib/company";
+
+// Kontaktdaten aus zentralem Firmendaten-Modul (siehe src/lib/company.ts)
+const PHONE = COMPANY.phone;
+const EMAIL = COMPANY.email;
+const ADDRESS = `${COMPANY.address.street}, ${COMPANY.address.postalCode} ${COMPANY.address.city}`;
 
 export default async function KontaktPage() {
   const locale = await getLocale();
