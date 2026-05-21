@@ -38,8 +38,8 @@ export default function SiteFooter({
           <div>
             <h4>{t.colRecht}</h4>
             <ul>
-              <li><Link href="/kontakt">{t.lImpressum}</Link></li>
-              <li><Link href="/kontakt">{t.lDatenschutz}</Link></li>
+              <li><Link href="/impressum">{t.lImpressum}</Link></li>
+              <li><Link href="/datenschutz">{t.lDatenschutz}</Link></li>
               <li><Link href="/kontakt">{t.lAgb}</Link></li>
               <li><Link href="/kontakt">{t.lWiderruf}</Link></li>
             </ul>

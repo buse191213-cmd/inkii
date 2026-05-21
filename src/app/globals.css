@@ -1198,3 +1198,17 @@ body:has(.home-services) footer.site{margin-top:0}
   .home-services{grid-template-columns:1fr}
   .hero-full{height:90vh}
 }
+
+/* === Impressum / Datenschutz — saubere Lesetypografie === */
+.legal-prose{max-width:780px;margin:0 auto;padding:60px 0 20px;color:var(--ink);
+  font-size:1rem;line-height:1.7}
+.legal-prose h2{font-family:var(--display);font-weight:700;font-size:1.4rem;
+  letter-spacing:-.005em;margin:42px 0 14px;color:var(--ink)}
+.legal-prose h3{font-family:var(--display);font-weight:600;font-size:1.05rem;
+  margin:26px 0 8px;color:var(--ink)}
+.legal-prose p{margin:0 0 14px;color:#3b4540}
+.legal-prose a{color:var(--leaf-deep);text-decoration:underline;text-underline-offset:3px}
+.legal-prose a:hover{color:var(--leaf)}
+.legal-prose strong{color:var(--ink);font-weight:700}
+.legal-link-row{margin-top:48px;padding-top:24px;border-top:1px solid var(--line);
+  font-weight:600}
