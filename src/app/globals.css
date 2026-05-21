@@ -1117,8 +1117,9 @@ footer.site ul a:hover{color:var(--leaf)}
    ============================================================ */
 
 /* Wichtig: globale `section{padding:100px 0}`-Regel deaktivieren,
-   damit es zwischen Hero, Kacheln und Services keine Lücken gibt. */
-.hero-full,.home-tiles,.home-services{padding:0!important;margin:0}
+   damit es zwischen Hero, Kacheln und Services keine Lücken gibt.
+   Class-Selektoren überschreiben den Tag-Selektor automatisch. */
+.hero-full,.home-tiles,.home-services{padding:0;margin:0}
 
 /* Auf der Startseite schweben Utility-Leiste UND Header über dem Video.
    Beide werden absolut positioniert, sodass der Hero die volle Höhe einnimmt. */
@@ -1143,7 +1144,7 @@ body:has(.hero-full) header.site .burger span{background:#fff}
 .hero-full{position:relative;width:100%;height:100vh;min-height:600px;
   display:flex;align-items:center;justify-content:flex-start;
   overflow:hidden;background:#0b0d0c;color:#fff;
-  padding:80px clamp(40px,8vw,140px)}
+  padding:80px clamp(60px,11vw,220px)}
 .hero-bg-video,.hero-bg-fallback{position:absolute;inset:0;
   width:100%;height:100%;object-fit:cover;z-index:0}
 .hero-bg-fallback{background:linear-gradient(135deg,#1d2825 0%,#2f4439 50%,#1d2825 100%)}
@@ -1168,8 +1169,8 @@ body:has(.hero-full) header.site .burger span{background:#fff}
 .btn-hero-outline:hover{background:#fff;color:#0b0d0c}
 
 /* 2 große Bildkacheln (Individuelle Bekleidung / Taschen) — direkt unter Hero */
-.home-tiles{display:grid;grid-template-columns:1fr 1fr;gap:3px;
-  background:#fff;width:100%;padding-top:3px}
+.home-tiles{display:grid;grid-template-columns:1fr 1fr;gap:5px;
+  background:#fff;width:100%;padding:5px 0}
 .home-tile{position:relative;aspect-ratio:1/1;overflow:hidden;
   display:block;text-decoration:none;cursor:pointer}
 .home-tile-img{position:absolute;inset:0;background-size:cover;
@@ -1185,8 +1186,8 @@ body:has(.hero-full) header.site .burger span{background:#fff}
   z-index:1;pointer-events:none}
 
 /* 4 Service-Boxen — direkt unter den Kacheln */
-.home-services{display:grid;grid-template-columns:repeat(4,1fr);gap:3px;
-  width:100%;background:#fff;padding-top:3px}
+.home-services{display:grid;grid-template-columns:repeat(4,1fr);gap:5px;
+  width:100%;background:#fff}
 .svc-box{position:relative;aspect-ratio:1/1;overflow:hidden;
   display:block;text-decoration:none;cursor:pointer}
 .svc-img{position:absolute;inset:0;background-size:cover;
