@@ -1121,30 +1121,14 @@ footer.site ul a:hover{color:var(--leaf)}
    Class-Selektoren überschreiben den Tag-Selektor automatisch. */
 .hero-full,.home-tiles,.home-services{padding:0;margin:0}
 
-/* Auf der Startseite schweben Utility-Leiste UND Header über dem Video.
-   Beide werden absolut positioniert, sodass der Hero die volle Höhe einnimmt. */
-body:has(.hero-full) .utility{position:absolute;top:0;left:0;right:0;z-index:60;
-  background:rgba(11,13,12,.88);border-bottom:1px solid rgba(255,255,255,.08)}
-body:has(.hero-full) header.site{position:absolute;top:38px;left:0;right:0;
-  z-index:50;background:transparent;border-bottom:none;box-shadow:none}
-body:has(.hero-full) header.site .head-row{height:56px}
-body:has(.hero-full) header.site nav.main a{color:rgba(255,255,255,.92);
-  border-bottom:2px solid transparent}
-body:has(.hero-full) header.site nav.main a.active{color:#fff;border-bottom-color:#fff}
-body:has(.hero-full) header.site nav.main a:hover{background:rgba(255,255,255,.08);color:#fff}
-body:has(.hero-full) header.site .logo img{filter:brightness(0) invert(1);height:34px}
-body:has(.hero-full) header.site .icon-btn{color:#fff;background:transparent;
-  border:1px solid rgba(255,255,255,.4)}
-body:has(.hero-full) header.site .icon-btn:hover{background:rgba(255,255,255,.15)}
-body:has(.hero-full) header.site .cart-pill{color:#fff;
-  background:rgba(255,255,255,.15);border:1px solid rgba(255,255,255,.4)}
-body:has(.hero-full) header.site .burger span{background:#fff}
-
-/* Hero Vollbild — Video bedeckt den gesamten sichtbaren Bereich */
-.hero-full{position:relative;width:100%;height:100vh;min-height:600px;
-  display:flex;align-items:center;justify-content:flex-start;
+/* Hero Vollbild — Video bedeckt den gesamten sichtbaren Bereich.
+   Liegt unter dem normalen Header (38px Utility + 64px Header = 102px),
+   damit der Header auf der Startseite identisch wie auf allen anderen Seiten
+   aussieht. */
+.hero-full{position:relative;width:100%;height:calc(100vh - 102px);min-height:520px;
+  display:flex;align-items:flex-end;justify-content:flex-start;
   overflow:hidden;background:#0b0d0c;color:#fff;
-  padding:80px clamp(60px,11vw,220px)}
+  padding:60px clamp(60px,11vw,220px) clamp(80px,14vh,180px)}
 .hero-bg-video,.hero-bg-fallback{position:absolute;inset:0;
   width:100%;height:100%;object-fit:cover;z-index:0}
 .hero-bg-fallback{background:linear-gradient(135deg,#1d2825 0%,#2f4439 50%,#1d2825 100%)}
@@ -1200,8 +1184,7 @@ body:has(.hero-full) header.site .burger span{background:#fff}
   font-family:var(--display);font-weight:700;font-size:clamp(1.1rem,1.9vw,1.7rem);
   letter-spacing:.06em;color:#fff;line-height:1}
 
-/* Home: Such- und Account-Icons im Header ausblenden, Footer-Abstand entfernen */
-body:has(.hero-full) header.site .icon-btn{display:none}
+/* Home: Footer-Abstand entfernen */
 body:has(.home-services) footer.site{margin-top:0}
 
 /* Mobile Anpassungen */
