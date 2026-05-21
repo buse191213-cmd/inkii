@@ -1544,3 +1544,19 @@ body:has(.home-services) footer.site{margin-top:0}
   .mm-gallery-thumb{width:64px;height:64px;flex-shrink:0}
   .mm-detail-cta-btn{padding:16px 18px;font-size:.95rem}
 }
+
+/* === Detail-Seite: Sektionen statt Tabs (sicherer) === */
+.mm-detail-section{margin-bottom:32px;padding-bottom:28px;border-bottom:1px solid var(--line)}
+.mm-detail-section:last-of-type{border-bottom:0}
+.mm-detail-h2{font-family:var(--display);font-weight:700;font-size:.78rem;
+  letter-spacing:.18em;text-transform:uppercase;color:var(--ink);margin:0 0 14px;
+  padding-bottom:8px;border-bottom:2px solid var(--ink);display:inline-block}
+.mm-detail-specs{display:flex;flex-direction:column;gap:0}
+.mm-spec-row{display:grid;grid-template-columns:160px 1fr;gap:14px;padding:11px 0;
+  border-bottom:1px solid var(--line);font-size:.93rem}
+.mm-spec-row:last-child{border-bottom:0}
+.mm-spec-row span{color:var(--muted)}
+.mm-spec-row strong{color:var(--ink);font-weight:600}
+@media(max-width:600px){
+  .mm-spec-row{grid-template-columns:1fr;gap:2px}
+}

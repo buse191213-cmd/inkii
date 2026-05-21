@@ -4,7 +4,6 @@ import { notFound } from "next/navigation";
 import SiteShell from "@/components/SiteShell";
 import ProductGallery from "@/components/ProductGallery";
 import MerkenButton from "@/components/MerkenButton";
-import ProductDetailTabs, { DetailTab } from "@/components/ProductDetailTabs";
 import JsonLd from "@/components/JsonLd";
 import { db } from "@/lib/db";
 import { formatPrice, formatNumber } from "@/lib/format";
@@ -16,8 +15,7 @@ import { getLocale } from "@/lib/i18n-server";
 import { getDictionary } from "@/dictionaries";
 import DOMPurify from "isomorphic-dompurify";
 
-/** Beschreibung als sicheres HTML rendern. Alter reiner Text → Absätze. */
-function renderDescription(raw: string): string {
+function renderDescription(raw: string | null | undefined): string {
   if (!raw) return "";
   const hasHtml = /<\/?[a-z][\s\S]*>/i.test(raw);
   const html = hasHtml
@@ -28,7 +26,7 @@ function renderDescription(raw: string): string {
 
 export const dynamic = "force-dynamic";
 
-function split(s: string): string[] {
+function split(s: string | null | undefined): string[] {
   return s ? s.split(",").map((x) => x.trim()).filter(Boolean) : [];
 }
 
@@ -76,8 +74,9 @@ export default async function ProductDetailPage({
   const images = split(product.images);
   const colors = split(product.colors);
   const materials = split(product.material);
+  const hasPrice = product.priceCents != null;
 
-  // === Cross-Sell „Weitere Artikel" ===
+  // === Cross-Sell ===
   const sameCategory = await db.product.findMany({
     where: { categoryId: product.categoryId, status: "active", id: { not: product.id } },
     take: 4,
@@ -106,58 +105,7 @@ export default async function ProductDetailPage({
   }
   related = related.slice(0, 4);
 
-  // === Tabs aufbauen ===
-  const tabs: DetailTab[] = [];
-
-  if (product.description) {
-    tabs.push({
-      key: "uebersicht",
-      label: "ÜBERSICHT",
-      html: renderDescription(product.description),
-    });
-  } else if (product.subtitle) {
-    tabs.push({ key: "uebersicht", label: "ÜBERSICHT", text: product.subtitle });
-  }
-
-  const detailRows: Array<{ k: string; v: string }> = [
-    { k: dt.specArtNr, v: product.code },
-    { k: dt.specCategory, v: product.category.name },
-    { k: dt.specStock, v: `${formatNumber(product.stock)} ${dt.stockUnit}` },
-  ];
-  if (materials.length > 0) {
-    detailRows.push({
-      k: dt.specMaterial,
-      v: materials.map((m) => materialLabel(m)).join(", "),
-    });
-  }
-  if (colors.length > 0) {
-    detailRows.push({
-      k: dt.colorsLabel,
-      v: colors.map((c) => colorLabel(c)).join(", "),
-    });
-  }
-  tabs.push({ key: "details", label: "DETAILS", rows: detailRows });
-
-  tabs.push({
-    key: "veredelung",
-    label: "VEREDELUNG",
-    text:
-      "Wir veredeln dieses Produkt nach Ihren Wünschen — Siebdruck, Stickerei, " +
-      "Transferdruck oder Sublimation. Schicken Sie uns Ihr Logo, wir liefern " +
-      "kostenfreie Designvorschläge.",
-  });
-
-  if (product.isEco) {
-    tabs.push({
-      key: "impact",
-      label: "IMPACT",
-      text:
-        "Dieses Produkt ist Teil unserer nachhaltigen Auswahl. Wir achten auf " +
-        "umweltbewusste Materialien und faire Produktion.",
-    });
-  }
-
-  const hasPrice = product.priceCents != null;
+  const descHtml = renderDescription(product.description);
 
   return (
     <SiteShell>
@@ -166,7 +114,7 @@ export default async function ProductDetailPage({
           id: product.id,
           name: product.name,
           code: product.code,
-          description: product.description,
+          description: product.description ?? "",
           images,
           priceCents: product.priceCents,
           stock: product.stock,
@@ -193,7 +141,6 @@ export default async function ProductDetailPage({
             <span className="active">{product.name.toUpperCase()}</span>
           </div>
 
-          {/* Haupt-Grid: Galerie links, Info rechts */}
           <div className="mm-detail-grid">
 
             {/* === Galerie === */}
@@ -209,15 +156,52 @@ export default async function ProductDetailPage({
             {/* === Info === */}
             <div className="mm-detail-info">
               <h1 className="mm-detail-h1">{product.name}</h1>
-              {product.subtitle && (
-                <p className="mm-detail-sub">{product.subtitle}</p>
-              )}
+              {product.subtitle && <p className="mm-detail-sub">{product.subtitle}</p>}
               <p className="mm-detail-meta">
                 Produktionszeit: <strong>Auf Anfrage</strong> · exkl. Versand
               </p>
 
-              {/* Tabs (Übersicht / Details / Veredelung / Impact) */}
-              <ProductDetailTabs tabs={tabs} />
+              {/* Beschreibung */}
+              {descHtml && (
+                <div className="mm-detail-section">
+                  <h2 className="mm-detail-h2">ÜBERSICHT</h2>
+                  <div
+                    className="mm-tab-prose"
+                    dangerouslySetInnerHTML={{ __html: descHtml }}
+                  />
+                </div>
+              )}
+
+              {/* Details */}
+              <div className="mm-detail-section">
+                <h2 className="mm-detail-h2">DETAILS</h2>
+                <div className="mm-detail-specs">
+                  <div className="mm-spec-row">
+                    <span>{dt.specArtNr}</span>
+                    <strong>{product.code}</strong>
+                  </div>
+                  <div className="mm-spec-row">
+                    <span>{dt.specCategory}</span>
+                    <strong>{product.category.name}</strong>
+                  </div>
+                  <div className="mm-spec-row">
+                    <span>{dt.specStock}</span>
+                    <strong>{formatNumber(product.stock)} {dt.stockUnit}</strong>
+                  </div>
+                  {materials.length > 0 && (
+                    <div className="mm-spec-row">
+                      <span>{dt.specMaterial}</span>
+                      <strong>{materials.map((m) => materialLabel(m)).join(", ")}</strong>
+                    </div>
+                  )}
+                  {colors.length > 0 && (
+                    <div className="mm-spec-row">
+                      <span>{dt.colorsLabel}</span>
+                      <strong>{colors.map((c) => colorLabel(c)).join(", ")}</strong>
+                    </div>
+                  )}
+                </div>
+              </div>
 
               {/* Farbauswahl-Box */}
               {colors.length > 0 && (
@@ -240,7 +224,7 @@ export default async function ProductDetailPage({
                 </div>
               )}
 
-              {/* CTA-Leiste */}
+              {/* CTA */}
               <div className="mm-detail-cta">
                 <Link href="/kontakt" className="mm-detail-cta-btn">
                   <span>Anfrage senden</span>
@@ -263,7 +247,6 @@ export default async function ProductDetailPage({
                 </div>
               </div>
 
-              {/* Mini-Vertrauensleiste */}
               <div className="mm-detail-trust">
                 <div><strong>✓</strong> Kostenlose Designvorschläge</div>
                 <div><strong>✓</strong> Angebot in 24 Stunden</div>
@@ -292,19 +275,17 @@ export default async function ProductDetailPage({
                       {r.isNew && <span className="mm-tag tag-new">NEU</span>}
                       {r.isEco && <span className="mm-tag tag-eco">✦ NACHHALTIG</span>}
                     </div>
-                    <div className="mm-card-link">
-                      <div className="mm-card-img">
-                        {rImgs.length > 0 ? (
-                          // eslint-disable-next-line @next/next/no-img-element
-                          <img src={rImgs[0]} alt={r.name} />
-                        ) : (
-                          <ProductIcon name={r.icon} />
-                        )}
-                      </div>
-                      <div className="mm-card-name">{r.name}</div>
-                      <div className="mm-card-price">
-                        {r.priceCents != null ? <>Ab {formatPrice(r.priceCents)}</> : "Preis auf Anfrage"}
-                      </div>
+                    <div className="mm-card-img">
+                      {rImgs.length > 0 ? (
+                        // eslint-disable-next-line @next/next/no-img-element
+                        <img src={rImgs[0]} alt={r.name} />
+                      ) : (
+                        <ProductIcon name={r.icon} />
+                      )}
+                    </div>
+                    <div className="mm-card-name">{r.name}</div>
+                    <div className="mm-card-price">
+                      {r.priceCents != null ? <>Ab {formatPrice(r.priceCents)}</> : "Preis auf Anfrage"}
                     </div>
                   </Link>
                 );
