@@ -1120,19 +1120,23 @@ footer.site ul a:hover{color:var(--leaf)}
    damit es zwischen Hero, Kacheln und Services keine Lücken gibt. */
 .hero-full,.home-tiles,.home-services{padding:0!important;margin:0}
 
-/* Navbar wird auf der Startseite schlank und transparent — Video schimmert durch.
-   Sticky bleibt erhalten, nur Stil ändert sich. */
-body:has(.hero-full) header.site{background:transparent;border-bottom:none;
-  box-shadow:none}
-body:has(.hero-full) header.site .head-row{height:64px}
-body:has(.hero-full) header.site nav.main a{color:rgba(255,255,255,.92)}
+/* Auf der Startseite schweben Utility-Leiste UND Header über dem Video.
+   Beide werden absolut positioniert, sodass der Hero die volle Höhe einnimmt. */
+body:has(.hero-full) .utility{position:absolute;top:0;left:0;right:0;z-index:60;
+  background:rgba(11,13,12,.88);border-bottom:1px solid rgba(255,255,255,.08)}
+body:has(.hero-full) header.site{position:absolute;top:38px;left:0;right:0;
+  z-index:50;background:transparent;border-bottom:none;box-shadow:none}
+body:has(.hero-full) header.site .head-row{height:56px}
+body:has(.hero-full) header.site nav.main a{color:rgba(255,255,255,.92);
+  border-bottom:2px solid transparent}
 body:has(.hero-full) header.site nav.main a.active{color:#fff;border-bottom-color:#fff}
-body:has(.hero-full) header.site .logo img{filter:brightness(0) invert(1)}
+body:has(.hero-full) header.site nav.main a:hover{background:rgba(255,255,255,.08);color:#fff}
+body:has(.hero-full) header.site .logo img{filter:brightness(0) invert(1);height:34px}
 body:has(.hero-full) header.site .icon-btn{color:#fff;background:transparent;
-  border:1px solid rgba(255,255,255,.35)}
-body:has(.hero-full) header.site .icon-btn:hover{background:rgba(255,255,255,.12)}
+  border:1px solid rgba(255,255,255,.4)}
+body:has(.hero-full) header.site .icon-btn:hover{background:rgba(255,255,255,.15)}
 body:has(.hero-full) header.site .cart-pill{color:#fff;
-  background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.35)}
+  background:rgba(255,255,255,.15);border:1px solid rgba(255,255,255,.4)}
 body:has(.hero-full) header.site .burger span{background:#fff}
 
 /* Hero Vollbild — Video bedeckt den gesamten sichtbaren Bereich */
