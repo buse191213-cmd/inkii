@@ -361,6 +361,9 @@ footer.site ul a:hover{color:var(--leaf)}
   .cat-prod-grid{grid-template-columns:repeat(3,1fr)}
 }
 @media(max-width:760px){
+  .utility{display:none}
+  body.is-home header.site,
+  body:has(.hero-full) header.site{top:0}
   nav.main{display:none}.burger{display:flex}
   .head-actions .icon-btn{display:none}
   .utility .u-right{gap:14px}
@@ -1131,9 +1134,9 @@ footer.site ul a:hover{color:var(--leaf)}
  *  klassische Body-Klasse `.is-home`, die in page.tsx via <BodyClass>
  *  gesetzt wird. So funktioniert es zuverlässig in jedem Browser. */
 body.is-home .utility,
-body:has(.hero-full) .utility{position:absolute;top:0;background:rgba(11,13,12,.88)}
+body:has(.hero-full) .utility{position:absolute;top:0;left:0;right:0;background:rgba(11,13,12,.88)}
 body.is-home header.site,
-body:has(.hero-full) header.site{position:absolute;top:38px;background:transparent;
+body:has(.hero-full) header.site{position:absolute;top:38px;left:0;right:0;background:transparent;
   border-bottom:none;box-shadow:none}
 body.is-home header.site .head-row,
 body:has(.hero-full) header.site .head-row{

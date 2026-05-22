@@ -61,16 +61,19 @@ export default function SiteHeader({
 
       <header className="site">
         <div
-          className="wrap head-row"
           style={{
-            display: "grid",
-            gridTemplateColumns: "1fr auto 1fr",
+            display: "flex",
             alignItems: "center",
-            gap: 24,
+            maxWidth: 1320,
+            margin: "0 auto",
+            padding: "0 28px",
+            height: 64,
             width: "100%",
+            boxSizing: "border-box",
           }}
         >
-          <div style={{ justifySelf: "start", display: "flex", alignItems: "center" }}>
+          {/* SOL: Logo (flex: 1) */}
+          <div style={{ flex: "1 1 0", display: "flex", justifyContent: "flex-start", minWidth: 0 }}>
             <Link
               href="/"
               className="logo"
@@ -81,7 +84,9 @@ export default function SiteHeader({
               <img src="/inkii-logo.png" alt="INKII WORKS" />
             </Link>
           </div>
-          <nav className="main" style={{ justifySelf: "center" }}>
+
+          {/* ORTA: Nav linkler (flex: 0, kendi genişliğinde) */}
+          <nav className="main" style={{ flex: "0 0 auto", display: "flex", justifyContent: "center" }}>
             {NAV.map((n) => (
               <Link
                 key={n.href}
@@ -92,7 +97,12 @@ export default function SiteHeader({
               </Link>
             ))}
           </nav>
-          <div className="head-actions" style={{ justifySelf: "end" }}>
+
+          {/* SAĞ: İkonlar + kalp (flex: 1) */}
+          <div
+            className="head-actions"
+            style={{ flex: "1 1 0", display: "flex", justifyContent: "flex-end", alignItems: "center", gap: 12, minWidth: 0 }}
+          >
             <div className="icon-btn" title={t.search}>⌕</div>
             <div className="icon-btn" title={t.account}>☻</div>
             <Link
