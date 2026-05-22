@@ -126,6 +126,7 @@ export async function saveProduct(formData: FormData): Promise<ActionResult> {
     description: String(formData.get("description") ?? "").trim(),
     icon: String(formData.get("icon") ?? "box"),
     priceCents: parsePriceToCents(String(formData.get("price") ?? "")),
+    priceTiers: String(formData.get("priceTiers") ?? "[]"),
     stock: parseInt(String(formData.get("stock") ?? "0"), 10) || 0,
     status: String(formData.get("status") ?? "active"),
     isNew: formData.get("isNew") === "on",

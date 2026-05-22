@@ -23,6 +23,7 @@ export default async function ProductsPage() {
     description: p.description,
     icon: p.icon,
     priceCents: p.priceCents,
+    priceTiers: p.priceTiers ?? "[]",
     stock: p.stock,
     status: p.status,
     isNew: p.isNew,

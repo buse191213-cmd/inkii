@@ -6,6 +6,7 @@ import { ProductIcon } from "@/lib/icons";
 import { formatPrice, centsToInput, formatNumber } from "@/lib/format";
 import { PRODUCT_COLORS, PRODUCT_MATERIALS } from "@/lib/catalog-options";
 import { saveProduct, deleteProduct } from "@/app/admin/actions";
+import { parsePriceTiers, stringifyPriceTiers, type PriceTier } from "@/lib/price-tiers";
 import RichEditor from "@/components/admin/RichEditor";
 
 export type AdminProduct = {
@@ -16,6 +17,7 @@ export type AdminProduct = {
   description: string;
   icon: string;
   priceCents: number | null;
+  priceTiers: string;
   stock: number;
   status: string;
   isNew: boolean;
@@ -37,7 +39,7 @@ const MAX_IMAGES = 5;
 
 const EMPTY: AdminProduct = {
   id: "", code: "VS-", name: "", subtitle: "", description: "", icon: "box",
-  priceCents: null, stock: 0, status: "active", isNew: false, isEco: false,
+  priceCents: null, priceTiers: "[]", stock: 0, status: "active", isNew: false, isEco: false,
   colors: "", material: "", images: "", categoryId: "", categoryName: "",
 };
 
@@ -84,6 +86,7 @@ export default function ProductManager({
   const [selColors, setSelColors] = useState<string[]>([]);
   const [selMaterials, setSelMaterials] = useState<string[]>([]);
   const [matInput, setMatInput] = useState("");
+  const [tiers, setTiers] = useState<PriceTier[]>([]);
   const fileInput = useRef<HTMLInputElement>(null);
 
   const list = useMemo(() => {
@@ -136,6 +139,7 @@ export default function ProductManager({
     setImages([]);
     setSelColors([]);
     setSelMaterials([]);
+    setTiers([]);
     setModal({ ...EMPTY, categoryId: categories[0]?.id ?? "" });
   }
   function openEdit(p: AdminProduct) {
@@ -146,6 +150,7 @@ export default function ProductManager({
     );
     setSelColors(splitCsv(p.colors));
     setSelMaterials(splitCsv(p.material));
+    setTiers(parsePriceTiers(p.priceTiers));
     setModal({ ...p });
   }
 
@@ -212,6 +217,7 @@ export default function ProductManager({
     fd.set("imageOrder", JSON.stringify(order));
     fd.set("colors", selColors.join(","));
     fd.set("material", selMaterials.join(","));
+    fd.set("priceTiers", stringifyPriceTiers(tiers));
 
     const res = await saveProduct(fd);
     setBusy(false);
@@ -498,6 +504,67 @@ export default function ProductManager({
                     <label>Lagerbestand (Stk)</label>
                     <input name="stock" type="number" defaultValue={modal.stock} />
                   </div>
+                </div>
+
+                <div className="field">
+                  <label>Mengenstaffel-Preise (optional)</label>
+                  <div className="tier-help">
+                    Beispiel: 15 Stk = 14,91 € / 50 Stk = 13,49 € / 100 Stk = 13,15 €
+                  </div>
+                  <div className="tier-list">
+                    {tiers.map((t, i) => (
+                      <div key={i} className="tier-edit-row">
+                        <div className="tier-edit-field">
+                          <label>Ab Stück</label>
+                          <input
+                            type="number"
+                            min={1}
+                            value={t.qty || ""}
+                            placeholder="z. B. 25"
+                            onChange={(e) => {
+                              const v = parseInt(e.target.value, 10) || 0;
+                              setTiers((cur) =>
+                                cur.map((x, j) => (j === i ? { ...x, qty: v } : x))
+                              );
+                            }}
+                          />
+                        </div>
+                        <div className="tier-edit-field">
+                          <label>Stückpreis (€)</label>
+                          <input
+                            type="text"
+                            inputMode="decimal"
+                            value={t.cents > 0 ? (t.cents / 100).toFixed(2).replace(".", ",") : ""}
+                            placeholder="z. B. 13,49"
+                            onChange={(e) => {
+                              const raw = e.target.value.replace(",", ".");
+                              const v = Math.round((parseFloat(raw) || 0) * 100);
+                              setTiers((cur) =>
+                                cur.map((x, j) => (j === i ? { ...x, cents: v } : x))
+                              );
+                            }}
+                          />
+                        </div>
+                        <button
+                          type="button"
+                          className="tier-remove"
+                          onClick={() =>
+                            setTiers((cur) => cur.filter((_, j) => j !== i))
+                          }
+                          aria-label="Entfernen"
+                        >
+                          ×
+                        </button>
+                      </div>
+                    ))}
+                  </div>
+                  <button
+                    type="button"
+                    className="btn btn-ghost tier-add"
+                    onClick={() => setTiers((cur) => [...cur, { qty: 0, cents: 0 }])}
+                  >
+                    + Staffel hinzufügen
+                  </button>
                 </div>
                 <div className="field">
                   <label>Farben</label>

@@ -1570,3 +1570,40 @@ body:has(.home-services) footer.site{margin-top:0}
 @media(max-width:600px){
   .mm-spec-row{grid-template-columns:1fr;gap:2px}
 }
+
+/* === Mengenstaffel auf der Detailseite (Monday-Merch-Stil) === */
+.mm-tiers{background:#f4f5f3;padding:22px;margin-bottom:18px}
+.mm-tiers-head{font-size:1rem;color:var(--ink);margin-bottom:16px;font-weight:600}
+.mm-tiers-head .mm-detail-cbnum{font-weight:700;margin-right:6px}
+.mm-tiers-list{display:flex;flex-direction:column;gap:8px}
+.mm-tier-row{display:grid;grid-template-columns:minmax(80px,auto) 1fr auto minmax(90px,auto);
+  gap:14px;align-items:center;background:#fff;padding:14px 18px;
+  border:1px solid var(--line);transition:.16s}
+.mm-tier-row:hover{border-color:var(--ink)}
+.mm-tier-qty{font-family:var(--display);font-weight:700;font-size:1rem;color:var(--ink)}
+.mm-tier-unit{font-size:.88rem;color:#3b4540}
+.mm-tier-spart{display:flex;justify-content:flex-end}
+.mm-tier-badge{display:inline-block;padding:5px 12px;border-radius:4px;
+  background:#e8eee9;color:var(--muted);font-size:.78rem;font-weight:600}
+.mm-tier-badge.active{background:var(--leaf-deep);color:#fff}
+.mm-tier-total{font-family:var(--display);font-weight:700;font-size:1.05rem;
+  color:var(--ink);text-align:right}
+@media(max-width:600px){
+  .mm-tier-row{grid-template-columns:1fr 1fr;gap:8px;padding:12px 14px}
+  .mm-tier-spart{justify-content:flex-start}
+}
+
+/* === Admin: Mengenstaffel-Editor === */
+.tier-help{font-size:.82rem;color:var(--muted);margin:-4px 0 10px}
+.tier-list{display:flex;flex-direction:column;gap:10px;margin-bottom:10px}
+.tier-edit-row{display:grid;grid-template-columns:1fr 1fr auto;gap:10px;align-items:end;
+  background:#fafaf9;padding:12px;border:1px solid var(--line)}
+.tier-edit-field{display:flex;flex-direction:column;gap:4px}
+.tier-edit-field label{font-size:.78rem;color:var(--muted);font-weight:600}
+.tier-edit-field input{padding:8px 10px;border:1px solid var(--line);font:inherit;
+  font-size:.92rem}
+.tier-remove{width:36px;height:36px;border:1px solid var(--line);background:#fff;
+  cursor:pointer;font-size:1.1rem;color:#c2403a;display:grid;place-items:center;
+  border-radius:0;line-height:1}
+.tier-remove:hover{background:#fdf0ee;border-color:#c2403a}
+.tier-add{align-self:flex-start;font-size:.88rem}

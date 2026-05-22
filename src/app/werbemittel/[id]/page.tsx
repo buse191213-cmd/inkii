@@ -7,6 +7,7 @@ import MerkenButton from "@/components/MerkenButton";
 import { db } from "@/lib/db";
 import { formatPrice, formatNumber } from "@/lib/format";
 import { colorHex, colorLabel, materialLabel } from "@/lib/catalog-options";
+import { parsePriceTiers, tierDiscountPercent } from "@/lib/price-tiers";
 import { getLocale } from "@/lib/i18n-server";
 import { getDictionary } from "@/dictionaries";
 
@@ -50,6 +51,7 @@ export default async function ProductDetailPage({
   const colors = split(product.colors);
   const materials = split(product.material);
   const hasPrice = product.priceCents != null;
+  const tiers = parsePriceTiers(product.priceTiers);
 
   return (
     <SiteShell>
@@ -137,6 +139,42 @@ export default async function ProductDetailPage({
                         title={colorLabel(c)}
                       />
                     ))}
+                  </div>
+                </div>
+              )}
+
+              {/* Mengenstaffel */}
+              {tiers.length > 0 && (
+                <div className="mm-tiers">
+                  <div className="mm-tiers-head">
+                    <span className="mm-detail-cbnum">{colors.length > 0 ? "2." : "1."}</span>{" "}
+                    <span>Menge auswählen</span>
+                  </div>
+                  <div className="mm-tiers-list">
+                    {tiers.map((t, i) => {
+                      const total = t.qty * t.cents;
+                      const discount = tierDiscountPercent(tiers, t);
+                      const totalEuro = (total / 100).toLocaleString("de-DE", {
+                        minimumFractionDigits: 2,
+                        maximumFractionDigits: 2,
+                      });
+                      const unitEuro = (t.cents / 100).toLocaleString("de-DE", {
+                        minimumFractionDigits: 2,
+                        maximumFractionDigits: 2,
+                      });
+                      return (
+                        <div key={i} className="mm-tier-row">
+                          <div className="mm-tier-qty">{t.qty} Stück</div>
+                          <div className="mm-tier-unit">€{unitEuro} / Stück</div>
+                          <div className="mm-tier-spart">
+                            <span className={`mm-tier-badge${discount > 0 ? " active" : ""}`}>
+                              Spart {discount}%
+                            </span>
+                          </div>
+                          <div className="mm-tier-total">€{totalEuro}</div>
+                        </div>
+                      );
+                    })}
                   </div>
                 </div>
               )}

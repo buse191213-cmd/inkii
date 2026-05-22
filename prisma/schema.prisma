@@ -26,6 +26,7 @@ model Product {
   description String   @default("")
   icon        String   @default("box")
   priceCents  Int?     // null = "Preis auf Anfrage"
+  priceTiers  String   @default("[]") // JSON: [{qty:15,cents:1491},{qty:50,cents:1349}]
   stock       Int      @default(0)
   status      String   @default("active") // active | draft
   isNew       Boolean  @default(false)
