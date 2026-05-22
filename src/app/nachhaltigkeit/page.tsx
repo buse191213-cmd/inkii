@@ -1,126 +1,79 @@
 import Link from "next/link";
 import SiteShell from "@/components/SiteShell";
-import PageHero from "@/components/PageHero";
 import type { Metadata } from "next";
-import { RawIcon } from "@/lib/icons";
-import { getHomeImages } from "@/lib/home-images";
 import { getLocale } from "@/lib/i18n-server";
 import { getDictionary } from "@/dictionaries";
+import { getHomeImage } from "@/lib/home-images";
 
 export const dynamic = "force-dynamic";
 
 export const metadata: Metadata = {
-  title: "Nachhaltigkeit – faire & ressourcenschonende Produktion | INKII",
-  description:
-    "Faire Textilien und umweltschonende Veredelungsverfahren – nachhaltige Werbemittel und Bekleidung, gut für Marke und Umwelt.",
+  title: "Nachhaltigkeit | INKII",
+  description: "Faire Textilien, langlebige Qualität und bewusste Produktion bei INKII WORKS.",
 };
-
-const ICON = {
-  leaf: '<svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 20A7 7 0 014 13c0-5 7-9 16-9 0 9-4 16-9 16zM4 21c4-8 8-11 13-13"/></svg>',
-  drop: '<svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 3c4 5 7 8 7 12a7 7 0 01-14 0c0-4 3-7 7-12z"/></svg>',
-  cycle: '<svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 12a8 8 0 0114-5M20 12a8 8 0 01-14 5M17 4v3h-3M7 20v-3h3"/></svg>',
-  box: '<svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 3l8 4v10l-8 4-8-4V7zM4 7l8 4 8-4M12 11v10"/></svg>',
-  sun: '<svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="4"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3M5 5l2 2M17 17l2 2M19 5l-2 2M7 17l-2 2"/></svg>',
-  hand: '<svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 21a9 9 0 100-18 9 9 0 000 18zM8 12l3 3 5-6"/></svg>',
-};
-
-// Reihenfolge passend zum Wörterbuch (pillars) und zu den Bild-Slots nh-1..nh-6.
-const pillarIcons = [ICON.leaf, ICON.drop, ICON.cycle, ICON.box, ICON.sun, ICON.hand];
 
 export default async function NachhaltigkeitPage() {
   const locale = await getLocale();
   const d = getDictionary(locale);
-  const n = d.nachhaltigkeit;
-  const img = await getHomeImages();
+  const heroImg = await getHomeImage("nh-hero");
+  const nh1 = await getHomeImage("nh-1");
+  const nh2 = await getHomeImage("nh-2");
+  const nh3 = await getHomeImage("nh-3");
+  const nh4 = await getHomeImage("nh-4");
+  const nh5 = await getHomeImage("nh-5");
+  const nh6 = await getHomeImage("nh-6");
 
-  const heroImg = img["nh-hero"];
-  const bandImg = img["nh-band"];
+  const cards = [
+    { label: "Faire Textilien", desc: "GOTS- und Fair-Wear-zertifizierte Materialien.", img: nh1 },
+    { label: "Wassersparend", desc: "Moderne Druckverfahren mit minimalem Wasserverbrauch.", img: nh2 },
+    { label: "Langlebig", desc: "Hochwertige Veredelung, die Jahre hält.", img: nh3 },
+    { label: "Plastikfrei", desc: "Recycelbare Verpackung statt Folie.", img: nh4 },
+    { label: "Grüne Energie", desc: "Unsere Produktion läuft mit Ökostrom.", img: nh5 },
+    { label: "Regional", desc: "Kurze Wege, faire Partner aus Deutschland und Europa.", img: nh6 },
+  ];
 
   return (
     <SiteShell>
-      {/* HERO */}
-      <PageHero
-        image={heroImg}
-        crumbs={[
-          { label: d.nav.home, href: "/" },
-          { label: d.nav.nachhaltigkeit },
-        ]}
-        title={n.h1}
-        intro={n.intro}
-      />
+      <section
+        className="mm-page-hero"
+        style={heroImg ? { backgroundImage: `url(${heroImg})` } : undefined}
+      >
+        <div className="mm-page-hero-inner">
+          <div className="mm-page-crumb">
+            <Link href="/">Home</Link>
+            <span className="mm-dot">•</span>
+            <span className="active">Nachhaltigkeit</span>
+          </div>
+          <h1 className="mm-page-h1">Bewusst produziert.</h1>
+          <p className="mm-page-lead">
+            Wir wählen Materialien, Partner und Verfahren mit Verantwortung — für ehrliche Merch-Qualität.
+          </p>
+        </div>
+      </section>
 
-      {/* PILLARS */}
-      <section>
+      <section className="mm-page-section">
         <div className="wrap">
-          <div className="section-head reveal">
-            <span className="kicker">{n.pillarsKicker}</span>
-            <h2 className="big">{n.pillarsTitle}</h2>
-          </div>
-          <div className="nh-grid">
-            {n.pillars.map((p, i) => {
-              const cardImg = img[`nh-${i + 1}`];
-              return (
-                <article key={i} className="nh-card reveal" data-tone={i}>
-                  <div
-                    className={`nh-card-img${cardImg ? " has-photo" : ""}`}
-                    style={
-                      cardImg ? { backgroundImage: `url(${cardImg})` } : undefined
-                    }
-                  >
-                    {!cardImg && (
-                      <span className="nh-card-ic">
-                        <RawIcon svg={pillarIcons[i]} />
-                      </span>
-                    )}
-                  </div>
-                  <div className="nh-card-body">
-                    <h3>{p.t}</h3>
-                    <p>{p.p}</p>
-                  </div>
-                </article>
-              );
-            })}
+          <div className="mm-page-tiles cols-3">
+            {cards.map((c, i) => (
+              <div
+                key={c.label}
+                className="mm-page-tile"
+                style={c.img ? { backgroundImage: `url(${c.img})` } : undefined}
+              >
+                <div className="mm-page-tile-label">0{i + 1}</div>
+                <h3 className="mm-page-tile-title">{c.label}</h3>
+                <p className="mm-page-tile-desc">{c.desc}</p>
+              </div>
+            ))}
           </div>
         </div>
       </section>
 
-      {/* NATURBILD-BANNER */}
-      <div className="nh-band-wrap">
-        <div
-          className={`nh-band${bandImg ? "" : " is-grad"}`}
-          style={bandImg ? { backgroundImage: `url(${bandImg})` } : undefined}
-        >
-          <div className="nh-band-overlay" />
-          <div className="nh-band-text reveal">
-            <span className="kicker">{n.bannerKicker}</span>
-            <h2>{n.bannerTitle}</h2>
-            <p>{n.bannerText}</p>
-          </div>
-        </div>
-      </div>
-
-      {/* ZAHLEN */}
-      <section className="nh-stats-sec">
-        <div className="section-head reveal">
-          <span className="kicker">{n.statsKicker}</span>
-          <h2 className="big">{n.statsTitle}</h2>
-        </div>
-        <div className="nh-stats-band">
-          {n.stats.map((s, i) => (
-            <div key={i} className="nh-stat reveal">
-              <b>{s.value}</b>
-              <span>{s.label}</span>
-            </div>
-          ))}
-        </div>
+      <section className="mm-page-cta">
+        <h2 className="mm-page-cta-h">Nachhaltige Merch-Lösungen, persönlich beraten.</h2>
+        <p className="mm-page-cta-p">Fragen Sie nach unseren Eco-Linien — wir helfen gerne bei der Auswahl.</p>
+        <Link href="/kontakt" className="mm-page-cta-btn">{d.nav.kontakt}</Link>
       </section>
-
-      {/* CTA */}
-      <div className="cta-strip">
-        <h2>{n.ctaTitle}</h2>
-        <p>{n.ctaText}</p>
-        <Link className="btn btn-primary" href="/kontakt">{n.ctaBtn}</Link>
-      </div>
     </SiteShell>
   );
 }

@@ -1656,3 +1656,90 @@ body:has(.home-services) footer.site{margin-top:0}
 .custom-color-input{padding:8px 10px;border:1px solid var(--line);
   font:inherit;font-size:.92rem;width:120px;font-family:monospace}
 .opt-swatch-custom{font-family:monospace;font-size:.85rem}
+
+/* === Sayfa Şablonu: Monday-Merch-Stil (bol görsel, az yazı) === */
+.mm-page-hero{position:relative;height:60vh;min-height:420px;
+  background:#0b0d0c center/cover;display:flex;align-items:flex-end;
+  color:#fff;padding:60px clamp(28px,6vw,120px) 64px;overflow:hidden}
+.mm-page-hero::before{content:"";position:absolute;inset:0;
+  background:linear-gradient(180deg,rgba(0,0,0,.25) 0%,rgba(0,0,0,.7) 100%);
+  pointer-events:none}
+.mm-page-hero-inner{position:relative;z-index:1;max-width:780px}
+.mm-page-crumb{font-size:.78rem;letter-spacing:.16em;font-weight:600;
+  color:rgba(255,255,255,.75);text-transform:uppercase;margin-bottom:24px;
+  display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+.mm-page-crumb a{color:inherit;text-decoration:none}
+.mm-page-crumb a:hover{color:#fff}
+.mm-page-crumb .mm-dot{font-size:.6rem;color:var(--leaf)}
+.mm-page-crumb .active{color:#fff}
+.mm-page-h1{font-family:var(--display);font-weight:800;
+  font-size:clamp(2.4rem,5.2vw,4.2rem);letter-spacing:-.02em;line-height:1.02;
+  margin:0 0 16px;color:#fff}
+.mm-page-lead{font-size:1.05rem;line-height:1.55;
+  color:rgba(255,255,255,.88);margin:0;max-width:580px;font-weight:400}
+
+.mm-page-section{padding:80px 0;background:#fff}
+.mm-page-section.alt{background:#fafaf9}
+.mm-page-section-head{margin-bottom:42px;max-width:780px}
+.mm-page-kicker{font-size:.78rem;letter-spacing:.18em;font-weight:700;
+  text-transform:uppercase;color:var(--leaf-deep);margin-bottom:10px}
+.mm-page-h2{font-family:var(--display);font-weight:800;
+  font-size:clamp(1.8rem,3.6vw,2.6rem);letter-spacing:-.02em;line-height:1.1;
+  color:var(--ink);margin:0 0 14px}
+.mm-page-sub{color:#3b4540;font-size:1rem;line-height:1.6;margin:0}
+
+/* Görsel kartlar */
+.mm-page-tiles{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:18px}
+.mm-page-tile{position:relative;aspect-ratio:4/5;
+  background:#1c2722 center/cover no-repeat;
+  display:flex;flex-direction:column;justify-content:flex-end;
+  padding:24px;color:#fff;overflow:hidden;text-decoration:none;
+  transition:.3s}
+.mm-page-tile::after{content:"";position:absolute;inset:0;
+  background:linear-gradient(180deg,transparent 40%,rgba(0,0,0,.78) 100%);
+  pointer-events:none}
+.mm-page-tile:hover{transform:translateY(-4px)}
+.mm-page-tile > *{position:relative;z-index:1}
+.mm-page-tile-label{font-size:.72rem;letter-spacing:.18em;font-weight:700;
+  text-transform:uppercase;color:rgba(255,255,255,.85);margin-bottom:8px}
+.mm-page-tile-title{font-family:var(--display);font-weight:800;
+  font-size:1.6rem;letter-spacing:-.01em;line-height:1.1;margin:0 0 6px}
+.mm-page-tile-desc{font-size:.92rem;color:rgba(255,255,255,.85);
+  line-height:1.45;margin:0;max-width:280px}
+
+/* 3 sütun grid */
+.mm-page-tiles.cols-3{grid-template-columns:repeat(3,1fr)}
+.mm-page-tiles.cols-2{grid-template-columns:repeat(2,1fr)}
+.mm-page-tiles.cols-4{grid-template-columns:repeat(4,1fr)}
+@media(max-width:900px){
+  .mm-page-tiles.cols-3,.mm-page-tiles.cols-4{grid-template-columns:repeat(2,1fr)}
+}
+@media(max-width:560px){
+  .mm-page-tiles.cols-3,.mm-page-tiles.cols-4,.mm-page-tiles.cols-2{grid-template-columns:1fr}
+  .mm-page-section{padding:48px 0}
+  .mm-page-hero{height:50vh;min-height:340px;padding:40px 24px 40px}
+}
+
+/* Alt CTA */
+.mm-page-cta{background:var(--ink);color:#fff;padding:80px clamp(28px,6vw,120px);
+  text-align:center}
+.mm-page-cta-h{font-family:var(--display);font-weight:800;
+  font-size:clamp(1.8rem,3.6vw,2.6rem);letter-spacing:-.02em;line-height:1.1;
+  margin:0 0 14px}
+.mm-page-cta-p{color:rgba(255,255,255,.78);max-width:540px;margin:0 auto 28px;
+  font-size:1.02rem;line-height:1.55}
+.mm-page-cta-btn{display:inline-block;background:#fff;color:var(--ink);
+  padding:16px 36px;font-family:var(--display);font-weight:700;font-size:.95rem;
+  letter-spacing:.04em;text-transform:uppercase;text-decoration:none;
+  transition:.2s}
+.mm-page-cta-btn:hover{background:var(--leaf);color:#fff}
+
+/* Takım gridi */
+.mm-team-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:24px}
+.mm-team-card{display:flex;flex-direction:column;gap:12px}
+.mm-team-photo{aspect-ratio:1/1;background:#f4f5f3 center/cover;
+  border-radius:50%;overflow:hidden}
+.mm-team-photo img{width:100%;height:100%;object-fit:cover}
+.mm-team-name{font-family:var(--display);font-weight:700;font-size:1.05rem;
+  color:var(--ink);margin:0;text-align:center}
+.mm-team-role{font-size:.85rem;color:var(--muted);text-align:center;margin:0}

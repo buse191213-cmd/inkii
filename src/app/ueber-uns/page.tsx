@@ -1,8 +1,6 @@
 import Link from "next/link";
 import SiteShell from "@/components/SiteShell";
-import PageHero from "@/components/PageHero";
 import type { Metadata } from "next";
-import { RawIcon } from "@/lib/icons";
 import { getLocale } from "@/lib/i18n-server";
 import { getDictionary } from "@/dictionaries";
 import { getHomeImage } from "@/lib/home-images";
@@ -11,150 +9,108 @@ import { db } from "@/lib/db";
 export const dynamic = "force-dynamic";
 
 export const metadata: Metadata = {
-  title: "Über uns – Ihr Partner für Textilveredelung | INKII",
-  description:
-    "Lernen Sie INKII kennen: persönlicher Partner für Textildruck, Teamwear und Werbemittel – von der Idee bis zur Lieferung.",
+  title: "Über uns | INKII",
+  description: "Lernen Sie INKII WORKS kennen – Ihr Partner für Textilveredelung & Werbemittel.",
 };
-
-const STORY = '<svg viewBox="0 0 120 120" fill="none" stroke="#2f7a47" stroke-width="3.5"><rect x="24" y="30" width="72" height="60"/><path d="M24 46h72M38 30v-8M82 30v-8M40 64h16M40 76h36"/></svg>';
-const PERSON = '<svg width="44" height="44" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="12" cy="9" r="4"/><path d="M5 21c0-4 3-7 7-7s7 3 7 7"/></svg>';
-
-// Jahreszahlen passend zum Wörterbuch (timeline).
-const timelineYears = ["2010", "2015", "2020", "2026"];
 
 export default async function UeberUnsPage() {
   const locale = await getLocale();
   const d = getDictionary(locale);
-  const u = d.ueberUns;
   const heroImg = await getHomeImage("uu-hero");
-  // Team aus der Datenbank. Wenn keine Einträge existieren, greifen wir
-  // auf die im Wörterbuch hinterlegten Beispiel-Abteilungen zurück.
+  const tile1 = await getHomeImage("home-tile-1");
+  const tile2 = await getHomeImage("home-tile-2");
+
   type TeamRow = { id: string; department: string; name: string; role: string; email: string; photoUrl: string };
-  const dbTeam = (await db.teamMember.findMany({
+  const team = (await db.teamMember.findMany({
     orderBy: [{ sortOrder: "asc" }, { createdAt: "asc" }],
   })) as TeamRow[];
 
   return (
     <SiteShell>
-      <PageHero
-        image={heroImg}
-        crumbs={[
-          { label: d.nav.home, href: "/" },
-          { label: d.nav.ueberUns },
-        ]}
-        title={u.h1}
-        intro={u.intro}
-      />
+      {/* Hero */}
+      <section
+        className="mm-page-hero"
+        style={heroImg ? { backgroundImage: `url(${heroImg})` } : undefined}
+      >
+        <div className="mm-page-hero-inner">
+          <div className="mm-page-crumb">
+            <Link href="/">Home</Link>
+            <span className="mm-dot">•</span>
+            <span className="active">Über Uns</span>
+          </div>
+          <h1 className="mm-page-h1">Wir machen Marken sichtbar.</h1>
+          <p className="mm-page-lead">
+            INKII WORKS — Ihr Partner für Textilveredelung, Werbemittel und Druck. Persönlich,
+            schnell und nachhaltig.
+          </p>
+        </div>
+      </section>
 
-      <section>
+      {/* 3 Werte als Tiles */}
+      <section className="mm-page-section">
         <div className="wrap">
-          <div className="split">
-            <div className="split-visual"><RawIcon svg={STORY} /></div>
-            <div className="split-text">
-              <span className="kicker">{u.storyKicker}</span>
-              <h2>{u.storyTitle}</h2>
-              <p>{u.storyText}</p>
+          <div className="mm-page-section-head">
+            <span className="mm-page-kicker">Was uns ausmacht</span>
+            <h2 className="mm-page-h2">Drei Werte, ein Versprechen.</h2>
+          </div>
+          <div className="mm-page-tiles cols-3">
+            <div
+              className="mm-page-tile"
+              style={tile1 ? { backgroundImage: `url(${tile1})` } : undefined}
+            >
+              <div className="mm-page-tile-label">01 — Persönlich</div>
+              <h3 className="mm-page-tile-title">Direkter Kontakt</h3>
+              <p className="mm-page-tile-desc">Ein Ansprechpartner von der Idee bis zur Lieferung.</p>
+            </div>
+            <div
+              className="mm-page-tile"
+              style={tile2 ? { backgroundImage: `url(${tile2})` } : undefined}
+            >
+              <div className="mm-page-tile-label">02 — Schnell</div>
+              <h3 className="mm-page-tile-title">Angebot in 24h</h3>
+              <p className="mm-page-tile-desc">Kostenlose Designs und unverbindliche Preise binnen 24 Stunden.</p>
+            </div>
+            <div className="mm-page-tile">
+              <div className="mm-page-tile-label">03 — Nachhaltig</div>
+              <h3 className="mm-page-tile-title">Bewusst produziert</h3>
+              <p className="mm-page-tile-desc">Faire Materialien, regionale Partner, langlebige Qualität.</p>
             </div>
           </div>
         </div>
       </section>
 
-      <section className="alt-bg">
-        <div className="wrap">
-          <div className="section-head reveal">
-            <span className="kicker">{u.valuesKicker}</span>
-            <h2 className="big">{u.valuesTitle}</h2>
-          </div>
-          <div className="feat-grid">
-            {u.values.map((v, i) => (
-              <div key={i} className="feat-card reveal">
-                <h3>{v.t}</h3>
-                <p>{v.p}</p>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      <section>
-        <div className="wrap">
-          <div className="section-head reveal">
-            <span className="kicker">{u.timelineKicker}</span>
-            <h2 className="big">{u.timelineTitle}</h2>
-          </div>
-          <div className="timeline">
-            {u.timeline.map((t, i) => (
-              <div key={timelineYears[i]} className="tl-item reveal">
-                <div className="tl-year">{timelineYears[i]}</div>
-                <h3>{t.t}</h3>
-                <p>{t.p}</p>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      <section className="alt-bg">
-        <div className="wrap">
-          <div className="section-head reveal">
-            <span className="kicker">{u.teamKicker}</span>
-            <h2 className="big">
-              {u.teamTitle.split("INKII").map((part, i, arr) => (
-                <span key={i}>
-                  {part}
-                  {i < arr.length - 1 && (
-                    <span className="brand-mark" translate="no">INKII</span>
-                  )}
-                </span>
+      {/* Team */}
+      {team.length > 0 && (
+        <section className="mm-page-section alt">
+          <div className="wrap">
+            <div className="mm-page-section-head">
+              <span className="mm-page-kicker">Unser Team</span>
+              <h2 className="mm-page-h2">Die Menschen hinter INKII.</h2>
+            </div>
+            <div className="mm-team-grid">
+              {team.map((t) => (
+                <div key={t.id} className="mm-team-card">
+                  <div className="mm-team-photo">
+                    {t.photoUrl && (
+                      // eslint-disable-next-line @next/next/no-img-element
+                      <img src={t.photoUrl} alt={t.name} />
+                    )}
+                  </div>
+                  <p className="mm-team-name">{t.name}</p>
+                  <p className="mm-team-role">{t.role || t.department}</p>
+                </div>
               ))}
-            </h2>
+            </div>
           </div>
-          <div className="team-grid">
-            {dbTeam.length > 0
-              ? dbTeam.map((m) => (
-                  <div key={m.id} className="team-card reveal">
-                    <div className="team-av">
-                      {m.photoUrl ? (
-                        // eslint-disable-next-line @next/next/no-img-element
-                        <img src={m.photoUrl} alt={m.name || m.department} className="team-av-img" />
-                      ) : (
-                        <RawIcon svg={PERSON} />
-                      )}
-                    </div>
-                    <div className="t-body">
-                      {m.department && <h3>{m.department}</h3>}
-                      {m.name && (
-                        <span className={m.department ? "t-name-line" : "t-name-main"}>
-                          {m.name}
-                        </span>
-                      )}
-                      {m.role && <span>{m.role}</span>}
-                      {m.email && (
-                        <a href={`mailto:${m.email}`} className="t-mail">
-                          {m.email}
-                        </a>
-                      )}
-                    </div>
-                  </div>
-                ))
-              : u.team.map((m, i) => (
-                  <div key={i} className="team-card reveal">
-                    <div className="team-av"><RawIcon svg={PERSON} /></div>
-                    <div className="t-body">
-                      <h3>{m.n}</h3>
-                      <span>{m.r}</span>
-                    </div>
-                  </div>
-                ))}
-          </div>
-        </div>
-      </section>
+        </section>
+      )}
 
-      <div className="cta-strip">
-        <h2>{u.ctaTitle}</h2>
-        <p>{u.ctaText}</p>
-        <Link className="btn btn-primary" href="/kontakt">{u.ctaBtn}</Link>
-      </div>
+      {/* CTA */}
+      <section className="mm-page-cta">
+        <h2 className="mm-page-cta-h">Bereit für Ihr Projekt?</h2>
+        <p className="mm-page-cta-p">Lassen Sie uns reden. Wir liefern kostenlose Designs in 24 Stunden.</p>
+        <Link href="/kontakt" className="mm-page-cta-btn">{d.nav.kontakt}</Link>
+      </section>
     </SiteShell>
   );
 }
