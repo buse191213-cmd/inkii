@@ -8,6 +8,7 @@ import { db } from "@/lib/db";
 import { formatPrice, formatNumber } from "@/lib/format";
 import { colorHex, colorLabel, materialLabel } from "@/lib/catalog-options";
 import { parsePriceTiers, tierDiscountPercent } from "@/lib/price-tiers";
+import { parseSizes } from "@/lib/sizes";
 import { getLocale } from "@/lib/i18n-server";
 import { getDictionary } from "@/dictionaries";
 
@@ -52,6 +53,7 @@ export default async function ProductDetailPage({
   const materials = split(product.material);
   const hasPrice = product.priceCents != null;
   const tiers = parsePriceTiers(product.priceTiers);
+  const sizesList = parseSizes(product.sizes);
 
   return (
     <SiteShell>
@@ -175,6 +177,32 @@ export default async function ProductDetailPage({
                         </div>
                       );
                     })}
+                  </div>
+                </div>
+              )}
+
+              {/* Größen mit optionalem Aufpreis */}
+              {sizesList.length > 0 && (
+                <div className="mm-sizes">
+                  <div className="mm-tiers-head">
+                    <span>Größen verfügbar</span>
+                  </div>
+                  <div className="mm-sizes-grid">
+                    {sizesList.map((s, i) => (
+                      <div key={i} className="mm-size-tile">
+                        <span className="mm-size-name">{s.name}</span>
+                        {s.extraCents > 0 ? (
+                          <span className="mm-size-extra">
+                            +€{(s.extraCents / 100).toLocaleString("de-DE", {
+                              minimumFractionDigits: 2,
+                              maximumFractionDigits: 2,
+                            })}
+                          </span>
+                        ) : (
+                          <span className="mm-size-ok">✓</span>
+                        )}
+                      </div>
+                    ))}
                   </div>
                 </div>
               )}

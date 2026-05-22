@@ -1624,3 +1624,23 @@ body:has(.home-services) footer.site{margin-top:0}
   border-radius:0;line-height:1}
 .tier-remove:hover{background:#fdf0ee;border-color:#c2403a}
 .tier-add{align-self:flex-start;font-size:.88rem}
+
+/* === Größen-Anzeige auf Detailseite === */
+.mm-sizes{background:#f4f5f3;padding:22px;margin-bottom:18px}
+.mm-sizes-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(110px,1fr));
+  gap:10px;margin-top:14px}
+.mm-size-tile{background:#fff;border:1px solid var(--line);padding:14px 16px;
+  display:flex;flex-direction:column;gap:4px;transition:.15s}
+.mm-size-tile:hover{border-color:var(--ink)}
+.mm-size-name{font-family:var(--display);font-weight:700;font-size:1rem;color:var(--ink)}
+.mm-size-extra{font-size:.82rem;color:#c97a20;font-weight:600}
+.mm-size-ok{font-size:.82rem;color:var(--leaf-deep);font-weight:600}
+
+/* === Admin: Custom Color Picker === */
+.custom-color-row{display:flex;align-items:center;gap:10px;margin-top:12px;
+  padding:10px;background:#fafaf9;border:1px solid var(--line)}
+.custom-color-row input[type=color]{width:42px;height:36px;border:1px solid var(--line);
+  padding:2px;cursor:pointer;background:#fff;border-radius:0}
+.custom-color-input{padding:8px 10px;border:1px solid var(--line);
+  font:inherit;font-size:.92rem;width:120px;font-family:monospace}
+.opt-swatch-custom{font-family:monospace;font-size:.85rem}

@@ -24,6 +24,7 @@ export default async function ProductsPage() {
     icon: p.icon,
     priceCents: p.priceCents,
     priceTiers: p.priceTiers ?? "[]",
+    sizes: p.sizes ?? "[]",
     stock: p.stock,
     status: p.status,
     isNew: p.isNew,

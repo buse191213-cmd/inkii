@@ -38,13 +38,23 @@ export const PRODUCT_MATERIALS: MaterialOption[] = [
 const colorMap = new Map(PRODUCT_COLORS.map((c) => [c.key, c]));
 const materialMap = new Map(PRODUCT_MATERIALS.map((m) => [m.key, m]));
 
-/** Hex-Wert zu einem Farbschlüssel (Fallback: neutrales Grau). */
+/** True wenn der Wert ein direkter Hex-Farbcode ist (z. B. "#ff5733"). */
+function isHex(key: string): boolean {
+  return typeof key === "string" && /^#[0-9a-fA-F]{3,8}$/.test(key);
+}
+
+/** Hex-Wert zu einem Farbschlüssel (Fallback: neutrales Grau).
+ *  Wenn der Schlüssel selbst schon ein Hex-Code ist (Custom-Farbe),
+ *  wird er direkt zurückgegeben. */
 export function colorHex(key: string): string {
+  if (isHex(key)) return key;
   return colorMap.get(key)?.hex ?? "#cccccc";
 }
 
-/** Anzeigename zu einem Farbschlüssel. */
+/** Anzeigename zu einem Farbschlüssel.
+ *  Bei Custom-Farben (Hex) wird der Code in Großbuchstaben angezeigt. */
 export function colorLabel(key: string): string {
+  if (isHex(key)) return key.toUpperCase();
   return colorMap.get(key)?.label ?? key;
 }
 

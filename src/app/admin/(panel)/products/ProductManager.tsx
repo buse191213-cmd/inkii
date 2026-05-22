@@ -7,6 +7,7 @@ import { formatPrice, centsToInput, formatNumber } from "@/lib/format";
 import { PRODUCT_COLORS, PRODUCT_MATERIALS } from "@/lib/catalog-options";
 import { saveProduct, deleteProduct } from "@/app/admin/actions";
 import { parsePriceTiers, stringifyPriceTiers, type PriceTier } from "@/lib/price-tiers";
+import { parseSizesField, stringifySizesFromDrafts } from "@/lib/sizes";
 import RichEditor from "@/components/admin/RichEditor";
 
 export type AdminProduct = {
@@ -18,6 +19,7 @@ export type AdminProduct = {
   icon: string;
   priceCents: number | null;
   priceTiers: string;
+  sizes: string;
   stock: number;
   status: string;
   isNew: boolean;
@@ -39,7 +41,8 @@ const MAX_IMAGES = 5;
 
 const EMPTY: AdminProduct = {
   id: "", code: "VS-", name: "", subtitle: "", description: "", icon: "box",
-  priceCents: null, priceTiers: "[]", stock: 0, status: "active", isNew: false, isEco: false,
+  priceCents: null, priceTiers: "[]", sizes: "[]", stock: 0, status: "active",
+  isNew: false, isEco: false,
   colors: "", material: "", images: "", categoryId: "", categoryName: "",
 };
 
@@ -86,7 +89,10 @@ export default function ProductManager({
   const [selColors, setSelColors] = useState<string[]>([]);
   const [selMaterials, setSelMaterials] = useState<string[]>([]);
   const [matInput, setMatInput] = useState("");
-  const [tiers, setTiers] = useState<PriceTier[]>([]);
+  type TierDraft = { qtyText: string; priceText: string };
+  const [tiers, setTiers] = useState<TierDraft[]>([]);
+  const [sizes, setSizes] = useState<Array<{ nameText: string; extraText: string }>>([]);
+  const [customColor, setCustomColor] = useState("#3f9c5c");
   const fileInput = useRef<HTMLInputElement>(null);
 
   const list = useMemo(() => {
@@ -140,6 +146,7 @@ export default function ProductManager({
     setSelColors([]);
     setSelMaterials([]);
     setTiers([]);
+    setSizes([]);
     setModal({ ...EMPTY, categoryId: categories[0]?.id ?? "" });
   }
   function openEdit(p: AdminProduct) {
@@ -150,7 +157,13 @@ export default function ProductManager({
     );
     setSelColors(splitCsv(p.colors));
     setSelMaterials(splitCsv(p.material));
-    setTiers(parsePriceTiers(p.priceTiers));
+    setTiers(
+      parsePriceTiers(p.priceTiers).map((t) => ({
+        qtyText: String(t.qty),
+        priceText: (t.cents / 100).toFixed(2).replace(".", ","),
+      }))
+    );
+    setSizes(parseSizesField(p.sizes ?? "[]"));
     setModal({ ...p });
   }
 
@@ -217,7 +230,19 @@ export default function ProductManager({
     fd.set("imageOrder", JSON.stringify(order));
     fd.set("colors", selColors.join(","));
     fd.set("material", selMaterials.join(","));
-    fd.set("priceTiers", stringifyPriceTiers(tiers));
+
+    // Mengenstaffel: aus den Roh-Texten in [{qty,cents}] umwandeln
+    const parsedTiers: PriceTier[] = tiers
+      .map((d) => {
+        const qty = parseInt(d.qtyText, 10) || 0;
+        const euro = parseFloat(d.priceText.replace(",", ".")) || 0;
+        return { qty, cents: Math.round(euro * 100) };
+      })
+      .filter((t) => t.qty > 0 && t.cents > 0);
+    fd.set("priceTiers", stringifyPriceTiers(parsedTiers));
+
+    // Größen
+    fd.set("sizes", stringifySizesFromDrafts(sizes));
 
     const res = await saveProduct(fd);
     setBusy(false);
@@ -517,14 +542,14 @@ export default function ProductManager({
                         <div className="tier-edit-field">
                           <label>Ab Stück</label>
                           <input
-                            type="number"
-                            min={1}
-                            value={t.qty || ""}
+                            type="text"
+                            inputMode="numeric"
+                            value={t.qtyText}
                             placeholder="z. B. 25"
                             onChange={(e) => {
-                              const v = parseInt(e.target.value, 10) || 0;
+                              const v = e.target.value.replace(/[^0-9]/g, "");
                               setTiers((cur) =>
-                                cur.map((x, j) => (j === i ? { ...x, qty: v } : x))
+                                cur.map((x, j) => (j === i ? { ...x, qtyText: v } : x))
                               );
                             }}
                           />
@@ -534,13 +559,12 @@ export default function ProductManager({
                           <input
                             type="text"
                             inputMode="decimal"
-                            value={t.cents > 0 ? (t.cents / 100).toFixed(2).replace(".", ",") : ""}
+                            value={t.priceText}
                             placeholder="z. B. 13,49"
                             onChange={(e) => {
-                              const raw = e.target.value.replace(",", ".");
-                              const v = Math.round((parseFloat(raw) || 0) * 100);
+                              const v = e.target.value.replace(/[^0-9,.]/g, "");
                               setTiers((cur) =>
-                                cur.map((x, j) => (j === i ? { ...x, cents: v } : x))
+                                cur.map((x, j) => (j === i ? { ...x, priceText: v } : x))
                               );
                             }}
                           />
@@ -548,9 +572,7 @@ export default function ProductManager({
                         <button
                           type="button"
                           className="tier-remove"
-                          onClick={() =>
-                            setTiers((cur) => cur.filter((_, j) => j !== i))
-                          }
+                          onClick={() => setTiers((cur) => cur.filter((_, j) => j !== i))}
                           aria-label="Entfernen"
                         >
                           ×
@@ -561,9 +583,71 @@ export default function ProductManager({
                   <button
                     type="button"
                     className="btn btn-ghost tier-add"
-                    onClick={() => setTiers((cur) => [...cur, { qty: 0, cents: 0 }])}
+                    onClick={() =>
+                      setTiers((cur) => [...cur, { qtyText: "", priceText: "" }])
+                    }
                   >
                     + Staffel hinzufügen
+                  </button>
+                </div>
+
+                {/* Größen mit optionalem Aufpreis */}
+                <div className="field">
+                  <label>Größen & Aufpreise (optional)</label>
+                  <div className="tier-help">
+                    Beispiel: S, M, L gleicher Preis / 3XL +0,90 € Aufpreis
+                  </div>
+                  <div className="tier-list">
+                    {sizes.map((s, i) => (
+                      <div key={i} className="tier-edit-row">
+                        <div className="tier-edit-field">
+                          <label>Größe</label>
+                          <input
+                            type="text"
+                            value={s.nameText}
+                            placeholder="z. B. S, M, L, XL, 3XL"
+                            onChange={(e) => {
+                              const v = e.target.value;
+                              setSizes((cur) =>
+                                cur.map((x, j) => (j === i ? { ...x, nameText: v } : x))
+                              );
+                            }}
+                          />
+                        </div>
+                        <div className="tier-edit-field">
+                          <label>Aufpreis (€) — leer = 0</label>
+                          <input
+                            type="text"
+                            inputMode="decimal"
+                            value={s.extraText}
+                            placeholder="z. B. 0,90"
+                            onChange={(e) => {
+                              const v = e.target.value.replace(/[^0-9,.]/g, "");
+                              setSizes((cur) =>
+                                cur.map((x, j) => (j === i ? { ...x, extraText: v } : x))
+                              );
+                            }}
+                          />
+                        </div>
+                        <button
+                          type="button"
+                          className="tier-remove"
+                          onClick={() => setSizes((cur) => cur.filter((_, j) => j !== i))}
+                          aria-label="Entfernen"
+                        >
+                          ×
+                        </button>
+                      </div>
+                    ))}
+                  </div>
+                  <button
+                    type="button"
+                    className="btn btn-ghost tier-add"
+                    onClick={() =>
+                      setSizes((cur) => [...cur, { nameText: "", extraText: "" }])
+                    }
+                  >
+                    + Größe hinzufügen
                   </button>
                 </div>
                 <div className="field">
@@ -581,6 +665,54 @@ export default function ProductManager({
                         {c.label}
                       </button>
                     ))}
+                    {/* Benutzerdefinierte Hex-Farben, die schon ausgewählt sind */}
+                    {selColors
+                      .filter((k) => /^#[0-9a-fA-F]{3,8}$/.test(k))
+                      .map((k) => (
+                        <button
+                          type="button"
+                          key={k}
+                          className="opt-swatch on opt-swatch-custom"
+                          onClick={() => toggleColor(k)}
+                          title="Eigene Farbe — klicken zum Entfernen"
+                        >
+                          <span className="opt-dot" style={{ background: k }} />
+                          {k.toUpperCase()}
+                        </button>
+                      ))}
+                  </div>
+                  <div className="custom-color-row">
+                    <input
+                      type="color"
+                      value={customColor}
+                      onChange={(e) => setCustomColor(e.target.value)}
+                      title="Farbe aus Palette wählen"
+                    />
+                    <input
+                      type="text"
+                      value={customColor}
+                      onChange={(e) => {
+                        const v = e.target.value.trim();
+                        if (/^#?[0-9a-fA-F]{0,8}$/.test(v)) {
+                          setCustomColor(v.startsWith("#") ? v : "#" + v);
+                        }
+                      }}
+                      placeholder="#3f9c5c"
+                      className="custom-color-input"
+                    />
+                    <button
+                      type="button"
+                      className="btn btn-ghost"
+                      onClick={() => {
+                        const hex = customColor.toLowerCase();
+                        if (!/^#[0-9a-f]{6}$/.test(hex)) return;
+                        if (!selColors.includes(hex)) {
+                          setSelColors((cur) => [...cur, hex]);
+                        }
+                      }}
+                    >
+                      + Eigene Farbe
+                    </button>
                   </div>
                 </div>
                 <div className="field">
