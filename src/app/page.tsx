@@ -1,5 +1,6 @@
 import Link from "next/link";
 import SiteShell from "@/components/SiteShell";
+import BodyClass from "@/components/BodyClass";
 import { getHeroVideoSrc } from "@/lib/hero-video";
 import { getHomeImage } from "@/lib/home-images";
 
@@ -23,6 +24,7 @@ export default async function HomePage() {
 
   return (
     <SiteShell>
+      <BodyClass name="is-home" />
       {/* === HERO — Vollbild-Video mit Titel === */}
       <section className="hero-full">
         {heroVideoSrc ? (
