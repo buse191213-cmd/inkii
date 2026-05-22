@@ -1734,12 +1734,20 @@ body:has(.home-services) footer.site{margin-top:0}
   transition:.2s}
 .mm-page-cta-btn:hover{background:var(--leaf);color:#fff}
 
-/* Takım gridi */
-.mm-team-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:24px}
-.mm-team-card{display:flex;flex-direction:column;gap:12px}
-.mm-team-photo{aspect-ratio:1/1;background:#f4f5f3 center/cover;
-  border-radius:50%;overflow:hidden}
-.mm-team-photo img{width:100%;height:100%;object-fit:cover}
-.mm-team-name{font-family:var(--display);font-weight:700;font-size:1.05rem;
-  color:var(--ink);margin:0;text-align:center}
-.mm-team-role{font-size:.85rem;color:var(--muted);text-align:center;margin:0}
+/* Takım gridi — modern, profesyonel */
+.mm-team-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));
+  gap:28px}
+.mm-team-card{display:flex;flex-direction:column;gap:14px}
+.mm-team-photo{position:relative;width:100%;aspect-ratio:4/5;
+  background:#f4f5f3 center/cover;overflow:hidden;transition:.3s}
+.mm-team-photo img{width:100%;height:100%;object-fit:cover;
+  transition:transform .5s ease}
+.mm-team-card:hover .mm-team-photo img{transform:scale(1.04)}
+.mm-team-photo::after{content:"";position:absolute;inset:0;
+  background:linear-gradient(180deg,transparent 60%,rgba(0,0,0,.18) 100%);
+  pointer-events:none;opacity:0;transition:.3s}
+.mm-team-card:hover .mm-team-photo::after{opacity:1}
+.mm-team-name{font-family:var(--display);font-weight:700;font-size:1.08rem;
+  color:var(--ink);margin:0;letter-spacing:-.005em;line-height:1.2}
+.mm-team-role{font-size:.85rem;color:var(--muted);margin:0;
+  margin-top:-6px;letter-spacing:.01em}
