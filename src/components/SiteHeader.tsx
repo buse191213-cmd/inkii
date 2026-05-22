@@ -60,12 +60,26 @@ export default function SiteHeader({
       </div>
 
       <header className="site">
-        <div className="wrap head-row">
-          <Link href="/" className="logo" translate="no" aria-label="INKII WORKS – Startseite">
+        <div
+          className="wrap head-row"
+          style={{
+            display: "grid",
+            gridTemplateColumns: "1fr auto 1fr",
+            alignItems: "center",
+            gap: 24,
+          }}
+        >
+          <Link
+            href="/"
+            className="logo"
+            translate="no"
+            aria-label="INKII WORKS – Startseite"
+            style={{ justifySelf: "start" }}
+          >
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img src="/inkii-logo.png" alt="INKII WORKS" />
           </Link>
-          <nav className="main">
+          <nav className="main" style={{ justifySelf: "center" }}>
             {NAV.map((n) => (
               <Link
                 key={n.href}
@@ -76,7 +90,7 @@ export default function SiteHeader({
               </Link>
             ))}
           </nav>
-          <div className="head-actions">
+          <div className="head-actions" style={{ justifySelf: "end" }}>
             <div className="icon-btn" title={t.search}>⌕</div>
             <div className="icon-btn" title={t.account}>☻</div>
             <Link
