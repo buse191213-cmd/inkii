@@ -16,6 +16,7 @@ export const metadata: Metadata = {
 export default async function UeberUnsPage() {
   const locale = await getLocale();
   const d = getDictionary(locale);
+  const u = d.ueberUns;
   const heroImg = await getHomeImage("uu-hero");
   const tile1 = await getHomeImage("home-tile-1");
   const tile2 = await getHomeImage("home-tile-2");
@@ -38,54 +39,63 @@ export default async function UeberUnsPage() {
             <span className="mm-dot">•</span>
             <span className="active">Über Uns</span>
           </div>
-          <h1 className="mm-page-h1">Wir machen Marken sichtbar.</h1>
-          <p className="mm-page-lead">
-            INKII WORKS — Ihr Partner für Textilveredelung, Werbemittel und Druck. Persönlich,
-            schnell und nachhaltig.
-          </p>
+          <h1 className="mm-page-h1">{u.h1}</h1>
+          <p className="mm-page-lead">{u.intro}</p>
         </div>
       </section>
 
-      {/* 3 Werte als Tiles */}
+      {/* Story: "Was als kleine ... begann, ist heute ..." */}
       <section className="mm-page-section">
         <div className="wrap">
+          <div className="mm-story-grid">
+            <div>
+              <span className="mm-page-kicker">{u.storyKicker}</span>
+              <h2 className="mm-page-h2">{u.storyTitle}</h2>
+            </div>
+            <div className="mm-story-text">
+              <p>{u.intro}</p>
+              <p>{u.storyText}</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Werte */}
+      <section className="mm-page-section alt">
+        <div className="wrap">
           <div className="mm-page-section-head">
-            <span className="mm-page-kicker">Was uns ausmacht</span>
-            <h2 className="mm-page-h2">Drei Werte, ein Versprechen.</h2>
+            <span className="mm-page-kicker">{u.valuesKicker}</span>
+            <h2 className="mm-page-h2">{u.valuesTitle}</h2>
           </div>
           <div className="mm-page-tiles cols-3">
-            <div
-              className="mm-page-tile"
-              style={tile1 ? { backgroundImage: `url(${tile1})` } : undefined}
-            >
-              <div className="mm-page-tile-label">01 — Persönlich</div>
-              <h3 className="mm-page-tile-title">Direkter Kontakt</h3>
-              <p className="mm-page-tile-desc">Ein Ansprechpartner von der Idee bis zur Lieferung.</p>
-            </div>
-            <div
-              className="mm-page-tile"
-              style={tile2 ? { backgroundImage: `url(${tile2})` } : undefined}
-            >
-              <div className="mm-page-tile-label">02 — Schnell</div>
-              <h3 className="mm-page-tile-title">Angebot in 24h</h3>
-              <p className="mm-page-tile-desc">Kostenlose Designs und unverbindliche Preise binnen 24 Stunden.</p>
-            </div>
-            <div className="mm-page-tile">
-              <div className="mm-page-tile-label">03 — Nachhaltig</div>
-              <h3 className="mm-page-tile-title">Bewusst produziert</h3>
-              <p className="mm-page-tile-desc">Faire Materialien, regionale Partner, langlebige Qualität.</p>
-            </div>
+            {u.values.map((v, i) => (
+              <div
+                key={v.t}
+                className="mm-page-tile"
+                style={
+                  i === 0 && tile1
+                    ? { backgroundImage: `url(${tile1})` }
+                    : i === 1 && tile2
+                    ? { backgroundImage: `url(${tile2})` }
+                    : undefined
+                }
+              >
+                <div className="mm-page-tile-label">0{i + 1}</div>
+                <h3 className="mm-page-tile-title">{v.t}</h3>
+                <p className="mm-page-tile-desc">{v.p}</p>
+              </div>
+            ))}
           </div>
         </div>
       </section>
 
       {/* Team */}
       {team.length > 0 && (
-        <section className="mm-page-section alt">
+        <section className="mm-page-section">
           <div className="wrap">
             <div className="mm-page-section-head">
-              <span className="mm-page-kicker">Unser Team</span>
-              <h2 className="mm-page-h2">Die Menschen hinter INKII.</h2>
+              <span className="mm-page-kicker">{u.teamKicker}</span>
+              <h2 className="mm-page-h2">{u.teamTitle}</h2>
             </div>
             <div className="mm-team-grid">
               {team.map((t) => (
@@ -107,9 +117,9 @@ export default async function UeberUnsPage() {
 
       {/* CTA */}
       <section className="mm-page-cta">
-        <h2 className="mm-page-cta-h">Bereit für Ihr Projekt?</h2>
-        <p className="mm-page-cta-p">Lassen Sie uns reden. Wir liefern kostenlose Designs in 24 Stunden.</p>
-        <Link href="/kontakt" className="mm-page-cta-btn">{d.nav.kontakt}</Link>
+        <h2 className="mm-page-cta-h">{u.ctaTitle}</h2>
+        <p className="mm-page-cta-p">{u.ctaText}</p>
+        <Link href="/kontakt" className="mm-page-cta-btn">{u.ctaBtn}</Link>
       </section>
     </SiteShell>
   );
