@@ -293,7 +293,7 @@ const en: Dictionary = {
     stockUnit: "pcs",
     details: "Details →",
     ctaTitle: "Need an item that isn't listed here?",
-    ctaText: "Our range includes thousands of products. Tell us your idea – we'll find the right item.",
+    ctaText: "New ideas often emerge together. Even though this product group is still being built up, we're already successfully implementing individual customer requests and creative concepts. Whether unique designs, custom productions or new inspirations — we'd love to develop something fitting with you.",
     ctaBtn: "Request advice →",
   },
   detail: {

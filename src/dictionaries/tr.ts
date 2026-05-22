@@ -293,7 +293,7 @@ const tr: Dictionary = {
     stockUnit: "adet",
     details: "Detaylar →",
     ctaTitle: "Burada olmayan bir ürün mü lazım?",
-    ctaText: "Ürün yelpazemiz binlerce ürün içeriyor. Fikrinizi söyleyin – uygun ürünü buluruz.",
+    ctaText: "Yeni fikirler çoğu zaman birlikte doğar. Bu ürün grubu henüz oluşum aşamasında olsa da kişiye özel müşteri taleplerini ve yaratıcı konseptleri şimdiden başarıyla hayata geçiriyoruz. İster özel tasarım, ister kişiye özel üretim, ister yeni ilhamlar — sizinle birlikte size uygun olanı geliştirmek için sabırsızlanıyoruz.",
     ctaBtn: "Danışmanlık iste →",
   },
   detail: {

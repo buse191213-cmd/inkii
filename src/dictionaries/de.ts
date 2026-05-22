@@ -293,7 +293,7 @@ const de: Dictionary = {
     stockUnit: "Stk",
     details: "Details →",
     ctaTitle: "Sie brauchen einen Artikel, der hier nicht steht?",
-    ctaText: "Unser Sortiment umfasst tausende Produkte. Sagen Sie uns Ihre Idee – wir finden den passenden Artikel.",
+    ctaText: "Neue Ideen entstehen oft gemeinsam. Auch wenn sich diese Produktgruppe derzeit noch im Aufbau befindet, setzen wir bereits individuelle Kundenwünsche und kreative Konzepte erfolgreich um. Ob besondere Designs, individuelle Anfertigungen oder neue Inspirationen — wir freuen uns darauf, gemeinsam mit Ihnen etwas Passendes zu entwickeln.",
     ctaBtn: "Beratung anfragen →",
   },
   detail: {
