@@ -156,7 +156,7 @@ const en: Dictionary = {
     ctaBtn: "Request advice →",
   },
   ueberUns: {
-    h1: "Your finishing partner for over 15 years.",
+    h1: "Your finishing partner.",
     intro: "What began as a small print shop is today a well-coordinated team for textile finishing, teamwear and promotional products.",
     storyKicker: "Our Story",
     storyTitle: "Out of a passion for detail.",

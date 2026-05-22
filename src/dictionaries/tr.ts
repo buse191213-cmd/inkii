@@ -156,7 +156,7 @@ const tr: Dictionary = {
     ctaBtn: "Danışmanlık iste →",
   },
   ueberUns: {
-    h1: "15 yılı aşkın süredir baskı ortağınız.",
+    h1: "Baskı ortağınız.",
     intro: "Küçük bir matbaa olarak başlayan yolculuk, bugün tekstil baskı, takım giyimi ve promosyon ürünleri için uyumlu bir ekibe dönüştü.",
     storyKicker: "Hikâyemiz",
     storyTitle: "Detaya olan tutkudan doğdu.",

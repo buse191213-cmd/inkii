@@ -156,7 +156,7 @@ const de: Dictionary = {
     ctaBtn: "Beratung anfragen →",
   },
   ueberUns: {
-    h1: "Seit über 15 Jahren Ihr Partner für Veredelung.",
+    h1: "Ihr Partner für Veredelung.",
     intro: "Was als kleine Druckerei begann, ist heute ein eingespieltes Team für Textilveredelung, Teamwear und Werbemittel.",
     storyKicker: "Unsere Geschichte",
     storyTitle: "Aus Leidenschaft fürs Detail.",
