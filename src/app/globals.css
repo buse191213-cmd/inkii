@@ -1158,7 +1158,16 @@ body:has(.hero-full) header.site nav.main a:hover{background:rgba(255,255,255,.0
 body.is-home header.site nav.main a.active,
 body:has(.hero-full) header.site nav.main a.active{color:#fff;border-bottom-color:#fff}
 body.is-home header.site .icon-btn,
-body:has(.hero-full) header.site .icon-btn{display:none}
+body:has(.hero-full) header.site .icon-btn{
+  background:rgba(255,255,255,.08);
+  border-color:rgba(255,255,255,.4);
+  color:#fff;
+}
+body.is-home header.site .icon-btn:hover,
+body:has(.hero-full) header.site .icon-btn:hover{
+  background:rgba(255,255,255,.2);
+  border-color:rgba(255,255,255,.7);
+}
 body.is-home header.site .cart-pill,
 body:has(.hero-full) header.site .cart-pill{color:#fff;
   background:rgba(255,255,255,.15);border:1px solid rgba(255,255,255,.4)}

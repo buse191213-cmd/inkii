@@ -67,18 +67,20 @@ export default function SiteHeader({
             gridTemplateColumns: "1fr auto 1fr",
             alignItems: "center",
             gap: 24,
+            width: "100%",
           }}
         >
-          <Link
-            href="/"
-            className="logo"
-            translate="no"
-            aria-label="INKII WORKS – Startseite"
-            style={{ justifySelf: "start" }}
-          >
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img src="/inkii-logo.png" alt="INKII WORKS" />
-          </Link>
+          <div style={{ justifySelf: "start", display: "flex", alignItems: "center" }}>
+            <Link
+              href="/"
+              className="logo"
+              translate="no"
+              aria-label="INKII WORKS – Startseite"
+            >
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img src="/inkii-logo.png" alt="INKII WORKS" />
+            </Link>
+          </div>
           <nav className="main" style={{ justifySelf: "center" }}>
             {NAV.map((n) => (
               <Link
