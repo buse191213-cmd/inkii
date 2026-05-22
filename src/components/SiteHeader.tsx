@@ -84,7 +84,7 @@ export default function SiteHeader({
               className={`cart-pill${count > 0 ? " has-items" : ""}`}
               title={t.merkzettel}
             >
-              <span>⛒</span> {count}
+              <span aria-hidden>♥</span> {count}
             </Link>
             <button
               className="burger"
