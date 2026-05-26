@@ -36,10 +36,14 @@ export const HOME_SLOTS: HomeSlot[] = [
   { slot: "area-4", label: "Bereich 4 — Marketing", group: "bereiche" },
   { slot: "vd-hero", label: "Textilveredelung — Titelbild (großer Hero-Bereich)", group: "page" },
   { slot: "uu-hero", label: "Über Uns — Titelbild (großer Hero-Bereich)", group: "page" },
-  { slot: "sport-1", label: "Sportartikel — Karte 1: Fußball (Mood-Bild)", group: "page" },
-  { slot: "sport-2", label: "Sportartikel — Karte 2: Tennis (Mood-Bild)", group: "page" },
-  { slot: "sport-3", label: "Sportartikel — Karte 3: Tischtennis (Mood-Bild)", group: "page" },
-  { slot: "sport-4", label: "Sportartikel — Karte 4: Boxen (Mood-Bild)", group: "page" },
+  { slot: "sport-1", label: "Sportartikel — Bild 1 (Mood-Bild)", group: "page" },
+  { slot: "sport-2", label: "Sportartikel — Bild 2 (Mood-Bild)", group: "page" },
+  { slot: "sport-3", label: "Sportartikel — Bild 3 (Mood-Bild)", group: "page" },
+  { slot: "sport-4", label: "Sportartikel — Bild 4 (Mood-Bild)", group: "page" },
+  { slot: "sport-5", label: "Sportartikel — Bild 5 (Mood-Bild)", group: "page" },
+  { slot: "sport-6", label: "Sportartikel — Bild 6 (Mood-Bild)", group: "page" },
+  { slot: "sport-7", label: "Sportartikel — Bild 7 (Mood-Bild)", group: "page" },
+  { slot: "sport-8", label: "Sportartikel — Bild 8 (Mood-Bild)", group: "page" },
 ];
 
 export const HOME_SLOT_IDS: string[] = HOME_SLOTS.map((s) => s.slot);

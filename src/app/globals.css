@@ -1815,3 +1815,22 @@ body:has(.home-services) footer.site{margin-top:0}
   .mm-split-reverse .mm-split-img{order:0}
   .mm-split-reverse .mm-split-body{order:1}
 }
+
+/* === Sportartikel: 3+5 Bild-Raster (ohne Text) === */
+.sport-row{display:grid;gap:14px;margin-bottom:14px}
+.sport-row:last-child{margin-bottom:0}
+.sport-row-3{grid-template-columns:repeat(3,1fr)}
+.sport-row-5{grid-template-columns:repeat(5,1fr)}
+.sport-cell{aspect-ratio:4/5;background:#1c2722 center/cover no-repeat;
+  transition:transform .25s ease,filter .25s ease}
+.sport-cell:hover{transform:translateY(-3px);filter:brightness(1.05)}
+
+@media(max-width:1100px){
+  .sport-row-5{grid-template-columns:repeat(3,1fr)}
+}
+@media(max-width:760px){
+  .sport-row-3,.sport-row-5{grid-template-columns:repeat(2,1fr)}
+}
+@media(max-width:500px){
+  .sport-row-3,.sport-row-5{grid-template-columns:1fr}
+}
