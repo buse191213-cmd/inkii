@@ -9,6 +9,7 @@ import { formatPrice, formatNumber } from "@/lib/format";
 import { colorHex, colorLabel, materialLabel } from "@/lib/catalog-options";
 import { parsePriceTiers, tierDiscountPercent } from "@/lib/price-tiers";
 import { parseSizes } from "@/lib/sizes";
+import { SHOW_PRICES } from "@/lib/feature-flags";
 import { getLocale } from "@/lib/i18n-server";
 import { getDictionary } from "@/dictionaries";
 
@@ -146,7 +147,7 @@ export default async function ProductDetailPage({
               )}
 
               {/* Mengenstaffel */}
-              {tiers.length > 0 && (
+              {SHOW_PRICES && tiers.length > 0 && (
                 <div className="mm-tiers">
                   <div className="mm-tiers-head">
                     <span className="mm-detail-cbnum">{colors.length > 0 ? "2." : "1."}</span>{" "}
@@ -211,9 +212,7 @@ export default async function ProductDetailPage({
               <div className="mm-detail-cta">
                 <Link href="/kontakt" className="mm-detail-cta-btn">
                   <span>Anfrage senden</span>
-                  <span className="mm-detail-cta-price">
-                    {hasPrice ? <>ab {formatPrice(product.priceCents)}</> : "Preis auf Anfrage"}
-                  </span>
+                  <span className="mm-detail-cta-price">Preis auf Anfrage</span>
                 </Link>
                 <div className="mm-detail-cta-row">
                   <MerkenButton

@@ -71,24 +71,22 @@ export default async function KontaktPage() {
             )}
 
             <h1 className="kontakt-h1">
-              Nimm Kontakt mit unserem Team auf.
+              Lassen Sie uns Ihre Marke sichtbar machen.
             </h1>
 
             <p className="kontakt-intro">
-              Wir helfen Unternehmen, ihre Marke sichtbar zu machen — von
-              Textilveredelung über Werbemittel bis hin zu Druck &amp; Webdesign.
+              Ob Textilveredelung, Werbemittel, Webdesign oder Onlineshop — wir entwickeln
+              Lösungen, die Unternehmen professionell präsentieren und im Alltag wirken.
             </p>
 
             <ul className="kontakt-checks">
-              <li><span className="kc-check">✓</span> Komplettservice für Merch &amp; Werbemittel</li>
-              <li><span className="kc-check">✓</span> Engagierte Beratung &amp; Designvorschlag</li>
-              <li><span className="kc-check">✓</span> Kostenloses, unverbindliches Angebot in 24 Stunden</li>
+              <li><span className="kc-check">✓</span> Ganzheitliche Umsetzung für Marke &amp; Marketing</li>
+              <li><span className="kc-check">✓</span> Persönliche Beratung mit konkreten Designideen</li>
+              <li><span className="kc-check">✓</span> Schnelles, unverbindliches Angebot innerhalb von 24 Stunden</li>
             </ul>
 
             <p className="kontakt-paragraph">
-              Wir würden gerne mehr über Ihr Unternehmen erfahren und darüber, wie
-              wir Ihnen behilflich sein können. Füllen Sie dieses Formular aus und
-              wir werden uns in Kürze bei Ihnen melden.
+              Erzählen Sie uns kurz von Ihrem Vorhaben. Wir kümmern uns um den Rest.
             </p>
 
             <div className="kontakt-info">

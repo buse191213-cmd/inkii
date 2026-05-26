@@ -44,9 +44,9 @@ export default async function NachhaltigkeitPage() {
             <span className="mm-dot">•</span>
             <span className="active">Nachhaltigkeit</span>
           </div>
-          <h1 className="mm-page-h1">Bewusst produziert.</h1>
+          <h1 className="mm-page-h1">Sorgfältig produziert.</h1>
           <p className="mm-page-lead">
-            Wir wählen Materialien, Partner und Verfahren mit Verantwortung — für ehrliche Merch-Qualität.
+            Von den Materialien bis zur Verarbeitung achten wir auf Qualität in jedem Detail.
           </p>
         </div>
       </section>

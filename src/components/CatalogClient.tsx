@@ -6,6 +6,7 @@ import { ProductIcon } from "@/lib/icons";
 import { formatPrice } from "@/lib/format";
 import { colorHex, colorLabel, materialLabel } from "@/lib/catalog-options";
 import { useMerkliste } from "./MerklisteProvider";
+import { SHOW_PRICES } from "@/lib/feature-flags";
 import type { Dictionary } from "@/dictionaries/types";
 
 export type CatalogProduct = {
@@ -245,7 +246,9 @@ export default function CatalogClient({
 
                   <div className="mm-card-name">{p.name}</div>
                   <div className="mm-card-price">
-                    {hasPrice ? <>Ab {formatPrice(p.priceCents)}</> : "Preis auf Anfrage"}
+                    {SHOW_PRICES
+                      ? (hasPrice ? <>Ab {formatPrice(p.priceCents)}</> : "Preis auf Anfrage")
+                      : "Preis auf Anfrage"}
                   </div>
                 </Link>
 

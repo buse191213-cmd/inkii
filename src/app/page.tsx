@@ -16,10 +16,10 @@ export default async function HomePage() {
   const svcMkt = await getHomeImage("area-4");
 
   const services = [
-    { label: "DRUCK", href: "/bereiche", img: svcDruck },
-    { label: "WERBETECHNIK", href: "/bereiche", img: svcWerbe },
-    { label: "WEBDESIGN", href: "/bereiche", img: svcWeb },
-    { label: "MARKETING", href: "/bereiche", img: svcMkt },
+    { label: "TEXTILVEREDELUNG", href: "/bereiche", img: svcDruck },
+    { label: "WERBEARTIKEL", href: "/bereiche", img: svcWerbe },
+    { label: "WEBDESIGN", href: "/leistungen", img: svcWeb },
+    { label: "ONLINESHOPS", href: "/leistungen", img: svcMkt },
   ];
 
   return (
@@ -47,7 +47,7 @@ export default async function HomePage() {
             RUNDUM<span className="hero-dash">-</span>MERCH<span className="hero-dash">-</span>SERVICE
           </h1>
           <p className="hero-sub">
-            Textilveredelung, Werbemittel & Druck — alles aus einer Hand.
+            Hochwertige Textilveredelung und Werbeartikel aus einer Hand.
           </p>
           <div className="hero-cta-row">
             <Link href="/werbemittel" className="btn-hero-light">
@@ -86,7 +86,7 @@ export default async function HomePage() {
         </Link>
       </section>
 
-      {/* === 4 Service-Boxen: Druck / Werbetechnik / Webdesign / Marketing === */}
+      {/* === 4 Service-Boxen === */}
       <section className="home-services">
         {services.map((s) => (
           <Link key={s.label} href={s.href} className="svc-box">
@@ -98,6 +98,13 @@ export default async function HomePage() {
             <div className="svc-label">{s.label}</div>
           </Link>
         ))}
+      </section>
+
+      {/* === Tagline unter den Kacheln === */}
+      <section className="home-tagline">
+        <div className="wrap">
+          <p>Ihr Partner für Textilveredelung und Werbemittel — von der Gestaltung bis zur Lieferung.</p>
+        </div>
       </section>
     </SiteShell>
   );
