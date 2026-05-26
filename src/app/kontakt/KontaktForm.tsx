@@ -95,7 +95,28 @@ export default function KontaktForm() {
         </div>
         <div className="kf-field">
           <label htmlFor="projektFrist">Projektfrist (TT.MM.JJJJ)</label>
-          <input id="projektFrist" name="projektFrist" type="date" lang="de" />
+          <input
+            id="projektFrist"
+            name="projektFrist"
+            type="text"
+            inputMode="numeric"
+            placeholder="TT.MM.JJJJ"
+            maxLength={10}
+            pattern="\d{2}\.\d{2}\.\d{4}"
+            autoComplete="off"
+            onInput={(e) => {
+              /* Automatisches Setzen der Punkte: TTMMJJJJ → TT.MM.JJJJ */
+              const el = e.currentTarget;
+              const raw = el.value.replace(/\D/g, "").slice(0, 8);
+              let formatted = raw;
+              if (raw.length > 4) {
+                formatted = `${raw.slice(0, 2)}.${raw.slice(2, 4)}.${raw.slice(4)}`;
+              } else if (raw.length > 2) {
+                formatted = `${raw.slice(0, 2)}.${raw.slice(2)}`;
+              }
+              el.value = formatted;
+            }}
+          />
         </div>
       </div>
 
