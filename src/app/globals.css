@@ -1346,16 +1346,16 @@ body:has(.home-services) footer.site{margin-top:0}
 .kf-row{display:grid;grid-template-columns:1fr 1fr;gap:18px;align-items:end}
 .kf-field{display:flex;flex-direction:column;gap:6px}
 .kf-field label{font-size:.85rem;font-weight:600;color:var(--ink);
-  min-height:1.3em} /* Label-Höhe konstant, damit Inputs in einer Zeile starten */
-  letter-spacing:.01em}
+  letter-spacing:.01em;min-height:1.3em;line-height:1.3em}
 .kf-field input,.kf-field select,.kf-field textarea{
-  padding:13px 14px;border:1px solid var(--line);background:#fff;
+  padding:0 14px;border:1px solid var(--line);background:#fff;
   font-family:inherit;font-size:.95rem;color:var(--ink);transition:.18s;
-  border-radius:0}
+  border-radius:0;box-sizing:border-box;height:48px;line-height:46px}
 .kf-field input:focus,.kf-field select:focus,.kf-field textarea:focus{
   outline:none;border-color:var(--leaf-deep);
   box-shadow:0 0 0 3px rgba(63,156,92,.12)}
-.kf-field textarea{resize:vertical;min-height:120px;font-family:inherit;line-height:1.5}
+.kf-field textarea{resize:vertical;min-height:120px;height:auto;
+  font-family:inherit;line-height:1.5;padding:13px 14px}
 .kf-field input::placeholder,.kf-field textarea::placeholder{color:#a8b0ac}
 .kf-field select{cursor:pointer;appearance:none;
   background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'><path d='M1 1l5 5 5-5' stroke='%23636b66' stroke-width='1.6' fill='none'/></svg>");
