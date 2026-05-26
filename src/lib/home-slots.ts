@@ -45,6 +45,16 @@ export const HOME_SLOTS: HomeSlot[] = [
   { slot: "sport-6", label: "Sportartikel — Bild 6 (Mood-Bild)", group: "page" },
   { slot: "sport-7", label: "Sportartikel — Bild 7 (Mood-Bild)", group: "page" },
   { slot: "sport-8", label: "Sportartikel — Bild 8 (Mood-Bild)", group: "page" },
+  { slot: "webdesign-hero", label: "Webdesign — Titelbild (Hero)", group: "page" },
+  { slot: "webdesign-1", label: "Webdesign — Karte 1: Webseiten", group: "page" },
+  { slot: "webdesign-2", label: "Webdesign — Karte 2: Onlineshops", group: "page" },
+  { slot: "webdesign-3", label: "Webdesign — Karte 3: Mitarbeiter-Shops", group: "page" },
+  { slot: "webdesign-4", label: "Webdesign — Karte 4: Wartung & Hosting", group: "page" },
+  { slot: "marketing-hero", label: "Marketing — Titelbild (Hero)", group: "page" },
+  { slot: "marketing-1", label: "Marketing — Karte 1: Branding", group: "page" },
+  { slot: "marketing-2", label: "Marketing — Karte 2: Social Media", group: "page" },
+  { slot: "marketing-3", label: "Marketing — Karte 3: SEO & Google Ads", group: "page" },
+  { slot: "marketing-4", label: "Marketing — Karte 4: Kampagnen", group: "page" },
 ];
 
 export const HOME_SLOT_IDS: string[] = HOME_SLOTS.map((s) => s.slot);

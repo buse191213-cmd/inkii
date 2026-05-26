@@ -16,8 +16,8 @@ const FALLBACK_NAV: NavItem[] = [
   { href: "/werbemittel?cat=taschen", key: "taschen" },
   { href: "/werbemittel?cat=werbeartikel", key: "werbeartikel" },
   { href: "/werbemittel", key: "werbemittel" },
-  { href: "/leistungen", key: "webdesign" },
-  { href: "/leistungen", key: "marketing" },
+  { href: "/webdesign", key: "webdesign" },
+  { href: "/marketing", key: "marketing" },
 ];
 
 export default function SiteHeader({

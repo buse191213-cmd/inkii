@@ -31,13 +31,13 @@ export default async function HomePage() {
     {
       label: "WEBDESIGN",
       sub: "Moderne Websites und Online-Shops aus einer Hand.",
-      href: "/leistungen",
+      href: "/webdesign",
       img: svcWeb,
     },
     {
-      label: "ONLINESHOPS",
-      sub: "Mitarbeiter- und Vereinsshops für Ihre Marke.",
-      href: "/leistungen",
+      label: "MARKETING",
+      sub: "Ganzheitliche Marketinglösungen — von der Marke bis zur Kampagne.",
+      href: "/marketing",
       img: svcMkt,
     },
   ];
