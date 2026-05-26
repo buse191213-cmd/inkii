@@ -15,7 +15,7 @@ export const HOME_SLOTS: HomeSlot[] = [
   { slot: "cat-3", label: "Kategorie 3 — Team- & Sportbekleidung", group: "category" },
   { slot: "cat-4", label: "Kategorie 4 — Konzepte & Lösungen", group: "category" },
   { slot: "feat-1", label: "Leistung 1 — Textildruck & Veredelung", group: "feature" },
-  { slot: "feat-2", label: "Leistung 2 — Team- & Sportswear", group: "feature" },
+  { slot: "feat-2", label: "Leistung 2 — Sportartikel", group: "feature" },
   { slot: "feat-3", label: "Leistung 3 — Werbemittel & Merch", group: "feature" },
   { slot: "feat-4", label: "Leistung 4 — Arbeits- & Berufskleidung", group: "feature" },
   { slot: "feat-5", label: "Leistung 5 — Eigene Onlineshops", group: "feature" },
@@ -36,6 +36,10 @@ export const HOME_SLOTS: HomeSlot[] = [
   { slot: "area-4", label: "Bereich 4 — Marketing", group: "bereiche" },
   { slot: "vd-hero", label: "Textilveredelung — Titelbild (großer Hero-Bereich)", group: "page" },
   { slot: "uu-hero", label: "Über Uns — Titelbild (großer Hero-Bereich)", group: "page" },
+  { slot: "sport-1", label: "Sportartikel — Karte 1: Fußball (Mood-Bild)", group: "page" },
+  { slot: "sport-2", label: "Sportartikel — Karte 2: Tennis (Mood-Bild)", group: "page" },
+  { slot: "sport-3", label: "Sportartikel — Karte 3: Tischtennis (Mood-Bild)", group: "page" },
+  { slot: "sport-4", label: "Sportartikel — Karte 4: Boxen (Mood-Bild)", group: "page" },
 ];
 
 export const HOME_SLOT_IDS: string[] = HOME_SLOTS.map((s) => s.slot);

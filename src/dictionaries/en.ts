@@ -28,7 +28,7 @@ const en: Dictionary = {
     colService: "Service",
     colRecht: "Legal",
     lVeredelung: "Textile Finishing",
-    lTeamwear: "Team & Sportswear",
+    lTeamwear: "Sportartikel",
     lWerbemittel: "Promotional Products",
     lOnlineshops: "Online Shops",
     lNachhaltigkeit: "Sustainability",
@@ -64,7 +64,7 @@ const en: Dictionary = {
     categories: [
       { title: "Corporate & Workwear", tag: "Workwear" },
       { title: "Promotional Items & Merchandise", tag: "Merch" },
-      { title: "Team & Sportswear", tag: "Teamwear" },
+      { title: "Sportartikel", tag: "Teamwear" },
       { title: "Concepts & Solutions", tag: "Custom" },
     ],
     intro: {
@@ -86,7 +86,7 @@ const en: Dictionary = {
     },
     features: [
       { title: "Textile Printing & Finishing", text: "Screen printing, digital printing, embroidery and laser – we apply your logo durably and precisely to any textile." },
-      { title: "Team & Sportswear", text: "Uniform jerseys and team apparel that win on looks – designed, produced and delivered by us." },
+      { title: "Sportartikel", text: "Uniform jerseys and team apparel that win on looks – designed, produced and delivered by us." },
       { title: "Promotional Products & Merch", text: "From pens to power banks: promotional items that land well and stay in memory." },
       { title: "Workwear & Professional Clothing", text: "Functional, safe and representative workwear – fully equipped for your whole team." },
       { title: "Your Own Online Shop", text: "Your individual club or company shop – members order conveniently, you save time." },
@@ -195,7 +195,7 @@ const en: Dictionary = {
     servTitle: "This is what we can do for you",
     services: [
       { t: "Textile Printing & Finishing", p: "Screen printing, digital printing, embroidery and laser engraving – clean, durable and precise on any fabric." },
-      { t: "Team & Sportswear", p: "Jerseys, tracksuits and fan articles – fully equipped and uniform for your club." },
+      { t: "Sportartikel", p: "Jerseys, tracksuits and fan articles – fully equipped and uniform for your club." },
       { t: "Workwear & Professional Clothing", p: "Functional, safe and representative workwear – finished to suit every industry." },
       { t: "Promotional Products & Merch", p: "From giveaways to premium gifts – promotional products that get your brand talked about." },
       { t: "Your Own Online Shop", p: "Individual club and company shops – your members order themselves around the clock." },

@@ -28,7 +28,7 @@ const tr: Dictionary = {
     colService: "Servis",
     colRecht: "Yasal",
     lVeredelung: "Tekstil Baskı",
-    lTeamwear: "Takım & Spor Giyim",
+    lTeamwear: "Spor Ürünleri",
     lWerbemittel: "Promosyon Ürünleri",
     lOnlineshops: "Online Mağazalar",
     lNachhaltigkeit: "Sürdürülebilirlik",
@@ -64,7 +64,7 @@ const tr: Dictionary = {
     categories: [
       { title: "Kurumsal & İş Giyimi", tag: "İş Giyimi" },
       { title: "Promosyon & Merchandise", tag: "Merch" },
-      { title: "Takım & Spor Giyim", tag: "Takım Giyimi" },
+      { title: "Spor Ürünleri", tag: "Takım Giyimi" },
       { title: "Konsept & Çözümler", tag: "Özel" },
     ],
     intro: {
@@ -86,7 +86,7 @@ const tr: Dictionary = {
     },
     features: [
       { title: "Tekstil Baskı & İşleme", text: "Serigrafi, dijital baskı, nakış ve lazer – logonuzu her tekstile dayanıklı ve hassas şekilde işliyoruz." },
-      { title: "Takım & Spor Giyim", text: "Görünümüyle fark yaratan tek tip formalar ve takım giysileri – tasarımı, üretimi ve teslimatı bizden." },
+      { title: "Spor Ürünleri", text: "Görünümüyle fark yaratan tek tip formalar ve takım giysileri – tasarımı, üretimi ve teslimatı bizden." },
       { title: "Promosyon Ürünleri & Merch", text: "Kalemden powerbank'a: akılda kalan, etkili promosyon ürünleri." },
       { title: "İş & Meslek Giyimi", text: "İşlevsel, güvenli ve temsil gücü yüksek iş giyimi – tüm ekibiniz için eksiksiz." },
       { title: "Kendi Online Mağazanız", text: "Size özel kulüp veya firma mağazası – üyeler rahatça sipariş verir, siz zaman kazanırsınız." },
@@ -195,7 +195,7 @@ const tr: Dictionary = {
     servTitle: "Sizin için neler yapabiliriz",
     services: [
       { t: "Tekstil Baskı & İşleme", p: "Serigrafi, dijital baskı, nakış ve lazer gravür – her kumaşta temiz, dayanıklı ve hassas." },
-      { t: "Takım & Spor Giyim", p: "Formalar, eşofmanlar ve taraftar ürünleri – kulübünüz için eksiksiz ve tek tip." },
+      { t: "Spor Ürünleri", p: "Formalar, eşofmanlar ve taraftar ürünleri – kulübünüz için eksiksiz ve tek tip." },
       { t: "İş & Meslek Giyimi", p: "İşlevsel, güvenli ve temsil gücü yüksek iş giyimi – her sektöre uygun şekilde işlenmiş." },
       { t: "Promosyon Ürünleri & Merch", p: "Dağıtım ürününden premium hediyeye – markanızı konuşturan promosyon ürünleri." },
       { t: "Kendi Online Mağazanız", p: "Kişiye özel kulüp ve firma mağazaları – üyeleriniz 7/24 kendileri sipariş verir." },

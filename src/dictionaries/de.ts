@@ -28,7 +28,7 @@ const de: Dictionary = {
     colService: "Service",
     colRecht: "Rechtliches",
     lVeredelung: "Textilveredelung",
-    lTeamwear: "Team- & Sportswear",
+    lTeamwear: "Sportartikel",
     lWerbemittel: "Werbemittel",
     lOnlineshops: "Onlineshops",
     lNachhaltigkeit: "Nachhaltigkeit",
@@ -86,7 +86,7 @@ const de: Dictionary = {
     },
     features: [
       { title: "Textildruck & Veredelung", text: "Siebdruck, Digitaldruck, Stickerei und Laser – wir bringen Ihr Logo langlebig und präzise auf jedes Textil." },
-      { title: "Team- & Sportswear", text: "Einheitliche Trikots und Teamkleidung, die im Look gewinnen – gestaltet, produziert und geliefert von uns." },
+      { title: "Sportartikel", text: "Einheitliche Trikots und Teamkleidung, die im Look gewinnen – gestaltet, produziert und geliefert von uns." },
       { title: "Werbemittel & Merch", text: "Vom Kugelschreiber bis zur Powerbank: Werbeartikel, die ankommen und im Gedächtnis bleiben." },
       { title: "Arbeits- & Berufskleidung", text: "Funktionale, sichere und repräsentative Workwear – passend ausgestattet für Ihr ganzes Team." },
       { title: "Eigene Onlineshops", text: "Ihr individueller Vereins- oder Firmenshop – Mitglieder bestellen bequem, Sie sparen Zeit." },
@@ -195,7 +195,7 @@ const de: Dictionary = {
     servTitle: "Das können wir für Sie tun",
     services: [
       { t: "Textildruck & Veredelung", p: "Siebdruck, Digitaldruck, Stickerei und Lasergravur – sauber, langlebig und präzise auf jedem Stoff." },
-      { t: "Team- & Sportswear", p: "Trikots, Trainingsanzüge und Fanartikel – komplett ausgestattet und einheitlich für Ihren Verein." },
+      { t: "Sportartikel", p: "Trikots, Trainingsanzüge und Fanartikel – komplett ausgestattet und einheitlich für Ihren Verein." },
       { t: "Arbeits- & Berufskleidung", p: "Funktionale, sichere und repräsentative Workwear – passend veredelt für jede Branche." },
       { t: "Werbeartikel & Merch", p: "Vom Streuartikel bis zum Premium-Geschenk – Werbemittel, die Ihre Marke ins Gespräch bringen." },
       { t: "Eigene Onlineshops", p: "Individuelle Vereins- und Firmenshops – Ihre Mitglieder bestellen rund um die Uhr selbst." },

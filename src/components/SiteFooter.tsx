@@ -21,7 +21,7 @@ export default function SiteFooter({
             <h4>{t.colLeistungen}</h4>
             <ul>
               <li><Link href="/veredelung">{t.lVeredelung}</Link></li>
-              <li><Link href="/leistungen">{t.lTeamwear}</Link></li>
+              <li><Link href="/leistungen/sportartikel">{t.lTeamwear}</Link></li>
               <li><Link href="/werbemittel">{t.lWerbemittel}</Link></li>
               <li><Link href="/leistungen">{t.lOnlineshops}</Link></li>
             </ul>
