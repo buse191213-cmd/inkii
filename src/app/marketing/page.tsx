@@ -48,12 +48,6 @@ export default async function MarketingPage() {
     { n: "05", t: "Optimierung", d: "Skalieren basierend auf realen Daten" },
   ];
 
-  const stats = [
-    { v: "320%", l: "Durchschnittlicher ROAS" },
-    { v: "50+", l: "Zufriedene Kunden" },
-    { v: "1M+", l: "Erreichte Kontakte pro Monat" },
-  ];
-
   const offerings = [
     "Branding & Corporate Design",
     "Social Media Management",
@@ -116,20 +110,6 @@ export default async function MarketingPage() {
                 <h4 className="mk-step-t">{p.t}</h4>
                 <p className="mk-step-d">{p.d}</p>
                 {i < process.length - 1 && <div className="mk-step-line" />}
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* METRIKLER */}
-      <section className="mk-section mk-stats-section">
-        <div className="wrap">
-          <div className="mk-stats">
-            {stats.map((s) => (
-              <div key={s.l} className="mk-stat">
-                <div className="mk-stat-v">{s.v}</div>
-                <div className="mk-stat-l">{s.l}</div>
               </div>
             ))}
           </div>
