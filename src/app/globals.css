@@ -2117,3 +2117,109 @@ body:has(.home-services) footer.site{margin-top:0}
   .wd-cards{grid-template-columns:1fr;max-width:520px;margin:0 auto}
   .wd-hero{min-height:78vh}
 }
+
+/* === Marketing-Seite: Hero (links ausgerichtet) + Mockups === */
+.mkt-hero{background:#fff;padding:96px 0 72px;position:relative;overflow:hidden}
+.mkt-hero-grid{display:grid;grid-template-columns:1.4fr 1fr;gap:60px;align-items:center}
+.mkt-hero-text{display:flex;flex-direction:column;gap:20px;max-width:580px}
+.mkt-hero-title{font-family:var(--display);font-weight:800;
+  font-size:clamp(2.3rem,5vw,4rem);letter-spacing:-.025em;line-height:1.05;
+  color:#1c2722;margin:0}
+.mkt-hero-sub{font-size:clamp(1rem,1.3vw,1.13rem);line-height:1.6;
+  color:#5a6660;margin:0;max-width:480px}
+.mkt-hero-btn{display:inline-flex;align-items:center;gap:12px;
+  background:#1c2722;color:#fff;padding:16px 32px;font-family:var(--display);
+  font-weight:700;font-size:.92rem;letter-spacing:.04em;text-transform:uppercase;
+  text-decoration:none;border-radius:999px;transition:.25s;
+  box-shadow:0 8px 24px rgba(0,0,0,.12);align-self:flex-start;margin-top:8px}
+.mkt-hero-btn:hover{background:#5e8470;transform:translateY(-2px);
+  box-shadow:0 14px 36px rgba(94,132,112,.32)}
+.mkt-hero-btn span{transition:transform .2s}
+.mkt-hero-btn:hover span{transform:translateX(4px)}
+
+/* Dekoratives Element rechts */
+.mkt-hero-deco{position:relative;height:340px;display:flex;align-items:center;justify-content:center}
+.mkt-deco-ring{position:absolute;width:280px;height:280px;border-radius:50%;
+  border:1px solid #ececea;animation:mkt-spin 60s linear infinite}
+.mkt-deco-ring::before{content:"";position:absolute;width:200px;height:200px;
+  border-radius:50%;border:1px solid #ececea;top:50%;left:50%;transform:translate(-50%,-50%)}
+.mkt-deco-ring::after{content:"";position:absolute;width:120px;height:120px;
+  border-radius:50%;background:linear-gradient(135deg,#7fa389 0%,#5e8470 100%);
+  top:50%;left:50%;transform:translate(-50%,-50%);
+  box-shadow:0 20px 50px rgba(94,132,112,.3)}
+.mkt-deco-line{position:absolute;background:#ececea}
+.mkt-deco-line-1{top:30%;left:-10%;width:60%;height:1px;transform:rotate(-15deg)}
+.mkt-deco-line-2{bottom:25%;right:-10%;width:60%;height:1px;transform:rotate(20deg)}
+.mkt-deco-dot{position:absolute;width:8px;height:8px;border-radius:50%;
+  background:#5e8470}
+.mkt-deco-dot-1{top:20%;right:30%}
+.mkt-deco-dot-2{bottom:25%;left:15%;width:5px;height:5px;background:#cfd9a8}
+@keyframes mkt-spin{from{transform:rotate(0)}to{transform:rotate(360deg)}}
+
+/* === Marketing-Mockup 1: Growth Chart === */
+.mkt-mock{width:100%;height:100%;position:relative;display:flex;
+  align-items:center;justify-content:center;padding:0}
+.mkt-mock-chart{flex-direction:column}
+.mkt-chart-card{width:100%;max-width:340px;background:#fff;border-radius:8px;
+  border:1px solid #ececea;box-shadow:0 4px 14px rgba(0,0,0,.04);
+  overflow:hidden;position:relative}
+.mkt-chart-head{display:flex;align-items:center;gap:5px;padding:8px 12px;
+  background:#fafafa;border-bottom:1px solid #ececea}
+.mkt-chart-dot{display:inline-block;width:7px;height:7px;border-radius:50%}
+.mkt-chart-dot-1{background:#ed6a5e}
+.mkt-chart-dot-2{background:#f4bf4f}
+.mkt-chart-dot-3{background:#62c554}
+.mkt-chart-label{margin-left:auto;font-size:9px;color:#9ea7a2;
+  font-family:ui-monospace,monospace;letter-spacing:1px}
+.mkt-chart-svg{width:100%;height:130px;display:block;padding:8px}
+.mkt-badge{position:absolute;top:14px;right:14px;
+  background:#7fa389;color:#fff;padding:8px 14px;border-radius:999px;
+  display:flex;align-items:center;gap:6px;
+  box-shadow:0 8px 22px rgba(94,132,112,.3);font-family:var(--display)}
+.mkt-badge-arrow{font-size:14px;font-weight:700;line-height:1}
+.mkt-badge-val{font-size:14px;font-weight:800;letter-spacing:-.3px}
+.mkt-badge-lbl{font-size:9px;letter-spacing:1.2px;font-weight:600;opacity:.92}
+
+/* === Marketing-Mockup 2: SEO === */
+.mkt-mock-seo{flex-direction:column;gap:10px;width:100%;max-width:320px;padding:6px}
+.mkt-search-bar{display:flex;align-items:center;gap:8px;
+  background:#fff;border:1px solid #ececea;border-radius:999px;
+  padding:8px 14px;box-shadow:0 3px 10px rgba(0,0,0,.04)}
+.mkt-search-text{flex:1;font-size:10px;color:#1c2722;
+  font-family:ui-sans-serif,system-ui}
+.mkt-search-google{font-size:8px;color:#9ea7a2;font-family:ui-sans-serif,system-ui;
+  letter-spacing:.4px}
+.mkt-results{display:flex;flex-direction:column;gap:6px}
+.mkt-result{display:flex;align-items:center;gap:8px;padding:8px 10px;
+  background:#fff;border:1px solid #ececea;border-radius:6px}
+.mkt-result-top{border-color:#7fa389;background:linear-gradient(90deg,rgba(127,163,137,.08) 0%,#fff 100%)}
+.mkt-rank{display:inline-grid;place-items:center;width:24px;height:24px;
+  background:#5e8470;color:#fff;border-radius:50%;font-size:9px;font-weight:800;
+  font-family:var(--display)}
+.mkt-rank-mini{display:inline-grid;place-items:center;width:18px;height:18px;
+  background:#ececea;color:#7a857f;border-radius:50%;font-size:8px;font-weight:700}
+.mkt-result-lines{flex:1;display:flex;flex-direction:column;gap:3px}
+.mkt-result-lines span{display:block;height:4px;border-radius:1px;background:#cdd4cf}
+.mkt-result-title{height:5px !important;background:#1c2722 !important;width:75%}
+.mkt-result-url{background:#7fa389 !important;width:50%}
+.mkt-result-desc{width:90%}
+.mkt-result:not(.mkt-result-top) .mkt-result-lines span:first-child{width:65%;height:3.5px;background:#5a6660}
+.mkt-result:not(.mkt-result-top) .mkt-result-lines span:last-child{width:85%}
+.mkt-rank-trend{display:flex;align-items:center;gap:8px;
+  background:#fff;border:1px solid #ececea;border-radius:6px;
+  padding:6px 10px;margin-top:2px}
+.mkt-trend-lbl{font-size:9px;color:#7a857f;font-family:ui-sans-serif,system-ui;
+  letter-spacing:.4px;flex-shrink:0}
+.mkt-rank-trend svg{flex:1;height:24px;display:block}
+
+/* === Marketing-Mockup 3: Funnel === */
+.mkt-mock-funnel{width:100%;max-width:280px}
+.mkt-funnel-svg{width:100%;height:auto;display:block}
+
+@media(max-width:880px){
+  .mkt-hero-grid{grid-template-columns:1fr;gap:32px}
+  .mkt-hero-deco{height:240px;order:-1}
+  .mkt-deco-ring{width:200px;height:200px}
+  .mkt-deco-ring::before{width:140px;height:140px}
+  .mkt-deco-ring::after{width:80px;height:80px}
+}
