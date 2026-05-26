@@ -52,7 +52,6 @@ export type NavItemResolved = {
 
 /** Standard-aktive Einträge (die übrigen sind zwar verfügbar, aber per Default nicht in der Hauptnavbar sichtbar). */
 const DEFAULT_ACTIVE: ReadonlySet<NavKey> = new Set([
-  "home",
   "kleidung",
   "taschen",
   "werbeartikel",

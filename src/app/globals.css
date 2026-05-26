@@ -1343,9 +1343,10 @@ body:has(.home-services) footer.site{margin-top:0}
 /* === Erweitertes Formular === */
 .kontakt-form-card{background:#fafaf9;border:1px solid var(--line);
   padding:36px;display:flex;flex-direction:column;gap:18px}
-.kf-row{display:grid;grid-template-columns:1fr 1fr;gap:18px}
+.kf-row{display:grid;grid-template-columns:1fr 1fr;gap:18px;align-items:end}
 .kf-field{display:flex;flex-direction:column;gap:6px}
 .kf-field label{font-size:.85rem;font-weight:600;color:var(--ink);
+  min-height:1.3em} /* Label-Höhe konstant, damit Inputs in einer Zeile starten */
   letter-spacing:.01em}
 .kf-field input,.kf-field select,.kf-field textarea{
   padding:13px 14px;border:1px solid var(--line);background:#fff;
