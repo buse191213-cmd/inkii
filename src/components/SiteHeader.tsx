@@ -1,8 +1,8 @@
 "use client";
 
 import Link from "next/link";
-import { usePathname } from "next/navigation";
-import { useState } from "react";
+import { usePathname, useSearchParams } from "next/navigation";
+import { Suspense, useState } from "react";
 import { useMerkliste } from "./MerklisteProvider";
 import LangSwitcher from "./LangSwitcher";
 import type { Locale } from "@/lib/i18n";
@@ -20,23 +20,49 @@ const FALLBACK_NAV: NavItem[] = [
   { href: "/marketing", key: "marketing" },
 ];
 
-export default function SiteHeader({
-  locale,
-  nav,
-  t,
-  navItems,
-}: {
+type HeaderProps = {
   locale: Locale;
   nav: Dictionary["nav"];
   t: Dictionary["header"];
   navItems?: NavItem[];
-}) {
+};
+
+export default function SiteHeader(props: HeaderProps) {
+  return (
+    <Suspense fallback={null}>
+      <SiteHeaderInner {...props} />
+    </Suspense>
+  );
+}
+
+function SiteHeaderInner({
+  locale,
+  nav,
+  t,
+  navItems,
+}: HeaderProps) {
   const NAV = navItems && navItems.length > 0 ? navItems : FALLBACK_NAV;
   const pathname = usePathname();
   const [open, setOpen] = useState(false);
   const { count } = useMerkliste();
-  const isActive = (href: string) =>
-    href === "/" ? pathname === "/" : pathname.startsWith(href);
+  const searchParams = useSearchParams();
+  const currentCat = searchParams.get("cat");
+
+  /** Erkenne aktive Navbar-Items — auch wenn die href einen ?cat=…-Parameter trägt. */
+  const isActive = (href: string): boolean => {
+    if (href === "/") return pathname === "/";
+    const [linkPath, linkQuery] = href.split("?");
+    if (!pathname.startsWith(linkPath)) return false;
+    const linkCat = linkQuery
+      ? new URLSearchParams(linkQuery).get("cat")
+      : null;
+    // Link mit cat=… → URL muss exakt diesen cat haben.
+    if (linkCat) return currentCat === linkCat;
+    // Link ohne cat (z. B. /werbemittel) → URL darf KEIN cat haben,
+    // sonst wäre ein spezifischeres Item gerade aktiv.
+    if (linkPath === "/werbemittel") return !currentCat;
+    return true;
+  };
 
   return (
     <>
