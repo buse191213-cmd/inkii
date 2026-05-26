@@ -50,10 +50,6 @@ export default async function WebdesignPage() {
       >
         <div className="wd-hero-overlay" />
         <div className="wd-hero-inner">
-          <div className="wd-hero-eyebrow">
-            <span className="wd-dot" />
-            INKII WORKS &nbsp;·&nbsp; Digital Studio
-          </div>
           <h1 className="wd-hero-title">
             Gestalten Sie Ihre <br />digitale Präsenz.
           </h1>

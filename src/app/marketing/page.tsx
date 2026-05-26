@@ -69,10 +69,6 @@ export default async function MarketingPage() {
       <section className="mk-hero">
         <div className="mk-hero-bg" />
         <div className="mk-hero-inner">
-          <div className="mk-eyebrow">
-            <span className="mk-dot" />
-            INKII WORKS &nbsp;·&nbsp; Digital Studio
-          </div>
           <h1 className="mk-hero-title">
             Datengetriebenes Wachstum, <br />
             <span className="mk-gradient-text">Performance &amp; Markenautorität.</span>
