@@ -21,9 +21,13 @@ export default function SiteFooter({
             <h4>{t.colLeistungen}</h4>
             <ul>
               <li><Link href="/veredelung">{t.lVeredelung}</Link></li>
+              <li><Link href="/werbemittel">{t.lBerufsbekleidung}</Link></li>
               <li><Link href="/leistungen/sportartikel">{t.lTeamwear}</Link></li>
               <li><Link href="/werbemittel">{t.lWerbemittel}</Link></li>
+              <li><Link href="/werbemittel">{t.lShop}</Link></li>
+              <li><Link href="/leistungen">{t.lWebdesign}</Link></li>
               <li><Link href="/leistungen">{t.lOnlineshops}</Link></li>
+              <li><Link href="/leistungen">{t.lMarketing}</Link></li>
             </ul>
           </div>
           <div>

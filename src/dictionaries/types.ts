@@ -28,9 +28,13 @@ export type Dictionary = {
     colService: string;
     colRecht: string;
     lVeredelung: string;
+    lBerufsbekleidung: string;
     lTeamwear: string;
     lWerbemittel: string;
+    lShop: string;
+    lWebdesign: string;
     lOnlineshops: string;
+    lMarketing: string;
     lNachhaltigkeit: string;
     lFaq: string;
     lKontakt: string;
