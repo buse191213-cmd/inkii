@@ -4,8 +4,14 @@ import type { Dictionary } from "@/dictionaries/types";
 /** Alle bekannten Navbar-Einträge in Standard-Reihenfolge. */
 export const NAV_KEYS = [
   "home",
-  "veredelung",
+  "kleidung",
+  "taschen",
+  "werbeartikel",
   "werbemittel",
+  "webdesign",
+  "marketing",
+  // Sekundär (per Admin abschaltbar):
+  "veredelung",
   "leistungen",
   "bereiche",
   "nachhaltigkeit",
@@ -18,8 +24,13 @@ export type NavKey = (typeof NAV_KEYS)[number];
 /** Pfad zu jedem Schlüssel. */
 export const NAV_HREF: Record<NavKey, string> = {
   home: "/",
-  veredelung: "/veredelung",
+  kleidung: "/werbemittel?cat=kleidung",
+  taschen: "/werbemittel?cat=taschen",
+  werbeartikel: "/werbemittel?cat=werbeartikel",
   werbemittel: "/werbemittel",
+  webdesign: "/leistungen",
+  marketing: "/leistungen",
+  veredelung: "/veredelung",
   leistungen: "/leistungen",
   bereiche: "/bereiche",
   nachhaltigkeit: "/nachhaltigkeit",
@@ -38,6 +49,17 @@ export type NavItemResolved = {
   active: boolean;
   sortOrder: number;
 };
+
+/** Standard-aktive Einträge (die übrigen sind zwar verfügbar, aber per Default nicht in der Hauptnavbar sichtbar). */
+const DEFAULT_ACTIVE: ReadonlySet<NavKey> = new Set([
+  "home",
+  "kleidung",
+  "taschen",
+  "werbeartikel",
+  "werbemittel",
+  "webdesign",
+  "marketing",
+]);
 
 /**
  * Lädt alle Einstellungen aus der DB und ergänzt fehlende Schlüssel mit
@@ -65,7 +87,7 @@ export async function getAllNavItems(): Promise<NavItemResolved[]> {
     return {
       key: k,
       href: NAV_HREF[k],
-      active: r ? r.active : true,
+      active: r ? r.active : DEFAULT_ACTIVE.has(k),
       sortOrder: r ? r.sortOrder : (i + 1) * 10,
     };
   }).sort((a, b) => a.sortOrder - b.sortOrder);

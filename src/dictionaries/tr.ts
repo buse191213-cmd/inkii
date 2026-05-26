@@ -10,6 +10,11 @@ const tr: Dictionary = {
     nachhaltigkeit: "Sürdürülebilirlik",
     ueberUns: "Hakkımızda",
     kontakt: "İletişim",
+    kleidung: "Giyim",
+    taschen: "Çantalar",
+    werbeartikel: "Promosyon Ürünleri",
+    webdesign: "Web Tasarım",
+    marketing: "Pazarlama",
   },
   header: {
     hotline: "Servis hattı:",

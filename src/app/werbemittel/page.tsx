@@ -3,6 +3,7 @@ import CatalogClient, { CatalogProduct, CatalogCategory } from "@/components/Cat
 import { db } from "@/lib/db";
 import type { Metadata } from "next";
 import Link from "next/link";
+import { Suspense } from "react";
 import { getLocale } from "@/lib/i18n-server";
 import { getDictionary } from "@/dictionaries";
 
@@ -53,13 +54,15 @@ export default async function WerbemittelPage() {
 
   return (
     <SiteShell>
-      <CatalogClient
-        products={products}
-        categories={categories}
-        t={d.catalog}
-        nav={d.nav}
-        c={d.common}
-      />
+      <Suspense fallback={<div style={{ minHeight: 400 }} />}>
+        <CatalogClient
+          products={products}
+          categories={categories}
+          t={d.catalog}
+          nav={d.nav}
+          c={d.common}
+        />
+      </Suspense>
       <div className="cta-strip" style={{ margin: "60px 28px 0" }}>
         <h2>{d.catalog.ctaTitle}</h2>
         <p>{d.catalog.ctaText}</p>

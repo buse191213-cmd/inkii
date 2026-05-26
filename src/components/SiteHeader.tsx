@@ -12,13 +12,12 @@ type NavItem = { href: string; key: keyof Dictionary["nav"] };
 
 const FALLBACK_NAV: NavItem[] = [
   { href: "/", key: "home" },
-  { href: "/veredelung", key: "veredelung" },
+  { href: "/werbemittel?cat=kleidung", key: "kleidung" },
+  { href: "/werbemittel?cat=taschen", key: "taschen" },
+  { href: "/werbemittel?cat=werbeartikel", key: "werbeartikel" },
   { href: "/werbemittel", key: "werbemittel" },
-  { href: "/leistungen", key: "leistungen" },
-  { href: "/bereiche", key: "bereiche" },
-  { href: "/nachhaltigkeit", key: "nachhaltigkeit" },
-  { href: "/ueber-uns", key: "ueberUns" },
-  { href: "/kontakt", key: "kontakt" },
+  { href: "/leistungen", key: "webdesign" },
+  { href: "/leistungen", key: "marketing" },
 ];
 
 export default function SiteHeader({

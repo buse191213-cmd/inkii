@@ -10,6 +10,11 @@ const de: Dictionary = {
     nachhaltigkeit: "Nachhaltigkeit",
     ueberUns: "Über Uns",
     kontakt: "Kontakt",
+    kleidung: "Kleidung",
+    taschen: "Taschen",
+    werbeartikel: "Werbeartikel",
+    webdesign: "Webdesign",
+    marketing: "Marketing",
   },
   header: {
     hotline: "Service-Hotline:",

@@ -1,7 +1,8 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useMemo, useState, useEffect } from "react";
 import Link from "next/link";
+import { useSearchParams } from "next/navigation";
 import { ProductIcon } from "@/lib/icons";
 import { formatPrice } from "@/lib/format";
 import { colorHex, colorLabel, materialLabel } from "@/lib/catalog-options";
@@ -49,7 +50,21 @@ export default function CatalogClient({
   nav: Dictionary["nav"];
   c: Dictionary["common"];
 }) {
+  const searchParams = useSearchParams();
   const [cat, setCat] = useState("all");
+
+  // URL-Parameter ?cat=… beim Mount und bei jeder Änderung übernehmen
+  useEffect(() => {
+    const urlCat = searchParams.get("cat");
+    if (urlCat && categories.some((x) => x.slug === urlCat)) {
+      setCat(urlCat);
+    } else if (urlCat === null) {
+      // kein Parameter → 'all'
+      setCat("all");
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [searchParams]);
+
   const [color, setColor] = useState<string | null>(null);
   const [selMaterials, setSelMaterials] = useState<string[]>([]);
   const [minStock, setMinStock] = useState(0);
