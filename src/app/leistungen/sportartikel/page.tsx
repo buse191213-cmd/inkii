@@ -11,7 +11,7 @@ export const metadata: Metadata = {
 };
 
 export default async function SportartikelPage() {
-  const hero = await getHomeImage("sport-1");
+  const hero = await getHomeImage("sport-hero");
   const s1 = await getHomeImage("sport-1");
   const s2 = await getHomeImage("sport-2");
   const s3 = await getHomeImage("sport-3");

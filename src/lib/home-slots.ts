@@ -36,6 +36,7 @@ export const HOME_SLOTS: HomeSlot[] = [
   { slot: "area-4", label: "Bereich 4 — Marketing", group: "bereiche" },
   { slot: "vd-hero", label: "Textilveredelung — Titelbild (großer Hero-Bereich)", group: "page" },
   { slot: "uu-hero", label: "Über Uns — Titelbild (großer Hero-Bereich)", group: "page" },
+  { slot: "sport-hero", label: "Sportartikel — Titelbild (großer Hero-Bereich)", group: "page" },
   { slot: "sport-1", label: "Sportartikel — Bild 1 (Mood-Bild)", group: "page" },
   { slot: "sport-2", label: "Sportartikel — Bild 2 (Mood-Bild)", group: "page" },
   { slot: "sport-3", label: "Sportartikel — Bild 3 (Mood-Bild)", group: "page" },
