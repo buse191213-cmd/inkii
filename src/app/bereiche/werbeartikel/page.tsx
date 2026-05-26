@@ -12,6 +12,7 @@ export const metadata: Metadata = {
 
 export default async function WerbeartikelDetailPage() {
   const heroImg = await getHomeImage("area-2");
+  const img1 = await getHomeImage("feat-3");
 
   return (
     <SiteShell>
@@ -27,33 +28,28 @@ export default async function WerbeartikelDetailPage() {
             <span className="mm-dot">•</span>
             <span className="active">Werbeartikel</span>
           </div>
-          <h1 className="mm-page-h1">Werbeartikel, die Ihr Unternehmen sichtbar machen.</h1>
+          <h1 className="mm-page-h1">Werbeartikel.</h1>
           <p className="mm-page-lead">
-            Funktion trifft Markenwirkung — Ob Taschen, Trinkflaschen oder Büroartikel.
+            Textildruck &amp; Bestickung für Taschen und mehr.
           </p>
         </div>
       </section>
 
-      <section className="mm-page-section">
-        <div className="wrap">
-          <div className="mm-story-grid">
-            <div>
-              <span className="mm-page-kicker">Markenbotschafter</span>
-              <h2 className="mm-page-h2">Praktische Werbung mit echtem Mehrwert.</h2>
-            </div>
-            <div className="mm-story-text">
-              <p>
-                Gemeinsam mit INKII Works gestalten wir hochwertige Werbeartikel, die Ihre
-                Marke im Alltag präsent halten. Durch individuelle Veredelung und sorgfältig
-                ausgewählte Produkte entstehen praktische Markenbotschafter mit echtem Mehrwert.
-              </p>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      <section className="mm-page-section alt">
-        <div className="wrap">
+      {/* SEKTION: Image sol + Text sağ */}
+      <section className="mm-split">
+        <div
+          className="mm-split-img"
+          style={img1 ? { backgroundImage: `url(${img1})` } : undefined}
+        />
+        <div className="mm-split-body">
+          <span className="mm-page-kicker">Werbeartikel, die Ihr Unternehmen sichtbar machen.</span>
+          <h2 className="mm-page-h2">Funktion trifft Markenwirkung.</h2>
+          <p>
+            Ob Taschen, Trinkflaschen oder Büroartikel — gemeinsam mit INKII Works
+            gestalten wir hochwertige Werbeartikel, die Ihre Marke im Alltag präsent
+            halten. Durch individuelle Veredelung und sorgfältig ausgewählte Produkte
+            entstehen praktische Markenbotschafter mit echtem Mehrwert.
+          </p>
           <ul className="mm-feature-list">
             <li><span>✓</span> Große Auswahl an Werbeartikeln für Unternehmen</li>
             <li><span>✓</span> Individuelle Veredelung mit Ihrem Logo oder Design</li>

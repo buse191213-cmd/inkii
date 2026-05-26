@@ -1784,3 +1784,26 @@ body:has(.home-services) footer.site{margin-top:0}
 /* Tile-Link hover */
 .mm-page-tile-link{cursor:pointer}
 .mm-page-tile-link:hover{transform:translateY(-6px)}
+
+/* === Split Layout: half image + half text (modern alternating sections) === */
+.mm-split{display:grid;grid-template-columns:1fr 1fr;align-items:stretch;
+  min-height:520px;background:#fff}
+.mm-split-img{background:#1c2722 center/cover no-repeat;min-height:380px}
+.mm-split-body{padding:80px clamp(40px,7vw,90px);
+  display:flex;flex-direction:column;justify-content:center;gap:18px;max-width:680px}
+.mm-split-body .mm-page-kicker{margin-bottom:0}
+.mm-split-body .mm-page-h2{margin:0 0 8px}
+.mm-split-body p{font-size:1rem;line-height:1.65;color:#3b4540;margin:0}
+.mm-split-body .mm-feature-list{margin-top:14px}
+
+/* Reverse: image sağda */
+.mm-split-reverse .mm-split-img{order:2}
+.mm-split-reverse .mm-split-body{order:1;margin-left:auto}
+
+@media(max-width:880px){
+  .mm-split{grid-template-columns:1fr}
+  .mm-split-img{min-height:280px;aspect-ratio:16/10}
+  .mm-split-body{padding:48px 28px}
+  .mm-split-reverse .mm-split-img{order:0}
+  .mm-split-reverse .mm-split-body{order:1}
+}
