@@ -39,7 +39,7 @@ const tr: Dictionary = {
     lShop: "INKII Works Mağaza",
     lWebdesign: "Web Tasarım & Dijital Çözümler",
     lOnlineshops: "Kurumlar için Online Mağaza",
-    lMarketing: "Bütünsel Pazarlama Çözümleri",
+    lMarketing: "INKII Works ile Bütünsel Pazarlama Çözümleri",
     lNachhaltigkeit: "Sürdürülebilirlik",
     lFaq: "SSS",
     lKontakt: "İletişim",

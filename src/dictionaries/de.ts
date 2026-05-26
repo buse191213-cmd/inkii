@@ -39,7 +39,7 @@ const de: Dictionary = {
     lShop: "INKII Works Shop",
     lWebdesign: "Webdesign & digitale Lösungen",
     lOnlineshops: "Onlineshops für Unternehmen",
-    lMarketing: "Ganzheitliche Marketinglösungen",
+    lMarketing: "Ganzheitliche Marketinglösungen mit INKII Works",
     lNachhaltigkeit: "Nachhaltigkeit",
     lFaq: "FAQ",
     lKontakt: "Kontakt",
