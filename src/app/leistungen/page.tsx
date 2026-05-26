@@ -22,14 +22,50 @@ export default async function LeistungenPage() {
   const f4 = await getHomeImage("feat-4");
   const f5 = await getHomeImage("feat-5");
   const f6 = await getHomeImage("feat-6");
+  const f7 = await getHomeImage("feat-7");
+  const f8 = await getHomeImage("feat-8");
 
   const services = [
-    { label: "Textildruck & Veredelung", desc: "Siebdruck, DTG, Stickerei, Transferdruck.", img: f1, href: "/veredelung" },
-    { label: "Sportartikel", desc: "Team- und Sportbekleidung mit Logo und Branding.", img: f2, href: "/leistungen/sportartikel" },
-    { label: "Werbemittel & Merch", desc: "Tassen, Taschen, Powerbanks, Stifte u. v. m.", img: f3, href: "/werbemittel" },
-    { label: "Arbeits- & Berufskleidung", desc: "Robuste Workwear, individuell bedruckt.", img: f4, href: "/werbemittel" },
-    { label: "Eigene Onlineshops", desc: "Mitarbeiter- und Vereinsshops aus einer Hand.", img: f5, href: "/leistungen" },
-    { label: "Nachhaltige Produktion", desc: "Eco-zertifizierte Lieferanten und faire Partner.", img: f6, href: "/nachhaltigkeit" },
+    {
+      label: "Professionelle Textilveredelung",
+      desc: "Siebdruck, Stickerei, DTF, Flockdruck und Patches — alle Verfahren aus einer Hand.",
+      img: f1, href: "/veredelung",
+    },
+    {
+      label: "Firmen- und Berufsbekleidung",
+      desc: "Workwear und Corporate Wear, individuell veredelt mit Ihrem Logo.",
+      img: f2, href: "/werbemittel?cat=kleidung",
+    },
+    {
+      label: "Team- & Sportbekleidung",
+      desc: "Trikots, Hoodies und Team-Outfits für Vereine und Mannschaften.",
+      img: f3, href: "/leistungen/sportartikel",
+    },
+    {
+      label: "Hochwertige Werbemittel",
+      desc: "Tassen, Taschen, Powerbanks, Stifte und mehr — als Markenbotschafter.",
+      img: f4, href: "/werbemittel?cat=werbeartikel",
+    },
+    {
+      label: "INKII Works Shop",
+      desc: "Stöbern Sie durch unser komplettes Sortiment — alle Produkte auf einen Blick.",
+      img: f5, href: "/werbemittel",
+    },
+    {
+      label: "Webdesign & digitale Lösungen",
+      desc: "Moderne Websites, Landingpages und individuelle digitale Lösungen.",
+      img: f6, href: "/webdesign",
+    },
+    {
+      label: "Onlineshops für Unternehmen",
+      desc: "Eigene Mitarbeiter- und Vereinsshops mit textilen Produkten — schlüsselfertig.",
+      img: f7, href: "/werbemittel?cat=kleidung",
+    },
+    {
+      label: "Ganzheitliche Marketinglösungen mit INKII Works",
+      desc: "Performance, SEO, Social Media und Automation — Wachstum aus einer Hand.",
+      img: f8, href: "/marketing",
+    },
   ];
 
   return (
@@ -53,7 +89,7 @@ export default async function LeistungenPage() {
 
       <section className="mm-page-section">
         <div className="wrap">
-          <div className="mm-page-tiles cols-3">
+          <div className="mm-page-tiles cols-4">
             {services.map((s, i) => (
               <Link
                 key={s.label}
