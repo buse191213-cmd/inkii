@@ -422,6 +422,22 @@ const de: Dictionary = {
     ctaH: "Lassen Sie Ihre Marke wachsen.",
     ctaP: "Kostenlose Strategie-Beratung in 24 Stunden.",
   },
+  cookie: {
+    title: "Cookies & Datenschutz",
+    text: "Wir verwenden Cookies, um Ihnen die bestmögliche Erfahrung auf unserer Website zu bieten. Notwendige Cookies werden immer geladen. Andere Cookies setzen wir nur mit Ihrer Zustimmung ein.",
+    acceptAll: "Alle akzeptieren",
+    acceptNecessary: "Nur Notwendige",
+    customize: "Einstellungen",
+    save: "Auswahl speichern",
+    necessary: "Notwendig",
+    necessaryDesc: "Für den Betrieb der Website erforderlich (z. B. Spracheinstellung, Merkliste).",
+    analytics: "Statistiken",
+    analyticsDesc: "Helfen uns zu verstehen, wie Sie die Website nutzen.",
+    marketing: "Marketing",
+    marketingDesc: "Werden verwendet, um personalisierte Inhalte und Werbung anzuzeigen.",
+    privacy: "Datenschutzerklärung",
+    imprint: "Impressum",
+  },
 };
 
 export default de;

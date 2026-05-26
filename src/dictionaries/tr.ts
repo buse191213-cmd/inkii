@@ -422,6 +422,22 @@ const tr: Dictionary = {
     ctaH: "Markanızı büyütelim.",
     ctaP: "24 saat içinde ücretsiz strateji danışmanlığı.",
   },
+  cookie: {
+    title: "Çerezler ve Gizlilik",
+    text: "Web sitemizde en iyi deneyimi sunmak için çerezler kullanıyoruz. Zorunlu çerezler her zaman yüklenir. Diğer çerezleri yalnızca onayınızla kullanırız.",
+    acceptAll: "Tümünü kabul et",
+    acceptNecessary: "Sadece zorunlu",
+    customize: "Ayarlar",
+    save: "Seçimi kaydet",
+    necessary: "Zorunlu",
+    necessaryDesc: "Sitenin çalışması için gereklidir (dil ayarı, favori listesi vb.).",
+    analytics: "İstatistik",
+    analyticsDesc: "Siteyi nasıl kullandığınızı anlamamıza yardımcı olur.",
+    marketing: "Pazarlama",
+    marketingDesc: "Kişiselleştirilmiş içerik ve reklam göstermek için kullanılır.",
+    privacy: "Gizlilik politikası",
+    imprint: "Künye",
+  },
 };
 
 export default tr;

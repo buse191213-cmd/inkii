@@ -2,8 +2,10 @@ import type { Metadata } from "next";
 import { Montserrat } from "next/font/google";
 import { SITE_URL } from "@/lib/site";
 import { getLocale } from "@/lib/i18n-server";
+import { getDictionary } from "@/dictionaries";
 import { organizationSchema } from "@/lib/schema";
 import JsonLd from "@/components/JsonLd";
+import CookieBanner from "@/components/CookieBanner";
 import "./globals.css";
 
 const display = Montserrat({
@@ -55,10 +57,12 @@ export default async function RootLayout({
   children: React.ReactNode;
 }) {
   const locale = await getLocale();
+  const d = getDictionary(locale);
   return (
     <html lang={locale} className={`${display.variable} ${body.variable}`}>
       <body>
         {children}
+        <CookieBanner dict={d.cookie} />
         <JsonLd data={organizationSchema()} />
       </body>
     </html>

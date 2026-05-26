@@ -302,4 +302,20 @@ export type Dictionary = {
     ctaH: string;
     ctaP: string;
   };
+  cookie: {
+    title: string;
+    text: string;
+    acceptAll: string;
+    acceptNecessary: string;
+    customize: string;
+    save: string;
+    necessary: string;
+    necessaryDesc: string;
+    analytics: string;
+    analyticsDesc: string;
+    marketing: string;
+    marketingDesc: string;
+    privacy: string;
+    imprint: string;
+  };
 };
