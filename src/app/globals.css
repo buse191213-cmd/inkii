@@ -1238,12 +1238,15 @@ body:has(.home-services) footer.site{margin-top:0}
 .svc-box:hover .svc-img{transform:scale(1.05)}
 .svc-overlay{position:absolute;inset:0;
   background:linear-gradient(to bottom,rgba(0,0,0,.25) 0%,rgba(0,0,0,.65) 100%)}
-.svc-text{position:absolute;left:32px;right:32px;bottom:32px;color:#fff;z-index:1}
+.svc-text{position:absolute;left:32px;right:32px;bottom:32px;color:#fff;z-index:1;
+  display:flex;flex-direction:column;justify-content:flex-end}
 .svc-label{font-family:var(--display);font-weight:700;
   font-size:clamp(1.1rem,1.7vw,1.5rem);letter-spacing:.06em;
-  color:#fff;line-height:1.1;margin-bottom:10px}
+  color:#fff;line-height:1.1;margin-bottom:10px;
+  min-height:calc(1.1em * 1)} /* Label immer einzeilig */
 .svc-sub{font-size:.82rem;line-height:1.4;color:rgba(255,255,255,.85);
-  font-weight:400;max-width:340px;letter-spacing:.005em}
+  font-weight:400;max-width:340px;letter-spacing:.005em;
+  min-height:calc(1.4em * 3)} /* drei Zeilen reservieren — Label bleibt auf gleicher Höhe */
 
 /* Home: Footer-Abstand entfernen — siehe oben */
 

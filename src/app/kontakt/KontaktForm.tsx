@@ -94,8 +94,8 @@ export default function KontaktForm() {
           </select>
         </div>
         <div className="kf-field">
-          <label htmlFor="projektFrist">Projektfrist</label>
-          <input id="projektFrist" name="projektFrist" type="date" />
+          <label htmlFor="projektFrist">Projektfrist (TT.MM.JJJJ)</label>
+          <input id="projektFrist" name="projektFrist" type="date" lang="de" />
         </div>
       </div>
 
