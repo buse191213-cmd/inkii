@@ -16,10 +16,30 @@ export default async function HomePage() {
   const svcMkt = await getHomeImage("area-4");
 
   const services = [
-    { label: "TEXTILVEREDELUNG", href: "/bereiche", img: svcDruck },
-    { label: "WERBEARTIKEL", href: "/bereiche", img: svcWerbe },
-    { label: "WEBDESIGN", href: "/leistungen", img: svcWeb },
-    { label: "ONLINESHOPS", href: "/leistungen", img: svcMkt },
+    {
+      label: "TEXTILVEREDELUNG",
+      sub: "Textildruck & Bestickung für Firmen- und Berufsbekleidung sowie für Team- und Sportbekleidung.",
+      href: "/bereiche/textilveredelung",
+      img: svcDruck,
+    },
+    {
+      label: "WERBEARTIKEL",
+      sub: "Textildruck & Bestickung für Taschen und mehr.",
+      href: "/bereiche/werbeartikel",
+      img: svcWerbe,
+    },
+    {
+      label: "WEBDESIGN",
+      sub: "Moderne Websites und Online-Shops aus einer Hand.",
+      href: "/leistungen",
+      img: svcWeb,
+    },
+    {
+      label: "ONLINESHOPS",
+      sub: "Mitarbeiter- und Vereinsshops für Ihre Marke.",
+      href: "/leistungen",
+      img: svcMkt,
+    },
   ];
 
   return (
@@ -95,7 +115,10 @@ export default async function HomePage() {
               style={s.img ? { backgroundImage: `url(${s.img})` } : undefined}
             />
             <div className="svc-overlay" />
-            <div className="svc-label">{s.label}</div>
+            <div className="svc-text">
+              <div className="svc-label">{s.label}</div>
+              {s.sub && <div className="svc-sub">{s.sub}</div>}
+            </div>
           </Link>
         ))}
       </section>
