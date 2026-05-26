@@ -1838,3 +1838,62 @@ body:has(.home-services) footer.site{margin-top:0}
 @media(max-width:500px){
   .sport-row-3,.sport-row-5{grid-template-columns:1fr}
 }
+
+/* === Webdesign-Seite: Digital-Studio-Look === */
+.wd-hero{position:relative;min-height:88vh;display:flex;align-items:center;
+  justify-content:center;background:#0a0e0d center/cover no-repeat;
+  color:#fff;text-align:center;padding:80px clamp(20px,5vw,80px);
+  overflow:hidden}
+.wd-hero-overlay{position:absolute;inset:0;
+  background:radial-gradient(circle at 50% 50%,rgba(10,14,13,.55) 0%,rgba(10,14,13,.92) 100%);
+  pointer-events:none;z-index:0}
+.wd-hero-inner{position:relative;z-index:1;max-width:880px}
+.wd-hero-eyebrow{display:inline-flex;align-items:center;gap:10px;
+  font-size:.78rem;letter-spacing:.18em;font-weight:600;text-transform:uppercase;
+  color:rgba(255,255,255,.75);margin-bottom:26px;padding:8px 18px;
+  border:1px solid rgba(255,255,255,.18);border-radius:999px}
+.wd-dot{display:inline-block;width:7px;height:7px;border-radius:50%;
+  background:var(--leaf);box-shadow:0 0 12px var(--leaf)}
+.wd-hero-title{font-family:var(--display);font-weight:800;
+  font-size:clamp(2.4rem,5.6vw,4.6rem);letter-spacing:-.025em;line-height:1.02;
+  margin:0 0 22px;color:#fff}
+.wd-hero-sub{font-size:clamp(1rem,1.5vw,1.18rem);line-height:1.55;
+  color:rgba(255,255,255,.82);max-width:580px;margin:0 auto 36px}
+.wd-hero-btn{display:inline-flex;align-items:center;gap:12px;
+  background:var(--leaf);color:#fff;padding:18px 38px;
+  font-family:var(--display);font-weight:700;font-size:.95rem;letter-spacing:.06em;
+  text-transform:uppercase;text-decoration:none;border-radius:999px;
+  transition:.25s;box-shadow:0 12px 38px rgba(64,158,79,.35)}
+.wd-hero-btn:hover{background:var(--leaf-deep);transform:translateY(-2px);
+  box-shadow:0 18px 50px rgba(64,158,79,.5)}
+.wd-hero-btn span{transition:transform .2s}
+.wd-hero-btn:hover span{transform:translateX(4px)}
+
+/* Sektion */
+.wd-section{padding:96px 0;background:#fafaf9}
+.wd-section-head{text-align:center;max-width:680px;margin:0 auto 56px}
+.wd-kicker{font-size:.78rem;letter-spacing:.18em;font-weight:700;
+  text-transform:uppercase;color:var(--leaf-deep);margin-bottom:12px;display:block}
+.wd-section-h{font-family:var(--display);font-weight:800;
+  font-size:clamp(1.8rem,3.4vw,2.6rem);letter-spacing:-.02em;line-height:1.1;
+  color:var(--ink);margin:0}
+
+/* Cards */
+.wd-cards{display:grid;grid-template-columns:repeat(3,1fr);gap:24px}
+.wd-card{background:#fff;border-radius:18px;overflow:hidden;
+  border:1px solid #e8e8e6;transition:.3s;display:flex;flex-direction:column}
+.wd-card:hover{transform:translateY(-6px);
+  box-shadow:0 18px 40px rgba(0,0,0,.08)}
+.wd-card-img{aspect-ratio:4/3;background:#1c2722 center/cover no-repeat;
+  border-bottom:1px solid #e8e8e6}
+.wd-card-body{padding:24px 26px 28px;display:flex;flex-direction:column;gap:8px;flex:1}
+.wd-card-kicker{font-size:.72rem;letter-spacing:.16em;font-weight:700;
+  text-transform:uppercase;color:var(--leaf-deep)}
+.wd-card-title{font-family:var(--display);font-weight:700;font-size:1.18rem;
+  letter-spacing:-.01em;color:var(--ink);margin:0;line-height:1.25}
+.wd-card-desc{font-size:.93rem;line-height:1.55;color:#3b4540;margin:0}
+
+@media(max-width:900px){
+  .wd-cards{grid-template-columns:1fr;max-width:520px;margin:0 auto}
+  .wd-hero{min-height:78vh}
+}

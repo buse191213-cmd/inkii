@@ -8,8 +8,8 @@ import { getHomeImage } from "@/lib/home-images";
 export const dynamic = "force-dynamic";
 
 export const metadata: Metadata = {
-  title: "Webdesign | INKII Works",
-  description: "Moderne Websites und Online-Shops aus einer Hand — Webdesign by INKII WORKS.",
+  title: "Webdesign | INKII Digital Studio",
+  description: "Gestalten Sie Ihre digitale Präsenz — moderne, schnelle und SEO-optimierte Websites.",
 };
 
 export default async function WebdesignPage() {
@@ -19,62 +19,75 @@ export default async function WebdesignPage() {
   const t1 = await getHomeImage("webdesign-1");
   const t2 = await getHomeImage("webdesign-2");
   const t3 = await getHomeImage("webdesign-3");
-  const t4 = await getHomeImage("webdesign-4");
 
-  const services = [
+  const cards = [
     {
-      label: "Webseiten",
-      desc: "Moderne, responsive Websites mit klarem Design und schneller Ladezeit.",
+      kicker: "Webseiten",
+      title: "Markenwebsites & Landingpages",
+      desc: "Modern, hochwertig, schnell. SEO-optimiert und auf allen Endgeräten brillant.",
       img: t1,
     },
     {
-      label: "Onlineshops",
-      desc: "B2B- und B2C-Shops für Ihre Produkte — vom Kassensystem bis zur Lieferung.",
+      kicker: "Onlineshops",
+      title: "E-Commerce-Lösungen",
+      desc: "B2B- und B2C-Shops mit Zahlungsabwicklung, Versand und Mitarbeiter-Shops.",
       img: t2,
     },
     {
-      label: "Mitarbeiter-Shops",
-      desc: "Eigene Bestellplattform für Firmenkleidung und Werbeartikel.",
+      kicker: "Corporate Design",
+      title: "Markenauftritt & UI",
+      desc: "Logo, Farbwelt, Typografie und ein konsistentes Design-System für alle Kanäle.",
       img: t3,
-    },
-    {
-      label: "Wartung & Hosting",
-      desc: "Updates, Backups, sichere Server — Ihre Website läuft, ohne dass Sie etwas tun.",
-      img: t4,
     },
   ];
 
   return (
     <SiteShell>
+      {/* HERO — zentriert, mit großem Mockup-Hintergrund */}
       <section
-        className="mm-page-hero"
+        className="wd-hero"
         style={hero ? { backgroundImage: `url(${hero})` } : undefined}
       >
-        <div className="mm-page-hero-inner">
-          <div className="mm-page-crumb">
-            <Link href="/">Home</Link>
-            <span className="mm-dot">•</span>
-            <span className="active">Webdesign</span>
+        <div className="wd-hero-overlay" />
+        <div className="wd-hero-inner">
+          <div className="wd-hero-eyebrow">
+            <span className="wd-dot" />
+            INKII WORKS &nbsp;·&nbsp; Digital Studio
           </div>
-          <h1 className="mm-page-h1">Webdesign.</h1>
-          <p className="mm-page-lead">
-            Moderne Websites und Online-Shops aus einer Hand — Design, Entwicklung und Pflege.
+          <h1 className="wd-hero-title">
+            Gestalten Sie Ihre <br />digitale Präsenz.
+          </h1>
+          <p className="wd-hero-sub">
+            Moderne, schnelle und SEO-optimierte Websites für Ihre Marke.
           </p>
+          <Link href="/kontakt" className="wd-hero-btn">
+            Entdecken
+            <span aria-hidden>→</span>
+          </Link>
         </div>
       </section>
 
-      <section className="mm-page-section">
+      {/* LÖSUNGEN — 3 Cards mit großem Mockup-Bild oben */}
+      <section className="wd-section">
         <div className="wrap">
-          <div className="mm-page-tiles cols-4">
-            {services.map((s, i) => (
-              <div
-                key={s.label}
-                className="mm-page-tile"
-                style={s.img ? { backgroundImage: `url(${s.img})` } : undefined}
-              >
-                <div className="mm-page-tile-label">0{i + 1}</div>
-                <h3 className="mm-page-tile-title">{s.label}</h3>
-                <p className="mm-page-tile-desc">{s.desc}</p>
+          <div className="wd-section-head">
+            <span className="wd-kicker">Unsere Lösungen</span>
+            <h2 className="wd-section-h">
+              Alles, was Ihre Marke online braucht.
+            </h2>
+          </div>
+          <div className="wd-cards">
+            {cards.map((c) => (
+              <div key={c.kicker} className="wd-card">
+                <div
+                  className="wd-card-img"
+                  style={c.img ? { backgroundImage: `url(${c.img})` } : undefined}
+                />
+                <div className="wd-card-body">
+                  <span className="wd-card-kicker">{c.kicker}</span>
+                  <h3 className="wd-card-title">{c.title}</h3>
+                  <p className="wd-card-desc">{c.desc}</p>
+                </div>
               </div>
             ))}
           </div>
