@@ -278,4 +278,28 @@ export type Dictionary = {
     ctaText: string;
     ctaBtn: string;
   };
+  webdesign: {
+    metaTitle: string;
+    metaDesc: string;
+    heroTitle1: string;
+    heroTitle2: string;
+    heroSub: string;
+    heroBtn: string;
+    sectionKicker: string;
+    sectionH: string;
+    cards: { kicker: string; title: string; desc: string }[];
+    ctaH: string;
+    ctaP: string;
+  };
+  marketing: {
+    metaTitle: string;
+    metaDesc: string;
+    heroTitle1: string;
+    heroTitle2: string;
+    heroSub: string;
+    heroBtn: string;
+    cards: { kicker: string; title: string; desc: string }[];
+    ctaH: string;
+    ctaP: string;
+  };
 };

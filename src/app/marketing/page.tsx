@@ -61,7 +61,7 @@ function SeoMockup() {
           <circle cx="7" cy="7" r="5" />
           <path d="M11 11l3 3" strokeLinecap="round" />
         </svg>
-        <span className="mkt-search-text">inkii works merch</span>
+        <span className="mkt-search-text">inkii werbeartikel</span>
         <span className="mkt-search-google">Google</span>
       </div>
       <div className="mkt-results">
@@ -196,33 +196,10 @@ function EmailAutomationMockup() {
 export default async function MarketingPage() {
   const locale = await getLocale();
   const d = getDictionary(locale);
+  const m = d.marketing;
 
-  const cards = [
-    {
-      kicker: "Performance",
-      title: "Meta & Google Ads",
-      desc: "Budgetoptimierung und kreative Kampagnen für maximalen Umsatz.",
-      mockup: <GrowthChartMockup />,
-    },
-    {
-      kicker: "SEO",
-      title: "Organisches Wachstum",
-      desc: "Dauerhafte Sichtbarkeit bei Google ohne laufende Klickkosten.",
-      mockup: <SeoMockup />,
-    },
-    {
-      kicker: "Social Media",
-      title: "Kreative Markenpräsenz",
-      desc: "Zielgerichtete Content-Strategien für Instagram, TikTok und LinkedIn zur Steigerung der Markenbindung.",
-      mockup: <SocialMediaMockup />,
-    },
-    {
-      kicker: "Automation",
-      title: "Smart E-Mail-Marketing",
-      desc: "Automatisierte Flows (Klaviyo) zur Kundenrückgewinnung und Umsatzsteigerung durch personalisierte Newsletter.",
-      mockup: <EmailAutomationMockup />,
-    },
-  ];
+  const mockups = [<GrowthChartMockup />, <SeoMockup />, <SocialMediaMockup />, <EmailAutomationMockup />];
+  const cards = m.cards.map((c, i) => ({ ...c, mockup: mockups[i] }));
 
   return (
     <SiteShell>
@@ -231,14 +208,11 @@ export default async function MarketingPage() {
           <div className="mkt-hero-grid">
             <div className="mkt-hero-text">
               <h1 className="mkt-hero-title">
-                Datenbasierte <br />Wachstumsstrategien
+                {m.heroTitle1} <br />{m.heroTitle2}
               </h1>
-              <p className="mkt-hero-sub">
-                Maximale Conversion und nachhaltiges Wachstum durch
-                datenbasierte digitale Marketinglösungen.
-              </p>
+              <p className="mkt-hero-sub">{m.heroSub}</p>
               <Link href="/kontakt" className="mkt-hero-btn">
-                Kostenlose Analyse
+                {m.heroBtn}
                 <span aria-hidden>→</span>
               </Link>
             </div>
@@ -273,8 +247,8 @@ export default async function MarketingPage() {
       </section>
 
       <section className="mm-page-cta">
-        <h2 className="mm-page-cta-h">Lassen Sie Ihre Marke wachsen.</h2>
-        <p className="mm-page-cta-p">Kostenlose Strategie-Beratung in 24 Stunden.</p>
+        <h2 className="mm-page-cta-h">{m.ctaH}</h2>
+        <p className="mm-page-cta-p">{m.ctaP}</p>
         <Link href="/kontakt" className="mm-page-cta-btn">{d.nav.kontakt}</Link>
       </section>
     </SiteShell>

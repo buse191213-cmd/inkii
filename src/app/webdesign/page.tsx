@@ -117,28 +117,11 @@ function UIKitMockup() {
 export default async function WebdesignPage() {
   const locale = await getLocale();
   const d = getDictionary(locale);
+  const w = d.webdesign;
   const hero = await getHomeImage("webdesign-hero");
 
-  const cards = [
-    {
-      kicker: "Webseiten",
-      title: "Markenwebsites & Landingpages",
-      desc: "Modern, hochwertig, schnell. SEO-optimiert und auf allen Endgeräten brillant.",
-      mockup: <BrowserMockup />,
-    },
-    {
-      kicker: "Onlineshops",
-      title: "E-Commerce-Lösungen",
-      desc: "B2B- und B2C-Shops mit Zahlungsabwicklung, Versand und Mitarbeiter-Shops.",
-      mockup: <PhoneMockup />,
-    },
-    {
-      kicker: "Corporate Design",
-      title: "Markenauftritt & UI",
-      desc: "Logo, Farbwelt, Typografie und ein konsistentes Design-System für alle Kanäle.",
-      mockup: <UIKitMockup />,
-    },
-  ];
+  const mockups = [<BrowserMockup />, <PhoneMockup />, <UIKitMockup />];
+  const cards = w.cards.map((c, i) => ({ ...c, mockup: mockups[i] }));
 
   return (
     <SiteShell>
@@ -149,13 +132,11 @@ export default async function WebdesignPage() {
         <div className="wd-hero-overlay" />
         <div className="wd-hero-inner">
           <h1 className="wd-hero-title">
-            Gestalten Sie Ihre <br />digitale Präsenz.
+            {w.heroTitle1} <br />{w.heroTitle2}
           </h1>
-          <p className="wd-hero-sub">
-            Moderne, schnelle und SEO-optimierte Websites für Ihre Marke.
-          </p>
+          <p className="wd-hero-sub">{w.heroSub}</p>
           <Link href="/kontakt" className="wd-hero-btn">
-            Entdecken
+            {w.heroBtn}
             <span aria-hidden>→</span>
           </Link>
         </div>
@@ -164,8 +145,8 @@ export default async function WebdesignPage() {
       <section className="wd-section">
         <div className="wrap">
           <div className="wd-section-head">
-            <span className="wd-kicker">Unsere Lösungen</span>
-            <h2 className="wd-section-h">Alles, was Ihre Marke online braucht.</h2>
+            <span className="wd-kicker">{w.sectionKicker}</span>
+            <h2 className="wd-section-h">{w.sectionH}</h2>
           </div>
           <div className="wd-cards">
             {cards.map((c) => (
@@ -185,8 +166,8 @@ export default async function WebdesignPage() {
       </section>
 
       <section className="mm-page-cta">
-        <h2 className="mm-page-cta-h">Bereit für Ihre neue Website?</h2>
-        <p className="mm-page-cta-p">Kostenloses Konzept und Angebot in 24 Stunden.</p>
+        <h2 className="mm-page-cta-h">{w.ctaH}</h2>
+        <p className="mm-page-cta-p">{w.ctaP}</p>
         <Link href="/kontakt" className="mm-page-cta-btn">{d.nav.kontakt}</Link>
       </section>
     </SiteShell>

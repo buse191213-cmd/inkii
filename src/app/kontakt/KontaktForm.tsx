@@ -8,7 +8,7 @@ const initial: InquiryState = { ok: false };
 const PROJEKT_TYPEN = [
   "Textildruck & Veredelung",
   "Stickerei",
-  "Werbemittel & Merch",
+  "Werbemittel & Werbeartikel",
   "Druck (Flyer, Plakate, etc.)",
   "Werbetechnik",
   "Webdesign",

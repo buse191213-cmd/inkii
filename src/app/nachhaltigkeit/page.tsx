@@ -76,7 +76,7 @@ export default async function NachhaltigkeitPage() {
       </section>
 
       <section className="mm-page-cta">
-        <h2 className="mm-page-cta-h">Nachhaltige Merch-Lösungen, persönlich beraten.</h2>
+        <h2 className="mm-page-cta-h">Nachhaltige Werbeartikel-Lösungen, persönlich beraten.</h2>
         <p className="mm-page-cta-p">Fragen Sie nach unseren Eco-Linien — wir helfen gerne bei der Auswahl.</p>
         <Link href="/kontakt" className="mm-page-cta-btn">{d.nav.kontakt}</Link>
       </section>

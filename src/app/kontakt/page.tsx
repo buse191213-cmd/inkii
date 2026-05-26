@@ -55,7 +55,7 @@ export default async function KontaktPage() {
                 ))}
                 <div className="kontakt-avatars-info">
                   <div className="kontakt-badge">
-                    <span className="kb-check">✓</span> Merch-Expert:innen
+                    <span className="kb-check">✓</span> Werbemittel-Expert:innen
                   </div>
                   <div className="kontakt-status">
                     <span className="kb-dot" /> Verfügbar für neue Projekte

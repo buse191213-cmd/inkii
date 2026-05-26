@@ -46,7 +46,7 @@ export default async function LeistungenPage() {
           </div>
           <h1 className="mm-page-h1">Alles aus einer Hand.</h1>
           <p className="mm-page-lead">
-            Von Textildruck bis Onlineshop — wir liefern den kompletten Merch-Service.
+            Von Textildruck bis Onlineshop — wir liefern den kompletten Werbemittel-Service.
           </p>
         </div>
       </section>
