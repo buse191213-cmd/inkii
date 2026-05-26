@@ -2140,21 +2140,65 @@ body:has(.home-services) footer.site{margin-top:0}
 /* Dekoratives Element rechts */
 .mkt-hero-deco{position:relative;height:340px;display:flex;align-items:center;justify-content:center}
 .mkt-deco-ring{position:absolute;width:280px;height:280px;border-radius:50%;
-  border:1px solid #ececea;animation:mkt-spin 60s linear infinite}
+  border:1px solid #d8dcd6;animation:mkt-spin 28s linear infinite}
 .mkt-deco-ring::before{content:"";position:absolute;width:200px;height:200px;
-  border-radius:50%;border:1px solid #ececea;top:50%;left:50%;transform:translate(-50%,-50%)}
+  border-radius:50%;border:1px dashed #d8dcd6;top:50%;left:50%;transform:translate(-50%,-50%);
+  animation:mkt-spin-reverse 18s linear infinite}
 .mkt-deco-ring::after{content:"";position:absolute;width:120px;height:120px;
   border-radius:50%;background:linear-gradient(135deg,#7fa389 0%,#5e8470 100%);
   top:50%;left:50%;transform:translate(-50%,-50%);
-  box-shadow:0 20px 50px rgba(94,132,112,.3)}
-.mkt-deco-line{position:absolute;background:#ececea}
-.mkt-deco-line-1{top:30%;left:-10%;width:60%;height:1px;transform:rotate(-15deg)}
-.mkt-deco-line-2{bottom:25%;right:-10%;width:60%;height:1px;transform:rotate(20deg)}
+  box-shadow:0 20px 50px rgba(94,132,112,.3);
+  animation:mkt-breathe 4s ease-in-out infinite}
+/* Orbiting kleines Punkt am äußeren Ring */
+.mkt-hero-deco::before{content:"";position:absolute;width:10px;height:10px;
+  border-radius:50%;background:#5e8470;
+  box-shadow:0 0 16px rgba(94,132,112,.55);
+  animation:mkt-orbit-outer 14s linear infinite}
+.mkt-hero-deco::after{content:"";position:absolute;width:7px;height:7px;
+  border-radius:50%;background:#cfd9a8;
+  animation:mkt-orbit-inner 9s linear infinite reverse}
+.mkt-deco-line{position:absolute;background:linear-gradient(90deg,transparent 0%,#d8dcd6 50%,transparent 100%)}
+.mkt-deco-line-1{top:30%;left:-10%;width:60%;height:1px;transform:rotate(-15deg);
+  animation:mkt-shimmer 6s ease-in-out infinite}
+.mkt-deco-line-2{bottom:25%;right:-10%;width:60%;height:1px;transform:rotate(20deg);
+  animation:mkt-shimmer 6s ease-in-out infinite .8s}
 .mkt-deco-dot{position:absolute;width:8px;height:8px;border-radius:50%;
   background:#5e8470}
-.mkt-deco-dot-1{top:20%;right:30%}
-.mkt-deco-dot-2{bottom:25%;left:15%;width:5px;height:5px;background:#cfd9a8}
+.mkt-deco-dot-1{top:20%;right:30%;animation:mkt-float 5s ease-in-out infinite}
+.mkt-deco-dot-2{bottom:25%;left:15%;width:5px;height:5px;background:#cfd9a8;
+  animation:mkt-float 6s ease-in-out infinite 1.4s}
+
+/* Animationen */
 @keyframes mkt-spin{from{transform:rotate(0)}to{transform:rotate(360deg)}}
+@keyframes mkt-spin-reverse{from{transform:translate(-50%,-50%) rotate(0)}to{transform:translate(-50%,-50%) rotate(-360deg)}}
+@keyframes mkt-breathe{
+  0%,100%{transform:translate(-50%,-50%) scale(1);
+    box-shadow:0 20px 50px rgba(94,132,112,.3)}
+  50%{transform:translate(-50%,-50%) scale(1.06);
+    box-shadow:0 28px 60px rgba(94,132,112,.42)}
+}
+@keyframes mkt-orbit-outer{
+  from{transform:rotate(0deg) translateX(140px) rotate(0deg)}
+  to{transform:rotate(360deg) translateX(140px) rotate(-360deg)}
+}
+@keyframes mkt-orbit-inner{
+  from{transform:rotate(0deg) translateX(100px) rotate(0deg)}
+  to{transform:rotate(360deg) translateX(100px) rotate(-360deg)}
+}
+@keyframes mkt-float{
+  0%,100%{transform:translateY(0)}
+  50%{transform:translateY(-12px)}
+}
+@keyframes mkt-shimmer{
+  0%,100%{opacity:.5}
+  50%{opacity:1}
+}
+@media (prefers-reduced-motion:reduce){
+  .mkt-deco-ring,.mkt-deco-ring::before,.mkt-deco-ring::after,
+  .mkt-hero-deco::before,.mkt-hero-deco::after,
+  .mkt-deco-line-1,.mkt-deco-line-2,
+  .mkt-deco-dot-1,.mkt-deco-dot-2{animation:none}
+}
 
 /* === Marketing-Mockup 1: Growth Chart === */
 .mkt-mock{width:100%;height:100%;position:relative;display:flex;
