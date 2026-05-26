@@ -32,6 +32,13 @@ export default async function NachhaltigkeitPage() {
     { label: "Regional", desc: "Kurze Wege, faire Partner aus Deutschland und Europa.", img: nh6 },
   ];
 
+  // Bei jedem Seitenaufruf zufällige Reihenfolge (Fisher–Yates Shuffle)
+  const shuffled = [...cards];
+  for (let i = shuffled.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+  }
+
   return (
     <SiteShell>
       <section
@@ -54,13 +61,12 @@ export default async function NachhaltigkeitPage() {
       <section className="mm-page-section">
         <div className="wrap">
           <div className="mm-page-tiles cols-3">
-            {cards.map((c, i) => (
+            {shuffled.map((c) => (
               <div
                 key={c.label}
                 className="mm-page-tile"
                 style={c.img ? { backgroundImage: `url(${c.img})` } : undefined}
               >
-                <div className="mm-page-tile-label">0{i + 1}</div>
                 <h3 className="mm-page-tile-title">{c.label}</h3>
                 <p className="mm-page-tile-desc">{c.desc}</p>
               </div>
