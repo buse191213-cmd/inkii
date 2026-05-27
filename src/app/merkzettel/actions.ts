@@ -11,6 +11,7 @@ type SubmitItem = {
   code: string;
   name: string;
   qty: number;
+  image?: string | null;
   sizes?: SubmitSize[] | null;
   note?: string | null;
   color?: string | null;
@@ -37,6 +38,7 @@ export async function submitMerklisteInquiry(
           code: String(i?.code ?? "").trim(),
           name: String(i?.name ?? "").trim(),
           qty: Math.max(1, Number(i?.qty) || 1),
+          image: typeof i?.image === "string" ? i.image.trim() : null,
           sizes: Array.isArray(i?.sizes)
             ? i.sizes
                 .map((s: { name?: unknown; qty?: unknown }) => ({
@@ -96,7 +98,19 @@ export async function submitMerklisteInquiry(
     });
     // Mails MÜSSEN awaited werden, sonst killt Vercel die Function vor dem Versand.
     try {
-      const mailRes = await sendInquiryMail({ name, email, phone, company, subject, message });
+      const mailRes = await sendInquiryMail({
+        name, email, phone, company, subject, message,
+        items: items.map((it) => ({
+          code: it.code || null,
+          name: it.name,
+          image: it.image,
+          color: it.color,
+          colorLabel: it.colorLabel,
+          sizes: it.sizes,
+          qty: it.qty,
+          note: it.note,
+        })),
+      });
       if (!mailRes.adminOk) console.warn("[merkzettel] Admin-Mail:", mailRes.adminError);
       if (!mailRes.customerOk) console.warn("[merkzettel] Kunden-Mail:", mailRes.customerError);
     } catch (err) {

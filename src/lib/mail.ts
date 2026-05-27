@@ -4,18 +4,30 @@
 //   1) Admin-Benachrichtigung an info@inkiiworks.de
 //   2) Bestätigung an den Kunden
 //
-// Beide kommen vom verifizierten Absender info@inkiiworks.de — professionelle
-// Zustellung, kein Drittanbieter-Branding, kein Spam-Risiko.
-//
-// Setup in Vercel → Environment Variables (Production + Preview + Development):
-//   SMTP_HOST=smtp.ionos.de          (oder smtp.ionos.com, smtp.1und1.de)
-//   SMTP_PORT=465                    (SSL) — alternativ 587 (STARTTLS)
-//   SMTP_USER=info@inkiiworks.de     (vollständige Mail-Adresse)
-//   SMTP_PASS=...                    (Passwort des Mail-Postfachs)
+// Setup in Vercel (Production + Preview + Development):
+//   SMTP_HOST=smtp.ionos.de
+//   SMTP_PORT=465
+//   SMTP_USER=info@inkiiworks.de
+//   SMTP_PASS=...
 //   SMTP_FROM="INKII Works <info@inkiiworks.de>"
-//   MAIL_ADMIN=info@inkiiworks.de    (Empfänger der Admin-Benachrichtigung)
+//   MAIL_ADMIN=info@inkiiworks.de
+//   SITE_URL=https://inkii.vercel.app   (optional; default ist diese URL)
 
 import nodemailer from "nodemailer";
+
+const SITE_URL = process.env.SITE_URL || "https://inkii.vercel.app";
+const LOGO_URL = `${SITE_URL}/inkii-logo.png`;
+
+export type InquiryItem = {
+  code?: string | null;
+  name: string;
+  image?: string | null;
+  color?: string | null;
+  colorLabel?: string | null;
+  sizes?: { name: string; qty: number }[] | null;
+  qty: number;
+  note?: string | null;
+};
 
 type InquiryMail = {
   name: string;
@@ -24,6 +36,8 @@ type InquiryMail = {
   company?: string;
   subject: string;
   message: string;
+  /** Optional: Bei Merkzettel-Anfragen Liste der Artikel mit Bild/Farbe. */
+  items?: InquiryItem[];
 };
 
 export type MailResult = {
@@ -43,41 +57,84 @@ function escapeHtml(s: string): string {
     .replace(/'/g, "&#39;");
 }
 
+function buildItemsHtml(items: InquiryItem[]): string {
+  if (!items || items.length === 0) return "";
+  const rows = items
+    .map((it) => {
+      const img = it.image
+        ? `<img src="${escapeHtml(it.image)}" alt="" style="width:72px;height:72px;object-fit:cover;border-radius:8px;border:1px solid #e8e8e6;display:block"/>`
+        : `<div style="width:72px;height:72px;border-radius:8px;border:1px solid #e8e8e6;background:#f4f5f1;display:flex;align-items:center;justify-content:center;color:#9ea7a2;font-size:10px;letter-spacing:.1em;font-weight:700">INKII</div>`;
+      const colorHtml = it.color
+        ? `<div style="display:flex;align-items:center;gap:6px;margin-top:6px;font-size:13px;color:#5a6660"><span style="width:14px;height:14px;border-radius:50%;background:${escapeHtml(it.color)};border:1px solid rgba(0,0,0,.12);display:inline-block;flex-shrink:0"></span><span>${escapeHtml(it.colorLabel || it.color)}</span></div>`
+        : "";
+      const sizesHtml = it.sizes && it.sizes.length > 0
+        ? `<div style="margin-top:6px">${it.sizes.map(s => `<span style="display:inline-block;padding:3px 9px;background:#f1f4ef;color:#1c2722;border-radius:999px;font-size:12px;margin-right:4px;margin-bottom:3px;border:1px solid #e3e6df"><b>${escapeHtml(s.name)}</b> × ${s.qty}</span>`).join("")}</div>`
+        : "";
+      const noteHtml = it.note
+        ? `<div style="margin-top:8px;font-size:13px;color:#5a6660;border-left:2px solid #5e8470;padding:4px 0 4px 10px;background:#fafbf9;border-radius:0 4px 4px 0"><b style="color:#1c2722">Anmerkung:</b> ${escapeHtml(it.note)}</div>`
+        : "";
+      const codeHtml = it.code
+        ? `<div style="font-size:11px;color:#9ea7a2;letter-spacing:.05em;font-family:'SF Mono',Menlo,monospace;margin-bottom:4px">${escapeHtml(it.code)}</div>`
+        : "";
+      return `<tr>
+<td style="padding:14px 0;border-bottom:1px solid #f0f0ec;vertical-align:top;width:88px">${img}</td>
+<td style="padding:14px 14px;border-bottom:1px solid #f0f0ec;vertical-align:top">
+${codeHtml}
+<div style="font-size:15px;font-weight:700;color:#1c2722;line-height:1.3">${escapeHtml(it.name)}</div>
+${colorHtml}${sizesHtml}${noteHtml}
+</td>
+<td style="padding:14px 0;border-bottom:1px solid #f0f0ec;vertical-align:top;text-align:right;white-space:nowrap">
+<div style="font-size:18px;font-weight:800;color:#1c2722">${it.qty}</div>
+<div style="font-size:11px;color:#9ea7a2;text-transform:uppercase;letter-spacing:.08em;font-weight:600">Stück</div>
+</td>
+</tr>`;
+    })
+    .join("");
+  const total = items.reduce((s, i) => s + (i.qty || 0), 0);
+  return `<table style="width:100%;margin-top:20px;border-collapse:collapse;border:1px solid #e3e6df;border-radius:10px;overflow:hidden"><thead><tr><th colspan="3" style="background:#fafbf9;text-align:left;padding:12px 14px;font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:#7a857f;font-weight:700;border-bottom:1px solid #e3e6df">Artikel · ${items.length} Variante${items.length === 1 ? "" : "n"} · ${total} Stück gesamt</th></tr></thead><tbody>${rows}</tbody></table>`;
+}
+
+function buildLogoBlock(): string {
+  return `<div style="text-align:left;margin-bottom:22px"><img src="${LOGO_URL}" alt="INKII Works" style="max-width:140px;height:auto;display:block"/></div>`;
+}
+
 function buildAdminHtml(d: InquiryMail): string {
-  const msg = escapeHtml(d.message).replace(/\n/g, "<br/>");
+  const msgFallback = d.items && d.items.length > 0 ? "" : `<div style="margin-top:22px;padding:20px;background:#fafbf9;border-radius:10px;font-size:14px;line-height:1.65;border:1px solid #e8e8e6;white-space:pre-wrap;color:#3b4540">${escapeHtml(d.message).replace(/\n/g, "<br/>")}</div>`;
+  const itemsBlock = d.items && d.items.length > 0 ? buildItemsHtml(d.items) : "";
   return `<!doctype html>
-<html><body style="font-family:Arial,sans-serif;background:#f4f5f1;padding:24px;color:#1c2722;margin:0;">
-<div style="max-width:580px;margin:0 auto;background:#fff;border-radius:14px;padding:32px;border:1px solid #e3e6df;">
-<div style="font-family:Georgia,serif;font-size:22px;font-weight:800;letter-spacing:.15em;color:#1c2722;margin-bottom:4px;">INKII</div>
-<p style="margin:0 0 22px 0;color:#7a857f;font-size:11px;letter-spacing:.15em;text-transform:uppercase;">Neue Anfrage über inkiiworks.de</p>
-<h2 style="font-size:17px;margin:0 0 18px 0;color:#1c2722;">${escapeHtml(d.subject)}</h2>
+<html><body style="font-family:Arial,Helvetica,sans-serif;background:#f4f5f1;padding:24px;color:#1c2722;margin:0;">
+<div style="max-width:620px;margin:0 auto;background:#fff;border-radius:14px;padding:32px;border:1px solid #e3e6df;">
+${buildLogoBlock()}
+<p style="margin:0 0 8px 0;color:#7a857f;font-size:11px;letter-spacing:.15em;text-transform:uppercase;">Neue Anfrage über inkiiworks.de</p>
+<h2 style="font-size:17px;margin:0 0 18px 0;color:#1c2722;font-weight:700;">${escapeHtml(d.subject)}</h2>
 <table style="width:100%;font-size:14px;line-height:1.6;border-collapse:collapse;">
 <tr><td style="color:#7a857f;width:110px;padding:6px 0;border-bottom:1px solid #f0f0ec;">Name</td><td style="padding:6px 0;border-bottom:1px solid #f0f0ec;"><b>${escapeHtml(d.name)}</b></td></tr>
 <tr><td style="color:#7a857f;padding:6px 0;border-bottom:1px solid #f0f0ec;">E-Mail</td><td style="padding:6px 0;border-bottom:1px solid #f0f0ec;"><a href="mailto:${escapeHtml(d.email)}" style="color:#1c2722;text-decoration:none;">${escapeHtml(d.email)}</a></td></tr>
 ${d.phone ? `<tr><td style="color:#7a857f;padding:6px 0;border-bottom:1px solid #f0f0ec;">Telefon</td><td style="padding:6px 0;border-bottom:1px solid #f0f0ec;">${escapeHtml(d.phone)}</td></tr>` : ""}
 ${d.company ? `<tr><td style="color:#7a857f;padding:6px 0;border-bottom:1px solid #f0f0ec;">Firma</td><td style="padding:6px 0;border-bottom:1px solid #f0f0ec;">${escapeHtml(d.company)}</td></tr>` : ""}
 </table>
-<div style="margin-top:22px;padding:20px;background:#fafbf9;border-radius:10px;font-size:14px;line-height:1.65;border:1px solid #e8e8e6;white-space:pre-wrap;">${msg}</div>
-<a href="mailto:${escapeHtml(d.email)}?subject=Re:%20${encodeURIComponent(d.subject)}" style="display:inline-block;margin-top:20px;padding:11px 22px;background:#1c2722;color:#fff;text-decoration:none;border-radius:8px;font-size:13px;font-weight:600;letter-spacing:.04em;">Antworten</a>
+${itemsBlock}
+${msgFallback}
+<a href="mailto:${escapeHtml(d.email)}?subject=Re:%20${encodeURIComponent(d.subject)}" style="display:inline-block;margin-top:24px;padding:12px 24px;background:#1c2722;color:#fff;text-decoration:none;border-radius:8px;font-size:13px;font-weight:600;letter-spacing:.04em">Antworten →</a>
+<p style="margin-top:22px;padding-top:14px;border-top:1px solid #e8e8e6;font-size:11px;color:#9ea7a2;line-height:1.5">INKII Works · Westuferstr. 25, 45356 Essen · <a href="${SITE_URL}" style="color:#9ea7a2">inkiiworks.de</a></p>
 </div></body></html>`;
 }
 
 function buildCustomerHtml(d: InquiryMail): string {
-  const msg = escapeHtml(d.message).replace(/\n/g, "<br/>");
+  const itemsBlock = d.items && d.items.length > 0 ? buildItemsHtml(d.items) : `<div style="margin:18px 0;padding:18px;background:#fafbf9;border:1px solid #e8e8e6;border-radius:10px"><p style="margin:0 0 10px 0;font-size:11px;color:#7a857f;letter-spacing:.08em;text-transform:uppercase;font-weight:600">Ihre Anfrage</p><p style="margin:0 0 8px 0;font-size:14px;color:#1c2722"><b>${escapeHtml(d.subject)}</b></p><div style="font-size:13px;line-height:1.6;color:#5a6660;white-space:pre-wrap">${escapeHtml(d.message).replace(/\n/g, "<br/>")}</div></div>`;
   return `<!doctype html>
-<html><body style="font-family:Arial,sans-serif;background:#f4f5f1;padding:24px;color:#1c2722;margin:0;">
-<div style="max-width:560px;margin:0 auto;background:#fff;border-radius:14px;padding:32px;border:1px solid #e3e6df;">
-<div style="font-family:Georgia,serif;font-size:22px;font-weight:800;letter-spacing:.15em;color:#1c2722;margin-bottom:4px;">INKII</div>
-<p style="margin:0 0 22px 0;color:#7a857f;font-size:11px;letter-spacing:.15em;text-transform:uppercase;">Bestätigung Ihrer Anfrage</p>
-<h2 style="font-size:18px;margin:0 0 14px 0;color:#1c2722;">Vielen Dank, ${escapeHtml(d.name)}!</h2>
+<html><body style="font-family:Arial,Helvetica,sans-serif;background:#f4f5f1;padding:24px;color:#1c2722;margin:0;">
+<div style="max-width:600px;margin:0 auto;background:#fff;border-radius:14px;padding:32px;border:1px solid #e3e6df;">
+${buildLogoBlock()}
+<p style="margin:0 0 8px 0;color:#7a857f;font-size:11px;letter-spacing:.15em;text-transform:uppercase;">Bestätigung Ihrer Anfrage</p>
+<h2 style="font-size:20px;margin:0 0 14px 0;color:#1c2722;font-weight:700;letter-spacing:-.01em">Vielen Dank, ${escapeHtml(d.name)}!</h2>
 <p style="font-size:14px;line-height:1.65;color:#3b4540;margin:0 0 18px 0;">Wir haben Ihre Anfrage erhalten und melden uns innerhalb von <b>24 Stunden</b> mit einem persönlichen Angebot.</p>
-<div style="background:#fafbf9;border:1px solid #e8e8e6;border-radius:10px;padding:18px;margin:18px 0;">
-<p style="margin:0 0 10px 0;font-size:12px;color:#7a857f;letter-spacing:.08em;text-transform:uppercase;font-weight:600;">Ihre Anfrage</p>
-<p style="margin:0 0 8px 0;font-size:14px;color:#1c2722;"><b>${escapeHtml(d.subject)}</b></p>
-<div style="font-size:13px;line-height:1.6;color:#5a6660;white-space:pre-wrap;">${msg}</div>
+${itemsBlock}
+<div style="margin-top:24px;padding:18px;background:#1c2722;border-radius:10px;color:#fff">
+<p style="margin:0 0 6px 0;font-size:11px;color:#9aa39e;letter-spacing:.1em;text-transform:uppercase;font-weight:600">Bei Rückfragen</p>
+<p style="margin:0;font-size:15px;line-height:1.5"><b style="font-size:17px">+49 160 6767001</b><br/><a href="mailto:info@inkiiworks.de" style="color:#fff;text-decoration:underline">info@inkiiworks.de</a></p>
 </div>
-<p style="font-size:13px;line-height:1.6;color:#5a6660;margin:18px 0 0 0;">Bei Rückfragen erreichen Sie uns direkt:<br/><b>+49 160 6767001</b> · <a href="mailto:info@inkiiworks.de" style="color:#1c2722;">info@inkiiworks.de</a></p>
-<p style="margin-top:24px;font-size:11px;color:#9ea7a2;border-top:1px solid #e8e8e6;padding-top:14px;line-height:1.5;">INKII Works · Inh. Sener Kirli · Westuferstr. 25, 45356 Essen · <a href="https://inkiiworks.de" style="color:#9ea7a2;">inkiiworks.de</a></p>
+<p style="margin-top:22px;padding-top:14px;border-top:1px solid #e8e8e6;font-size:11px;color:#9ea7a2;line-height:1.5">INKII Works · Inh. Sener Kirli · Westuferstr. 25, 45356 Essen<br/><a href="${SITE_URL}" style="color:#9ea7a2">inkiiworks.de</a></p>
 </div></body></html>`;
 }
 
@@ -123,18 +180,14 @@ function makeTransporter() {
   return nodemailer.createTransport({
     host: process.env.SMTP_HOST,
     port,
-    secure: port === 465, // 465 = SSL, 587 = STARTTLS
-    auth: {
-      user: process.env.SMTP_USER!,
-      pass: process.env.SMTP_PASS!,
-    },
+    secure: port === 465,
+    auth: { user: process.env.SMTP_USER!, pass: process.env.SMTP_PASS! },
   });
 }
 
-/** Verschickt Admin- und Kunden-Mail über IONOS SMTP. */
 export async function sendInquiryMail(d: InquiryMail): Promise<MailResult> {
   if (!isSmtpConfigured()) {
-    console.warn("[mail] SMTP nicht konfiguriert — übersprungen");
+    console.warn("[mail] SMTP nicht konfiguriert");
     return { adminOk: false, customerOk: false, skipped: true };
   }
   const transporter = makeTransporter();
@@ -143,12 +196,9 @@ export async function sendInquiryMail(d: InquiryMail): Promise<MailResult> {
 
   const result: MailResult = { adminOk: false, customerOk: false };
 
-  // 1) Admin-Benachrichtigung
   try {
     await transporter.sendMail({
-      from,
-      to: adminTo,
-      replyTo: d.email, // "Antworten" → direkt an Kunden
+      from, to: adminTo, replyTo: d.email,
       subject: `[INKII] ${d.subject} — ${d.name}`,
       text: buildAdminText(d),
       html: buildAdminHtml(d),
@@ -159,12 +209,9 @@ export async function sendInquiryMail(d: InquiryMail): Promise<MailResult> {
     console.warn("[mail] Admin-Mail fehlgeschlagen:", result.adminError);
   }
 
-  // 2) Kunden-Bestätigung
   try {
     await transporter.sendMail({
-      from,
-      to: d.email,
-      replyTo: adminTo,
+      from, to: d.email, replyTo: adminTo,
       subject: `Bestätigung Ihrer Anfrage | INKII Works`,
       text: buildCustomerText(d),
       html: buildCustomerHtml(d),
@@ -178,11 +225,8 @@ export async function sendInquiryMail(d: InquiryMail): Promise<MailResult> {
   return result;
 }
 
-/** Verifiziert die SMTP-Verbindung (für den Test-Button im Admin-Panel). */
 export async function verifySmtp(): Promise<{ ok: boolean; error?: string }> {
-  if (!isSmtpConfigured()) {
-    return { ok: false, error: "SMTP-Variablen fehlen" };
-  }
+  if (!isSmtpConfigured()) return { ok: false, error: "SMTP-Variablen fehlen" };
   try {
     const transporter = makeTransporter();
     await transporter.verify();

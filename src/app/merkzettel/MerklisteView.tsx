@@ -129,6 +129,7 @@ export default function MerklisteView({
             <input type="hidden" name="items" value={JSON.stringify(
               items.map((i) => ({
                 code: i.code, name: i.name, qty: i.qty,
+                image: i.image ?? null,
                 sizes: i.sizes ?? null, note: i.note ?? null,
                 color: i.color ?? null, colorLabel: i.colorLabel ?? null,
               }))
