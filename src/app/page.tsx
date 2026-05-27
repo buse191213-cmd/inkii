@@ -82,7 +82,7 @@ export default async function HomePage() {
 
       {/* === 2 große Bildkacheln === */}
       <section className="home-tiles">
-        <Link href="/werbemittel" className="home-tile">
+        <Link href="/werbemittel?cat=kleidung" className="home-tile">
           <div
             className="home-tile-img"
             style={tile1 ? { backgroundImage: `url(${tile1})` } : undefined}
@@ -93,7 +93,7 @@ export default async function HomePage() {
             BEKLEIDUNG
           </div>
         </Link>
-        <Link href="/werbemittel" className="home-tile">
+        <Link href="/werbemittel?cat=taschen" className="home-tile">
           <div
             className="home-tile-img"
             style={tile2 ? { backgroundImage: `url(${tile2})` } : undefined}
