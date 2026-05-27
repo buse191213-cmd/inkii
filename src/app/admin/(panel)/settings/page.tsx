@@ -6,7 +6,6 @@ export const dynamic = "force-dynamic";
 
 export default async function SettingsPage() {
   const heroVideo = await getHeroVideoSrc();
-  const mailConfigured = Boolean(process.env.WEB3FORMS_ACCESS_KEY);
   return (
     <>
       <p className="crumb">
@@ -15,7 +14,7 @@ export default async function SettingsPage() {
 
       <HeroVideoManager currentVideo={heroVideo} />
 
-      <MailTestPanel configured={mailConfigured} defaultEmail="admin@inkii.de" />
+      <MailTestPanel defaultEmail="admin@inkii.de" />
 
       <div className="set-grid">
         <div className="panel">

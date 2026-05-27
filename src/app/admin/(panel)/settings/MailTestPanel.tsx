@@ -1,15 +1,10 @@
 "use client";
 
 import { useState } from "react";
-import { sendTestMail } from "./mail-test-action";
+import { sendInquiryFromBrowser } from "@/lib/mail-client";
 
-export default function MailTestPanel({
-  configured,
-  defaultEmail,
-}: {
-  configured: boolean;
-  defaultEmail: string;
-}) {
+export default function MailTestPanel({ defaultEmail }: { defaultEmail: string }) {
+  const configured = Boolean(process.env.NEXT_PUBLIC_WEB3FORMS_ACCESS_KEY);
   const [email, setEmail] = useState(defaultEmail);
   const [busy, setBusy] = useState(false);
   const [result, setResult] = useState<{
@@ -22,7 +17,18 @@ export default function MailTestPanel({
     setBusy(true);
     setResult(null);
     try {
-      const r = await sendTestMail(email);
+      const r = await sendInquiryFromBrowser({
+        name: "Mail-Test (Admin-Panel)",
+        email,
+        phone: "+49 160 6767001",
+        company: "INKII Works",
+        subject: "Mail-Test vom Admin-Panel",
+        message:
+          "Dies ist eine Test-Nachricht aus dem INKII-Admin-Panel.\n\n" +
+          "Wenn der Versand funktioniert, erhalten Sie ZWEI Mails:\n" +
+          "1) Shop-Benachrichtigung an info@inkiiworks.de\n" +
+          `2) Auto-Reply-Bestätigung an ${email}`,
+      });
       setResult(r);
     } catch (e: unknown) {
       setResult({ ok: false, error: e instanceof Error ? e.message : "Fehler" });
@@ -44,35 +50,33 @@ export default function MailTestPanel({
       <div className="panel-body">
         {!configured && (
           <div className="mail-warn-box">
-            <strong>WEB3FORMS_ACCESS_KEY fehlt in Vercel.</strong>
+            <strong>NEXT_PUBLIC_WEB3FORMS_ACCESS_KEY fehlt in Vercel.</strong>
             <ol>
               <li>
-                Auf <a href="https://web3forms.com" target="_blank" rel="noreferrer">web3forms.com</a> die
-                Mail-Adresse <code>info@inkiiworks.de</code> eintragen → Access-Key wird
-                sofort an diese Mailbox geschickt.
+                Auf <a href="https://web3forms.com" target="_blank" rel="noreferrer">web3forms.com</a> Mail
+                <code>info@inkiiworks.de</code> eingeben → Access-Key kommt sofort.
               </li>
               <li>
-                <b>Bestätigungs-Link in der Mail von Web3Forms KLICKEN</b> — sonst bleibt
-                der Key inaktiv und nichts wird versendet.
+                <b>Bestätigungs-Link in der ersten Web3Forms-Mail KLICKEN</b> — sonst
+                bleibt der Key inaktiv.
               </li>
               <li>
-                In Vercel → Project „inkii" → Settings → Environment Variables:
+                In Vercel → Settings → Environment Variables:
                 <br />
-                <code>WEB3FORMS_ACCESS_KEY</code> = (der Key) — Production, Preview UND
-                Development aktivieren.
+                <code>NEXT_PUBLIC_WEB3FORMS_ACCESS_KEY</code> = (der Key) — für alle
+                3 Umgebungen aktivieren.
               </li>
               <li>
-                <b>Redeploy nötig:</b> Vercel → Deployments → letzter Eintrag → ⋯ →
-                Redeploy.
+                <b>Redeploy nötig</b> (Deployments → ⋯ → Redeploy).
               </li>
             </ol>
           </div>
         )}
 
         <p className="mail-test-desc">
-          Sendet eine Test-Anfrage über Web3Forms.
-          <br />→ Shop-Mail geht an <code>info@inkiiworks.de</code>
-          <br />→ Kunden-Bestätigung (Autoresponse) an die unten angegebene Adresse
+          Sendet eine Test-Anfrage direkt aus dem Browser an Web3Forms.
+          <br />→ Shop-Mail an <code>info@inkiiworks.de</code>
+          <br />→ Auto-Reply an die unten angegebene Adresse
         </p>
 
         <div className="field">
@@ -99,22 +103,18 @@ export default function MailTestPanel({
           <div className="mail-result">
             {result.skipped && (
               <div className="mail-result-row err">
-                ✕ Übersprungen — Access-Key fehlt in Vercel.
+                ✕ Übersprungen — Access-Key fehlt.
               </div>
             )}
             {!result.skipped && result.ok && (
               <>
                 <div className="mail-result-row ok">
-                  ✓ Erfolg! Mails wurden an Web3Forms übergeben.
+                  ✓ Erfolg! Web3Forms hat die Submission akzeptiert.
                 </div>
                 <p className="mail-result-hint">
-                  Web3Forms verarbeitet die Submission jetzt. Prüfen Sie in 5–60 Sekunden:
-                  <br />
-                  • <b>info@inkiiworks.de</b> → Shop-Benachrichtigung
-                  <br />
-                  • <b>{email}</b> → Autoresponse-Bestätigung
-                  <br />
-                  Auch Spam-/Junk-Ordner checken!
+                  Mails kommen meist in 5–60 Sekunden an. Auch Spam-Ordner prüfen!
+                  <br />• <b>info@inkiiworks.de</b> → Shop-Benachrichtigung
+                  <br />• <b>{email}</b> → Auto-Reply-Bestätigung
                 </p>
               </>
             )}
@@ -126,14 +126,11 @@ export default function MailTestPanel({
                 </div>
                 <p className="mail-result-hint">
                   Mögliche Ursachen:
-                  <br />
-                  1. Web3Forms-Bestätigungs-Link nicht geklickt (Key inaktiv)
-                  <br />
-                  2. Access-Key in Vercel falsch kopiert (Leerzeichen?)
-                  <br />
-                  3. Nach Env-Update keine Redeployment durchgeführt
-                  <br />
-                  4. Web3Forms-Kontingent erreicht (250/Monat im Free-Plan)
+                  <br />1. Bestätigungs-Link von Web3Forms nicht geklickt (Key inaktiv)
+                  <br />2. Access-Key in Vercel falsch (Leerzeichen?)
+                  <br />3. Nach Env-Update kein Redeploy
+                  <br />4. Im Web3Forms-Dashboard „Allowed Domains" zu strikt (leer
+                  lassen oder inkii.vercel.app eintragen)
                 </p>
               </>
             )}

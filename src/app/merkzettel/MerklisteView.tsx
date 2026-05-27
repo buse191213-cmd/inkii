@@ -1,12 +1,11 @@
 "use client";
 
-import { useActionState, useEffect } from "react";
+import { useEffect, useState } from "react";
 import Link from "next/link";
 import { useMerkliste } from "@/components/MerklisteProvider";
-import { submitMerklisteInquiry, MerklisteState } from "./actions";
+import { submitMerklisteInquiry } from "./actions";
+import { sendInquiryFromBrowser } from "@/lib/mail-client";
 import type { Dictionary } from "@/dictionaries/types";
-
-const initial: MerklisteState = { ok: false };
 
 export default function MerklisteView({
   t,
@@ -16,14 +15,63 @@ export default function MerklisteView({
   common: Dictionary["common"];
 }) {
   const { items, mounted, setQty, remove, clear } = useMerkliste();
-  const [state, formAction, pending] = useActionState(
-    submitMerklisteInquiry,
-    initial
-  );
+  const [pending, setPending] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const [success, setSuccess] = useState(false);
 
   useEffect(() => {
-    if (state.ok) clear();
-  }, [state.ok, clear]);
+    if (success) clear();
+  }, [success, clear]);
+
+  async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
+    e.preventDefault();
+    setPending(true);
+    setError(null);
+    const formData = new FormData(e.currentTarget);
+
+    // 1. Server-Action: in DB speichern (Admin sieht Anfrage)
+    const dbRes = await submitMerklisteInquiry({ ok: false }, formData);
+
+    // 2. Browser-Mail (Web3Forms) — parallel
+    const name = String(formData.get("name") ?? "");
+    const email = String(formData.get("email") ?? "");
+    const phone = String(formData.get("phone") ?? "");
+    const company = String(formData.get("company") ?? "");
+    const note = String(formData.get("note") ?? "");
+    const itemsList = items
+      .map((i) => {
+        const colorPart = i.color ? ` · Farbe: ${i.colorLabel || i.color}` : "";
+        if (i.sizes && i.sizes.length > 0) {
+          const sizesText = i.sizes.map((s) => `   – Größe ${s.name} (${s.qty})`).join("\n");
+          return `• ${i.code} – ${i.name}${colorPart}\n${sizesText}\n   → Gesamt: ${i.qty} Stück${i.note ? `\n   ↪ ${i.note}` : ""}`;
+        }
+        return `• ${i.code} – ${i.name}${colorPart} (Menge: ${i.qty})${i.note ? `\n   ↪ ${i.note}` : ""}`;
+      })
+      .join("\n");
+    const fullMessage = (note ? `${note}\n\n` : "") + `Angefragte Artikel:\n${itemsList}`;
+    const subject = `Merkzettel-Anfrage – ${items.length} ${items.length === 1 ? "Artikel" : "Artikel"}`;
+
+    const mailRes = await sendInquiryFromBrowser({
+      name,
+      email,
+      phone,
+      company,
+      subject,
+      message: fullMessage,
+    });
+
+    setPending(false);
+
+    if (!dbRes.ok) {
+      setError(dbRes.error ?? "Senden fehlgeschlagen.");
+      return;
+    }
+    if (!mailRes.ok && !mailRes.skipped) {
+      // DB-Kayıt başarılı ama mail başarısız — yine de başarılı say, admin DB'den görür
+      console.warn("[merkzettel] mail failed:", mailRes.error);
+    }
+    setSuccess(true);
+  }
 
   if (!mounted) {
     return (
@@ -33,17 +81,13 @@ export default function MerklisteView({
     );
   }
 
-  if (state.ok) {
+  if (success) {
     return (
       <div className="wrap" style={{ padding: "50px 0 70px" }}>
         <div className="form-card" style={{ maxWidth: 640 }}>
           <div className="form-ok">{t.formOk}</div>
-          <p style={{ color: "var(--muted)", fontSize: ".95rem" }}>
-            {t.formOkNote}
-          </p>
-          <Link className="btn btn-ghost" href="/werbemittel">
-            {t.okBack}
-          </Link>
+          <p style={{ color: "var(--muted)", fontSize: ".95rem" }}>{t.formOkNote}</p>
+          <Link className="btn btn-ghost" href="/werbemittel">{t.okBack}</Link>
         </div>
       </div>
     );
@@ -61,9 +105,7 @@ export default function MerklisteView({
         <div className="merk-empty">
           <p>{t.emptyTitle}</p>
           <span>{t.emptyText}</span>
-          <Link className="btn btn-primary" href="/werbemittel">
-            {t.emptyCta}
-          </Link>
+          <Link className="btn btn-primary" href="/werbemittel">{t.emptyCta}</Link>
         </div>
       ) : (
         <div className="merk-layout">
@@ -72,39 +114,23 @@ export default function MerklisteView({
               <div key={it.uniqueKey} className="merk-row">
                 <div className="merk-thumb">
                   {it.image ? (
-                    // eslint-disable-next-line @next/next/no-img-element
+                    /* eslint-disable-next-line @next/next/no-img-element */
                     <img src={it.image} alt="" />
-                  ) : (
-                    <span>INKII</span>
-                  )}
+                  ) : (<span>INKII</span>)}
                 </div>
                 <div className="merk-info">
-                  {it.code && (
-                    <div className="merk-code">
-                      {t.artNr} {it.code}
-                    </div>
-                  )}
-                  <Link href={`/werbemittel/${it.id}`} className="merk-name">
-                    {it.name}
-                  </Link>
+                  {it.code && <div className="merk-code">{t.artNr} {it.code}</div>}
+                  <Link href={`/werbemittel/${it.id}`} className="merk-name">{it.name}</Link>
                   {it.color && (
                     <div className="merk-color-row">
-                      <span
-                        className="merk-color-dot"
-                        style={{ background: it.color }}
-                        aria-hidden
-                      />
-                      <span className="merk-color-label">
-                        {it.colorLabel ?? it.color}
-                      </span>
+                      <span className="merk-color-dot" style={{ background: it.color }} aria-hidden />
+                      <span className="merk-color-label">{it.colorLabel ?? it.color}</span>
                     </div>
                   )}
                   {it.sizes && it.sizes.length > 0 && (
                     <div className="merk-sizes">
                       {it.sizes.map((s, idx) => (
-                        <span key={idx} className="merk-size-pill">
-                          <b>{s.name}</b> × {s.qty}
-                        </span>
+                        <span key={idx} className="merk-size-pill"><b>{s.name}</b> × {s.qty}</span>
                       ))}
                     </div>
                   )}
@@ -115,82 +141,38 @@ export default function MerklisteView({
                   )}
                 </div>
                 <div className="merk-qty">
-                  <button
-                    type="button"
-                    onClick={() => setQty(it.uniqueKey, it.qty - 1)}
-                    aria-label={t.qtyMinus}
-                    disabled={!!(it.sizes && it.sizes.length > 0)}
-                  >
-                    −
-                  </button>
-                  <input
-                    type="number"
-                    min={1}
-                    value={it.qty}
-                    onChange={(e) =>
-                      setQty(it.uniqueKey, parseInt(e.target.value, 10) || 1)
-                    }
-                    disabled={!!(it.sizes && it.sizes.length > 0)}
-                  />
-                  <button
-                    type="button"
-                    onClick={() => setQty(it.uniqueKey, it.qty + 1)}
-                    aria-label={t.qtyPlus}
-                    disabled={!!(it.sizes && it.sizes.length > 0)}
-                  >
-                    +
-                  </button>
+                  <button type="button" onClick={() => setQty(it.uniqueKey, it.qty - 1)} aria-label={t.qtyMinus}
+                    disabled={!!(it.sizes && it.sizes.length > 0)}>−</button>
+                  <input type="number" min={1} value={it.qty}
+                    onChange={(e) => setQty(it.uniqueKey, parseInt(e.target.value, 10) || 1)}
+                    disabled={!!(it.sizes && it.sizes.length > 0)} />
+                  <button type="button" onClick={() => setQty(it.uniqueKey, it.qty + 1)} aria-label={t.qtyPlus}
+                    disabled={!!(it.sizes && it.sizes.length > 0)}>+</button>
                 </div>
-                <button
-                  type="button"
-                  className="merk-remove"
-                  onClick={() => remove(it.uniqueKey)}
-                  aria-label={t.removeItem}
-                >
-                  ✕
-                </button>
+                <button type="button" className="merk-remove" onClick={() => remove(it.uniqueKey)} aria-label={t.removeItem}>✕</button>
               </div>
             ))}
-            <button
-              type="button"
-              className="btn btn-ghost btn-sm merk-clear"
-              onClick={clear}
-            >
-              {t.clear}
-            </button>
+            <button type="button" className="btn btn-ghost btn-sm merk-clear" onClick={clear}>{t.clear}</button>
           </div>
 
-          <form className="form-card merk-form" action={formAction}>
+          <form className="form-card merk-form" onSubmit={handleSubmit}>
             <h3>{t.formTitle}</h3>
-            <input
-              type="hidden"
-              name="items"
-              value={JSON.stringify(
-                items.map((i) => ({
-                  code: i.code,
-                  name: i.name,
-                  qty: i.qty,
-                  sizes: i.sizes ?? null,
-                  note: i.note ?? null,
-                  color: i.color ?? null,
-                  colorLabel: i.colorLabel ?? null,
-                }))
-              )}
-            />
-            {state.error && <div className="form-err">{state.error}</div>}
+            {error && <div className="form-err">{error}</div>}
+            {/* Items hidden für Server-Action */}
+            <input type="hidden" name="items" value={JSON.stringify(
+              items.map((i) => ({
+                code: i.code, name: i.name, qty: i.qty,
+                sizes: i.sizes ?? null, note: i.note ?? null,
+                color: i.color ?? null, colorLabel: i.colorLabel ?? null,
+              }))
+            )} />
             <div className="field">
               <label htmlFor="m-name">{t.fName}</label>
               <input id="m-name" name="name" type="text" required placeholder={t.phName} />
             </div>
             <div className="field">
               <label htmlFor="m-email">{t.fEmail}</label>
-              <input
-                id="m-email"
-                name="email"
-                type="email"
-                required
-                placeholder={t.phEmail}
-              />
+              <input id="m-email" name="email" type="email" required placeholder={t.phEmail} />
             </div>
             <div className="field-row">
               <div className="field">
@@ -199,12 +181,7 @@ export default function MerklisteView({
               </div>
               <div className="field">
                 <label htmlFor="m-company">{t.fCompany}</label>
-                <input
-                  id="m-company"
-                  name="company"
-                  type="text"
-                  placeholder={common.optional}
-                />
+                <input id="m-company" name="company" type="text" placeholder={common.optional} />
               </div>
             </div>
             <div className="field">
@@ -212,9 +189,7 @@ export default function MerklisteView({
               <textarea id="m-note" name="note" placeholder={t.phNote} />
             </div>
             <button className="btn btn-primary" type="submit" disabled={pending}>
-              {pending
-                ? common.sending
-                : `${t.submitA}${items.length}${t.submitB}`}
+              {pending ? common.sending : `${t.submitA}${items.length}${t.submitB}`}
             </button>
             <p className="form-note">{common.formNote}</p>
           </form>
