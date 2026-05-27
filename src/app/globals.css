@@ -3081,3 +3081,32 @@ body:has(.home-services) footer.site{margin-top:0}
 .merk-color-dot{width:14px;height:14px;border-radius:50%;border:1px solid rgba(0,0,0,.12);
   flex-shrink:0;display:inline-block;box-shadow:inset 0 0 0 1px rgba(255,255,255,.3)}
 .merk-color-label{font-size:.78rem;color:#5a6660;font-weight:600;letter-spacing:.01em}
+
+/* === Admin Mail-Test === */
+.adm .mail-test-panel{margin-top:18px;margin-bottom:18px}
+.adm .mail-test-panel .panel-head h3{display:flex;align-items:center;gap:10px;justify-content:space-between}
+.adm .mail-status{font-size:.74rem;font-weight:600;padding:4px 10px;border-radius:999px}
+.adm .mail-status.ok{background:#eef5e8;color:#3f7c4a}
+.adm .mail-status.warn{background:#fff3df;color:#a76b1a}
+
+.adm .mail-warn-box{background:#fffbf2;border:1px solid #f0d9a8;border-left:3px solid #d9a878;
+  border-radius:8px;padding:14px 18px;margin-bottom:16px}
+.adm .mail-warn-box strong{display:block;color:#7a5a1a;margin-bottom:8px}
+.adm .mail-warn-box ol{margin:0;padding-left:22px;font-size:.86rem;line-height:1.65;color:#5a5040}
+.adm .mail-warn-box li{margin-bottom:6px}
+.adm .mail-warn-box code{background:#fdf3df;padding:1px 6px;border-radius:4px;font-size:.84em;
+  color:#7a5a1a;font-family:'SF Mono',Menlo,monospace}
+.adm .mail-warn-box a{color:#7a5a1a;text-decoration:underline}
+
+.adm .mail-test-desc{font-size:.86rem;color:#7a857f;line-height:1.55;margin:0 0 14px}
+.adm .mail-test-desc code{background:#f1f4ef;padding:1px 6px;border-radius:4px;font-size:.88em;
+  color:#3b4540;font-family:'SF Mono',Menlo,monospace}
+
+.adm .mail-result{margin-top:16px;display:flex;flex-direction:column;gap:8px}
+.adm .mail-result-row{padding:10px 14px;border-radius:8px;font-size:.88rem;font-weight:500;
+  border:1px solid}
+.adm .mail-result-row.ok{background:#eef5e8;border-color:#c8dec1;color:#2f6e4a}
+.adm .mail-result-row.err{background:#fef2f0;border-color:#f5d5d0;color:#b8463a}
+.adm .mail-result-err{margin-top:4px;font-size:.78rem;color:#7a3530;font-weight:400;
+  font-family:'SF Mono',Menlo,monospace}
+.adm .mail-result-hint{margin:8px 0 0;font-size:.78rem;color:#7a857f;line-height:1.5}
