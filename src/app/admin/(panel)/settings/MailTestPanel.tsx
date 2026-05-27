@@ -94,7 +94,7 @@ export default function MailTestPanel({ defaultEmail }: { defaultEmail: string }
           type="button"
           className="btn-primary"
           onClick={handleTest}
-          disabled={busy || !configured}
+          disabled={busy}
         >
           {busy ? "Sende Test-Mail …" : "Test-Mail verschicken"}
         </button>
