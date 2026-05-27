@@ -2,7 +2,6 @@
 
 import { useState } from "react";
 import { submitInquiry } from "./actions";
-import { sendInquiryFromBrowser } from "@/lib/mail-client";
 
 const PROJEKT_TYPEN = [
   "Textildruck & Veredelung",
@@ -37,48 +36,13 @@ export default function KontaktForm() {
     setError(null);
     const fd = new FormData(e.currentTarget);
 
-    // 1) Server-Action: in DB speichern
+    // Server-Action: in DB speichern + Mails verschicken
     const dbRes = await submitInquiry({ ok: false }, fd);
+    setPending(false);
     if (!dbRes.ok) {
-      setPending(false);
       setError(dbRes.error ?? "Senden fehlgeschlagen.");
       return;
     }
-
-    // 2) Mail vom Browser an Web3Forms (umgeht Cloudflare-Bot-Block)
-    const vorname = String(fd.get("vorname") ?? "");
-    const nachname = String(fd.get("nachname") ?? "");
-    const email = String(fd.get("email") ?? "");
-    const telefon = String(fd.get("telefon") ?? "");
-    const firma = String(fd.get("firma") ?? "");
-    const projektTyp = String(fd.get("projektTyp") ?? "");
-    const budget = String(fd.get("budget") ?? "");
-    const wunschtermin = String(fd.get("wunschtermin") ?? "");
-    const nachricht = String(fd.get("nachricht") ?? "");
-
-    const fullName = `${vorname} ${nachname}`.trim();
-    const subject = `Kontaktanfrage${projektTyp ? `: ${projektTyp}` : ""}`;
-    const lines: string[] = [];
-    if (projektTyp) lines.push(`Projekttyp: ${projektTyp}`);
-    if (budget) lines.push(`Budget: ${budget}`);
-    if (wunschtermin) lines.push(`Wunschtermin: ${wunschtermin}`);
-    if (lines.length > 0) lines.push("");
-    lines.push(nachricht);
-    const fullMessage = lines.join("\n");
-
-    const mailRes = await sendInquiryFromBrowser({
-      name: fullName,
-      email,
-      phone: telefon,
-      company: firma,
-      subject,
-      message: fullMessage,
-    });
-    if (!mailRes.ok && !mailRes.skipped) {
-      console.warn("[kontakt] mail failed:", mailRes.error);
-    }
-
-    setPending(false);
     setSuccess(true);
   }
 

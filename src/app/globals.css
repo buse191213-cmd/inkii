@@ -3110,3 +3110,28 @@ body:has(.home-services) footer.site{margin-top:0}
 .adm .mail-result-err{margin-top:4px;font-size:.78rem;color:#7a3530;font-weight:400;
   font-family:'SF Mono',Menlo,monospace}
 .adm .mail-result-hint{margin:8px 0 0;font-size:.78rem;color:#7a857f;line-height:1.5}
+
+/* === Mail Test Panel Status Grid === */
+.adm .mail-status-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:14px}
+.adm .mail-status-row{display:flex;gap:10px;padding:12px 14px;border-radius:8px;
+  background:#fafbf9;border:1px solid #e8e8e6;align-items:flex-start;font-size:.84rem}
+.adm .mail-status-row.ok{background:#eef5e8;border-color:#c8dec1}
+.adm .mail-status-row.warn{background:#fffbf2;border-color:#f0d9a8}
+.adm .mail-status-icon{font-weight:800;font-size:1.1rem;line-height:1;
+  width:22px;height:22px;border-radius:50%;display:grid;place-items:center;flex-shrink:0}
+.adm .mail-status-row.ok .mail-status-icon{background:#3f9c5c;color:#fff}
+.adm .mail-status-row.warn .mail-status-icon{background:#d9a878;color:#fff}
+.adm .mail-status-row b{display:block;color:#1c2722;margin-bottom:2px;font-size:.86rem}
+.adm .mail-status-row small{color:#7a857f;font-family:'SF Mono',Menlo,monospace;font-size:.74rem}
+@media(max-width:760px){
+  .adm .mail-status-grid{grid-template-columns:1fr}
+}
+
+/* === SMTP Config Display === */
+.adm .mail-status.err{background:#fef2f0;color:#b8463a}
+.adm .smtp-config-display{background:#fafbf9;border:1px solid #e8e8e6;border-radius:8px;
+  padding:14px 18px;font-size:.82rem;display:flex;flex-direction:column;gap:6px}
+.adm .smtp-config-display > div{display:flex;gap:10px;align-items:baseline}
+.adm .smtp-config-display span{color:#7a857f;min-width:60px;font-weight:600}
+.adm .smtp-config-display code{background:none;padding:0;color:#1c2722;
+  font-family:'SF Mono',Menlo,monospace;font-size:.82rem;font-weight:500}

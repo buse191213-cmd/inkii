@@ -4,7 +4,6 @@ import { useEffect, useState } from "react";
 import Link from "next/link";
 import { useMerkliste } from "@/components/MerklisteProvider";
 import { submitMerklisteInquiry } from "./actions";
-import { sendInquiryFromBrowser } from "@/lib/mail-client";
 import type { Dictionary } from "@/dictionaries/types";
 
 export default function MerklisteView({
@@ -29,46 +28,14 @@ export default function MerklisteView({
     setError(null);
     const formData = new FormData(e.currentTarget);
 
-    // 1. Server-Action: in DB speichern (Admin sieht Anfrage)
+    // Server-Action: in DB speichern + Mails verschicken (via IONOS SMTP)
     const dbRes = await submitMerklisteInquiry({ ok: false }, formData);
-
-    // 2. Browser-Mail (Web3Forms) — parallel
-    const name = String(formData.get("name") ?? "");
-    const email = String(formData.get("email") ?? "");
-    const phone = String(formData.get("phone") ?? "");
-    const company = String(formData.get("company") ?? "");
-    const note = String(formData.get("note") ?? "");
-    const itemsList = items
-      .map((i) => {
-        const colorPart = i.color ? ` · Farbe: ${i.colorLabel || i.color}` : "";
-        if (i.sizes && i.sizes.length > 0) {
-          const sizesText = i.sizes.map((s) => `   – Größe ${s.name} (${s.qty})`).join("\n");
-          return `• ${i.code} – ${i.name}${colorPart}\n${sizesText}\n   → Gesamt: ${i.qty} Stück${i.note ? `\n   ↪ ${i.note}` : ""}`;
-        }
-        return `• ${i.code} – ${i.name}${colorPart} (Menge: ${i.qty})${i.note ? `\n   ↪ ${i.note}` : ""}`;
-      })
-      .join("\n");
-    const fullMessage = (note ? `${note}\n\n` : "") + `Angefragte Artikel:\n${itemsList}`;
-    const subject = `Merkzettel-Anfrage – ${items.length} ${items.length === 1 ? "Artikel" : "Artikel"}`;
-
-    const mailRes = await sendInquiryFromBrowser({
-      name,
-      email,
-      phone,
-      company,
-      subject,
-      message: fullMessage,
-    });
 
     setPending(false);
 
     if (!dbRes.ok) {
       setError(dbRes.error ?? "Senden fehlgeschlagen.");
       return;
-    }
-    if (!mailRes.ok && !mailRes.skipped) {
-      // DB-Kayıt başarılı ama mail başarısız — yine de başarılı say, admin DB'den görür
-      console.warn("[merkzettel] mail failed:", mailRes.error);
     }
     setSuccess(true);
   }
