@@ -3286,3 +3286,13 @@ body:has(.cookie-banner) .wa-fab{bottom:120px}
 .adm .home-slot-meta b{color:#1c2722;font-weight:700}
 .adm .home-slot-ratio{display:inline-flex;align-items:center;gap:4px}
 .adm .home-slot-size{color:#9ea7a2}
+
+/* === Designer: logo overlay over 3D canvas === */
+.ds-stage-inner{position:relative}
+.ds-logo-overlay{position:absolute;top:48%;left:50%;transform:translate(-50%,-50%);
+  pointer-events:none;z-index:5;transition:width .25s ease;
+  filter:drop-shadow(0 2px 8px rgba(0,0,0,.15))}
+.ds-logo-overlay img{width:100%;height:auto;display:block;
+  /* hafif slight perspective ile t-shirt yüzeyine yapışmış gibi gösterir */
+  transform:perspective(700px) rotateX(2deg);
+  opacity:.92;mix-blend-mode:multiply}

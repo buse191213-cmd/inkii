@@ -87,13 +87,22 @@ export default function DesignerClient() {
             background: `radial-gradient(circle at 50% 40%, ${color}22 0%, transparent 60%), linear-gradient(180deg, #f4f5f1 0%, #e8ebe6 100%)`,
           }}
         >
-          <ShirtViewer
-            modelUrl="/models/tshirt.glb"
-            color={color}
-            logoUrl={logoUrl}
-            logoScale={logoScale}
-            autoRotate={autoRotate}
-          />
+          <ShirtViewer color={color} autoRotate={autoRotate} />
+
+          {/* Logo: HTML-Overlay über dem Canvas (bleibt zentriert, dreht sich nicht mit) */}
+          {logoUrl && (
+            <div
+              className="ds-logo-overlay"
+              style={{
+                width: `${Math.round(logoScale * 600)}px`,
+                maxWidth: "30%",
+              }}
+            >
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img src={logoUrl} alt="Ihr Logo" />
+            </div>
+          )}
+
           <div className="ds-stage-hint">
             <span>🖱️ Ziehen zum Drehen · Scrollen für Zoom</span>
           </div>
