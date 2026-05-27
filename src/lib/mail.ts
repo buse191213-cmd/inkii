@@ -210,10 +210,16 @@ export async function sendInquiryMail(d: InquiryMail): Promise<MailResult> {
       html: buildAdminHtml(d),
     });
     result.adminOk = true;
+    console.log(`[mail] Admin-Mail gesendet → ${adminTo}`);
   } catch (err: unknown) {
     result.adminError = err instanceof Error ? err.message : "SMTP-Fehler";
     console.warn("[mail] Admin-Mail fehlgeschlagen:", result.adminError);
   }
+
+  // Kurze Pause zwischen den Mails — manche SMTP-Anbieter (z. B. IONOS)
+  // werten zwei Mails in <1s als Burst und blocken die zweite mit
+  // "450 Mail send limit exceeded".
+  await new Promise((r) => setTimeout(r, 1500));
 
   try {
     await transporter.sendMail({
@@ -223,6 +229,7 @@ export async function sendInquiryMail(d: InquiryMail): Promise<MailResult> {
       html: buildCustomerHtml(d),
     });
     result.customerOk = true;
+    console.log(`[mail] Kunden-Mail gesendet → ${d.email}`);
   } catch (err: unknown) {
     result.customerError = err instanceof Error ? err.message : "SMTP-Fehler";
     console.warn("[mail] Kunden-Mail fehlgeschlagen:", result.customerError);
