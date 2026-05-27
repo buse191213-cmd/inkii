@@ -60,14 +60,18 @@ export default function DetailOrderForm({
 
   const subtotalCents = useMemo(() => {
     if (unitCents == null) return null;
-    let sum = 0;
+    // Grundlogik: Alle Stücke kosten den Basispreis (Staffel-Preis).
+    // Aufpreis pro Größe wird EINMALIG (nicht pro Stück) addiert,
+    // wenn diese Größe ausgewählt wurde (qty > 0). Negativer Aufpreis = Rabatt.
+    let sum = totalQty * unitCents;
     for (const s of sizes) {
       const q = qty[s.name] || 0;
-      sum += q * (unitCents + (s.extraCents || 0));
+      if (q > 0 && s.extraCents) {
+        sum += s.extraCents; // einmalig pro Größe, NICHT q × extra
+      }
     }
-    if (sizes.length === 0) sum = (qty["__default"] || 0) * unitCents;
     return sum;
-  }, [qty, sizes, unitCents]);
+  }, [qty, sizes, unitCents, totalQty]);
 
   function setSizeQty(name: string, value: number) {
     setSizeQtyState(name, Math.max(0, Math.floor(value || 0)));
@@ -118,8 +122,11 @@ export default function DetailOrderForm({
           {sizes.map((s) => (
             <label key={s.name} className="det-order-size">
               <span className="det-order-size-name">{s.name}</span>
-              {s.extraCents > 0 && (
-                <span className="det-order-size-extra">+€{euro(s.extraCents)}</span>
+              {s.extraCents !== 0 && (
+                <span className={`det-order-size-extra${s.extraCents < 0 ? " neg" : ""}`}>
+                  {s.extraCents > 0 ? "+" : "−"}€{euro(Math.abs(s.extraCents))}
+                  <em>einmalig</em>
+                </span>
               )}
               <input
                 type="number"
