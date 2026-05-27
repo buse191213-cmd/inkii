@@ -13,6 +13,7 @@ export const metadata: Metadata = {
   title: "Werbemittel & Werbeartikel | INKII",
   description:
     "Werbeartikel mit Wirkung – vom Kugelschreiber bis zur Powerbank, individuell veredelt mit Ihrem Logo. Jetzt im Katalog stöbern.",
+  alternates: { canonical: "/werbemittel" },
 };
 
 export default async function WerbemittelPage() {

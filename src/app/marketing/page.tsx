@@ -9,6 +9,7 @@ export const dynamic = "force-dynamic";
 export const metadata: Metadata = {
   title: "Marketing | INKII Digital Studio",
   description: "Datenbasierte Wachstumsstrategien für maximale Conversion und nachhaltiges Wachstum.",
+  alternates: { canonical: "/marketing" },
 };
 
 /* === HTML/CSS Mockups für die Marketing-Karten === */

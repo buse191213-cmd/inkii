@@ -8,6 +8,7 @@ export const dynamic = "force-dynamic";
 export const metadata: Metadata = {
   title: "Werbeartikel | INKII Works",
   description: "Werbeartikel die Ihr Unternehmen sichtbar machen — Taschen, Trinkflaschen, Büroartikel und mehr.",
+  alternates: { canonical: "/bereiche/werbeartikel" },
 };
 
 export default async function WerbeartikelDetailPage() {

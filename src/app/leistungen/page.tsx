@@ -10,6 +10,7 @@ export const dynamic = "force-dynamic";
 export const metadata: Metadata = {
   title: "Leistungen | INKII",
   description: "Unsere Leistungen: Textildruck, Werbemittel, Teamwear, Onlineshops und mehr.",
+  alternates: { canonical: "/leistungen" },
 };
 
 export default async function LeistungenPage() {

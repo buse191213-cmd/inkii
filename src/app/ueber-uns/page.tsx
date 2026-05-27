@@ -11,6 +11,7 @@ export const dynamic = "force-dynamic";
 export const metadata: Metadata = {
   title: "Über uns | INKII",
   description: "Lernen Sie INKII WORKS kennen – Ihr Partner für Textilveredelung & Werbemittel.",
+  alternates: { canonical: "/ueber-uns" },
 };
 
 export default async function UeberUnsPage() {

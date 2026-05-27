@@ -8,6 +8,7 @@ export const metadata: Metadata = {
   title: "Merkzettel & Anfrage | INKII",
   description:
     "Ihre gemerkten Artikel auf einen Blick – stellen Sie mit einem Formular eine gebündelte Anfrage an INKII.",
+  alternates: { canonical: "/merkzettel" },
   robots: { index: false, follow: true },
 };
 

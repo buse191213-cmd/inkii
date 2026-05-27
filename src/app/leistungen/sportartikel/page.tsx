@@ -2,15 +2,19 @@ import Link from "next/link";
 import SiteShell from "@/components/SiteShell";
 import type { Metadata } from "next";
 import { getHomeImage } from "@/lib/home-images";
+import { getLocale } from "@/lib/i18n-server";
+import { getDictionary } from "@/dictionaries";
 
 export const dynamic = "force-dynamic";
 
 export const metadata: Metadata = {
-  title: "Sportartikel | INKII Works",
-  description: "Team- und Sportbekleidung mit Logo und Branding.",
+  title: "Sportartikel",
+  description: "Team- und Sportbekleidung mit Logo und Branding — Trikots, Trainingsanzüge, Mannschaftsausstattung von INKII Works.",
+  alternates: { canonical: "/leistungen/sportartikel" },
 };
 
 export default async function SportartikelPage() {
+  const t = getDictionary(await getLocale()).sportartikel;
   const hero = await getHomeImage("sport-hero");
   const s1 = await getHomeImage("sport-1");
   const s2 = await getHomeImage("sport-2");
@@ -36,16 +40,13 @@ export default async function SportartikelPage() {
             <span className="mm-dot">•</span>
             <Link href="/leistungen">Leistungen</Link>
             <span className="mm-dot">•</span>
-            <span className="active">Sportartikel</span>
+            <span className="active">{t.kicker}</span>
           </div>
-          <h1 className="mm-page-h1">Sportartikel.</h1>
-          <p className="mm-page-lead">
-            Team- und Sportbekleidung mit Logo und Branding.
-          </p>
+          <h1 className="mm-page-h1">{t.h1}</h1>
+          <p className="mm-page-lead">{t.intro}</p>
         </div>
       </section>
 
-      {/* Görsel grid: üstte 3, altta 5 — yazısız */}
       <section className="mm-page-section">
         <div className="wrap">
           <div className="sport-row sport-row-3">
@@ -70,9 +71,9 @@ export default async function SportartikelPage() {
       </section>
 
       <section className="mm-page-cta">
-        <h2 className="mm-page-cta-h">Outfits für Ihr Team — auf Anfrage.</h2>
-        <p className="mm-page-cta-p">Schicken Sie uns Ihr Logo, wir liefern die Outfits.</p>
-        <Link href="/kontakt" className="mm-page-cta-btn">Kontakt</Link>
+        <h2 className="mm-page-cta-h">{t.ctaTitle}</h2>
+        <p className="mm-page-cta-p">{t.ctaText}</p>
+        <Link href="/kontakt" className="mm-page-cta-btn">{t.ctaBtn}</Link>
       </section>
     </SiteShell>
   );

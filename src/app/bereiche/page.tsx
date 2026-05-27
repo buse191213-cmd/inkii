@@ -8,13 +8,14 @@ import { getHomeImage } from "@/lib/home-images";
 export const dynamic = "force-dynamic";
 
 export const metadata: Metadata = {
-  title: "Bereiche | INKII",
-  description: "Textilveredelung und Werbeartikel – die Bereiche von INKII WORKS.",
+  title: "Bereiche",
+  description: "Textilveredelung, Werbemittel, Webdesign und Marketing — alle Leistungen von INKII Works auf einen Blick.",
+  alternates: { canonical: "/bereiche" },
 };
 
 export default async function BereichePage() {
-  const locale = await getLocale();
-  const d = getDictionary(locale);
+  const d = getDictionary(await getLocale());
+  const t = d.bereiche;
   const heroImg = await getHomeImage("bereiche-hero");
   const a1 = await getHomeImage("area-1");
   const a2 = await getHomeImage("area-2");
@@ -29,12 +30,10 @@ export default async function BereichePage() {
           <div className="mm-page-crumb">
             <Link href="/">Home</Link>
             <span className="mm-dot">•</span>
-            <span className="active">Bereiche</span>
+            <span className="active">{t.kicker}</span>
           </div>
-          <h1 className="mm-page-h1">Vier Bereiche, ein starkes Team.</h1>
-          <p className="mm-page-lead">
-            Textilveredelung, Werbemittel, Webdesign und Marketing — alles bei INKII Works.
-          </p>
+          <h1 className="mm-page-h1">{t.h1}</h1>
+          <p className="mm-page-lead">{t.intro}</p>
         </div>
       </section>
 
@@ -46,22 +45,18 @@ export default async function BereichePage() {
               className="mm-page-tile mm-page-tile-link"
               style={a1 ? { backgroundImage: `url(${a1})` } : undefined}
             >
-              <div className="mm-page-tile-label">01 Textilveredelung</div>
-              <h3 className="mm-page-tile-title">Textildruck &amp; Bestickung</h3>
-              <p className="mm-page-tile-desc">
-                Für Firmen- und Berufsbekleidung sowie für Team- und Sportbekleidung.
-              </p>
+              <div className="mm-page-tile-label">{t.textil.cta}</div>
+              <h3 className="mm-page-tile-title">{t.textil.title}</h3>
+              <p className="mm-page-tile-desc">{t.textil.text}</p>
             </Link>
             <Link
               href="/bereiche/werbeartikel"
               className="mm-page-tile mm-page-tile-link"
               style={a2 ? { backgroundImage: `url(${a2})` } : undefined}
             >
-              <div className="mm-page-tile-label">02 Werbeartikel</div>
-              <h3 className="mm-page-tile-title">Veredelte Markenartikel</h3>
-              <p className="mm-page-tile-desc">
-                Textildruck &amp; Bestickung für Taschen, Trinkflaschen, Büroartikel und mehr.
-              </p>
+              <div className="mm-page-tile-label">{t.werbe.cta}</div>
+              <h3 className="mm-page-tile-title">{t.werbe.title}</h3>
+              <p className="mm-page-tile-desc">{t.werbe.text}</p>
             </Link>
           </div>
         </div>

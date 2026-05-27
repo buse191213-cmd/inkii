@@ -5,6 +5,7 @@ import type { Metadata } from "next";
 export const metadata: Metadata = {
   title: "Impressum | INKII Works",
   description: "Impressum und Allgemeine Geschäftsbedingungen der INKII Works.",
+  alternates: { canonical: "/impressum" },
   robots: { index: true, follow: true },
 };
 

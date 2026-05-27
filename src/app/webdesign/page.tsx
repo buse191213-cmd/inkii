@@ -10,6 +10,7 @@ export const dynamic = "force-dynamic";
 export const metadata: Metadata = {
   title: "Webdesign | INKII Digital Studio",
   description: "Gestalten Sie Ihre digitale Präsenz — moderne, schnelle und SEO-optimierte Websites.",
+  alternates: { canonical: "/webdesign" },
 };
 
 /* === HTML/CSS-Mockups (keine Bilder) === */

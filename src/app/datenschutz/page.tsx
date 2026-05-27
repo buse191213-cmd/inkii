@@ -5,6 +5,7 @@ import type { Metadata } from "next";
 export const metadata: Metadata = {
   title: "Datenschutz | INKII Works",
   description: "Datenschutzerklärung gemäß DSGVO.",
+  alternates: { canonical: "/datenschutz" },
   robots: { index: true, follow: true },
 };
 

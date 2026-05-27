@@ -8,47 +8,21 @@ import { getHomeImage } from "@/lib/home-images";
 export const dynamic = "force-dynamic";
 
 export const metadata: Metadata = {
-  title: "Textilveredelung | INKII",
-  description: "Siebdruck, Stickerei, DTF, Flockdruck und Patches — alle Veredelungsmethoden bei INKII WORKS.",
+  title: "Textilveredelung",
+  description: "Siebdruck, Stickerei, DTF, Flockdruck und Patches — alle Veredelungsmethoden bei INKII Works in Essen.",
+  alternates: { canonical: "/veredelung" },
 };
 
 export default async function VeredelungPage() {
-  const locale = await getLocale();
-  const d = getDictionary(locale);
+  const d = getDictionary(await getLocale());
+  const t = d.veredelung;
   const heroImg = await getHomeImage("vd-hero");
   const f1 = await getHomeImage("feat-1");
   const f2 = await getHomeImage("feat-2");
   const f3 = await getHomeImage("feat-3");
   const f4 = await getHomeImage("feat-4");
   const f5 = await getHomeImage("feat-5");
-
-  const methods = [
-    {
-      title: "Siebdruck",
-      desc: "Brillante Farben und hohe Deckkraft, ideal für große Stückzahlen und langlebige Ergebnisse.",
-      img: f1,
-    },
-    {
-      title: "Stickerei",
-      desc: "Hochwertig, edel und extrem strapazierfähig, perfekt für Logos und Corporate Branding.",
-      img: f2,
-    },
-    {
-      title: "DTF-Druck",
-      desc: "Detailreiche Motive in Fotodruckqualität, geeignet für alle Stofffarben und waschbeständig.",
-      img: f3,
-    },
-    {
-      title: "Flockdruck",
-      desc: "Haptische Veredelung mit klaren Konturen, robust, farbstark und vielseitig einsetzbar.",
-      img: f4,
-    },
-    {
-      title: "Patches",
-      desc: "Austauschbare Lösung für flexible Nutzung, langlebig im Alltag und ideal für ein einheitliches Erscheinungsbild.",
-      img: f5,
-    },
-  ];
+  const imgs = [f1, f2, f3, f4, f5];
 
   return (
     <SiteShell>
@@ -60,27 +34,25 @@ export default async function VeredelungPage() {
           <div className="mm-page-crumb">
             <Link href="/">Home</Link>
             <span className="mm-dot">•</span>
-            <span className="active">Textilveredelung</span>
+            <span className="active">{t.kicker}</span>
           </div>
-          <h1 className="mm-page-h1">Jedes Verfahren. Eine Quelle.</h1>
-          <p className="mm-page-lead">
-            Vom Siebdruck bis zum Patch — wir veredeln Ihre Textilien mit der richtigen Methode.
-          </p>
+          <h1 className="mm-page-h1">{t.h1}</h1>
+          <p className="mm-page-lead">{t.intro}</p>
         </div>
       </section>
 
       <section className="mm-page-section">
         <div className="wrap">
           <div className="mm-page-tiles cols-5">
-            {methods.map((m, i) => (
+            {t.methods.map((m, i) => (
               <div
-                key={m.title}
+                key={m.name}
                 className="mm-page-tile"
-                style={m.img ? { backgroundImage: `url(${m.img})` } : undefined}
+                style={imgs[i] ? { backgroundImage: `url(${imgs[i]})` } : undefined}
               >
                 <div className="mm-page-tile-label">0{i + 1}</div>
-                <h3 className="mm-page-tile-title">{m.title}</h3>
-                <p className="mm-page-tile-desc">{m.desc}</p>
+                <h3 className="mm-page-tile-title">{m.name}</h3>
+                <p className="mm-page-tile-desc">{m.sub}</p>
               </div>
             ))}
           </div>
@@ -88,9 +60,9 @@ export default async function VeredelungPage() {
       </section>
 
       <section className="mm-page-cta">
-        <h2 className="mm-page-cta-h">Welche Methode passt zu Ihrem Projekt?</h2>
-        <p className="mm-page-cta-p">Wir beraten Sie kostenlos und liefern Designvorschläge in 24 Stunden.</p>
-        <Link href="/kontakt" className="mm-page-cta-btn">{d.nav.kontakt}</Link>
+        <h2 className="mm-page-cta-h">{t.ctaTitle}</h2>
+        <p className="mm-page-cta-p">{t.ctaText}</p>
+        <Link href="/kontakt" className="mm-page-cta-btn">{t.ctaBtn}</Link>
       </section>
     </SiteShell>
   );

@@ -8,6 +8,7 @@ export const dynamic = "force-dynamic";
 export const metadata: Metadata = {
   title: "Textilveredelung | INKII Works",
   description: "Veredelungsmethoden für professionelle Unternehmensbekleidung – Stickerei, DTF, Siebdruck und mehr.",
+  alternates: { canonical: "/bereiche/textilveredelung" },
 };
 
 export default async function TextilveredelungDetailPage() {

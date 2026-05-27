@@ -12,6 +12,7 @@ export const metadata: Metadata = {
   title: "Kontakt & Anfrage | INKII",
   description:
     "Sie haben ein Projekt? Kontaktieren Sie INKII für ein unverbindliches Angebot rund um Textilveredelung und Werbemittel.",
+  alternates: { canonical: "/kontakt" },
 };
 
 export default async function KontaktPage() {

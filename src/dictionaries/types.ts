@@ -74,38 +74,6 @@ export type Dictionary = {
     features: { title: string; text: string }[];
     hotline: { kicker: string; title: string; hours: string; cta: string };
   };
-  veredelung: {
-    h1: string;
-    intro: string;
-    methodsKicker: string;
-    methodsTitle: string;
-    methodsText: string;
-    methods: { t: string; p: string; tag: string }[];
-    splitKicker: string;
-    splitTitle: string;
-    splitText: string;
-    ticks: string[];
-    splitCta: string;
-    ctaTitle: string;
-    ctaText: string;
-    ctaBtn: string;
-  };
-  nachhaltigkeit: {
-    h1: string;
-    intro: string;
-    pillarsKicker: string;
-    pillarsTitle: string;
-    pillars: { t: string; p: string }[];
-    bannerKicker: string;
-    bannerTitle: string;
-    bannerText: string;
-    statsKicker: string;
-    statsTitle: string;
-    stats: { value: string; label: string }[];
-    ctaTitle: string;
-    ctaText: string;
-    ctaBtn: string;
-  };
   ueberUns: {
     h1: string;
     intro: string;
@@ -270,14 +238,6 @@ export type Dictionary = {
     text: string;
     items: { name: string; desc: string }[];
   };
-  bereiche: {
-    h1: string;
-    intro: string;
-    items: { lead: string; points: string[] }[];
-    ctaTitle: string;
-    ctaText: string;
-    ctaBtn: string;
-  };
   webdesign: {
     metaTitle: string;
     metaDesc: string;
@@ -317,5 +277,38 @@ export type Dictionary = {
     marketingDesc: string;
     privacy: string;
     imprint: string;
+  };
+  sportartikel: {
+    kicker: string;
+    h1: string;
+    intro: string;
+    ctaTitle: string;
+    ctaText: string;
+    ctaBtn: string;
+  };
+  veredelung: {
+    kicker: string;
+    h1: string;
+    intro: string;
+    methods: { name: string; sub: string }[];
+    ctaTitle: string;
+    ctaText: string;
+    ctaBtn: string;
+  };
+  nachhaltigkeit: {
+    kicker: string;
+    h1: string;
+    intro: string;
+    cards: { title: string; text: string }[];
+    ctaTitle: string;
+    ctaText: string;
+    ctaBtn: string;
+  };
+  bereiche: {
+    kicker: string;
+    h1: string;
+    intro: string;
+    textil: { title: string; text: string; cta: string };
+    werbe: { title: string; text: string; cta: string };
   };
 };

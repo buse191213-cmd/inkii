@@ -27,10 +27,28 @@ export async function generateMetadata({
 }): Promise<Metadata> {
   const { id } = await params;
   const product = await db.product.findUnique({ where: { id } });
-  if (!product) return { title: "Artikel | INKII" };
+  if (!product) return { title: "Artikel" };
+  const title = product.name;
+  const description = (product.subtitle || product.description || product.name).slice(0, 160);
+  const url = `/werbemittel/${id}`;
+  const ogImage = product.image || "/og-default.png";
   return {
-    title: `${product.name} | INKII Werbemittel`,
-    description: (product.subtitle || product.description || product.name).slice(0, 160),
+    title,
+    description,
+    alternates: { canonical: url },
+    openGraph: {
+      title: `${title} | INKII Works`,
+      description,
+      url,
+      type: "website",
+      images: [{ url: ogImage, alt: product.name }],
+    },
+    twitter: {
+      card: "summary_large_image",
+      title: `${title} | INKII Works`,
+      description,
+      images: [ogImage],
+    },
   };
 }
 
@@ -48,6 +66,25 @@ export default async function ProductDetailPage({
     include: { category: true },
   });
   if (!product) notFound();
+
+  // Cross-sell: 4 weitere Produkte aus derselben Kategorie (oder zufällige Fallbacks)
+  let related = await db.product.findMany({
+    where: {
+      id: { not: product.id },
+      ...(product.categoryId ? { categoryId: product.categoryId } : {}),
+    },
+    take: 4,
+    orderBy: { createdAt: "desc" },
+  });
+  // Falls in dieser Kategorie zu wenige sind, mit anderen Produkten auffüllen
+  if (related.length < 4) {
+    const fillers = await db.product.findMany({
+      where: { id: { notIn: [product.id, ...related.map((r) => r.id)] } },
+      take: 4 - related.length,
+      orderBy: { createdAt: "desc" },
+    });
+    related = [...related, ...fillers];
+  }
 
   const categoryName = product.category?.name ?? "Werbemittel";
   const images = split(product.images);
@@ -197,6 +234,38 @@ export default async function ProductDetailPage({
           </div>
         </div>
       </section>
+
+      {related.length > 0 && (
+        <section className="mm-related">
+          <div className="wrap">
+            <div className="mm-related-head">
+              <p className="kicker">{dt.relatedKicker}</p>
+              <h3>{dt.relatedTitle}</h3>
+            </div>
+            <div className="mm-related-grid">
+              {related.map((r) => {
+                const rImages = split(r.images);
+                const rImg = r.image || rImages[0] || null;
+                return (
+                  <Link key={r.id} href={`/werbemittel/${r.id}`} className="mm-related-card">
+                    <div
+                      className="mm-related-img"
+                      style={rImg ? { backgroundImage: `url(${rImg})` } : undefined}
+                    >
+                      {!rImg && <span className="mm-related-img-fallback">INKII</span>}
+                    </div>
+                    <div className="mm-related-body">
+                      {r.code && <div className="mm-related-code">{r.code}</div>}
+                      <div className="mm-related-name">{r.name}</div>
+                      {r.subtitle && <div className="mm-related-sub">{r.subtitle}</div>}
+                    </div>
+                  </Link>
+                );
+              })}
+            </div>
+          </div>
+        </section>
+      )}
     </SiteShell>
   );
 }
