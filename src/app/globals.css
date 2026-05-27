@@ -2383,3 +2383,9 @@ body:has(.home-services) footer.site{margin-top:0}
   .cookie-btn-link{margin-right:0;text-align:center}
   .cookie-btn{width:100%}
 }
+
+/* Footer Cookie-Settings Button gleiche Optik wie Footer-Link */
+.footer-cookie-btn{background:none;border:none;padding:0;
+  color:inherit;font:inherit;cursor:pointer;text-align:left;
+  text-decoration:none;transition:.15s}
+.footer-cookie-btn:hover{color:#fff;text-decoration:underline;text-underline-offset:3px}

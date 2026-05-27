@@ -25,7 +25,7 @@ export default async function SiteShell({
         navItems={navItems.map((n) => ({ href: n.href, key: n.key }))}
       />
       <main>{children}</main>
-      <SiteFooter t={dict.footer} />
+      <SiteFooter t={dict.footer} cookieLabel={locale === "tr" ? "Çerez ayarları" : locale === "en" ? "Cookie settings" : "Cookie-Einstellungen"} />
       <RevealInit />
     </MerklisteProvider>
   );

@@ -1,10 +1,13 @@
 import Link from "next/link";
 import type { Dictionary } from "@/dictionaries/types";
+import CookieSettingsLink from "@/components/CookieSettingsLink";
 
 export default function SiteFooter({
   t,
+  cookieLabel = "Cookie-Einstellungen",
 }: {
   t: Dictionary["footer"];
+  cookieLabel?: string;
 }) {
   return (
     <footer className="site">
@@ -46,6 +49,7 @@ export default function SiteFooter({
               <li><Link href="/datenschutz">{t.lDatenschutz}</Link></li>
               <li><Link href="/kontakt">{t.lAgb}</Link></li>
               <li><Link href="/kontakt">{t.lWiderruf}</Link></li>
+              <li><CookieSettingsLink label={cookieLabel} /></li>
             </ul>
           </div>
         </div>

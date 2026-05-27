@@ -31,10 +31,25 @@ export default function CookieBanner({ dict }: { dict: CookieDict }) {
     try {
       const saved = localStorage.getItem(STORAGE_KEY);
       if (!saved) setShow(true);
+      else {
+        // Mevcut tercih varsa toggle değerlerini yükle
+        try {
+          const parsed = JSON.parse(saved);
+          setAnalytics(!!parsed.analytics);
+          setMarketing(!!parsed.marketing);
+        } catch {}
+      }
     } catch {
-      // localStorage nicht verfügbar — Banner zeigen
       setShow(true);
     }
+
+    // Footer'dan veya başka yerden tetiklenince banner'ı tekrar aç
+    const handleOpen = () => {
+      setDetails(true);
+      setShow(true);
+    };
+    window.addEventListener("inkii-open-cookie-settings", handleOpen);
+    return () => window.removeEventListener("inkii-open-cookie-settings", handleOpen);
   }, []);
 
   const save = (a: boolean, m: boolean) => {
