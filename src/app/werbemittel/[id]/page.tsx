@@ -9,9 +9,10 @@ import { formatPrice, formatNumber } from "@/lib/format";
 import { colorHex, colorLabel, materialLabel } from "@/lib/catalog-options";
 import { parsePriceTiers, tierDiscountPercent } from "@/lib/price-tiers";
 import { parseSizes } from "@/lib/sizes";
-import { SHOW_PRICES } from "@/lib/feature-flags";
+import { SHOW_TIERS } from "@/lib/feature-flags";
 import { getLocale } from "@/lib/i18n-server";
 import { getDictionary } from "@/dictionaries";
+import DetailOrderForm from "@/components/DetailOrderForm";
 
 export const dynamic = "force-dynamic";
 
@@ -147,7 +148,7 @@ export default async function ProductDetailPage({
               )}
 
               {/* Mengenstaffel */}
-              {SHOW_PRICES && tiers.length > 0 && (
+              {SHOW_TIERS && tiers.length > 0 && (
                 <div className="mm-tiers">
                   <div className="mm-tiers-head">
                     <span className="mm-detail-cbnum">{colors.length > 0 ? "2." : "1."}</span>{" "}
@@ -182,51 +183,28 @@ export default async function ProductDetailPage({
                 </div>
               )}
 
-              {/* Größen mit optionalem Aufpreis */}
-              {sizesList.length > 0 && (
-                <div className="mm-sizes">
-                  <div className="mm-tiers-head">
-                    <span>Größen verfügbar</span>
-                  </div>
-                  <div className="mm-sizes-grid">
-                    {sizesList.map((s, i) => (
-                      <div key={i} className="mm-size-tile">
-                        <span className="mm-size-name">{s.name}</span>
-                        {s.extraCents > 0 ? (
-                          <span className="mm-size-extra">
-                            +€{(s.extraCents / 100).toLocaleString("de-DE", {
-                              minimumFractionDigits: 2,
-                              maximumFractionDigits: 2,
-                            })}
-                          </span>
-                        ) : (
-                          <span className="mm-size-ok">✓</span>
-                        )}
-                      </div>
-                    ))}
-                  </div>
-                </div>
-              )}
+              {/* Größen-Auswahl + Mengen + Anfrage-Formular */}
+              <DetailOrderForm
+                productId={product.id}
+                productCode={product.code}
+                productName={product.name}
+                sizes={sizesList}
+                tiers={tiers}
+                basePriceCents={product.priceCents}
+              />
 
-              {/* CTA */}
-              <div className="mm-detail-cta">
-                <Link href="/kontakt" className="mm-detail-cta-btn">
-                  <span>Anfrage senden</span>
-                  <span className="mm-detail-cta-price">Preis auf Anfrage</span>
+              <div className="mm-detail-cta-secondary">
+                <MerkenButton
+                  id={product.id}
+                  code={product.code}
+                  name={product.name}
+                  image={images[0] ?? null}
+                  labelOn={d.common.gemerktLong}
+                  labelOff={d.common.merkenLong}
+                />
+                <Link className="mm-detail-cta-back" href="/werbemittel">
+                  ← {dt.backToCatalog}
                 </Link>
-                <div className="mm-detail-cta-row">
-                  <MerkenButton
-                    id={product.id}
-                    code={product.code}
-                    name={product.name}
-                    image={images[0] ?? null}
-                    labelOn={d.common.gemerktLong}
-                    labelOff={d.common.merkenLong}
-                  />
-                  <Link className="mm-detail-cta-back" href="/werbemittel">
-                    ← {dt.backToCatalog}
-                  </Link>
-                </div>
               </div>
 
               <div className="mm-detail-trust">

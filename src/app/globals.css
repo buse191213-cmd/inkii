@@ -2928,3 +2928,79 @@ body:has(.home-services) footer.site{margin-top:0}
   .adm .inq-status-pill.sm{padding:3px 8px;font-size:.7rem}
   .adm .inq-avatar-sm{width:32px;height:32px;font-size:.72rem}
 }
+
+/* === Detail-Order Form === */
+.det-order{background:#fff;border:1px solid #e8e8e6;border-radius:14px;
+  padding:24px;display:flex;flex-direction:column;gap:18px;margin-top:24px}
+.det-order-head h3{font-family:var(--display);font-size:1.15rem;font-weight:700;
+  color:#1c2722;margin:0 0 4px;letter-spacing:-.01em}
+.det-order-head p{font-size:.86rem;color:#7a857f;margin:0;line-height:1.5}
+
+.det-order-sizes{display:grid;grid-template-columns:repeat(auto-fill,minmax(110px,1fr));gap:10px}
+.det-order-sizes.single{grid-template-columns:1fr}
+.det-order-size{display:flex;flex-direction:column;gap:6px;padding:12px;
+  border:1.5px solid #e3e6df;border-radius:10px;background:#fafbf9;transition:.18s;cursor:text}
+.det-order-size:focus-within{border-color:#1c2722;background:#fff;
+  box-shadow:0 0 0 4px rgba(28,39,34,.06)}
+.det-order-size-name{font-weight:700;font-size:1rem;color:#1c2722;letter-spacing:.02em}
+.det-order-size-extra{font-size:.74rem;color:#c08454;font-weight:600}
+.det-order-size input{border:none;background:none;font-family:inherit;font-size:1.15rem;
+  font-weight:700;color:#1c2722;padding:0;outline:none;width:100%;
+  -moz-appearance:textfield}
+.det-order-size input::-webkit-outer-spin-button,
+.det-order-size input::-webkit-inner-spin-button{-webkit-appearance:none;margin:0}
+
+.det-order-tier-hint{display:flex;flex-wrap:wrap;gap:6px}
+.det-tier-pill{display:flex;flex-direction:column;align-items:flex-start;gap:1px;
+  background:#f4f5f1;border:1px solid #e3e6df;border-radius:8px;padding:7px 11px;
+  font-size:.76rem;line-height:1.2;transition:.15s}
+.det-tier-pill.active{background:#1c2722;color:#fff;border-color:#1c2722}
+.det-tier-qty{font-weight:600;color:inherit;opacity:.9}
+.det-tier-price{font-weight:800;font-size:.84rem}
+
+.det-order-total{background:#fafbf9;border:1px solid #e8e8e6;border-radius:10px;
+  padding:14px 18px;display:flex;justify-content:space-between;gap:18px;flex-wrap:wrap}
+.det-order-total > div{display:flex;flex-direction:column;gap:2px}
+.det-order-total-lbl{font-size:.72rem;letter-spacing:.12em;text-transform:uppercase;
+  color:#9ea7a2;font-weight:600}
+.det-order-total-val{font-family:var(--display);font-size:1.3rem;font-weight:800;
+  color:#1c2722;letter-spacing:-.01em}
+
+.det-order-fields{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.det-order-input{border:1.5px solid #e3e6df;background:#fafbf9;padding:12px 14px;
+  border-radius:8px;font-size:.94rem;font-family:inherit;color:#1c2722;outline:none;transition:.18s}
+.det-order-input:focus{border-color:#1c2722;background:#fff;
+  box-shadow:0 0 0 4px rgba(28,39,34,.06)}
+.det-order-textarea{grid-column:1 / -1;resize:vertical;min-height:80px;font-family:inherit}
+
+.det-order-err{background:#fef2f0;color:#b8463a;padding:10px 14px;font-size:.86rem;
+  border-radius:8px;border:1px solid #f5d5d0}
+
+.det-order-submit{background:#1c2722;color:#fff;border:none;padding:16px 24px;
+  font-family:var(--display);font-size:.95rem;font-weight:700;letter-spacing:.04em;
+  text-transform:uppercase;border-radius:10px;cursor:pointer;transition:.2s;
+  box-shadow:0 6px 20px rgba(28,39,34,.18)}
+.det-order-submit:hover:not(:disabled){background:#3f9c5c;transform:translateY(-1px);
+  box-shadow:0 10px 28px rgba(63,156,92,.28)}
+.det-order-submit:disabled{opacity:.6;cursor:not-allowed}
+
+.det-order-foot{font-size:.78rem;color:#9ea7a2;text-align:center;margin:0}
+
+.det-order-success{background:#fff;border:1px solid #c8dec1;border-radius:14px;
+  padding:36px 24px;text-align:center;display:flex;flex-direction:column;align-items:center;gap:8px;
+  margin-top:24px}
+.det-order-success-icon{width:64px;height:64px;background:#eef5e8;color:#3f9c5c;
+  border-radius:50%;display:grid;place-items:center;margin-bottom:8px}
+.det-order-success h3{font-family:var(--display);font-size:1.4rem;font-weight:800;
+  color:#1c2722;margin:0;letter-spacing:-.01em}
+.det-order-success p{font-size:.92rem;color:#5a6660;margin:0;max-width:340px;line-height:1.5}
+
+.mm-detail-cta-secondary{display:flex;gap:12px;margin-top:18px;align-items:center;flex-wrap:wrap}
+.mm-detail-cta-secondary .mm-detail-cta-back{margin-left:auto}
+
+@media(max-width:640px){
+  .det-order{padding:18px}
+  .det-order-fields{grid-template-columns:1fr}
+  .det-order-total{flex-direction:column;gap:10px}
+  .det-order-sizes{grid-template-columns:repeat(auto-fill,minmax(90px,1fr))}
+}

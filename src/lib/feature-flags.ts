@@ -4,3 +4,5 @@
  *  einschalten, indem man `false` auf `true` setzt. */
 
 export const SHOW_PRICES = false;
+/** Mengenstaffel auf der Detailseite zeigen (Staffel-Preise pro Menge). */
+export const SHOW_TIERS = true;
