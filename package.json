@@ -16,6 +16,8 @@
   },
   "dependencies": {
     "@prisma/client": "^6.19.3",
+    "@react-three/drei": "^9.114.0",
+    "@react-three/fiber": "^8.17.10",
     "@tiptap/extension-link": "^3.23.5",
     "@tiptap/react": "^3.23.5",
     "@tiptap/starter-kit": "^3.23.5",
@@ -24,13 +26,15 @@
     "next": "^15.5.18",
     "nodemailer": "^6.10.0",
     "react": "19.0.0",
-    "react-dom": "19.0.0"
+    "react-dom": "19.0.0",
+    "three": "^0.169.0"
   },
   "devDependencies": {
     "@types/node": "22.10.7",
     "@types/nodemailer": "^6.4.17",
     "@types/react": "19.0.7",
     "@types/react-dom": "19.0.3",
+    "@types/three": "^0.169.0",
     "prisma": "^6.19.3",
     "tsx": "4.19.2",
     "typescript": "5.7.3"

@@ -36,6 +36,7 @@ export default function SiteFooter({
           <div>
             <h4>{t.colService}</h4>
             <ul>
+              <li><Link href="/designer"><span style={{ background: "linear-gradient(90deg,#d9a878,#1c2722)", color: "transparent", WebkitBackgroundClip: "text", backgroundClip: "text", fontWeight: 700 }}>✨ 3D-Designer</span></Link></li>
               <li><Link href="/nachhaltigkeit">{t.lNachhaltigkeit}</Link></li>
               <li><Link href="/kontakt">{t.lFaq}</Link></li>
               <li><Link href="/kontakt">{t.lKontakt}</Link></li>
