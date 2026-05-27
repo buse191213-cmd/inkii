@@ -3026,3 +3026,27 @@ body:has(.home-services) footer.site{margin-top:0}
 /* Merk-qty disabled state */
 .merk-qty button:disabled,.merk-qty input:disabled{
   background:#f4f5f1;color:#9ea7a2;cursor:not-allowed;opacity:.7}
+
+/* === Kompakte Kategorie-Anlege-Leiste === */
+.adm .cat-add-bar{margin-bottom:18px}
+.adm .cat-add-inline{display:flex;align-items:center;gap:0;background:#fff;
+  border:1px solid #e8e8e6;border-radius:12px;padding:6px 6px 6px 16px;
+  transition:.18s}
+.adm .cat-add-inline:focus-within{border-color:#1c2722;
+  box-shadow:0 0 0 4px rgba(28,39,34,.06)}
+.adm .cat-add-icon{color:#9ea7a2;flex-shrink:0}
+.adm .cat-add-inline:focus-within .cat-add-icon{color:#1c2722}
+.adm .cat-input-inline{flex:1;min-width:0;border:none;background:none;outline:none;
+  padding:10px 14px;font-size:.94rem;color:#1c2722;font-family:inherit}
+.adm .cat-input-inline::placeholder{color:#9ea7a2}
+.adm .cat-add-btn{background:#1c2722;color:#fff;border:none;padding:11px 22px;
+  font-weight:600;font-size:.88rem;cursor:pointer;border-radius:8px;
+  transition:.18s;letter-spacing:.01em;flex-shrink:0}
+.adm .cat-add-btn:hover:not(:disabled){background:#28342d}
+.adm .cat-add-btn:disabled{background:#cdd6d0;cursor:not-allowed}
+@media(max-width:600px){
+  .adm .cat-add-inline{flex-wrap:wrap;padding:8px;gap:6px}
+  .adm .cat-add-icon{margin-left:8px}
+  .adm .cat-input-inline{flex-basis:100%;order:2;padding:8px 8px}
+  .adm .cat-add-btn{order:3;width:100%}
+}

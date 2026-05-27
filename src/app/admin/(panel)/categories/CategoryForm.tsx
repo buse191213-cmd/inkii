@@ -110,24 +110,16 @@ export default function CategoryForm({ categories }: { categories: AdminCat[] })
         Admin <b>/ Kategorien</b>
       </p>
 
-      {/* Anlege-Karte */}
-      <div className="cat-card cat-card-add">
-        <div className="cat-card-head">
-          <div className="cat-card-icon">
-            <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" strokeWidth="1.7">
-              <line x1="12" y1="5" x2="12" y2="19" strokeLinecap="round" />
-              <line x1="5" y1="12" x2="19" y2="12" strokeLinecap="round" />
-            </svg>
-          </div>
-          <div>
-            <h3 className="cat-card-title">Neue Kategorie anlegen</h3>
-            <p className="cat-card-sub">Kategorien helfen, Produkte zu organisieren.</p>
-          </div>
-        </div>
-        <form onSubmit={add} className="cat-add-form">
+      {/* Kompakte Anlege-Zeile */}
+      <div className="cat-add-bar">
+        <form onSubmit={add} className="cat-add-inline">
+          <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" strokeWidth="1.8" className="cat-add-icon">
+            <line x1="12" y1="5" x2="12" y2="19" strokeLinecap="round" />
+            <line x1="5" y1="12" x2="19" y2="12" strokeLinecap="round" />
+          </svg>
           <input
-            className="cat-input"
-            placeholder="z. B. Kleidung, Taschen, Werbeartikel …"
+            className="cat-input-inline"
+            placeholder="Neue Kategorie hinzufügen — z. B. Kleidung, Taschen, Werbeartikel"
             value={name}
             onChange={(e) => {
               setName(e.target.value);
@@ -135,12 +127,12 @@ export default function CategoryForm({ categories }: { categories: AdminCat[] })
               setError("");
             }}
           />
-          <button className="btn-primary" type="submit" disabled={busy}>
-            {busy ? "Anlegen …" : "Anlegen"}
+          <button className="cat-add-btn" type="submit" disabled={busy || !name.trim()}>
+            {busy ? "…" : "Anlegen"}
           </button>
         </form>
-        {error && <div className="form-err" style={{ marginTop: 12 }}>{error}</div>}
-        {ok && <div className="form-ok" style={{ marginTop: 12 }}>✓ Kategorie wurde angelegt.</div>}
+        {error && <div className="form-err" style={{ marginTop: 10 }}>{error}</div>}
+        {ok && <div className="form-ok" style={{ marginTop: 10 }}>✓ Kategorie wurde angelegt.</div>}
       </div>
 
       {/* Liste / Tabelle */}
