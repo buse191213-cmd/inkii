@@ -4,7 +4,11 @@ import { useState } from "react";
 import { sendInquiryFromBrowser } from "@/lib/mail-client";
 
 export default function MailTestPanel({ defaultEmail }: { defaultEmail: string }) {
-  const configured = Boolean(process.env.NEXT_PUBLIC_WEB3FORMS_ACCESS_KEY);
+  const rawKey = process.env.NEXT_PUBLIC_WEB3FORMS_ACCESS_KEY || "";
+  const configured = rawKey.length > 0;
+  const keyHint = configured
+    ? `${rawKey.slice(0, 8)}…${rawKey.slice(-4)} (${rawKey.length} Zeichen)`
+    : "—";
   const [email, setEmail] = useState(defaultEmail);
   const [busy, setBusy] = useState(false);
   const [result, setResult] = useState<{
@@ -77,6 +81,10 @@ export default function MailTestPanel({ defaultEmail }: { defaultEmail: string }
           Sendet eine Test-Anfrage direkt aus dem Browser an Web3Forms.
           <br />→ Shop-Mail an <code>info@inkiiworks.de</code>
           <br />→ Auto-Reply an die unten angegebene Adresse
+          <br />
+          <small style={{ color: "#9ea7a2", fontFamily: "monospace" }}>
+            Key im Browser: <b>{keyHint}</b>
+          </small>
         </p>
 
         <div className="field">
