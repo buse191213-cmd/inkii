@@ -262,6 +262,18 @@ export async function updateInquiryStatus(
   }
 }
 
+/** Eine Anfrage komplett löschen. */
+export async function deleteInquiry(id: string): Promise<ActionResult> {
+  try {
+    await db.inquiry.delete({ where: { id } });
+    revalidatePath("/admin/inquiries");
+    revalidatePath("/admin");
+    return { ok: true };
+  } catch {
+    return { ok: false, error: "Anfrage konnte nicht gelöscht werden." };
+  }
+}
+
 /**
  * Speichert die URL des Hero-Videos. Die Videodatei selbst wird im Browser
  * direkt zu Vercel Blob hochgeladen (siehe /api/upload), damit auch große

@@ -2,6 +2,7 @@
 
 import { revalidatePath } from "next/cache";
 import { db } from "@/lib/db";
+import { sendInquiryMail } from "@/lib/mail";
 
 export type InquiryState = { ok: boolean; error?: string };
 
@@ -50,6 +51,9 @@ export async function submitInquiry(
     await db.inquiry.create({
       data: { name, email, phone, company, subject, message: fullMessage, status: "new" },
     });
+    // Benachrichtigungs-Mail an info@inkiiworks.de (asynchron, blockiert nicht)
+    sendInquiryMail({ name, email, phone, company, subject, message: fullMessage })
+      .catch((err) => console.warn("[kontakt] Mail-Fehler:", err));
     revalidatePath("/admin/inquiries");
     revalidatePath("/admin");
     return { ok: true };

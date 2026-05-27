@@ -2,6 +2,7 @@
 
 import { revalidatePath } from "next/cache";
 import { db } from "@/lib/db";
+import { sendInquiryMail } from "@/lib/mail";
 
 export type MerklisteState = { ok: boolean; error?: string };
 
@@ -54,6 +55,8 @@ export async function submitMerklisteInquiry(
     await db.inquiry.create({
       data: { name, email, phone, company, subject, message, status: "new" },
     });
+    sendInquiryMail({ name, email, phone, company, subject, message })
+      .catch((err) => console.warn("[merkzettel] Mail-Fehler:", err));
     revalidatePath("/admin/inquiries");
     revalidatePath("/admin");
     return { ok: true };
