@@ -51,7 +51,13 @@ function parseItems(message: string): { code?: string; name: string; qty?: numbe
     .filter((i) => i.name);
 }
 
-export default function InquiryManager({ inquiries }: { inquiries: AdminInquiry[] }) {
+export default function InquiryManager({
+  inquiries,
+  productMap = {},
+}: {
+  inquiries: AdminInquiry[];
+  productMap?: Record<string, { name: string; image: string }>;
+}) {
   const router = useRouter();
   const [filter, setFilter] = useState("all");
   const [busy, setBusy] = useState<string | null>(null);
@@ -185,15 +191,32 @@ export default function InquiryManager({ inquiries }: { inquiries: AdminInquiry[
                       <span>{items.length} {items.length === 1 ? "Artikel" : "Artikel"}</span>
                     </div>
                     <ul className="inq-items-list">
-                      {items.map((it, idx) => (
-                        <li key={idx}>
-                          <div className="inq-item-main">
-                            {it.code && <span className="inq-item-code">{it.code}</span>}
-                            <span className="inq-item-name">{it.name}</span>
-                          </div>
-                          {it.qty && <span className="inq-item-qty">{it.qty}×</span>}
-                        </li>
-                      ))}
+                      {items.map((it, idx) => {
+                        const prod = it.code ? productMap[it.code] : null;
+                        return (
+                          <li key={idx}>
+                            <div className="inq-item-main">
+                              {prod?.image ? (
+                                /* eslint-disable-next-line @next/next/no-img-element */
+                                <img className="inq-item-thumb" src={prod.image} alt={it.name} />
+                              ) : (
+                                <div className="inq-item-thumb inq-item-thumb-empty" aria-hidden>
+                                  <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" strokeWidth="1.6">
+                                    <rect x="3" y="5" width="18" height="14" rx="2" />
+                                    <circle cx="9" cy="11" r="1.5" />
+                                    <path d="M3 17l5-5 4 4 3-3 6 5" strokeLinecap="round" strokeLinejoin="round" />
+                                  </svg>
+                                </div>
+                              )}
+                              <div className="inq-item-text">
+                                {it.code && <span className="inq-item-code">{it.code}</span>}
+                                <span className="inq-item-name">{it.name}</span>
+                              </div>
+                            </div>
+                            {it.qty && <span className="inq-item-qty">{it.qty}×</span>}
+                          </li>
+                        );
+                      })}
                     </ul>
                     {headerLine && headerLine.length > 4 && (
                       <p className="inq-note">{headerLine}</p>

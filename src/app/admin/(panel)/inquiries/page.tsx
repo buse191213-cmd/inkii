@@ -9,6 +9,16 @@ export default async function InquiriesPage() {
     orderBy: { createdAt: "desc" },
   });
 
+  // Alle Produkte einmal laden, damit wir Bilder/Namen über den Produktcode zuordnen können
+  const products = await db.product.findMany({
+    select: { code: true, name: true, images: true },
+  });
+  const productMap: Record<string, { name: string; image: string }> = {};
+  for (const p of products) {
+    const firstImage = (p.images ?? "").split(",").map((s: string) => s.trim()).filter(Boolean)[0] ?? "";
+    productMap[p.code] = { name: p.name, image: firstImage };
+  }
+
   const inquiries: AdminInquiry[] = dbInquiries.map((i) => ({
     id: i.id,
     name: i.name,
@@ -21,5 +31,5 @@ export default async function InquiriesPage() {
     date: formatDate(i.createdAt),
   }));
 
-  return <InquiryManager inquiries={inquiries} />;
+  return <InquiryManager inquiries={inquiries} productMap={productMap} />;
 }
