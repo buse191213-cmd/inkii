@@ -61,6 +61,7 @@ export default function InquiryManager({
   const router = useRouter();
   const [filter, setFilter] = useState("all");
   const [busy, setBusy] = useState<string | null>(null);
+  const [openId, setOpenId] = useState<string | null>(null);
 
   const list = useMemo(
     () => inquiries.filter((i) => filter === "all" || i.status === filter),
@@ -92,6 +93,10 @@ export default function InquiryManager({
     setBusy(null);
     if (res.ok) router.refresh();
     else alert(res.error ?? "Löschen fehlgeschlagen.");
+  }
+
+  function toggle(id: string) {
+    setOpenId((cur) => (cur === id ? null : id));
   }
 
   return (
@@ -133,134 +138,163 @@ export default function InquiryManager({
         {list.map((inq) => {
           const items = parseItems(inq.message);
           const isMerk = inq.subject.toLowerCase().includes("merkzettel");
-          // Restmessage ohne Artikel-Liste
           const headerLine = inq.message.split("\n").find((l) => l && !l.startsWith("•") && !l.startsWith("-") && !l.startsWith("Angefragte"));
+          const isOpen = openId === inq.id;
+
           return (
-            <article key={inq.id} className={`inq-card status-${inq.status}`}>
-              <header className="inq-head">
-                <div className="inq-id">
-                  <div className="inq-avatar">{initials(inq.name)}</div>
-                  <div className="inq-id-text">
-                    <h3>{inq.name || "—"}</h3>
-                    <div className="inq-meta">
-                      {inq.company && <span>{inq.company}</span>}
-                      <span className="dot">·</span>
-                      <span>{inq.date}</span>
-                    </div>
+            <article key={inq.id} className={`inq-row status-${inq.status} ${isOpen ? "open" : ""}`}>
+              {/* === Compact Row (klickbar) === */}
+              <button
+                type="button"
+                className="inq-row-head"
+                onClick={() => toggle(inq.id)}
+                aria-expanded={isOpen}
+              >
+                <div className="inq-row-left">
+                  <div className="inq-avatar-sm">{initials(inq.name)}</div>
+                  <div className="inq-row-info">
+                    <span className="inq-row-name">{inq.name || "—"}</span>
+                    <span className="inq-row-sub">
+                      {inq.company && <span>{inq.company} ·</span>}
+                      <span>{inq.subject}</span>
+                      {items.length > 0 && <span className="inq-row-items">· {items.length} Artikel</span>}
+                    </span>
                   </div>
                 </div>
-                <div className="inq-status-pill" style={{ "--dot": STATUS_DOT[inq.status] } as React.CSSProperties}>
-                  <span className="inq-pill-dot" />
-                  {STATUS_LABEL[inq.status] ?? inq.status}
+                <div className="inq-row-right">
+                  <span className="inq-row-date">{inq.date}</span>
+                  <span
+                    className="inq-status-pill sm"
+                    style={{ "--dot": STATUS_DOT[inq.status] } as React.CSSProperties}
+                  >
+                    <span className="inq-pill-dot" />
+                    {STATUS_LABEL[inq.status] ?? inq.status}
+                  </span>
+                  <svg
+                    className="inq-chev"
+                    viewBox="0 0 24 24"
+                    width="18"
+                    height="18"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="2"
+                  >
+                    <path d="M6 9l6 6 6-6" strokeLinecap="round" strokeLinejoin="round" />
+                  </svg>
                 </div>
-              </header>
+              </button>
 
-              <div className="inq-subject">
-                <span className="inq-subject-icon">
-                  {isMerk ? (
-                    <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" strokeWidth="1.7">
-                      <path d="M20 6L9 17l-5-5" strokeLinecap="round" strokeLinejoin="round" />
-                    </svg>
-                  ) : (
-                    <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" strokeWidth="1.7">
-                      <path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z" strokeLinecap="round" strokeLinejoin="round" />
-                    </svg>
-                  )}
-                </span>
-                <span className="inq-subject-text">{inq.subject}</span>
-              </div>
-
-              <div className="inq-body">
-                <div className="inq-contact">
-                  <div className="inq-contact-row">
-                    <span className="inq-lbl">E-Mail</span>
-                    <a href={`mailto:${inq.email}`} className="inq-link">{inq.email}</a>
+              {/* === Detail (sadece açıkken) === */}
+              {isOpen && (
+                <div className="inq-row-detail">
+                  <div className="inq-subject">
+                    <span className="inq-subject-icon">
+                      {isMerk ? (
+                        <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" strokeWidth="1.7">
+                          <path d="M20 6L9 17l-5-5" strokeLinecap="round" strokeLinejoin="round" />
+                        </svg>
+                      ) : (
+                        <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" strokeWidth="1.7">
+                          <path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z" strokeLinecap="round" strokeLinejoin="round" />
+                        </svg>
+                      )}
+                    </span>
+                    <span className="inq-subject-text">{inq.subject}</span>
                   </div>
-                  {inq.phone && (
-                    <div className="inq-contact-row">
-                      <span className="inq-lbl">Telefon</span>
-                      <a href={`tel:${inq.phone}`} className="inq-link">{inq.phone}</a>
-                    </div>
-                  )}
-                </div>
 
-                {items.length > 0 ? (
-                  <div className="inq-items">
-                    <div className="inq-items-head">
-                      <span>Artikel</span>
-                      <span>{items.length} {items.length === 1 ? "Artikel" : "Artikel"}</span>
+                  <div className="inq-body">
+                    <div className="inq-contact">
+                      <div className="inq-contact-row">
+                        <span className="inq-lbl">E-Mail</span>
+                        <a href={`mailto:${inq.email}`} className="inq-link">{inq.email}</a>
+                      </div>
+                      {inq.phone && (
+                        <div className="inq-contact-row">
+                          <span className="inq-lbl">Telefon</span>
+                          <a href={`tel:${inq.phone}`} className="inq-link">{inq.phone}</a>
+                        </div>
+                      )}
                     </div>
-                    <ul className="inq-items-list">
-                      {items.map((it, idx) => {
-                        const prod = it.code ? productMap[it.code] : null;
-                        return (
-                          <li key={idx}>
-                            <div className="inq-item-main">
-                              {prod?.image ? (
-                                /* eslint-disable-next-line @next/next/no-img-element */
-                                <img className="inq-item-thumb" src={prod.image} alt={it.name} />
-                              ) : (
-                                <div className="inq-item-thumb inq-item-thumb-empty" aria-hidden>
-                                  <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" strokeWidth="1.6">
-                                    <rect x="3" y="5" width="18" height="14" rx="2" />
-                                    <circle cx="9" cy="11" r="1.5" />
-                                    <path d="M3 17l5-5 4 4 3-3 6 5" strokeLinecap="round" strokeLinejoin="round" />
-                                  </svg>
+
+                    {items.length > 0 ? (
+                      <div className="inq-items">
+                        <div className="inq-items-head">
+                          <span>Artikel</span>
+                          <span>{items.length} {items.length === 1 ? "Artikel" : "Artikel"}</span>
+                        </div>
+                        <ul className="inq-items-list">
+                          {items.map((it, idx) => {
+                            const prod = it.code ? productMap[it.code] : null;
+                            return (
+                              <li key={idx}>
+                                <div className="inq-item-main">
+                                  {prod?.image ? (
+                                    /* eslint-disable-next-line @next/next/no-img-element */
+                                    <img className="inq-item-thumb" src={prod.image} alt={it.name} />
+                                  ) : (
+                                    <div className="inq-item-thumb inq-item-thumb-empty" aria-hidden>
+                                      <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" strokeWidth="1.6">
+                                        <rect x="3" y="5" width="18" height="14" rx="2" />
+                                        <circle cx="9" cy="11" r="1.5" />
+                                        <path d="M3 17l5-5 4 4 3-3 6 5" strokeLinecap="round" strokeLinejoin="round" />
+                                      </svg>
+                                    </div>
+                                  )}
+                                  <div className="inq-item-text">
+                                    {it.code && <span className="inq-item-code">{it.code}</span>}
+                                    <span className="inq-item-name">{it.name}</span>
+                                  </div>
                                 </div>
-                              )}
-                              <div className="inq-item-text">
-                                {it.code && <span className="inq-item-code">{it.code}</span>}
-                                <span className="inq-item-name">{it.name}</span>
-                              </div>
-                            </div>
-                            {it.qty && <span className="inq-item-qty">{it.qty}×</span>}
-                          </li>
-                        );
-                      })}
-                    </ul>
-                    {headerLine && headerLine.length > 4 && (
-                      <p className="inq-note">{headerLine}</p>
+                                {it.qty && <span className="inq-item-qty">{it.qty}×</span>}
+                              </li>
+                            );
+                          })}
+                        </ul>
+                        {headerLine && headerLine.length > 4 && (
+                          <p className="inq-note">{headerLine}</p>
+                        )}
+                      </div>
+                    ) : (
+                      <div className="inq-message">
+                        {inq.message.split("\n").map((line, idx) => (
+                          <p key={idx}>{line || <>&nbsp;</>}</p>
+                        ))}
+                      </div>
                     )}
                   </div>
-                ) : (
-                  <div className="inq-message">
-                    {inq.message.split("\n").map((line, idx) => (
-                      <p key={idx}>{line || <>&nbsp;</>}</p>
-                    ))}
-                  </div>
-                )}
-              </div>
 
-              <footer className="inq-foot">
-                <select
-                  className="inq-status-select"
-                  value={inq.status}
-                  onChange={(e) => changeStatus(inq.id, e.target.value)}
-                  disabled={busy === inq.id}
-                >
-                  <option value="new">Neu</option>
-                  <option value="progress">In Bearbeitung</option>
-                  <option value="done">Erledigt</option>
-                </select>
-                <a className="inq-action" href={`mailto:${inq.email}?subject=Re: ${encodeURIComponent(inq.subject)}`}>
-                  <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" strokeWidth="1.8">
-                    <path d="M22 2L11 13M22 2l-7 20-4-9-9-4 20-7z" strokeLinecap="round" strokeLinejoin="round" />
-                  </svg>
-                  Antworten
-                </a>
-                <button
-                  className="inq-delete"
-                  onClick={() => handleDelete(inq)}
-                  disabled={busy === inq.id}
-                  title="Anfrage löschen"
-                >
-                  <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" strokeWidth="1.8">
-                    <path d="M3 6h18M8 6V4a2 2 0 012-2h4a2 2 0 012 2v2M19 6l-1 14a2 2 0 01-2 2H8a2 2 0 01-2-2L5 6"
-                      strokeLinecap="round" strokeLinejoin="round" />
-                  </svg>
-                  Löschen
-                </button>
-              </footer>
+                  <footer className="inq-foot">
+                    <select
+                      className="inq-status-select"
+                      value={inq.status}
+                      onChange={(e) => changeStatus(inq.id, e.target.value)}
+                      disabled={busy === inq.id}
+                    >
+                      <option value="new">Neu</option>
+                      <option value="progress">In Bearbeitung</option>
+                      <option value="done">Erledigt</option>
+                    </select>
+                    <a className="inq-action" href={`mailto:${inq.email}?subject=Re: ${encodeURIComponent(inq.subject)}`}>
+                      <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" strokeWidth="1.8">
+                        <path d="M22 2L11 13M22 2l-7 20-4-9-9-4 20-7z" strokeLinecap="round" strokeLinejoin="round" />
+                      </svg>
+                      Antworten
+                    </a>
+                    <button
+                      className="inq-delete"
+                      onClick={() => handleDelete(inq)}
+                      disabled={busy === inq.id}
+                      title="Anfrage löschen"
+                    >
+                      <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" strokeWidth="1.8">
+                        <path d="M3 6h18M8 6V4a2 2 0 012-2h4a2 2 0 012 2v2M19 6l-1 14a2 2 0 01-2 2H8a2 2 0 01-2-2L5 6"
+                          strokeLinecap="round" strokeLinejoin="round" />
+                      </svg>
+                      Löschen
+                    </button>
+                  </footer>
+                </div>
+              )}
             </article>
           );
         })}
