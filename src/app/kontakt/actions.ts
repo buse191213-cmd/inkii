@@ -51,9 +51,14 @@ export async function submitInquiry(
     await db.inquiry.create({
       data: { name, email, phone, company, subject, message: fullMessage, status: "new" },
     });
-    // Benachrichtigungs-Mail an info@inkiiworks.de (asynchron, blockiert nicht)
-    sendInquiryMail({ name, email, phone, company, subject, message: fullMessage })
-      .catch((err) => console.warn("[kontakt] Mail-Fehler:", err));
+    // Mails MÜSSEN awaited werden, sonst killt Vercel die Function vor dem Versand.
+    try {
+      const mailRes = await sendInquiryMail({ name, email, phone, company, subject, message: fullMessage });
+      if (!mailRes.adminOk) console.warn("[kontakt] Admin-Mail:", mailRes.adminError);
+      if (!mailRes.customerOk) console.warn("[kontakt] Kunden-Mail:", mailRes.customerError);
+    } catch (err) {
+      console.warn("[kontakt] Mail-Versand fehlgeschlagen:", err);
+    }
     revalidatePath("/admin/inquiries");
     revalidatePath("/admin");
     return { ok: true };

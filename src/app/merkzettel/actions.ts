@@ -94,8 +94,14 @@ export async function submitMerklisteInquiry(
     await db.inquiry.create({
       data: { name, email, phone, company, subject, message, status: "new" },
     });
-    sendInquiryMail({ name, email, phone, company, subject, message })
-      .catch((err) => console.warn("[merkzettel] Mail-Fehler:", err));
+    // Mails MÜSSEN awaited werden, sonst killt Vercel die Function vor dem Versand.
+    try {
+      const mailRes = await sendInquiryMail({ name, email, phone, company, subject, message });
+      if (!mailRes.adminOk) console.warn("[merkzettel] Admin-Mail:", mailRes.adminError);
+      if (!mailRes.customerOk) console.warn("[merkzettel] Kunden-Mail:", mailRes.customerError);
+    } catch (err) {
+      console.warn("[merkzettel] Mail-Versand fehlgeschlagen:", err);
+    }
     revalidatePath("/admin/inquiries");
     revalidatePath("/admin");
     return { ok: true };
