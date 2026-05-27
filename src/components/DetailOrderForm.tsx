@@ -60,18 +60,34 @@ export default function DetailOrderForm({
 
   const subtotalCents = useMemo(() => {
     if (unitCents == null) return null;
-    // Grundlogik: Alle Stücke kosten den Basispreis (Staffel-Preis).
-    // Aufpreis pro Größe wird EINMALIG (nicht pro Stück) addiert,
-    // wenn diese Größe ausgewählt wurde (qty > 0). Negativer Aufpreis = Rabatt.
-    let sum = totalQty * unitCents;
-    for (const s of sizes) {
-      const q = qty[s.name] || 0;
-      if (q > 0 && s.extraCents) {
-        sum += s.extraCents; // einmalig pro Größe, NICHT q × extra
+    // Logik:
+    // - unitCents = aktiver Staffel-Preis (z. B. €0,85 bei 30 Stk)
+    // - basePriceCents = Listenpreis bei 1 Stk (z. B. €1,00)
+    // - ratio = Mengen-Rabattfaktor (z. B. 0,85)
+    // - Größen-Aufpreis ist PRO STÜCK, aber wird auch um den Mengenrabatt
+    //   reduziert: bei 30 Stk wird ein +€1,50 Aufpreis zu +€1,28.
+    const ratio =
+      basePriceCents && basePriceCents > 0 ? unitCents / basePriceCents : 1;
+    let sum = 0;
+    if (sizes.length === 0) {
+      sum = (qty["__default"] || 0) * unitCents;
+    } else {
+      for (const s of sizes) {
+        const q = qty[s.name] || 0;
+        if (q > 0) {
+          const effectiveExtra = Math.round((s.extraCents || 0) * ratio);
+          sum += q * (unitCents + effectiveExtra);
+        }
       }
     }
     return sum;
-  }, [qty, sizes, unitCents, totalQty]);
+  }, [qty, sizes, unitCents, basePriceCents]);
+
+  // Effektive Aufpreis-Anzeige pro Stück (mit Mengenrabatt-Faktor)
+  const effectiveRatio =
+    basePriceCents && basePriceCents > 0 && unitCents != null
+      ? unitCents / basePriceCents
+      : 1;
 
   function setSizeQty(name: string, value: number) {
     setSizeQtyState(name, Math.max(0, Math.floor(value || 0)));
@@ -125,7 +141,13 @@ export default function DetailOrderForm({
               {s.extraCents !== 0 && (
                 <span className={`det-order-size-extra${s.extraCents < 0 ? " neg" : ""}`}>
                   {s.extraCents > 0 ? "+" : "−"}€{euro(Math.abs(s.extraCents))}
-                  <em>einmalig</em>
+                  <em>/Stk</em>
+                  {effectiveRatio < 1 && (
+                    <em className="det-extra-eff">
+                      bei Menge: {s.extraCents > 0 ? "+" : "−"}€
+                      {euro(Math.round(Math.abs(s.extraCents) * effectiveRatio))}
+                    </em>
+                  )}
                 </span>
               )}
               <input
