@@ -27,6 +27,7 @@ export type AdminProduct = {
   colors: string;
   material: string;
   images: string;
+  visiblePages: string[]; // ["kleidung","werbeartikel"] vs.
   categoryId: string;
   categoryName: string;
   createdAt?: string;
@@ -43,7 +44,7 @@ const EMPTY: AdminProduct = {
   id: "", code: "VS-", name: "", subtitle: "", description: "", icon: "box",
   priceCents: null, priceTiers: "[]", sizes: "[]", stock: 0, status: "active",
   isNew: false, isEco: false,
-  colors: "", material: "", images: "", categoryId: "", categoryName: "",
+  colors: "", material: "", images: "", visiblePages: [], categoryId: "", categoryName: "",
 };
 
 const SORTS = [
@@ -243,6 +244,11 @@ export default function ProductManager({
 
     // Größen
     fd.set("sizes", stringifySizesFromDrafts(sizes));
+
+    // visiblePages: alle gleichnamigen Felder einsammeln und als JSON serialisieren
+    const checkedPages = fd.getAll("visiblePages").filter((v): v is string => typeof v === "string");
+    fd.delete("visiblePages");
+    fd.set("visiblePages", JSON.stringify(checkedPages));
 
     const res = await saveProduct(fd);
     setBusy(false);
@@ -515,6 +521,45 @@ export default function ProductManager({
                       </option>
                     ))}
                   </select>
+                </div>
+
+                <div className="field">
+                  <label>Auf welchen Seiten soll das Produkt erscheinen?</label>
+                  <div className="pages-grid">
+                    {(["kleidung", "taschen", "werbeartikel"] as const).map((slug) => {
+                      const checked = modal.visiblePages.includes(slug);
+                      return (
+                        <label key={slug} className={`page-chip ${checked ? "active" : ""}`}>
+                          <input
+                            type="checkbox"
+                            name="visiblePages"
+                            value={slug}
+                            checked={checked}
+                            onChange={(e) => {
+                              setModal((m) => {
+                                if (!m) return m;
+                                return {
+                                  ...m,
+                                  visiblePages: e.target.checked
+                                    ? [...m.visiblePages, slug]
+                                    : m.visiblePages.filter((s) => s !== slug),
+                                };
+                              });
+                            }}
+                          />
+                          <span className="page-chip-label">
+                            {slug === "kleidung" && "Kleidung"}
+                            {slug === "taschen" && "Taschen"}
+                            {slug === "werbeartikel" && "Werbeartikel"}
+                          </span>
+                        </label>
+                      );
+                    })}
+                  </div>
+                  <p className="hint">
+                    Werbemittel-Katalog zeigt immer alle Produkte. Hier wählst du, in welchen
+                    Navigations-Sub-Seiten das Produkt zusätzlich erscheint. Du kannst mehrere auswählen.
+                  </p>
                 </div>
                 <div className="field-row">
                   <div className="field">

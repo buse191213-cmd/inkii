@@ -35,6 +35,7 @@ model Product {
   colors      String   @default("") // kommagetrennt, z. B. "blau,schwarz"
   material    String   @default("") // kommagetrennt, z. B. "metall,kunststoff"
   images      String   @default("") // kommagetrennte Bild-URLs (max. 5)
+  visiblePages String  @default("[]") // JSON: ["kleidung","werbeartikel"] — Seiten, wo das Produkt angezeigt wird
   categoryId  String
   category    Category @relation(fields: [categoryId], references: [id])
   createdAt   DateTime @default(now())

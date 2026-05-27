@@ -24,6 +24,7 @@ export type CatalogProduct = {
   colors: string[];
   material: string[];
   categorySlug: string;
+  visiblePages: string[]; // Seiten, in denen das Produkt gefiltert erscheint
 };
 
 export type CatalogCategory = { slug: string; name: string; count: number };
@@ -87,13 +88,22 @@ export default function CatalogClient({
   }, [products]);
 
   const list = useMemo(() => {
-    let arr = products.filter(
-      (p) =>
-        (cat === "all" || p.categorySlug === cat) &&
+    // Fixe Seiten (Navi: Kleidung/Taschen/Werbeartikel) → über visiblePages filtern.
+    // Sonst → über categorySlug (admin-definiert).
+    const FIXED = ["kleidung", "taschen", "werbeartikel"];
+    let arr = products.filter((p) => {
+      const catMatch =
+        cat === "all" ||
+        (FIXED.includes(cat)
+          ? p.visiblePages.includes(cat) || p.categorySlug === cat
+          : p.categorySlug === cat);
+      return (
+        catMatch &&
         (!color || p.colors.includes(color)) &&
         (selMaterials.length === 0 || selMaterials.some((m) => p.material.includes(m))) &&
         (minStock <= 0 || p.stock >= minStock)
-    );
+      );
+    });
     if (sort === "preis-auf") arr = [...arr].sort((a, b) => cmpPrice(a, b, 1));
     else if (sort === "preis-ab") arr = [...arr].sort((a, b) => cmpPrice(a, b, -1));
     else if (sort === "neu") arr = [...arr].sort((a, b) => Number(b.isNew) - Number(a.isNew));

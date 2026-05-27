@@ -32,6 +32,14 @@ export default async function ProductsPage() {
     colors: p.colors,
     material: p.material,
     images: p.images,
+    visiblePages: (() => {
+      try {
+        const arr = JSON.parse(p.visiblePages ?? "[]");
+        return Array.isArray(arr) ? arr.filter((x: unknown) => typeof x === "string") : [];
+      } catch {
+        return [];
+      }
+    })(),
     categoryId: p.categoryId,
     categoryName: p.category.name,
   }));

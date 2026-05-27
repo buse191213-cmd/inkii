@@ -46,6 +46,14 @@ export default async function WerbemittelPage() {
     colors: p.colors ? String(p.colors).split(",").map((c: string) => c.trim()).filter(Boolean) : [],
     material: p.material ? String(p.material).split(",").map((m: string) => m.trim()).filter(Boolean) : [],
     categorySlug: p.category.slug,
+    visiblePages: (() => {
+      try {
+        const arr = JSON.parse(p.visiblePages ?? "[]");
+        return Array.isArray(arr) ? arr.filter((x: unknown) => typeof x === "string") : [];
+      } catch {
+        return [];
+      }
+    })(),
   }));
 
   const categories: CatalogCategory[] = dbCategories

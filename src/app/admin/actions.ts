@@ -143,6 +143,20 @@ export async function saveProduct(formData: FormData): Promise<ActionResult> {
       .filter(Boolean)
       .join(","),
     images,
+    visiblePages: (() => {
+      const raw = String(formData.get("visiblePages") ?? "[]");
+      try {
+        const arr = JSON.parse(raw);
+        if (!Array.isArray(arr)) return "[]";
+        const allowed = ["kleidung", "taschen", "werbeartikel"];
+        const filtered = arr.filter(
+          (x: unknown) => typeof x === "string" && allowed.includes(x)
+        );
+        return JSON.stringify(filtered);
+      } catch {
+        return "[]";
+      }
+    })(),
     categoryId,
   };
 
