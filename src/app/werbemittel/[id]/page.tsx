@@ -31,7 +31,8 @@ export async function generateMetadata({
   const title = product.name;
   const description = (product.subtitle || product.description || product.name).slice(0, 160);
   const url = `/werbemittel/${id}`;
-  const ogImage = product.image || "/og-default.png";
+  const firstImage = product.images ? product.images.split(",")[0].trim() : "";
+  const ogImage = firstImage || "/og-default.png";
   return {
     title,
     description,
@@ -245,7 +246,7 @@ export default async function ProductDetailPage({
             <div className="mm-related-grid">
               {related.map((r) => {
                 const rImages = split(r.images);
-                const rImg = r.image || rImages[0] || null;
+                const rImg = rImages[0] || null;
                 return (
                   <Link key={r.id} href={`/werbemittel/${r.id}`} className="mm-related-card">
                     <div
