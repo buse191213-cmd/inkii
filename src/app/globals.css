@@ -359,6 +359,14 @@ footer.site ul a:hover{color:var(--leaf)}
   .catalog{grid-template-columns:1fr}
   .fil-side{border-right:none;border-bottom:1px solid var(--line)}
   .cat-prod-grid{grid-template-columns:repeat(3,1fr)}
+  /* Navbar: 6 link sığmıyor → burger'a geç */
+  nav.main{display:none}
+  .burger{display:flex}
+  .head-actions{gap:8px}
+  .head-actions .icon-btn{width:38px;height:38px}
+  .logo img{height:34px}
+  .head-row{gap:14px;height:60px}
+  .cart-pill{padding:7px 12px}
 }
 @media(max-width:760px){
   .utility{display:none}
@@ -376,6 +384,22 @@ footer.site ul a:hover{color:var(--leaf)}
   .foot-grid{grid-template-columns:1fr 1fr}
   section{padding:66px 0}.hero{padding:62px 0 72px}
   .intro-strip,.hotline,.cta-strip{margin-left:14px;margin-right:14px}
+  /* Header: sticky'i sayfanın üstüne sabitle, ufak boyut */
+  header.site{top:0}
+  .head-row{height:56px;gap:8px}
+  .logo img{height:30px}
+  .head-actions{gap:6px}
+  .cart-pill{padding:6px 10px;font-size:.78rem;gap:6px}
+  .cart-pill svg{width:14px;height:14px}
+  .burger{width:38px;height:38px}
+}
+@media(max-width:420px){
+  /* En küçük telefonlar: logo + heart-count + burger sığsın */
+  .head-row{gap:4px}
+  .logo img{height:26px}
+  .cart-pill{padding:5px 8px;font-size:.72rem}
+  .cart-pill .label,.cart-pill span:not(.count){display:none}
+  .burger{width:36px;height:36px}
 }
 
 /* mobile drawer */
