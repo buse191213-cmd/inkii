@@ -126,32 +126,10 @@ export default async function ProductDetailPage({
                 </div>
               </div>
 
-              {/* Farbauswahl-Box */}
-              {colors.length > 0 && (
-                <div className="mm-detail-colorbox">
-                  <div className="mm-detail-cbhead">
-                    <span className="mm-detail-cbnum">1.</span>{" "}
-                    <span>Farben:</span>{" "}
-                    <strong>{colorLabel(colors[0])}</strong>
-                  </div>
-                  <div className="mm-detail-colorgrid">
-                    {colors.map((c) => (
-                      <span
-                        key={c}
-                        className="mm-detail-colortile"
-                        style={{ background: colorHex(c) }}
-                        title={colorLabel(c)}
-                      />
-                    ))}
-                  </div>
-                </div>
-              )}
-
-              {/* Mengenstaffel */}
+              {/* Mengenstaffel-Tabelle */}
               {SHOW_TIERS && tiers.length > 0 && (
                 <div className="mm-tiers">
                   <div className="mm-tiers-head">
-                    <span className="mm-detail-cbnum">{colors.length > 0 ? "2." : "1."}</span>{" "}
                     <span>Menge auswählen</span>
                   </div>
                   <div className="mm-tiers-list">
@@ -183,12 +161,13 @@ export default async function ProductDetailPage({
                 </div>
               )}
 
-              {/* Größen-Auswahl + Mengen + Anfrage-Formular */}
+              {/* Farbe + Größen + Mengen + Merkzettel-Submit */}
               <DetailOrderForm
                 productId={product.id}
                 productCode={product.code}
                 productName={product.name}
                 productImage={images[0] ?? null}
+                colors={colors}
                 sizes={sizesList}
                 tiers={tiers}
                 basePriceCents={product.priceCents}

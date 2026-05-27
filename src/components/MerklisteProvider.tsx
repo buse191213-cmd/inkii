@@ -10,27 +10,34 @@ import {
 
 export type MerkSize = { name: string; qty: number; extraCents?: number };
 export type MerkItem = {
-  id: string;
+  id: string;          // wir verwenden weiterhin productId für Detail-Link
+  uniqueKey: string;   // productId + "::" + color — eindeutig pro Variante
   code: string;
   name: string;
   image: string | null;
   qty: number;
   sizes?: MerkSize[];
   note?: string;
+  color?: string | null;     // Hex-Code (z. B. #3F9C5C) oder Slug
+  colorLabel?: string | null;
 };
 
 type MerklisteContextValue = {
   items: MerkItem[];
   count: number;
   mounted: boolean;
-  has: (id: string) => boolean;
-  toggle: (item: Omit<MerkItem, "qty">) => void;
-  /** Fügt einen Artikel hinzu oder aktualisiert ihn (Größen, Notiz, Gesamtmenge). */
-  addOrUpdate: (item: Omit<MerkItem, "qty"> & { qty?: number }) => void;
-  remove: (id: string) => void;
-  setQty: (id: string, qty: number) => void;
+  has: (id: string, color?: string | null) => boolean;
+  toggle: (item: Omit<MerkItem, "qty" | "uniqueKey">) => void;
+  /** Fügt einen Artikel hinzu oder aktualisiert ihn (Größen, Notiz, Gesamtmenge, Farbe). */
+  addOrUpdate: (item: Omit<MerkItem, "qty" | "uniqueKey"> & { qty?: number }) => void;
+  remove: (uniqueKey: string) => void;
+  setQty: (uniqueKey: string, qty: number) => void;
   clear: () => void;
 };
+
+function makeKey(id: string, color?: string | null): string {
+  return `${id}::${color ?? ""}`;
+}
 
 const MerklisteContext = createContext<MerklisteContextValue | null>(null);
 const STORAGE_KEY = "inkii_merkliste";
@@ -62,32 +69,52 @@ export function MerklisteProvider({ children }: { children: React.ReactNode }) {
     }
   }, [items, mounted]);
 
+  // Legacy-Items ohne uniqueKey ergänzen (für bereits gespeicherte Daten)
+  useEffect(() => {
+    setItems((cur) => {
+      let changed = false;
+      const next = cur.map((i) => {
+        if (!i.uniqueKey) {
+          changed = true;
+          return { ...i, uniqueKey: makeKey(i.id, i.color) };
+        }
+        return i;
+      });
+      return changed ? next : cur;
+    });
+  }, [mounted]);
+
   const has = useCallback(
-    (id: string) => items.some((i) => i.id === id),
+    (id: string, color?: string | null) =>
+      items.some((i) => i.uniqueKey === makeKey(id, color)),
     [items]
   );
-  const toggle = useCallback((item: Omit<MerkItem, "qty">) => {
+  const toggle = useCallback((item: Omit<MerkItem, "qty" | "uniqueKey">) => {
+    const key = makeKey(item.id, item.color);
     setItems((cur) =>
-      cur.some((i) => i.id === item.id)
-        ? cur.filter((i) => i.id !== item.id)
-        : [...cur, { ...item, qty: 1 }]
+      cur.some((i) => i.uniqueKey === key)
+        ? cur.filter((i) => i.uniqueKey !== key)
+        : [...cur, { ...item, qty: 1, uniqueKey: key }]
     );
   }, []);
-  const addOrUpdate = useCallback((item: Omit<MerkItem, "qty"> & { qty?: number }) => {
+  const addOrUpdate = useCallback((item: Omit<MerkItem, "qty" | "uniqueKey"> & { qty?: number }) => {
     setItems((cur) => {
-      const idx = cur.findIndex((i) => i.id === item.id);
-      // Berechne Gesamtmenge: wenn sizes gegeben sind, summieren; sonst qty oder 1.
+      const key = makeKey(item.id, item.color);
+      const idx = cur.findIndex((i) => i.uniqueKey === key);
       const totalQty = item.sizes && item.sizes.length > 0
         ? item.sizes.reduce((s, sz) => s + (sz.qty || 0), 0)
         : (item.qty ?? 1);
       const next: MerkItem = {
         id: item.id,
+        uniqueKey: key,
         code: item.code,
         name: item.name,
         image: item.image,
         qty: Math.max(1, totalQty),
         sizes: item.sizes && item.sizes.length > 0 ? item.sizes : undefined,
         note: item.note && item.note.trim() ? item.note.trim() : undefined,
+        color: item.color ?? null,
+        colorLabel: item.colorLabel ?? null,
       };
       if (idx === -1) return [...cur, next];
       const copy = [...cur];
@@ -95,12 +122,12 @@ export function MerklisteProvider({ children }: { children: React.ReactNode }) {
       return copy;
     });
   }, []);
-  const remove = useCallback((id: string) => {
-    setItems((cur) => cur.filter((i) => i.id !== id));
+  const remove = useCallback((uniqueKey: string) => {
+    setItems((cur) => cur.filter((i) => i.uniqueKey !== uniqueKey));
   }, []);
-  const setQty = useCallback((id: string, qty: number) => {
+  const setQty = useCallback((uniqueKey: string, qty: number) => {
     setItems((cur) =>
-      cur.map((i) => (i.id === id ? { ...i, qty: Math.max(1, qty) } : i))
+      cur.map((i) => (i.uniqueKey === uniqueKey ? { ...i, qty: Math.max(1, qty) } : i))
     );
   }, []);
   const clear = useCallback(() => setItems([]), []);

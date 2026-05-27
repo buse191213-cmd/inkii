@@ -1,8 +1,9 @@
 "use client";
 
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect } from "react";
 import Link from "next/link";
 import { useMerkliste } from "@/components/MerklisteProvider";
+import { colorHex, colorLabel } from "@/lib/catalog-options";
 import type { ProductSize } from "@/lib/sizes";
 import type { PriceTier } from "@/lib/price-tiers";
 
@@ -11,6 +12,7 @@ type Props = {
   productCode: string;
   productName: string;
   productImage: string | null;
+  colors: string[];
   sizes: ProductSize[];
   tiers: PriceTier[];
   basePriceCents: number | null;
@@ -35,11 +37,15 @@ export default function DetailOrderForm({
   productCode,
   productName,
   productImage,
+  colors,
   sizes,
   tiers,
   basePriceCents,
 }: Props) {
   const { addOrUpdate, has } = useMerkliste();
+  const [selectedColor, setSelectedColor] = useState<string | null>(
+    colors.length > 0 ? colors[0] : null
+  );
   const [qty, setQty] = useState<Record<string, number>>(() => {
     const init: Record<string, number> = {};
     sizes.forEach((s) => (init[s.name] = 0));
@@ -49,6 +55,12 @@ export default function DetailOrderForm({
   const [note, setNote] = useState("");
   const [added, setAdded] = useState(false);
   const [err, setErr] = useState("");
+
+  // Wenn die Farbe wechselt, soll die Erfolgsmeldung verschwinden — Nutzer
+  // beginnt eine neue Auswahl für die andere Farbvariante.
+  useEffect(() => {
+    setAdded(false);
+  }, [selectedColor]);
 
   const totalQty = useMemo(
     () => Object.values(qty).reduce((s, n) => s + (n || 0), 0),
@@ -121,18 +133,60 @@ export default function DetailOrderForm({
       qty: totalQty,
       sizes: sizeList,
       note: note.trim() || undefined,
+      color: selectedColor,
+      colorLabel: selectedColor ? colorLabel(selectedColor) : null,
     });
     setAdded(true);
   }
 
-  const alreadyOn = has(productId);
+  const alreadyOn = has(productId, selectedColor);
 
   return (
     <div className="det-order">
       <div className="det-order-head">
-        <h3>Mengen festlegen & merken</h3>
-        <p>Wählen Sie Ihre Wunschmengen und sammeln Sie sie auf dem Merkzettel. Die finale Anfrage senden Sie dort gebündelt ab.</p>
+        <h3>Variante wählen & merken</h3>
+        <p>Wählen Sie Farbe und Wunschmengen — sammeln Sie alle Varianten auf dem Merkzettel. Die finale Anfrage senden Sie dort gebündelt ab.</p>
       </div>
+
+      {/* Farbauswahl */}
+      {colors.length > 0 && (
+        <div className="det-order-colors">
+          <div className="det-order-colors-head">
+            <span className="det-order-colors-label">Farbe</span>
+            {selectedColor && (
+              <span className="det-order-color-name">{colorLabel(selectedColor)}</span>
+            )}
+          </div>
+          <div className="det-order-colors-grid">
+            {colors.map((c) => {
+              const isActive = selectedColor === c;
+              return (
+                <button
+                  key={c}
+                  type="button"
+                  className={`det-color-tile${isActive ? " active" : ""}`}
+                  style={{ background: colorHex(c) }}
+                  title={colorLabel(c)}
+                  aria-label={colorLabel(c)}
+                  aria-pressed={isActive}
+                  onClick={() => setSelectedColor(c)}
+                >
+                  {isActive && (
+                    <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" strokeWidth="3" className="det-color-check">
+                      <path d="M20 6L9 17l-5-5" strokeLinecap="round" strokeLinejoin="round" />
+                    </svg>
+                  )}
+                </button>
+              );
+            })}
+          </div>
+          {colors.length > 1 && (
+            <p className="det-order-colors-hint">
+              Tipp: Andere Farben? Wählen Sie eine, fügen Sie sie hinzu, dann wechseln Sie die Farbe und fügen die nächste Variante hinzu.
+            </p>
+          )}
+        </div>
+      )}
 
       {/* Größen + Mengen */}
       {sizes.length > 0 ? (
@@ -233,8 +287,9 @@ export default function DetailOrderForm({
           <path d="M20.84 4.61a5.5 5.5 0 00-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 00-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 000-7.78z"
             strokeLinecap="round" strokeLinejoin="round" />
         </svg>
-        {alreadyOn ? "Merkzettel aktualisieren" : "Auf Merkzettel hinzufügen"}
-        {totalQty > 0 ? ` (${totalQty} Stück)` : ""}
+        {alreadyOn ? "Variante aktualisieren" : "Auf Merkzettel hinzufügen"}
+        {totalQty > 0 ? ` · ${totalQty} Stk` : ""}
+        {selectedColor ? ` · ${colorLabel(selectedColor)}` : ""}
       </button>
 
       <p className="det-order-foot">

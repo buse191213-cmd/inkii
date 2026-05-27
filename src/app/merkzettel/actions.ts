@@ -13,6 +13,8 @@ type SubmitItem = {
   qty: number;
   sizes?: SubmitSize[] | null;
   note?: string | null;
+  color?: string | null;
+  colorLabel?: string | null;
 };
 
 /** Erstellt aus den Merkzettel-Artikeln eine einzige gebündelte Anfrage. */
@@ -44,6 +46,8 @@ export async function submitMerklisteInquiry(
                 .filter((s: SubmitSize) => s.name)
             : null,
           note: typeof i?.note === "string" ? i.note.trim() : null,
+          color: typeof i?.color === "string" ? i.color.trim() : null,
+          colorLabel: typeof i?.colorLabel === "string" ? i.colorLabel.trim() : null,
         }))
         .filter((i) => i.name);
     }
@@ -61,17 +65,21 @@ export async function submitMerklisteInquiry(
     return { ok: false, error: "Ihr Merkzettel ist leer." };
   }
 
-  // Lesbare Liste aufbauen — mit Größen-Details, falls vorhanden
+  // Lesbare Liste aufbauen — mit Farbe, Größen-Details und Anmerkungen
   const lines: string[] = [];
   for (const it of items) {
+    const colorPart = it.color
+      ? ` · Farbe: ${it.colorLabel || it.color}`
+      : "";
     if (it.sizes && it.sizes.length > 0) {
-      // Pro Größe eine eigene Zeile, damit Admin alles klar sieht
+      // Kopfzeile pro Variante
+      lines.push(`• ${it.code ? it.code + " – " : ""}${it.name}${colorPart}`);
       for (const s of it.sizes) {
-        lines.push(`• ${it.code ? it.code + " – " : ""}${it.name} – Größe ${s.name} (Menge: ${s.qty})`);
+        lines.push(`    – Größe ${s.name} (Menge: ${s.qty})`);
       }
-      lines.push(`  → Gesamt für ${it.name}: ${it.qty} Stück`);
+      lines.push(`  → Gesamt: ${it.qty} Stück`);
     } else {
-      lines.push(`• ${it.code ? it.code + " – " : ""}${it.name} (Menge: ${it.qty})`);
+      lines.push(`• ${it.code ? it.code + " – " : ""}${it.name}${colorPart} (Menge: ${it.qty})`);
     }
     if (it.note) {
       lines.push(`  ↪ Anmerkung: ${it.note}`);

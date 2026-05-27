@@ -69,7 +69,7 @@ export default function MerklisteView({
         <div className="merk-layout">
           <div className="merk-list">
             {items.map((it) => (
-              <div key={it.id} className="merk-row">
+              <div key={it.uniqueKey} className="merk-row">
                 <div className="merk-thumb">
                   {it.image ? (
                     // eslint-disable-next-line @next/next/no-img-element
@@ -87,6 +87,18 @@ export default function MerklisteView({
                   <Link href={`/werbemittel/${it.id}`} className="merk-name">
                     {it.name}
                   </Link>
+                  {it.color && (
+                    <div className="merk-color-row">
+                      <span
+                        className="merk-color-dot"
+                        style={{ background: it.color }}
+                        aria-hidden
+                      />
+                      <span className="merk-color-label">
+                        {it.colorLabel ?? it.color}
+                      </span>
+                    </div>
+                  )}
                   {it.sizes && it.sizes.length > 0 && (
                     <div className="merk-sizes">
                       {it.sizes.map((s, idx) => (
@@ -105,7 +117,7 @@ export default function MerklisteView({
                 <div className="merk-qty">
                   <button
                     type="button"
-                    onClick={() => setQty(it.id, it.qty - 1)}
+                    onClick={() => setQty(it.uniqueKey, it.qty - 1)}
                     aria-label={t.qtyMinus}
                     disabled={!!(it.sizes && it.sizes.length > 0)}
                   >
@@ -116,13 +128,13 @@ export default function MerklisteView({
                     min={1}
                     value={it.qty}
                     onChange={(e) =>
-                      setQty(it.id, parseInt(e.target.value, 10) || 1)
+                      setQty(it.uniqueKey, parseInt(e.target.value, 10) || 1)
                     }
                     disabled={!!(it.sizes && it.sizes.length > 0)}
                   />
                   <button
                     type="button"
-                    onClick={() => setQty(it.id, it.qty + 1)}
+                    onClick={() => setQty(it.uniqueKey, it.qty + 1)}
                     aria-label={t.qtyPlus}
                     disabled={!!(it.sizes && it.sizes.length > 0)}
                   >
@@ -132,7 +144,7 @@ export default function MerklisteView({
                 <button
                   type="button"
                   className="merk-remove"
-                  onClick={() => remove(it.id)}
+                  onClick={() => remove(it.uniqueKey)}
                   aria-label={t.removeItem}
                 >
                   ✕
@@ -160,6 +172,8 @@ export default function MerklisteView({
                   qty: i.qty,
                   sizes: i.sizes ?? null,
                   note: i.note ?? null,
+                  color: i.color ?? null,
+                  colorLabel: i.colorLabel ?? null,
                 }))
               )}
             />

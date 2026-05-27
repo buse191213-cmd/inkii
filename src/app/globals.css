@@ -3055,3 +3055,29 @@ body:has(.home-services) footer.site{margin-top:0}
   .adm .cat-input-inline{flex-basis:100%;order:2;padding:8px 8px}
   .adm .cat-add-btn{order:3;width:100%}
 }
+
+/* === Detail Color Picker === */
+.det-order-colors{display:flex;flex-direction:column;gap:10px;
+  padding-bottom:16px;border-bottom:1px solid #f0f0ec}
+.det-order-colors-head{display:flex;align-items:baseline;gap:10px}
+.det-order-colors-label{font-size:.72rem;letter-spacing:.12em;text-transform:uppercase;
+  color:#9ea7a2;font-weight:600}
+.det-order-color-name{font-family:var(--display);font-size:1rem;font-weight:700;color:#1c2722}
+.det-order-colors-grid{display:flex;flex-wrap:wrap;gap:8px}
+.det-color-tile{width:36px;height:36px;border-radius:8px;border:2px solid #e3e6df;
+  cursor:pointer;padding:0;display:grid;place-items:center;transition:.18s;
+  position:relative;color:#fff}
+.det-color-tile:hover{transform:translateY(-1px);border-color:#9ea7a2}
+.det-color-tile.active{border-color:#1c2722;
+  box-shadow:0 0 0 3px rgba(28,39,34,.12),0 4px 10px rgba(0,0,0,.08)}
+.det-color-tile.active::after{content:"";position:absolute;inset:0;border-radius:6px;
+  box-shadow:inset 0 0 0 2px rgba(255,255,255,.5)}
+.det-color-check{filter:drop-shadow(0 1px 2px rgba(0,0,0,.4));position:relative;z-index:1}
+.det-order-colors-hint{font-size:.74rem;color:#9ea7a2;margin:0;line-height:1.5;
+  font-style:italic}
+
+/* === Merkzettel: Color Dot + Label === */
+.merk-color-row{display:flex;align-items:center;gap:6px;margin-top:6px}
+.merk-color-dot{width:14px;height:14px;border-radius:50%;border:1px solid rgba(0,0,0,.12);
+  flex-shrink:0;display:inline-block;box-shadow:inset 0 0 0 1px rgba(255,255,255,.3)}
+.merk-color-label{font-size:.78rem;color:#5a6660;font-weight:600;letter-spacing:.01em}
