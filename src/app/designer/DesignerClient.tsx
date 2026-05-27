@@ -4,8 +4,8 @@ import { useState, useRef } from "react";
 import dynamic from "next/dynamic";
 import Link from "next/link";
 import { useMerkliste } from "@/components/MerklisteProvider";
+import { processLogo } from "@/lib/logo-process";
 
-// Three.js komponenti SSR'siz yükle — sunucuda WebGL çalışmaz
 const ShirtViewer = dynamic(() => import("./ShirtViewer"), {
   ssr: false,
   loading: () => (
@@ -29,25 +29,67 @@ const COLORS: { hex: string; name: string }[] = [
   { hex: "#6b3e8a", name: "Lila" },
 ];
 
+type ProcessStep = "load" | "remove-bg" | "upscale";
+const STEP_LABELS: Record<ProcessStep, string> = {
+  load: "Datei analysieren",
+  "remove-bg": "Hintergrund entfernen (KI)",
+  upscale: "Auflösung verbessern (2×)",
+};
+
 export default function DesignerClient() {
   const { addOrUpdate } = useMerkliste();
-  const [logoUrl, setLogoUrl] = useState<string | null>(null);
+  const [originalUrl, setOriginalUrl] = useState<string | null>(null);
+  const [processedUrl, setProcessedUrl] = useState<string | null>(null);
+  const [showOriginal, setShowOriginal] = useState(false);
   const [logoName, setLogoName] = useState<string>("");
   const [color, setColor] = useState<string>("#ffffff");
   const [colorName, setColorName] = useState<string>("Weiß");
   const [logoScale, setLogoScale] = useState<number>(0.18);
   const [autoRotate, setAutoRotate] = useState<boolean>(true);
   const [added, setAdded] = useState<boolean>(false);
+  const [processing, setProcessing] = useState<boolean>(false);
+  const [processStep, setProcessStep] = useState<ProcessStep | null>(null);
+  const [processError, setProcessError] = useState<string | null>(null);
   const fileRef = useRef<HTMLInputElement>(null);
 
-  function handleFile(file: File) {
+  // Aktiv genutzte Logo-URL (Original oder optimiert)
+  const activeLogoUrl = showOriginal ? originalUrl : processedUrl;
+
+  async function handleFile(file: File) {
     if (!file.type.startsWith("image/")) return;
-    const reader = new FileReader();
-    reader.onload = () => {
-      setLogoUrl(reader.result as string);
-      setLogoName(file.name);
-    };
-    reader.readAsDataURL(file);
+    setLogoName(file.name);
+    setOriginalUrl(null);
+    setProcessedUrl(null);
+    setProcessError(null);
+    setProcessing(true);
+    setAdded(false);
+    try {
+      const { original, processed } = await processLogo(file, (step) => {
+        setProcessStep(step);
+      });
+      setOriginalUrl(original);
+      setProcessedUrl(processed);
+    } catch (e) {
+      console.error("[logo] Verarbeitung fehlgeschlagen:", e);
+      setProcessError(
+        "Optimierung fehlgeschlagen. Verwende Originalbild. (Sehr große Bilder bitte kleiner hochladen.)"
+      );
+      // Fallback: Original ohne Verarbeitung benutzen
+      try {
+        const reader = new FileReader();
+        reader.onload = () => {
+          const url = reader.result as string;
+          setOriginalUrl(url);
+          setProcessedUrl(url);
+        };
+        reader.readAsDataURL(file);
+      } catch {
+        /* ignore */
+      }
+    } finally {
+      setProcessing(false);
+      setProcessStep(null);
+    }
   }
 
   function handleDrop(e: React.DragEvent<HTMLDivElement>) {
@@ -69,17 +111,17 @@ export default function DesignerClient() {
       code: "DESIGN-TS",
       name: "Individuelles T-Shirt (Designer)",
       qty: 1,
-      image: logoUrl ?? null,
+      image: activeLogoUrl ?? null,
       color,
       colorLabel: colorName,
-      note: logoUrl ? `Mit eigenem Design (${logoName})` : "Ohne Design – nur Farbe",
+      note: activeLogoUrl ? `Mit eigenem Design (${logoName})` : "Ohne Design – nur Farbe",
     });
     setAdded(true);
   }
 
   return (
     <div className="ds-wrap">
-      {/* Linke Spalte: 3D-Vorschau */}
+      {/* 3D Vorschau */}
       <div className="ds-stage">
         <div
           className="ds-stage-inner"
@@ -89,17 +131,13 @@ export default function DesignerClient() {
         >
           <ShirtViewer color={color} autoRotate={autoRotate} />
 
-          {/* Logo: HTML-Overlay über dem Canvas (bleibt zentriert, dreht sich nicht mit) */}
-          {logoUrl && (
+          {activeLogoUrl && !processing && (
             <div
               className="ds-logo-overlay"
-              style={{
-                width: `${Math.round(logoScale * 600)}px`,
-                maxWidth: "30%",
-              }}
+              style={{ width: `${Math.round(logoScale * 600)}px`, maxWidth: "30%" }}
             >
               {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img src={logoUrl} alt="Ihr Logo" />
+              <img src={activeLogoUrl} alt="Ihr Logo" />
             </div>
           )}
 
@@ -117,36 +155,63 @@ export default function DesignerClient() {
         </div>
       </div>
 
-      {/* Rechte Spalte: Kontroller */}
+      {/* Panel */}
       <aside className="ds-panel">
         <div className="ds-panel-head">
           <p className="kicker">3D-Designer</p>
           <h1>Eigenes Design erstellen</h1>
           <p className="ds-lead">
-            Laden Sie Ihr Logo hoch, wählen Sie Farbe und Größe — sehen Sie Ihr Design
-            in 360° auf dem Produkt.
+            Laden Sie Ihr Logo hoch — unsere KI entfernt automatisch den Hintergrund
+            und verbessert die Auflösung. In 360° auf dem Produkt sichtbar.
           </p>
         </div>
 
-        {/* Logo-Upload */}
+        {/* Logo Upload */}
         <div className="ds-section">
           <div className="ds-section-head">
             <span className="ds-step">01</span>
             <h3>Logo hochladen</h3>
           </div>
           <div
-            className={`ds-drop ${logoUrl ? "has-file" : ""}`}
+            className={`ds-drop ${processedUrl || originalUrl ? "has-file" : ""} ${processing ? "is-processing" : ""}`}
             onDrop={handleDrop}
             onDragOver={(e) => e.preventDefault()}
-            onClick={() => fileRef.current?.click()}
+            onClick={() => !processing && fileRef.current?.click()}
           >
-            {logoUrl ? (
+            {processing ? (
+              <div className="ds-process">
+                <div className="ds-spinner" />
+                <strong>Dein Design wird optimiert</strong>
+                <span>Unsere KI analysiert dein Design für den Druck.</span>
+                <ul className="ds-steps">
+                  {(Object.keys(STEP_LABELS) as ProcessStep[]).map((s) => {
+                    const isDone = processStep && (
+                      (processStep === "remove-bg" && s === "load") ||
+                      (processStep === "upscale" && (s === "load" || s === "remove-bg"))
+                    );
+                    const isActive = processStep === s;
+                    return (
+                      <li key={s} className={isDone ? "done" : isActive ? "active" : ""}>
+                        {isDone ? "✓" : isActive ? "⏳" : "○"} {STEP_LABELS[s]}
+                      </li>
+                    );
+                  })}
+                </ul>
+                <small>Erste KI-Optimierung lädt das Modell (~25 MB, einmalig).</small>
+              </div>
+            ) : activeLogoUrl ? (
               <>
                 {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img src={logoUrl} alt="Logo Vorschau" className="ds-drop-preview" />
+                <img src={activeLogoUrl} alt="Logo Vorschau" className="ds-drop-preview" />
                 <div className="ds-drop-info">
                   <strong>{logoName}</strong>
                   <span>Klicken zum Ändern</span>
+                  {processedUrl && processedUrl !== originalUrl && (
+                    <div className="ds-ai-badges">
+                      <span className="ds-badge-ok">✓ Hintergrund entfernt</span>
+                      <span className="ds-badge-ok">✓ Auflösung 2×</span>
+                    </div>
+                  )}
                 </div>
               </>
             ) : (
@@ -156,7 +221,7 @@ export default function DesignerClient() {
                 </svg>
                 <strong>Datei hier ablegen</strong>
                 <span>oder klicken zum Auswählen</span>
-                <small>PNG, JPG, SVG · transparent empfohlen</small>
+                <small>PNG, JPG, SVG · KI entfernt den Hintergrund automatisch</small>
               </>
             )}
             <input
@@ -170,6 +235,20 @@ export default function DesignerClient() {
               }}
             />
           </div>
+
+          {processError && (
+            <div className="ds-warn">{processError}</div>
+          )}
+
+          {processedUrl && originalUrl && processedUrl !== originalUrl && (
+            <button
+              type="button"
+              className="ds-toggle-orig"
+              onClick={() => setShowOriginal((v) => !v)}
+            >
+              {showOriginal ? "← Optimierte Version" : "Original anzeigen →"}
+            </button>
+          )}
         </div>
 
         {/* Farbe */}
@@ -194,8 +273,8 @@ export default function DesignerClient() {
           </div>
         </div>
 
-        {/* Logo-Größe */}
-        {logoUrl && (
+        {/* Logo Größe */}
+        {activeLogoUrl && (
           <div className="ds-section">
             <div className="ds-section-head">
               <span className="ds-step">03</span>
@@ -237,6 +316,7 @@ export default function DesignerClient() {
                 type="button"
                 className="btn-primary ds-cta"
                 onClick={handleAddToMerkliste}
+                disabled={processing}
               >
                 Auf Merkzettel hinzufügen
               </button>
@@ -248,7 +328,7 @@ export default function DesignerClient() {
         </div>
 
         <div className="ds-trust">
-          <div><strong>✓</strong> Kostenlose Designvorschläge</div>
+          <div><strong>✓</strong> KI-gestützte Designoptimierung</div>
           <div><strong>✓</strong> Angebot in 24 Stunden</div>
           <div><strong>✓</strong> Persönliche Beratung</div>
         </div>

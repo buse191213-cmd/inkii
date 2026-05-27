@@ -3296,3 +3296,30 @@ body:has(.cookie-banner) .wa-fab{bottom:120px}
   /* hafif slight perspective ile t-shirt yüzeyine yapışmış gibi gösterir */
   transform:perspective(700px) rotateX(2deg);
   opacity:.92;mix-blend-mode:multiply}
+
+/* === Designer: AI processing UI === */
+.ds-drop.is-processing{cursor:wait;pointer-events:none;background:#fafbf9;
+  border-color:#1c2722;flex-direction:column;text-align:center;min-height:220px}
+.ds-process{display:flex;flex-direction:column;align-items:center;gap:10px;width:100%}
+.ds-process strong{font-size:1rem;color:#1c2722;margin-top:6px}
+.ds-process > span{color:#5a6660;font-size:.86rem;margin-bottom:6px}
+.ds-process small{color:#9ea7a2;font-size:.74rem;margin-top:4px;text-align:center;line-height:1.4}
+.ds-steps{list-style:none;padding:0;margin:8px 0;width:100%;max-width:280px}
+.ds-steps li{padding:6px 12px;font-size:.86rem;color:#9ea7a2;display:flex;gap:8px;
+  align-items:center;border-radius:6px;transition:all .25s}
+.ds-steps li.active{color:#1c2722;background:#eef5e8;font-weight:600}
+.ds-steps li.done{color:#3f6f47;font-weight:500}
+.ds-steps li.done::first-letter{color:#3f9c5c;font-weight:800}
+
+.ds-ai-badges{display:flex;gap:6px;margin-top:6px;flex-wrap:wrap}
+.ds-badge-ok{display:inline-flex;align-items:center;gap:4px;font-size:.72rem;
+  background:#eef5e8;color:#3f6f47;padding:3px 8px;border-radius:999px;font-weight:600;
+  border:1px solid #c8dec1}
+
+.ds-warn{background:#fffbf2;border:1px solid #f0d9a8;border-radius:8px;padding:10px 14px;
+  font-size:.82rem;color:#a76b1a;margin-top:10px;line-height:1.5}
+
+.ds-toggle-orig{margin-top:10px;background:transparent;border:1px solid #e3e6df;
+  border-radius:6px;padding:7px 14px;font-size:.78rem;color:#1c2722;cursor:pointer;
+  width:100%;transition:all .2s;font-weight:500}
+.ds-toggle-orig:hover{background:#fafbf9;border-color:#1c2722}
