@@ -268,7 +268,7 @@ const de: Dictionary = {
       { q: "In welchem Format soll ich mein Logo schicken?", a: "Am besten als Vektordatei (AI, EPS, PDF). Wir prüfen Ihre Daten kostenlos und melden uns, falls etwas fehlt." },
     ],
     formOk: "✓ Vielen Dank! Ihre Anfrage ist bei uns eingegangen – wir melden uns schnellstmöglich bei Ihnen.",
-    formOkNote: "Die Anfrage erscheint nun im Admin-Panel unter „Anfragen“.",
+    formOkNote: "Wir melden uns innerhalb von 24 Stunden mit einem persönlichen Angebot.",
     fName: "Name *",
     fCompany: "Firma / Verein",
     fEmail: "E-Mail *",
@@ -326,7 +326,7 @@ const de: Dictionary = {
   merkzettel: {
     loading: "Merkzettel wird geladen …",
     formOk: "✓ Vielen Dank! Ihre Anfrage ist bei uns eingegangen – wir melden uns schnellstmöglich mit einem passenden Angebot.",
-    formOkNote: "Die Anfrage erscheint nun im Admin-Panel unter „Anfragen“.",
+    formOkNote: "Wir melden uns innerhalb von 24 Stunden mit einem persönlichen Angebot.",
     okBack: "Weiter zum Katalog",
     headKicker: "Ihre Auswahl",
     h1: "Mein Merkzettel",

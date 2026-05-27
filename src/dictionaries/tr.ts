@@ -268,7 +268,7 @@ const tr: Dictionary = {
       { q: "Logomu hangi formatta göndermeliyim?", a: "Tercihen vektör dosyası olarak (AI, EPS, PDF). Verilerinizi ücretsiz kontrol eder, eksik bir şey varsa size haber veririz." },
     ],
     formOk: "✓ Teşekkürler! Talebiniz bize ulaştı – en kısa sürede size dönüş yapacağız.",
-    formOkNote: "Talep artık yönetim panelinde „Talepler“ bölümünde görünüyor.",
+    formOkNote: "24 saat içinde size özel teklifle dönüş yapacağız.",
     fName: "Ad *",
     fCompany: "Firma / Kulüp",
     fEmail: "E-posta *",
@@ -326,7 +326,7 @@ const tr: Dictionary = {
   merkzettel: {
     loading: "İstek listesi yükleniyor …",
     formOk: "✓ Teşekkürler! Talebiniz bize ulaştı – en kısa sürede uygun bir teklifle size döneceğiz.",
-    formOkNote: "Talep artık yönetim panelinde „Talepler“ bölümünde görünüyor.",
+    formOkNote: "24 saat içinde size özel teklifle dönüş yapacağız.",
     okBack: "Kataloğa devam et",
     headKicker: "Seçiminiz",
     h1: "İstek Listem",

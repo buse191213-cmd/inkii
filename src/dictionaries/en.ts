@@ -268,7 +268,7 @@ const en: Dictionary = {
       { q: "Which format should I send my logo in?", a: "Ideally as a vector file (AI, EPS, PDF). We check your data free of charge and get in touch if anything is missing." },
     ],
     formOk: "✓ Thank you! Your enquiry has reached us – we'll get back to you as soon as possible.",
-    formOkNote: "The enquiry now appears in the admin panel under “Enquiries”.",
+    formOkNote: "We will get back to you within 24 hours with a personal offer.",
     fName: "Name *",
     fCompany: "Company / Club",
     fEmail: "Email *",
@@ -326,7 +326,7 @@ const en: Dictionary = {
   merkzettel: {
     loading: "Loading wishlist …",
     formOk: "✓ Thank you! Your enquiry has reached us – we'll get back to you shortly with a suitable quote.",
-    formOkNote: "The enquiry now appears in the admin panel under “Enquiries”.",
+    formOkNote: "We will get back to you within 24 hours with a personal offer.",
     okBack: "Continue to catalogue",
     headKicker: "Your selection",
     h1: "My Wishlist",
