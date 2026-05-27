@@ -62,8 +62,10 @@ nav.main a.active{border-bottom-color:var(--leaf);color:var(--leaf-deep)}
   padding:11px 17px;font-weight:600;font-size:.9rem;text-decoration:none;line-height:1}
 .cart-pill span{font-size:1rem;line-height:1;display:inline-block}
 .burger{display:none;flex-direction:column;gap:5px;cursor:pointer;width:42px;height:42px;
-  border:1px solid var(--line);align-items:center;justify-content:center;background:#fff}
-.burger span{width:18px;height:2px;background:var(--ink)}
+  border:1px solid var(--line);align-items:center;justify-content:center;background:#fff;
+  border-radius:8px;padding:0;flex-shrink:0;transition:.18s;position:relative;z-index:51}
+.burger:hover{background:var(--mist);border-color:var(--ink)}
+.burger span{width:18px;height:2px;background:var(--ink);border-radius:2px;display:block}
 
 /* ---------- HERO ---------- */
 .hero{position:relative;padding:96px 0 104px;
@@ -360,8 +362,8 @@ footer.site ul a:hover{color:var(--leaf)}
   .fil-side{border-right:none;border-bottom:1px solid var(--line)}
   .cat-prod-grid{grid-template-columns:repeat(3,1fr)}
   /* Navbar: 6 link sığmıyor → burger'a geç */
-  nav.main{display:none}
-  .burger{display:flex}
+  nav.main{display:none !important}
+  .burger{display:flex !important}
   .head-actions{gap:8px}
   .head-actions .icon-btn{width:38px;height:38px}
   .logo img{height:34px}
@@ -403,13 +405,19 @@ footer.site ul a:hover{color:var(--leaf)}
 }
 
 /* mobile drawer */
-.drawer{position:fixed;inset:0;background:var(--white);z-index:100;
-  display:none;flex-direction:column;padding:80px 32px;gap:0}
-.drawer.open{display:flex}
-.drawer a{color:var(--ink);font-family:var(--display);font-size:1.4rem;font-weight:700;
-  padding:16px 0;border-bottom:1px solid var(--line)}
-.drawer .close{position:absolute;top:24px;right:28px;color:var(--ink);font-size:2rem;
-  cursor:pointer;background:none;border:none}
+.drawer{position:fixed;inset:0;background:#fff;z-index:100;
+  display:none;flex-direction:column;padding:80px 28px 32px;gap:0;
+  overflow-y:auto}
+.drawer.open{display:flex;animation:drawer-in .25s ease}
+@keyframes drawer-in{from{opacity:0;transform:translateX(20px)}to{opacity:1;transform:translateX(0)}}
+.drawer a{color:#1c2722;font-family:var(--display);font-size:1.3rem;font-weight:700;
+  padding:18px 0;border-bottom:1px solid #f0f0ec;text-decoration:none;transition:.15s;
+  letter-spacing:-.01em}
+.drawer a:hover{padding-left:8px;color:#3f9c5c}
+.drawer .close{position:absolute;top:20px;right:20px;color:#1c2722;font-size:1.4rem;
+  cursor:pointer;background:#f4f5f1;border:none;width:42px;height:42px;border-radius:50%;
+  display:grid;place-items:center;transition:.15s}
+.drawer .close:hover{background:#e8e8e6;transform:rotate(90deg)}
 
 /* ============================================================
    ADMIN-PANEL  (alle Regeln unter .adm)
