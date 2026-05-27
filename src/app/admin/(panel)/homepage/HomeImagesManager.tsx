@@ -2,7 +2,7 @@
 
 import { useRef, useState } from "react";
 import { useRouter } from "next/navigation";
-import { HOME_SLOTS } from "@/lib/home-slots";
+import { HOME_SLOTS, type HomeSlot } from "@/lib/home-slots";
 import { uploadHomeImage, removeHomeImage } from "@/app/admin/actions";
 
 export default function HomeImagesManager({
@@ -35,7 +35,7 @@ export default function HomeImagesManager({
           </p>
           <div className="home-img-grid">
             {tiles.map((s) => (
-              <Slot key={s.slot} slot={s.slot} label={s.label} current={images[s.slot] ?? null} />
+              <Slot key={s.slot} slot={s.slot} label={s.label} meta={s} current={images[s.slot] ?? null} />
             ))}
           </div>
         </div>
@@ -52,7 +52,7 @@ export default function HomeImagesManager({
           </p>
           <div className="home-img-grid">
             {cats.map((s) => (
-              <Slot key={s.slot} slot={s.slot} label={s.label} current={images[s.slot] ?? null} />
+              <Slot key={s.slot} slot={s.slot} label={s.label} meta={s} current={images[s.slot] ?? null} />
             ))}
           </div>
         </div>
@@ -69,7 +69,7 @@ export default function HomeImagesManager({
           </p>
           <div className="home-img-grid">
             {feats.map((s) => (
-              <Slot key={s.slot} slot={s.slot} label={s.label} current={images[s.slot] ?? null} />
+              <Slot key={s.slot} slot={s.slot} label={s.label} meta={s} current={images[s.slot] ?? null} />
             ))}
           </div>
         </div>
@@ -88,7 +88,7 @@ export default function HomeImagesManager({
           </p>
           <div className="home-img-grid">
             {nh.map((s) => (
-              <Slot key={s.slot} slot={s.slot} label={s.label} current={images[s.slot] ?? null} />
+              <Slot key={s.slot} slot={s.slot} label={s.label} meta={s} current={images[s.slot] ?? null} />
             ))}
           </div>
         </div>
@@ -105,7 +105,7 @@ export default function HomeImagesManager({
           </p>
           <div className="home-img-grid">
             {ls.map((s) => (
-              <Slot key={s.slot} slot={s.slot} label={s.label} current={images[s.slot] ?? null} />
+              <Slot key={s.slot} slot={s.slot} label={s.label} meta={s} current={images[s.slot] ?? null} />
             ))}
           </div>
         </div>
@@ -124,7 +124,7 @@ export default function HomeImagesManager({
           </p>
           <div className="home-img-grid">
             {bz.map((s) => (
-              <Slot key={s.slot} slot={s.slot} label={s.label} current={images[s.slot] ?? null} />
+              <Slot key={s.slot} slot={s.slot} label={s.label} meta={s} current={images[s.slot] ?? null} />
             ))}
           </div>
         </div>
@@ -143,7 +143,7 @@ export default function HomeImagesManager({
           </p>
           <div className="home-img-grid">
             {pg.map((s) => (
-              <Slot key={s.slot} slot={s.slot} label={s.label} current={images[s.slot] ?? null} />
+              <Slot key={s.slot} slot={s.slot} label={s.label} meta={s} current={images[s.slot] ?? null} />
             ))}
           </div>
         </div>
@@ -156,16 +156,21 @@ function Slot({
   slot,
   label,
   current,
+  meta,
 }: {
   slot: string;
   label: string;
   current: string | null;
+  meta?: HomeSlot;
 }) {
   const router = useRouter();
   const fileRef = useRef<HTMLInputElement>(null);
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState("");
   const [fileName, setFileName] = useState("");
+  const [pickedPreview, setPickedPreview] = useState<string | null>(null);
+  const ratio = meta?.ratio || "4/3";
+  const recommendedSize = meta?.size || "";
 
   async function upload() {
     const file = fileRef.current?.files?.[0];
@@ -182,6 +187,7 @@ function Slot({
       const res = await uploadHomeImage(fd);
       if (res.ok) {
         setFileName("");
+        setPickedPreview(null);
         if (fileRef.current) fileRef.current.value = "";
         router.refresh();
       } else {
@@ -209,18 +215,45 @@ function Slot({
     }
   }
 
+  function onPick(e: React.ChangeEvent<HTMLInputElement>) {
+    const f = e.target.files?.[0];
+    setFileName(f?.name ?? "");
+    setError("");
+    if (f) {
+      const reader = new FileReader();
+      reader.onload = () => setPickedPreview(reader.result as string);
+      reader.readAsDataURL(f);
+    } else {
+      setPickedPreview(null);
+    }
+  }
+
+  // Önizleme: yüklenmiş varsa onu göster, yüklenecek seçilmişse onu, yoksa boş
+  const previewSrc = pickedPreview || current;
+
   return (
     <div className="home-slot">
-      <div className="home-slot-preview">
-        {current ? (
+      <div className="home-slot-preview" style={{ aspectRatio: ratio.replace("/", " / ") }}>
+        {previewSrc ? (
           // eslint-disable-next-line @next/next/no-img-element
-          <img src={current} alt="" />
+          <img src={previewSrc} alt="" />
         ) : (
-          <span>Kein Bild</span>
+          <div className="home-slot-empty">
+            <span>Kein Bild</span>
+            {recommendedSize && (
+              <small>Empfohlen: {recommendedSize}</small>
+            )}
+          </div>
         )}
       </div>
       <div className="home-slot-body">
         <div className="home-slot-label">{label}</div>
+        {recommendedSize && (
+          <div className="home-slot-meta">
+            <span className="home-slot-ratio">📐 Format <b>{ratio.replace("/", ":")}</b></span>
+            <span className="home-slot-size">↔ {recommendedSize}px</span>
+          </div>
+        )}
         {error && (
           <div className="form-err" style={{ marginBottom: 8 }}>
             {error}
@@ -232,10 +265,7 @@ function Slot({
             ref={fileRef}
             type="file"
             accept="image/jpeg,image/png,image/webp"
-            onChange={(e) => {
-              setFileName(e.target.files?.[0]?.name ?? "");
-              setError("");
-            }}
+            onChange={onPick}
           />
         </label>
         <div className="home-slot-actions">

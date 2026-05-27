@@ -3272,3 +3272,17 @@ body:has(.cookie-banner) .wa-fab{bottom:120px}
   .ds-panel-head h1{font-size:1.4rem}
   .ds-stage{min-height:340px}
 }
+
+/* === Home Slot: aspect-ratio preview + meta info === */
+.adm .home-slot-preview{background:repeating-conic-gradient(#f4f5f1 0% 25%, #fff 0% 50%) 50% / 24px 24px;
+  border:1px solid #e8e8e6;border-radius:10px;overflow:hidden;position:relative;
+  display:flex;align-items:center;justify-content:center}
+.adm .home-slot-preview img{width:100%;height:100%;object-fit:cover;display:block}
+.adm .home-slot-empty{display:flex;flex-direction:column;align-items:center;gap:4px;
+  padding:14px;text-align:center;color:#7a857f;font-size:.86rem}
+.adm .home-slot-empty small{color:#9ea7a2;font-size:.74rem;letter-spacing:.04em}
+.adm .home-slot-meta{display:flex;gap:10px;flex-wrap:wrap;font-size:.74rem;color:#7a857f;
+  margin:6px 0 10px 0;padding:6px 10px;background:#fafbf9;border-radius:6px;border:1px solid #f0f0ec}
+.adm .home-slot-meta b{color:#1c2722;font-weight:700}
+.adm .home-slot-ratio{display:inline-flex;align-items:center;gap:4px}
+.adm .home-slot-size{color:#9ea7a2}

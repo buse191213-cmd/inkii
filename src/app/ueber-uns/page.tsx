@@ -19,8 +19,10 @@ export default async function UeberUnsPage() {
   const d = getDictionary(locale);
   const u = d.ueberUns;
   const heroImg = await getHomeImage("uu-hero");
-  const tile1 = await getHomeImage("home-tile-1");
-  const tile2 = await getHomeImage("home-tile-2");
+  const v1 = await getHomeImage("uu-value-1");
+  const v2 = await getHomeImage("uu-value-2");
+  const v3 = await getHomeImage("uu-value-3");
+  const valueImgs = [v1, v2, v3];
 
   type TeamRow = { id: string; department: string; name: string; role: string; email: string; photoUrl: string };
   const team = (await db.teamMember.findMany({
@@ -73,13 +75,7 @@ export default async function UeberUnsPage() {
               <div
                 key={v.t}
                 className="mm-page-tile"
-                style={
-                  i === 0 && tile1
-                    ? { backgroundImage: `url(${tile1})` }
-                    : i === 1 && tile2
-                    ? { backgroundImage: `url(${tile2})` }
-                    : undefined
-                }
+                style={valueImgs[i] ? { backgroundImage: `url(${valueImgs[i]})` } : undefined}
               >
                 <div className="mm-page-tile-label">0{i + 1}</div>
                 <h3 className="mm-page-tile-title">{v.t}</h3>
