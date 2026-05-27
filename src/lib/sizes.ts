@@ -1,5 +1,13 @@
-/** Größen mit optionalem Aufpreis. Persistiert als JSON im Product.sizes-Feld.
- *  Beispiel: [{name:"S",extraCents:0},{name:"XXL",extraCents:90},{name:"3XL",extraCents:120}] */
+/** Größen mit optionalem individuellem Stückpreis. Persistiert als JSON im Product.sizes-Feld.
+ *  WICHTIG: `extraCents` ist hier der ABSOLUTE Stückpreis dieser Größe in Cent.
+ *  0 oder leer = "wie Basispreis" (kein Unterschied).
+ *  Beispiel mit Basispreis €1,00:
+ *    [{name:"S",extraCents:0},          → S kostet €1,00 (wie Basis)
+ *     {name:"M",extraCents:0},          → M kostet €1,00 (wie Basis)
+ *     {name:"L",extraCents:80},         → L kostet €0,80 (Rabatt)
+ *     {name:"XL",extraCents:150}]       → XL kostet €1,50 (Aufpreis)
+ *  Mengenrabatt aus PriceTiers wird auf den jeweiligen Stückpreis anteilig
+ *  übertragen (Verhältnis = aktiver Staffel-Preis / Basispreis). */
 
 export type ProductSize = { name: string; extraCents: number };
 

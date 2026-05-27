@@ -60,14 +60,16 @@ export default function DetailOrderForm({
 
   const subtotalCents = useMemo(() => {
     if (unitCents == null) return null;
-    // Logik:
-    // - unitCents = aktiver Staffel-Preis (z. B. €0,85 bei 30 Stk)
-    // - basePriceCents = Listenpreis bei 1 Stk (z. B. €1,00)
-    // - ratio = Mengen-Rabattfaktor (z. B. 0,85)
-    // - Größen-Aufpreis ist PRO STÜCK, aber wird auch um den Mengenrabatt
-    //   reduziert: bei 30 Stk wird ein +€1,50 Aufpreis zu +€1,28.
-    const ratio =
-      basePriceCents && basePriceCents > 0 ? unitCents / basePriceCents : 1;
+    // NEUE LOGIK (Mai 2026):
+    // Das Feld `extraCents` einer Größe ist jetzt der ABSOLUTE Stückpreis dieser Größe.
+    //   0  → wie Basispreis (kein Unterschied)
+    //   >0 → eigener Stückpreis (z. B. XL kostet €1,50 statt €1,00 Basis)
+    // Der Mengenrabatt aus den PriceTiers (z. B. 30 Stk → €0,85 statt €1,00)
+    // wird ANTEILIG (Faktor = unitCents/basePriceCents) auf jeden Größen-Stückpreis übertragen.
+    // Beispiel: Basis €1,00, 30-Stk-Staffel €0,85 (Faktor 0,85), XL Stückpreis €1,50
+    //   → XL effektiv: €1,50 × 0,85 = €1,28/Stk
+    const baseCents = basePriceCents ?? unitCents;
+    const ratio = baseCents > 0 ? unitCents / baseCents : 1;
     let sum = 0;
     if (sizes.length === 0) {
       sum = (qty["__default"] || 0) * unitCents;
@@ -75,19 +77,19 @@ export default function DetailOrderForm({
       for (const s of sizes) {
         const q = qty[s.name] || 0;
         if (q > 0) {
-          const effectiveExtra = Math.round((s.extraCents || 0) * ratio);
-          sum += q * (unitCents + effectiveExtra);
+          // Wenn extraCents=0 → Basispreis verwenden; sonst dieser absolute Stückpreis
+          const sizePrice = s.extraCents > 0 ? s.extraCents : baseCents;
+          const effectivePrice = Math.round(sizePrice * ratio);
+          sum += q * effectivePrice;
         }
       }
     }
     return sum;
   }, [qty, sizes, unitCents, basePriceCents]);
 
-  // Effektive Aufpreis-Anzeige pro Stück (mit Mengenrabatt-Faktor)
+  const baseCents = basePriceCents ?? unitCents ?? 0;
   const effectiveRatio =
-    basePriceCents && basePriceCents > 0 && unitCents != null
-      ? unitCents / basePriceCents
-      : 1;
+    baseCents > 0 && unitCents != null ? unitCents / baseCents : 1;
 
   function setSizeQty(name: string, value: number) {
     setSizeQtyState(name, Math.max(0, Math.floor(value || 0)));
@@ -138,14 +140,12 @@ export default function DetailOrderForm({
           {sizes.map((s) => (
             <label key={s.name} className="det-order-size">
               <span className="det-order-size-name">{s.name}</span>
-              {s.extraCents !== 0 && (
-                <span className={`det-order-size-extra${s.extraCents < 0 ? " neg" : ""}`}>
-                  {s.extraCents > 0 ? "+" : "−"}€{euro(Math.abs(s.extraCents))}
-                  <em>/Stk</em>
+              {s.extraCents > 0 && s.extraCents !== baseCents && (
+                <span className={`det-order-size-extra${s.extraCents < baseCents ? " neg" : ""}`}>
+                  €{euro(s.extraCents)}<em>/Stk</em>
                   {effectiveRatio < 1 && (
                     <em className="det-extra-eff">
-                      bei Menge: {s.extraCents > 0 ? "+" : "−"}€
-                      {euro(Math.round(Math.abs(s.extraCents) * effectiveRatio))}
+                      bei Menge: €{euro(Math.round(s.extraCents * effectiveRatio))}
                     </em>
                   )}
                 </span>

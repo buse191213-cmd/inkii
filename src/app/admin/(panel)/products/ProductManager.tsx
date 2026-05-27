@@ -636,11 +636,12 @@ export default function ProductManager({
                   </button>
                 </div>
 
-                {/* Größen mit optionalem Aufpreis */}
+                {/* Größen mit individuellem Stückpreis */}
                 <div className="field">
-                  <label>Größen & Aufpreise (optional)</label>
+                  <label>Größen & Stückpreise (optional)</label>
                   <div className="tier-help">
-                    Beispiel: S, M, L gleicher Preis / 3XL +0,90 € Aufpreis
+                    Stückpreis pro Größe. Leer oder 0 = wie Basispreis. Beispiel mit Basispreis €1,00:
+                    S, M, L leer (= €1,00) / XL „1,50" (= €1,50) / XXL „0,80" (= günstiger).
                   </div>
                   <div className="tier-list">
                     {sizes.map((s, i) => (
@@ -660,12 +661,12 @@ export default function ProductManager({
                           />
                         </div>
                         <div className="tier-edit-field">
-                          <label>Aufpreis (€) — leer = 0</label>
+                          <label>Stückpreis (€) — leer = wie Basispreis</label>
                           <input
                             type="text"
                             inputMode="decimal"
                             value={s.extraText}
-                            placeholder="z. B. 0,90"
+                            placeholder="z. B. 1,50"
                             onChange={(e) => {
                               const v = e.target.value.replace(/[^0-9,.]/g, "");
                               setSizes((cur) =>
