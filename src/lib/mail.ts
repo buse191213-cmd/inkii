@@ -111,19 +111,33 @@ export async function sendInquiryMail(data: InquiryMail): Promise<MailResult> {
 
     const res = await fetch(ENDPOINT, {
       method: "POST",
-      headers: { "Content-Type": "application/json", Accept: "application/json" },
+      headers: {
+        "Content-Type": "application/json",
+        Accept: "application/json",
+        // Web3Forms macht eine Origin-Check, wenn Allowed Domains gesetzt sind.
+        // Server-side fetch sendet keinen Origin — wir setzen ihn manuell.
+        Origin: process.env.VERCEL_URL
+          ? `https://${process.env.VERCEL_URL}`
+          : "https://inkii.vercel.app",
+      },
       body: JSON.stringify(body),
     });
 
-    const json: { success?: boolean; message?: string } = await res
-      .json()
-      .catch(() => ({}));
+    // Web3Forms gibt bei Fehlern manchmal Plain-Text statt JSON zurück.
+    // Beide Wege absichern.
+    const rawText = await res.text();
+    let parsed: { success?: boolean; message?: string } = {};
+    try {
+      parsed = JSON.parse(rawText);
+    } catch {
+      parsed = { message: rawText.slice(0, 200) };
+    }
 
-    if (res.ok && json.success) {
+    if (res.ok && parsed.success) {
       console.log(`[mail] Versand OK → Admin & Auto-Reply an ${data.email}`);
       return { ok: true };
     }
-    const errorMsg = `HTTP ${res.status}: ${json.message ?? "Unbekannter Fehler"}`;
+    const errorMsg = `HTTP ${res.status}: ${parsed.message || rawText.slice(0, 120) || "Web3Forms-Fehler"}`;
     console.warn("[mail] Web3Forms:", errorMsg);
     return { ok: false, error: errorMsg };
   } catch (err: unknown) {
