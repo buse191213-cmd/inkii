@@ -182,6 +182,12 @@ function makeTransporter() {
     port,
     secure: port === 465,
     auth: { user: process.env.SMTP_USER!, pass: process.env.SMTP_PASS! },
+    // Vercel-Funktionen haben 10s Timeout im Free-Tier — wir setzen kürzere
+    // SMTP-Timeouts, damit wir auch bei Verbindungsproblemen schnell
+    // antworten können statt das Form-Submit hängen zu lassen.
+    connectionTimeout: 8000,
+    greetingTimeout: 5000,
+    socketTimeout: 8000,
   });
 }
 

@@ -4,7 +4,18 @@ import { revalidatePath } from "next/cache";
 import { db } from "@/lib/db";
 import { sendInquiryMail } from "@/lib/mail";
 
-export type MerklisteState = { ok: boolean; error?: string };
+export type MerklisteState = {
+  ok: boolean;
+  error?: string;
+  /** Status der zwei Mails — wird im UI angezeigt, hilft beim Debugging. */
+  mailStatus?: {
+    adminOk: boolean;
+    customerOk: boolean;
+    adminError?: string;
+    customerError?: string;
+    skipped?: boolean;
+  };
+};
 
 type SubmitSize = { name: string; qty: number };
 type SubmitItem = {
@@ -96,8 +107,11 @@ export async function submitMerklisteInquiry(
     await db.inquiry.create({
       data: { name, email, phone, company, subject, message, status: "new" },
     });
-    // Mails MÜSSEN awaited werden, sonst killt Vercel die Function vor dem Versand.
+    console.log(`[merkzettel] DB-Eintrag erstellt für ${email} (${items.length} Artikel)`);
+
+    let mailStatus: MerklisteState["mailStatus"];
     try {
+      console.log(`[merkzettel] Starte Mail-Versand…`);
       const mailRes = await sendInquiryMail({
         name, email, phone, company, subject, message,
         items: items.map((it) => ({
@@ -111,14 +125,19 @@ export async function submitMerklisteInquiry(
           note: it.note,
         })),
       });
-      if (!mailRes.adminOk) console.warn("[merkzettel] Admin-Mail:", mailRes.adminError);
-      if (!mailRes.customerOk) console.warn("[merkzettel] Kunden-Mail:", mailRes.customerError);
+      mailStatus = mailRes;
+      console.log(`[merkzettel] Mail-Resultat: admin=${mailRes.adminOk} customer=${mailRes.customerOk} skipped=${!!mailRes.skipped}`);
+      if (mailRes.adminError) console.warn(`[merkzettel] Admin-Mail-Fehler: ${mailRes.adminError}`);
+      if (mailRes.customerError) console.warn(`[merkzettel] Kunden-Mail-Fehler: ${mailRes.customerError}`);
     } catch (err) {
-      console.warn("[merkzettel] Mail-Versand fehlgeschlagen:", err);
+      const msg = err instanceof Error ? err.message : String(err);
+      console.warn(`[merkzettel] Mail-Versand crashte:`, msg);
+      mailStatus = { adminOk: false, customerOk: false, adminError: msg };
     }
+
     revalidatePath("/admin/inquiries");
     revalidatePath("/admin");
-    return { ok: true };
+    return { ok: true, mailStatus };
   } catch {
     return { ok: false, error: "Senden fehlgeschlagen. Bitte erneut versuchen." };
   }

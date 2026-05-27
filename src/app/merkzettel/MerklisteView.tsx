@@ -17,6 +17,7 @@ export default function MerklisteView({
   const [pending, setPending] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState(false);
+  const [mailNote, setMailNote] = useState<string | null>(null);
 
   useEffect(() => {
     if (success) clear();
@@ -26,9 +27,9 @@ export default function MerklisteView({
     e.preventDefault();
     setPending(true);
     setError(null);
+    setMailNote(null);
     const formData = new FormData(e.currentTarget);
 
-    // Server-Action: in DB speichern + Mails verschicken (via IONOS SMTP)
     const dbRes = await submitMerklisteInquiry({ ok: false }, formData);
 
     setPending(false);
@@ -36,6 +37,17 @@ export default function MerklisteView({
     if (!dbRes.ok) {
       setError(dbRes.error ?? "Senden fehlgeschlagen.");
       return;
+    }
+    // Mail-Status nur als sanften Hinweis anzeigen — Anfrage ist gespeichert
+    if (dbRes.mailStatus) {
+      const ms = dbRes.mailStatus;
+      if (ms.skipped) {
+        setMailNote("Hinweis: Mail-Versand ist nicht konfiguriert. Die Anfrage wurde aber im System gespeichert.");
+      } else if (!ms.adminOk && !ms.customerOk) {
+        setMailNote("Hinweis: Die Bestätigungsmails konnten nicht versendet werden. Die Anfrage wurde aber im System gespeichert.");
+      } else if (!ms.customerOk) {
+        setMailNote("Ihre Anfrage ist eingegangen. Eine Bestätigungsmail an Sie konnte nicht versendet werden — wir melden uns trotzdem.");
+      }
     }
     setSuccess(true);
   }
@@ -54,6 +66,12 @@ export default function MerklisteView({
         <div className="form-card" style={{ maxWidth: 640 }}>
           <div className="form-ok">{t.formOk}</div>
           <p style={{ color: "var(--muted)", fontSize: ".95rem" }}>{t.formOkNote}</p>
+          {mailNote && (
+            <p style={{ color: "#a76b1a", fontSize: ".88rem", background: "#fffbf2",
+              padding: "10px 14px", border: "1px solid #f0d9a8", borderRadius: 8, margin: "14px 0" }}>
+              {mailNote}
+            </p>
+          )}
           <Link className="btn btn-ghost" href="/werbemittel">{t.okBack}</Link>
         </div>
       </div>
