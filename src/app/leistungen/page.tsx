@@ -44,7 +44,7 @@ export default async function LeistungenPage() {
     {
       label: "Hochwertige Werbemittel",
       desc: "Tassen, Taschen, Powerbanks, Stifte und mehr — als Markenbotschafter.",
-      img: f4, href: "/werbemittel?cat=werbeartikel",
+      img: f4, href: "/werbemittel",
     },
     {
       label: "INKII Works Shop",
@@ -59,7 +59,7 @@ export default async function LeistungenPage() {
     {
       label: "Onlineshops für Unternehmen",
       desc: "Eigene Mitarbeiter- und Vereinsshops mit textilen Produkten — schlüsselfertig.",
-      img: f7, href: "/werbemittel?cat=kleidung",
+      img: f7, href: "/werbemittel",
     },
     {
       label: "Ganzheitliche Marketinglösungen mit INKII Works",

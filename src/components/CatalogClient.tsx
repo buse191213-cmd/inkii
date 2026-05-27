@@ -112,7 +112,17 @@ export default function CatalogClient({
     setMinStock(0);
   }
 
-  const catName = cat === "all" ? "Alle Produkte" : categories.find((x) => x.slug === cat)?.name ?? "Alle Produkte";
+  // Slug → Anzeigename mit Erstbuchstabe-Großschreibung (falls Admin "kleidung" eingegeben hat)
+  const cap = (s: string) => s.charAt(0).toUpperCase() + s.slice(1);
+  const SLUG_LABEL: Record<string, string> = {
+    kleidung: "Kleidung",
+    taschen: "Taschen",
+    werbeartikel: "Werbeartikel",
+  };
+  const rawName = cat === "all" ? "Alle Produkte" : (categories.find((x) => x.slug === cat)?.name ?? cat);
+  const catName = cat === "all"
+    ? "Alle Produkte"
+    : (SLUG_LABEL[cat] ?? cap(rawName));
 
   return (
     <section className="mm-cat">
@@ -160,7 +170,7 @@ export default function CatalogClient({
                   </button>
                   {categories.map((x) => (
                     <button key={x.slug} className={cat === x.slug ? "active" : ""} onClick={() => setCat(x.slug)}>
-                      {x.name} <span className="cnt">{x.count}</span>
+                      {SLUG_LABEL[x.slug] ?? cap(x.name)} <span className="cnt">{x.count}</span>
                     </button>
                   ))}
                 </div>
