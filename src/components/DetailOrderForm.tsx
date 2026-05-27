@@ -1,8 +1,8 @@
 "use client";
 
 import { useState, useMemo } from "react";
-import { useRouter } from "next/navigation";
-import { submitProductInquiry } from "@/app/werbemittel/[id]/actions";
+import Link from "next/link";
+import { useMerkliste } from "@/components/MerklisteProvider";
 import type { ProductSize } from "@/lib/sizes";
 import type { PriceTier } from "@/lib/price-tiers";
 
@@ -10,6 +10,7 @@ type Props = {
   productId: string;
   productCode: string;
   productName: string;
+  productImage: string | null;
   sizes: ProductSize[];
   tiers: PriceTier[];
   basePriceCents: number | null;
@@ -19,7 +20,6 @@ function euro(c: number): string {
   return (c / 100).toLocaleString("de-DE", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
 }
 
-/** Findet die passende Staffel für eine Gesamtmenge (höchste qty ≤ totalQty). */
 function findTier(tiers: PriceTier[], qty: number): PriceTier | null {
   if (qty <= 0 || tiers.length === 0) return null;
   const sorted = [...tiers].sort((a, b) => a.qty - b.qty);
@@ -34,23 +34,20 @@ export default function DetailOrderForm({
   productId,
   productCode,
   productName,
+  productImage,
   sizes,
   tiers,
   basePriceCents,
 }: Props) {
-  const router = useRouter();
+  const { addOrUpdate, has } = useMerkliste();
   const [qty, setQty] = useState<Record<string, number>>(() => {
     const init: Record<string, number> = {};
     sizes.forEach((s) => (init[s.name] = 0));
     if (sizes.length === 0) init["__default"] = 0;
     return init;
   });
-  const [name, setName] = useState("");
-  const [email, setEmail] = useState("");
-  const [phone, setPhone] = useState("");
   const [note, setNote] = useState("");
-  const [sent, setSent] = useState(false);
-  const [busy, setBusy] = useState(false);
+  const [added, setAdded] = useState(false);
   const [err, setErr] = useState("");
 
   const totalQty = useMemo(
@@ -73,68 +70,46 @@ export default function DetailOrderForm({
   }, [qty, sizes, unitCents]);
 
   function setSizeQty(name: string, value: number) {
-    setQty((cur) => ({ ...cur, [name]: Math.max(0, Math.floor(value || 0)) }));
+    setSizeQtyState(name, Math.max(0, Math.floor(value || 0)));
+  }
+  function setSizeQtyState(name: string, v: number) {
+    setQty((cur) => ({ ...cur, [name]: v }));
+    setAdded(false);
+    setErr("");
   }
 
-  async function submit(e: React.FormEvent<HTMLFormElement>) {
-    e.preventDefault();
+  function handleAdd() {
     setErr("");
     if (totalQty === 0) {
       setErr("Bitte mindestens eine Menge eintragen.");
       return;
     }
-    if (!name.trim() || !email.trim()) {
-      setErr("Name und E-Mail sind erforderlich.");
-      return;
-    }
-    setBusy(true);
-    try {
-      const itemsList = sizes.length > 0
-        ? sizes.filter((s) => (qty[s.name] || 0) > 0).map((s) => ({ size: s.name, qty: qty[s.name] }))
-        : [{ size: "—", qty: qty["__default"] || 0 }];
-      const res = await submitProductInquiry({
-        productId,
-        productCode,
-        productName,
-        name: name.trim(),
-        email: email.trim(),
-        phone: phone.trim(),
-        note: note.trim(),
-        items: itemsList,
-        totalQty,
-      });
-      if (res.ok) {
-        setSent(true);
-      } else {
-        setErr(res.error ?? "Fehler beim Versenden.");
-      }
-    } catch (e: unknown) {
-      setErr(e instanceof Error ? e.message : "Unerwarteter Fehler.");
-    } finally {
-      setBusy(false);
-      router.refresh();
-    }
+    const sizeList = sizes.length > 0
+      ? sizes.filter((s) => (qty[s.name] || 0) > 0).map((s) => ({
+          name: s.name,
+          qty: qty[s.name] || 0,
+          extraCents: s.extraCents || 0,
+        }))
+      : undefined;
+    addOrUpdate({
+      id: productId,
+      code: productCode,
+      name: productName,
+      image: productImage,
+      qty: totalQty,
+      sizes: sizeList,
+      note: note.trim() || undefined,
+    });
+    setAdded(true);
   }
 
-  if (sent) {
-    return (
-      <div className="det-order-success">
-        <div className="det-order-success-icon">
-          <svg viewBox="0 0 24 24" width="32" height="32" fill="none" stroke="currentColor" strokeWidth="2">
-            <path d="M20 6L9 17l-5-5" strokeLinecap="round" strokeLinejoin="round" />
-          </svg>
-        </div>
-        <h3>Anfrage gesendet!</h3>
-        <p>Wir melden uns innerhalb von 24 Stunden mit einem Angebot.</p>
-      </div>
-    );
-  }
+  const alreadyOn = has(productId);
 
   return (
-    <form className="det-order" onSubmit={submit}>
+    <div className="det-order">
       <div className="det-order-head">
-        <h3>Anfrage mit Mengen senden</h3>
-        <p>Geben Sie Ihre Wunschmengen ein — wir senden Ihnen ein passendes Angebot.</p>
+        <h3>Mengen festlegen & merken</h3>
+        <p>Wählen Sie Ihre Wunschmengen und sammeln Sie sie auf dem Merkzettel. Die finale Anfrage senden Sie dort gebündelt ab.</p>
       </div>
 
       {/* Größen + Mengen */}
@@ -175,7 +150,7 @@ export default function DetailOrderForm({
         </div>
       )}
 
-      {/* Mengenstaffel als Hinweis */}
+      {/* Mengenstaffel Hinweis */}
       {tiers.length > 0 && (
         <div className="det-order-tier-hint">
           {tiers.map((t, i) => {
@@ -199,55 +174,43 @@ export default function DetailOrderForm({
         {subtotalCents != null && totalQty > 0 && (
           <div>
             <span className="det-order-total-lbl">Voraussichtl. Summe</span>
-            <span className="det-order-total-val">
-              €{euro(subtotalCents)}
-            </span>
+            <span className="det-order-total-val">€{euro(subtotalCents)}</span>
           </div>
         )}
       </div>
 
-      {/* Kundendaten */}
-      <div className="det-order-fields">
-        <input
-          className="det-order-input"
-          placeholder="Name *"
-          value={name}
-          onChange={(e) => setName(e.target.value)}
-          required
-        />
-        <input
-          className="det-order-input"
-          type="email"
-          placeholder="E-Mail *"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-          required
-        />
-        <input
-          className="det-order-input"
-          type="tel"
-          placeholder="Telefon"
-          value={phone}
-          onChange={(e) => setPhone(e.target.value)}
-        />
-        <textarea
-          className="det-order-input det-order-textarea"
-          placeholder="Anmerkungen, Wunschveredelung, Logoplatzierung …"
-          value={note}
-          onChange={(e) => setNote(e.target.value)}
-          rows={3}
-        />
-      </div>
+      {/* Anmerkungen */}
+      <textarea
+        className="det-order-input det-order-textarea"
+        placeholder="Anmerkungen, Wunschveredelung, Logoplatzierung … (optional)"
+        value={note}
+        onChange={(e) => { setNote(e.target.value); setAdded(false); }}
+        rows={3}
+      />
 
       {err && <div className="det-order-err">{err}</div>}
+      {added && (
+        <div className="det-order-success-inline">
+          <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" strokeWidth="2.5">
+            <path d="M20 6L9 17l-5-5" strokeLinecap="round" strokeLinejoin="round" />
+          </svg>
+          <span>Auf den Merkzettel gelegt.</span>
+          <Link href="/merkzettel" className="det-order-success-link">Merkzettel öffnen →</Link>
+        </div>
+      )}
 
-      <button type="submit" className="det-order-submit" disabled={busy}>
-        {busy ? "Wird gesendet …" : `Anfrage absenden${totalQty > 0 ? ` (${totalQty} Stück)` : ""}`}
+      <button type="button" className="det-order-submit" onClick={handleAdd}>
+        <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" strokeWidth="2">
+          <path d="M20.84 4.61a5.5 5.5 0 00-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 00-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 000-7.78z"
+            strokeLinecap="round" strokeLinejoin="round" />
+        </svg>
+        {alreadyOn ? "Merkzettel aktualisieren" : "Auf Merkzettel hinzufügen"}
+        {totalQty > 0 ? ` (${totalQty} Stück)` : ""}
       </button>
 
       <p className="det-order-foot">
-        Sie erhalten ein verbindliches Angebot innerhalb von 24 Stunden auf Ihre E-Mail.
+        Tipp: Sie können beliebig viele Produkte sammeln und in einer einzigen Anfrage gemeinsam senden.
       </p>
-    </form>
+    </div>
   );
 }

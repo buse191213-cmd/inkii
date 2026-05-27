@@ -188,6 +188,7 @@ export default async function ProductDetailPage({
                 productId={product.id}
                 productCode={product.code}
                 productName={product.name}
+                productImage={images[0] ?? null}
                 sizes={sizesList}
                 tiers={tiers}
                 basePriceCents={product.priceCents}

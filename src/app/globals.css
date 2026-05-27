@@ -3004,3 +3004,25 @@ body:has(.home-services) footer.site{margin-top:0}
   .det-order-total{flex-direction:column;gap:10px}
   .det-order-sizes{grid-template-columns:repeat(auto-fill,minmax(90px,1fr))}
 }
+
+/* === Merkzettel item: Sizes + Note === */
+.merk-sizes{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px}
+.merk-size-pill{font-size:.78rem;background:#f1f4ef;color:#1c2722;
+  padding:4px 10px;border-radius:999px;border:1px solid #e3e6df;font-weight:500}
+.merk-size-pill b{font-weight:700;margin-right:2px;color:#1c2722}
+.merk-note{margin-top:6px;font-size:.82rem;color:#5a6660;line-height:1.5;
+  background:#fafbf9;padding:6px 10px;border-radius:6px;border-left:2px solid #5e8470}
+.merk-note-lbl{font-weight:700;color:#1c2722;margin-right:4px}
+
+/* Inline success in detail form */
+.det-order-success-inline{display:flex;align-items:center;gap:10px;
+  background:#eef5e8;border:1px solid #c8dec1;color:#2f6e4a;
+  padding:11px 14px;border-radius:8px;font-size:.88rem;font-weight:600;flex-wrap:wrap}
+.det-order-success-inline svg{flex-shrink:0;color:#3f9c5c}
+.det-order-success-link{margin-left:auto;color:#1c2722;text-decoration:underline;
+  text-underline-offset:3px;font-size:.85rem}
+.det-order-success-link:hover{color:#3f9c5c}
+
+/* Merk-qty disabled state */
+.merk-qty button:disabled,.merk-qty input:disabled{
+  background:#f4f5f1;color:#9ea7a2;cursor:not-allowed;opacity:.7}

@@ -87,12 +87,27 @@ export default function MerklisteView({
                   <Link href={`/werbemittel/${it.id}`} className="merk-name">
                     {it.name}
                   </Link>
+                  {it.sizes && it.sizes.length > 0 && (
+                    <div className="merk-sizes">
+                      {it.sizes.map((s, idx) => (
+                        <span key={idx} className="merk-size-pill">
+                          <b>{s.name}</b> × {s.qty}
+                        </span>
+                      ))}
+                    </div>
+                  )}
+                  {it.note && (
+                    <div className="merk-note">
+                      <span className="merk-note-lbl">Anmerkung:</span> {it.note}
+                    </div>
+                  )}
                 </div>
                 <div className="merk-qty">
                   <button
                     type="button"
                     onClick={() => setQty(it.id, it.qty - 1)}
                     aria-label={t.qtyMinus}
+                    disabled={!!(it.sizes && it.sizes.length > 0)}
                   >
                     −
                   </button>
@@ -103,11 +118,13 @@ export default function MerklisteView({
                     onChange={(e) =>
                       setQty(it.id, parseInt(e.target.value, 10) || 1)
                     }
+                    disabled={!!(it.sizes && it.sizes.length > 0)}
                   />
                   <button
                     type="button"
                     onClick={() => setQty(it.id, it.qty + 1)}
                     aria-label={t.qtyPlus}
+                    disabled={!!(it.sizes && it.sizes.length > 0)}
                   >
                     +
                   </button>
@@ -137,7 +154,13 @@ export default function MerklisteView({
               type="hidden"
               name="items"
               value={JSON.stringify(
-                items.map((i) => ({ code: i.code, name: i.name, qty: i.qty }))
+                items.map((i) => ({
+                  code: i.code,
+                  name: i.name,
+                  qty: i.qty,
+                  sizes: i.sizes ?? null,
+                  note: i.note ?? null,
+                }))
               )}
             />
             {state.error && <div className="form-err">{state.error}</div>}
