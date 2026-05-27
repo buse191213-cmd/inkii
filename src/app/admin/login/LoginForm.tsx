@@ -14,7 +14,7 @@ export default function LoginForm() {
         {/* eslint-disable-next-line @next/next/no-img-element */}
         <img src="/inkii-logo.png" alt="INKII WORKS" />
       </div>
-      <p className="sub">Admin-Panel — bitte anmelden</p>
+      <p className="sub">Admin-Panel</p>
 
       {state.error && <div className="form-err">{state.error}</div>}
 
@@ -23,8 +23,8 @@ export default function LoginForm() {
         id="email"
         name="email"
         type="email"
-        placeholder="admin@inkii.de"
-        defaultValue="admin@inkii.de"
+        placeholder="name@inkii.de"
+        autoComplete="email"
         required
       />
       <label htmlFor="password">Passwort</label>
@@ -33,14 +33,12 @@ export default function LoginForm() {
         name="password"
         type="password"
         placeholder="••••••••"
+        autoComplete="current-password"
         required
       />
       <button className="login-btn" type="submit" disabled={pending}>
-        {pending ? "Anmeldung läuft …" : "Anmelden →"}
+        {pending ? "Anmeldung läuft …" : "Anmelden"}
       </button>
-      <p className="login-hint">
-        Demo-Zugang: admin@inkii.de / inkii2026
-      </p>
     </form>
   );
 }
