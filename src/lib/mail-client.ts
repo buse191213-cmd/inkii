@@ -69,8 +69,9 @@ function buildCustomerText(d: ClientMailInput): string {
 
 /** Schickt die Anfrage direkt aus dem Browser an Web3Forms.
  *  - Shop-Mail an die Access-Key-Adresse (info@inkiiworks.de)
- *  - Autoresponse-Bestätigung an d.email
- *  Wirft keine Errors, gibt strukturiertes Ergebnis zurück. */
+ *  - Autoresponse-Bestätigung an d.email (NUR wenn im Web3Forms-Dashboard
+ *    unter Settings → Auto-Response der Toggle aktiviert ist)
+ *  Wirft keine Errors. */
 export async function sendInquiryFromBrowser(
   d: ClientMailInput
 ): Promise<ClientMailResult> {
@@ -78,6 +79,26 @@ export async function sendInquiryFromBrowser(
   if (!accessKey) {
     return { ok: false, skipped: true };
   }
+
+  // Sauberer Text-Body — Web3Forms rendert das im Standard-Template direkt.
+  const lines: string[] = [];
+  lines.push(`Neue Anfrage über inkiiworks.de`);
+  lines.push("");
+  lines.push(`Name:    ${d.name}`);
+  lines.push(`E-Mail:  ${d.email}`);
+  if (d.phone) lines.push(`Telefon: ${d.phone}`);
+  if (d.company) lines.push(`Firma:   ${d.company}`);
+  lines.push("");
+  lines.push("─────────────────────────────");
+  lines.push(d.subject);
+  lines.push("─────────────────────────────");
+  lines.push("");
+  lines.push(d.message);
+  lines.push("");
+  lines.push("─────────────────────────────");
+  lines.push(`Antworten an: ${d.email}`);
+  const fullMessage = lines.join("\n");
+
   try {
     const res = await fetch(ENDPOINT, {
       method: "POST",
@@ -90,12 +111,14 @@ export async function sendInquiryFromBrowser(
         subject: `[INKII] ${d.subject} — ${d.name}`,
         from_name: "INKII Website",
         replyto: d.email,
+        // Kunden-Daten — Web3Forms-Standard-Template zeigt sie automatisch an
         name: d.name,
         email: d.email,
         phone: d.phone || "",
         company: d.company || "",
-        message: d.message,
-        html: buildShopHtml(d),
+        // Hauptinhalt
+        message: fullMessage,
+        // Auto-Response (Toggle muss im Web3Forms-Dashboard aktiv sein)
         autoresponse_subject: "Bestätigung Ihrer Anfrage | INKII Works",
         autoresponse_message: buildCustomerText(d),
         botcheck: "",
