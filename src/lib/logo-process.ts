@@ -34,24 +34,47 @@ function loadImage(src: string): Promise<HTMLImageElement> {
   });
 }
 
-/** 2× Canvas-Upscale mit einem leichten Unsharp-Mask für mehr Detail. */
+/** Hochwertiges 2× Upscale via createImageBitmap (Lanczos-ähnlich) + adaptive Schärfung. */
 async function upscaleAndSharpen(dataUrl: string, scale = 2): Promise<string> {
   const img = await loadImage(dataUrl);
-  const w = img.naturalWidth * scale;
-  const h = img.naturalHeight * scale;
+  const srcW = img.naturalWidth;
+  const srcH = img.naturalHeight;
+  const w = srcW * scale;
+  const h = srcH * scale;
+
   const canvas = document.createElement("canvas");
   canvas.width = w;
   canvas.height = h;
   const ctx = canvas.getContext("2d");
   if (!ctx) throw new Error("Canvas nicht verfügbar.");
-  ctx.imageSmoothingQuality = "high";
-  ctx.imageSmoothingEnabled = true;
-  ctx.drawImage(img, 0, 0, w, h);
 
-  // Schärfung: simpler Unsharp-Mask Kernel
+  // 1) Hochwertiges Resampling: createImageBitmap mit resizeQuality 'high'
+  //    liefert deutlich schärfere Kanten als ctx.drawImage (Lanczos-ähnlich).
+  let drawn = false;
+  try {
+    const resp = await fetch(dataUrl);
+    const blob = await resp.blob();
+    const bitmap = await createImageBitmap(blob, {
+      resizeWidth: w,
+      resizeHeight: h,
+      resizeQuality: "high",
+    });
+    ctx.drawImage(bitmap, 0, 0);
+    bitmap.close?.();
+    drawn = true;
+  } catch {
+    // Fallback: klassisches drawImage
+  }
+  if (!drawn) {
+    ctx.imageSmoothingQuality = "high";
+    ctx.imageSmoothingEnabled = true;
+    ctx.drawImage(img, 0, 0, w, h);
+  }
+
+  // 2) Adaptive Schärfung — kenarları belirginleştir, gürültüyü artırma
   try {
     const id = ctx.getImageData(0, 0, w, h);
-    const out = sharpen(id, 0.35);
+    const out = sharpen(id, 0.5);
     ctx.putImageData(out, 0, 0);
   } catch {
     // ImageData kann bei sehr großen Bildern fehlschlagen — dann nur Upscale
@@ -59,7 +82,10 @@ async function upscaleAndSharpen(dataUrl: string, scale = 2): Promise<string> {
   return canvas.toDataURL("image/png");
 }
 
-/** Unsharp-Mask in reinem JS. amount: Stärke (0.2–0.6 ist gut). */
+/**
+ * Unsharp-Mask mit 3×3-Gauß-Vorglättung — schärft Kanten, ohne die
+ * Transparenz (Alpha) zu zerstören. amount: Stärke (0.3–0.7 ist gut).
+ */
 function sharpen(imgData: ImageData, amount: number): ImageData {
   const { width, height, data } = imgData;
   const out = new ImageData(new Uint8ClampedArray(data), width, height);
@@ -68,13 +94,23 @@ function sharpen(imgData: ImageData, amount: number): ImageData {
   for (let y = 1; y < height - 1; y++) {
     for (let x = 1; x < width - 1; x++) {
       const i = (y * width + x) * 4;
+      // Sadece yeterince opak pikselleri keskinleştir (kenar halo'sunu önler)
+      if (data[i + 3] < 8) {
+        out.data[i + 3] = data[i + 3];
+        continue;
+      }
       for (let c = 0; c < 3; c++) {
         const p = data[i + c];
+        // 8-komşu gauss benzeri ortalama (köşeler dahil, ağırlıklı)
         const top = data[i - w4 + c];
         const bot = data[i + w4 + c];
         const lef = data[i - 4 + c];
         const rig = data[i + 4 + c];
-        const avg = (top + bot + lef + rig) / 4;
+        const tl = data[i - w4 - 4 + c];
+        const tr = data[i - w4 + 4 + c];
+        const bl = data[i + w4 - 4 + c];
+        const br = data[i + w4 + 4 + c];
+        const avg = (top + bot + lef + rig) * 0.15 + (tl + tr + bl + br) * 0.1;
         const val = p + (p - avg) * k;
         out.data[i + c] = val < 0 ? 0 : val > 255 ? 255 : val;
       }
@@ -104,21 +140,24 @@ export async function processLogo(
     if (typeof removeBackground !== "function") {
       throw new Error("removeBackground export nicht gefunden");
     }
-    console.log("[logo-process] Starte Hintergrund-Entfernung (kann 5-30s dauern, lädt Modell beim 1. Mal) …");
+    console.log("[logo-process] Starte Hintergrund-Entfernung (höchste Qualität — lädt großes Modell beim 1. Mal) …");
     const transparentBlob = await removeBackground(file, {
-      output: { format: "image/png" },
+      // 'isnet' = volle Präzision (beste Kante/Detail), statt 'isnet_fp16' (schnell/klein).
+      // Erfasst feine Details wie dünne Linien, Schrift und Ränder deutlich besser.
+      model: "isnet",
+      output: { format: "image/png", quality: 1.0 },
     });
     toUpscale = await blobToDataUrl(transparentBlob);
-    console.log("[logo-process] ✓ Hintergrund entfernt");
+    console.log("[logo-process] ✓ Hintergrund entfernt (hohe Qualität)");
   } catch (err) {
     console.warn("[logo-process] ⚠ Hintergrund-Entfernung übersprungen:", err);
     // Bei Fehler: Original verwenden, weiter mit Upscale
   }
 
-  // 2) Auflösung 2× (immer ausgeführt, auch wenn bg-removal fehlschlägt)
+  // 2) Auflösung hochskalieren (immer ausgeführt)
   onProgress("upscale", 3, 3);
   try {
-    console.log("[logo-process] Auflösung 2× hochskalieren …");
+    console.log("[logo-process] Auflösung verbessern …");
     const processed = await upscaleAndSharpen(toUpscale, 2);
     console.log("[logo-process] ✓ Auflösung verbessert");
     return { original, processed };
