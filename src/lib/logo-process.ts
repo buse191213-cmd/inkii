@@ -93,8 +93,11 @@ export async function processLogo(
   const original = await blobToDataUrl(file);
 
   onProgress("remove-bg", 2, 3);
-  // Dynamischer Import — @imgly + onnxruntime werden nur clientseitig geladen
-  const removeBackground = (await import("@imgly/background-removal")).default;
+  // Dynamischer Import — @imgly + onnxruntime werden nur clientseitig geladen.
+  // In v1.5+ ist `removeBackground` ein named export, kein default.
+  const mod = await import("@imgly/background-removal");
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const removeBackground = (mod as any).removeBackground || (mod as any).default;
   const transparentBlob = await removeBackground(file, {
     output: { format: "image/png" },
   });
