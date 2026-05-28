@@ -23,15 +23,15 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: "no-image" }, { status: 400 });
     }
 
-    // Data-URL → Binary Buffer → Blob (zuverlässiger als image_file_b64)
+    // Data-URL → Binary Buffer → Blob
     const b64 = imageB64.replace(/^data:image\/\w+;base64,/, "");
     const buffer = Buffer.from(b64, "base64");
     const blob = new Blob([buffer], { type: "image/png" });
 
+    // Minimale Parameter — nur image_file + size (am zuverlässigsten)
     const form = new FormData();
     form.append("image_file", blob, "logo.png");
     form.append("size", "auto");
-    form.append("format", "png");
 
     const resp = await fetch("https://api.remove.bg/v1.0/removebg", {
       method: "POST",

@@ -156,6 +156,7 @@ export async function processLogo(
   onProgress: ProcessProgress
 ): Promise<{ original: string; processed: string }> {
   onProgress("load", 1, 3);
+  console.log("%c[logo-process] PIPELINE v2 — Hybrid (API + ISNet)", "color:#0a0;font-weight:bold");
   console.log(`[logo-process] Datei laden: ${file.name} (${(file.size / 1024).toFixed(1)} KB, ${file.type})`);
   const original = await blobToDataUrl(file);
 
