@@ -2938,18 +2938,18 @@ body:has(.home-services) footer.site{margin-top:0}
 
 .det-order-sizes{display:grid;grid-template-columns:repeat(auto-fill,minmax(88px,1fr));gap:8px}
 .det-order-sizes.single{grid-template-columns:1fr}
-.det-order-size{display:flex;flex-direction:column;gap:3px;padding:8px 10px;
-  border:1.5px solid #e3e6df;border-radius:9px;background:#fafbf9;transition:.18s;cursor:text}
+.det-order-size{display:flex;flex-direction:column;gap:1px;padding:5px 10px;
+  border:1.5px solid #e3e6df;border-radius:8px;background:#fafbf9;transition:.18s;cursor:text}
 .det-order-size:focus-within{border-color:#1c2722;background:#fff;
   box-shadow:0 0 0 3px rgba(28,39,34,.06)}
-.det-order-size-name{font-weight:700;font-size:.92rem;color:#1c2722;letter-spacing:.02em}
+.det-order-size-name{font-weight:700;font-size:.86rem;color:#1c2722;letter-spacing:.02em}
 .det-order-size-extra{font-size:.68rem;color:#c08454;font-weight:600;
   display:flex;flex-direction:column;gap:0;line-height:1.15}
 .det-order-size-extra em{font-style:normal;font-size:.6rem;color:#9ea7a2;
   font-weight:500;letter-spacing:.04em;text-transform:lowercase}
 .det-order-size-extra em.det-extra-eff{color:#5e8470;font-weight:600;margin-top:1px}
 .det-order-size-extra.neg{color:#5e8470}
-.det-order-size input{border:none;background:none;font-family:inherit;font-size:1.05rem;
+.det-order-size input{border:none;background:none;font-family:inherit;font-size:.98rem;
   font-weight:700;color:#1c2722;padding:0;outline:none;width:100%;
   -moz-appearance:textfield}
 .det-order-size input::-webkit-outer-spin-button,
