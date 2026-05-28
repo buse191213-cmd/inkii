@@ -1600,10 +1600,10 @@ body:has(.home-services) footer.site{margin-top:0}
 .mm-detail-info{display:flex;flex-direction:column}
 .mm-detail-h1{font-family:var(--display);font-weight:800;
   font-size:clamp(2rem,3.6vw,3rem);line-height:1.05;letter-spacing:-.02em;
-  color:var(--ink);margin:0 0 8px}
-.mm-detail-sub{font-size:1.05rem;color:var(--muted);line-height:1.5;
-  margin:0 0 14px;font-weight:500}
-.mm-detail-meta{font-size:.9rem;color:#3b4540;margin:0 0 28px}
+  color:var(--ink);margin:0 0 6px}
+.mm-detail-sub{font-size:1.05rem;color:var(--muted);line-height:1.4;
+  margin:0 0 10px;font-weight:500}
+.mm-detail-meta{font-size:.9rem;color:#3b4540;margin:0 0 14px}
 .mm-detail-meta strong{color:var(--ink);font-weight:600}
 
 /* Tabs */
@@ -1680,8 +1680,8 @@ body:has(.home-services) footer.site{margin-top:0}
   letter-spacing:.18em;text-transform:uppercase;color:var(--ink);margin:0 0 14px;
   padding-bottom:8px;border-bottom:2px solid var(--ink);display:inline-block}
 .mm-detail-specs{display:flex;flex-direction:column;gap:0}
-.mm-spec-row{display:grid;grid-template-columns:160px 1fr;gap:14px;padding:11px 0;
-  border-bottom:1px solid var(--line);font-size:.93rem}
+.mm-spec-row{display:grid;grid-template-columns:160px 1fr;gap:14px;padding:7px 0;
+  border-bottom:1px solid var(--line);font-size:.9rem}
 .mm-spec-row:last-child{border-bottom:0}
 .mm-spec-row span{color:var(--muted)}
 .mm-spec-row strong{color:var(--ink);font-weight:600}
@@ -1690,12 +1690,12 @@ body:has(.home-services) footer.site{margin-top:0}
 }
 
 /* === Mengenstaffel auf der Detailseite (Monday-Merch-Stil) === */
-.mm-tiers{background:#f4f5f3;padding:22px;margin-bottom:18px}
-.mm-tiers-head{font-size:1rem;color:var(--ink);margin-bottom:16px;font-weight:600}
+.mm-tiers{background:#f4f5f3;padding:14px 16px;margin-bottom:12px}
+.mm-tiers-head{font-size:.95rem;color:var(--ink);margin-bottom:10px;font-weight:600}
 .mm-tiers-head .mm-detail-cbnum{font-weight:700;margin-right:6px}
-.mm-tiers-list{display:flex;flex-direction:column;gap:8px}
+.mm-tiers-list{display:flex;flex-direction:column;gap:6px}
 .mm-tier-row{display:grid;grid-template-columns:minmax(80px,auto) 1fr auto minmax(90px,auto);
-  gap:14px;align-items:center;background:#fff;padding:14px 18px;
+  gap:14px;align-items:center;background:#fff;padding:9px 14px;
   border:1px solid var(--line);transition:.16s}
 .mm-tier-row:hover{border-color:var(--ink)}
 .mm-tier-qty{font-family:var(--display);font-weight:700;font-size:1rem;color:var(--ink)}
@@ -2931,7 +2931,7 @@ body:has(.home-services) footer.site{margin-top:0}
 
 /* === Detail-Order Form === */
 .det-order{background:#fff;border:1px solid #e8e8e6;border-radius:14px;
-  padding:16px 18px;display:flex;flex-direction:column;gap:12px;margin-top:16px}
+  padding:16px 18px;display:flex;flex-direction:column;gap:10px;margin-top:0}
 .det-order-head h3{font-family:var(--display);font-size:1.05rem;font-weight:700;
   color:#1c2722;margin:0 0 2px;letter-spacing:-.01em}
 .det-order-head p{font-size:.8rem;color:#7a857f;margin:0;line-height:1.4}
