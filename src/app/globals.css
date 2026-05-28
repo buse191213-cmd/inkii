@@ -3363,3 +3363,24 @@ body:has(.cookie-banner) .wa-fab{bottom:120px}
   .ds-product-btn{padding:10px 6px}
   .ds-product-icon{font-size:1.6rem}
 }
+
+/* === Designer: Foto-Mockup (gerçek fotoğraf + logo bindirme) === */
+.pm-stage{width:100%;height:100%;display:flex;align-items:center;justify-content:center;padding:24px}
+.pm-frame{position:relative;max-width:100%;max-height:100%;display:inline-block;
+  border-radius:10px;overflow:hidden;box-shadow:0 8px 30px rgba(0,0,0,.1)}
+.pm-product{display:block;max-width:100%;max-height:72vh;width:auto;height:auto;
+  user-select:none;-webkit-user-drag:none}
+/* Renk katmanı: beyaz ürünü renklendir (multiply ile dokuyu korur) */
+.pm-color-layer{position:absolute;inset:0;mix-blend-mode:multiply;pointer-events:none;
+  opacity:.82;transition:background-color .3s ease}
+/* Logo: ürüne basılmış gibi — multiply blend, hafif perspektif, yumuşak gölge */
+.pm-logo{position:absolute;transform:translate(-50%,-50%);pointer-events:none;z-index:3;
+  transition:width .25s ease,top .35s ease,left .35s ease}
+.pm-logo img{width:100%;height:auto;display:block;
+  mix-blend-mode:multiply;opacity:.93;
+  filter:drop-shadow(0 1px 2px rgba(0,0,0,.12));
+  transform:perspective(800px) rotateX(3deg)}
+
+@media(max-width:1024px){
+  .pm-product{max-height:52vh}
+}

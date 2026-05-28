@@ -15,6 +15,15 @@ const ProductViewer = dynamic(() => import("./ProductViewer"), {
   ),
 });
 
+import PhotoMockup from "./PhotoMockup";
+
+type ProductPhotos = {
+  tshirt: string | null;
+  hoodie: string | null;
+  cap: string | null;
+  tote: string | null;
+};
+
 type ProductKey = "tshirt" | "hoodie" | "cap" | "tote";
 
 const PRODUCTS: { key: ProductKey; label: string; sub: string; icon: string; code: string }[] = [
@@ -69,7 +78,7 @@ const STEP_LABELS: Record<ProcessStep, string> = {
   upscale: "Auflösung verbessern (2×)",
 };
 
-export default function DesignerClient() {
+export default function DesignerClient({ productPhotos }: { productPhotos: ProductPhotos }) {
   const { addOrUpdate } = useMerkliste();
   const [product, setProduct] = useState<ProductKey>("tshirt");
   const [originalUrl, setOriginalUrl] = useState<string | null>(null);
@@ -90,6 +99,12 @@ export default function DesignerClient() {
   const activeLogoUrl = showOriginal ? originalUrl : processedUrl;
   const positionKeys = POSITION_KEYS_PER_PRODUCT[product];
   const productInfo = PRODUCTS.find((p) => p.key === product)!;
+
+  // Bu ürün için admin foto yüklediyse → foto-mockup, yoksa → 3D model
+  const productPhoto = productPhotos[product];
+  const useMockup = !!productPhoto;
+  // Beyaz dışı renk seçilince renk katmanı uygula (foto-mockup'ta)
+  const colorNeedsOverlay = color.toLowerCase() !== "#ffffff";
 
   function switchProduct(key: ProductKey) {
     setProduct(key);
@@ -172,24 +187,41 @@ export default function DesignerClient() {
             background: `radial-gradient(circle at 50% 40%, ${color}22 0%, transparent 60%), linear-gradient(180deg, #f4f5f1 0%, #e8ebe6 100%)`,
           }}
         >
-          <ProductViewer
-            product={product}
-            color={color}
-            logoUrl={activeLogoUrl}
-            logoScale={logoScale}
-            positionKey={logoPos}
-            autoRotate={autoRotate}
-          />
+          {useMockup ? (
+            <PhotoMockup
+              photoUrl={productPhoto!}
+              logoUrl={activeLogoUrl}
+              logoScale={logoScale}
+              colorOverlay={color}
+              applyColor={colorNeedsOverlay}
+              posKey={logoPos}
+            />
+          ) : (
+            <ProductViewer
+              product={product}
+              color={color}
+              logoUrl={activeLogoUrl}
+              logoScale={logoScale}
+              positionKey={logoPos}
+              autoRotate={autoRotate}
+            />
+          )}
           <div className="ds-stage-hint">
-            <span>🖱️ Ziehen zum Drehen · Scrollen für Zoom</span>
+            <span>
+              {useMockup
+                ? "📸 Realistische Produktvorschau"
+                : "🖱️ Ziehen zum Drehen · Scrollen für Zoom"}
+            </span>
           </div>
-          <button
-            type="button"
-            className={`ds-rotate-btn ${autoRotate ? "active" : ""}`}
-            onClick={() => setAutoRotate((v) => !v)}
-          >
-            {autoRotate ? "⏸ Stop" : "▶ Auto-Rotation"}
-          </button>
+          {!useMockup && (
+            <button
+              type="button"
+              className={`ds-rotate-btn ${autoRotate ? "active" : ""}`}
+              onClick={() => setAutoRotate((v) => !v)}
+            >
+              {autoRotate ? "⏸ Stop" : "▶ Auto-Rotation"}
+            </button>
+          )}
         </div>
       </div>
 

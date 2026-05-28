@@ -17,6 +17,7 @@ export default function HomeImagesManager({
   const ls = HOME_SLOTS.filter((s) => s.group === "leistungen");
   const bz = HOME_SLOTS.filter((s) => s.group === "bereiche");
   const pg = HOME_SLOTS.filter((s) => s.group === "page");
+  const dz = HOME_SLOTS.filter((s) => s.group === "designer");
 
   return (
     <>
@@ -132,17 +133,18 @@ export default function HomeImagesManager({
 
       <div className="panel" style={{ marginTop: 18 }}>
         <div className="panel-head">
-          <h3>Weitere Seiten — Titelbilder</h3>
+          <h3>3D-Designer — Produktfotos</h3>
         </div>
         <div className="panel-body">
           <p className="hero-vid-state">
-            Große Hero-Bilder oben auf den Seiten <b>Textilveredelung</b> und{" "}
-            <b>Über Uns</b>. Empfohlen sind hochwertige Querformat-Fotos
-            (Werkstatt, Maschinen, Team). Ohne Bild wird ein dezenter
-            Verlauf-Hintergrund angezeigt.
+            Echte Produktfotos für den <b>3D-Designer</b>. Empfohlen: Foto von
+            vorne, <b>ohne Logo</b>, neutraler/heller Hintergrund, mittig. Das
+            hochgeladene Logo des Kunden wird realistisch darauf platziert. Ohne
+            Foto wird das 3D-Modell angezeigt. Beste Ergebnisse mit freigestelltem
+            oder weißem Hintergrund.
           </p>
           <div className="home-img-grid">
-            {pg.map((s) => (
+            {dz.map((s) => (
               <Slot key={s.slot} slot={s.slot} label={s.label} meta={s} current={images[s.slot] ?? null} />
             ))}
           </div>
