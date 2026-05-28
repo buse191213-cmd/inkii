@@ -4,7 +4,6 @@ import { useState, useRef } from "react";
 import dynamic from "next/dynamic";
 import Link from "next/link";
 import { useMerkliste } from "@/components/MerklisteProvider";
-import { processLogo } from "@/lib/logo-process";
 
 const ShirtViewer = dynamic(() => import("./ShirtViewer"), {
   ssr: false,
@@ -64,6 +63,8 @@ export default function DesignerClient() {
     setProcessing(true);
     setAdded(false);
     try {
+      // Dinamik import → SSR build'inde @imgly modülü çağrılmaz
+      const { processLogo } = await import("@/lib/logo-process");
       const { original, processed } = await processLogo(file, (step) => {
         setProcessStep(step);
       });
@@ -74,7 +75,6 @@ export default function DesignerClient() {
       setProcessError(
         "Optimierung fehlgeschlagen. Verwende Originalbild. (Sehr große Bilder bitte kleiner hochladen.)"
       );
-      // Fallback: Original ohne Verarbeitung benutzen
       try {
         const reader = new FileReader();
         reader.onload = () => {

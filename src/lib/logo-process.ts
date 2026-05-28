@@ -7,12 +7,9 @@
  *
  * Hinweise:
  *  - `@imgly/background-removal` lädt beim 1. Einsatz ein ~25 MB ONNX-Modell
- *    aus dem CDN und cached es im IndexedDB des Browsers. Spätere Aufrufe
- *    sind sofort verfügbar.
+ *    aus dem CDN und cached es im IndexedDB des Browsers.
  *  - Funktioniert komplett lokal — keine Daten verlassen den Browser.
  */
-
-import removeBackground from "@imgly/background-removal";
 
 export type ProcessProgress = (step: "load" | "remove-bg" | "upscale", current: number, total: number) => void;
 
@@ -96,9 +93,10 @@ export async function processLogo(
   const original = await blobToDataUrl(file);
 
   onProgress("remove-bg", 2, 3);
+  // Dynamischer Import — @imgly + onnxruntime werden nur clientseitig geladen
+  const removeBackground = (await import("@imgly/background-removal")).default;
   const transparentBlob = await removeBackground(file, {
     output: { format: "image/png" },
-    model: "isnet_fp16",
   });
   const transparentUrl = await blobToDataUrl(transparentBlob);
 

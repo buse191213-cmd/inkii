@@ -6,15 +6,20 @@ const __dirname = path.dirname(fileURLToPath(import.meta.url));
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   reactStrictMode: true,
-  // Korrigiert die Workspace-Root-Erkennung (mehrere lockfiles).
   outputFileTracingRoot: __dirname,
   experimental: {
-    // Produkt-/Startseiten-Bilder laufen über Server Actions.
-    // Große Dateien (Hero-Video) gehen per direktem Blob-Upload (/api/upload),
-    // daher reicht hier ein moderates Limit.
     serverActions: {
       bodySizeLimit: "6mb",
     },
+  },
+  // onnxruntime-web ist ein reines Browser-Paket (WASM/WebGPU).
+  // Webpack soll es serverseitig NICHT bundeln — sonst Build-Fehler.
+  webpack: (config, { isServer }) => {
+    if (isServer) {
+      config.externals = config.externals || [];
+      config.externals.push("onnxruntime-web", "@imgly/background-removal");
+    }
+    return config;
   },
 };
 
