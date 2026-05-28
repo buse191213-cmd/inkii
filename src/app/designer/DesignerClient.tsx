@@ -49,10 +49,8 @@ export default function DesignerClient() {
   const [processing, setProcessing] = useState<boolean>(false);
   const [processStep, setProcessStep] = useState<ProcessStep | null>(null);
   const [processError, setProcessError] = useState<string | null>(null);
-  // Logo Position: %-Werte vom Canvas
-  const [logoPos, setLogoPos] = useState<{ top: number; left: number; key: string }>({
-    top: 48, left: 50, key: "brust-mitte",
-  });
+  // Logo Position für 3D-Decal (Schlüssel → 3D-Koordinaten in ShirtViewer)
+  const [logoPos, setLogoPos] = useState<string>("brust-mitte");
   const fileRef = useRef<HTMLInputElement>(null);
 
   // Aktiv genutzte Logo-URL (Original oder optimiert)
@@ -119,7 +117,7 @@ export default function DesignerClient() {
       "brust-mitte": "Brust Mitte",
       "brust-rechts": "Brust rechts",
       "bauch": "Bauch",
-    }[logoPos.key] || "Brust Mitte";
+    }[logoPos] || "Brust Mitte";
     const noteParts: string[] = [];
     if (activeLogoUrl) noteParts.push(`Logo: ${logoName}`);
     noteParts.push(`Position: ${posLabel}`);
@@ -147,22 +145,13 @@ export default function DesignerClient() {
             background: `radial-gradient(circle at 50% 40%, ${color}22 0%, transparent 60%), linear-gradient(180deg, #f4f5f1 0%, #e8ebe6 100%)`,
           }}
         >
-          <ShirtViewer color={color} autoRotate={autoRotate} />
-
-          {activeLogoUrl && !processing && (
-            <div
-              className="ds-logo-overlay"
-              style={{
-                width: `${Math.round(logoScale * 600)}px`,
-                maxWidth: "30%",
-                top: `${logoPos.top}%`,
-                left: `${logoPos.left}%`,
-              }}
-            >
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img src={activeLogoUrl} alt="Ihr Logo" />
-            </div>
-          )}
+          <ShirtViewer
+            color={color}
+            logoUrl={activeLogoUrl}
+            logoScale={logoScale}
+            positionKey={logoPos}
+            autoRotate={autoRotate}
+          />
 
           <div className="ds-stage-hint">
             <span>🖱️ Ziehen zum Drehen · Scrollen für Zoom</span>
@@ -330,16 +319,16 @@ export default function DesignerClient() {
             </div>
             <div className="ds-positions">
               {[
-                { key: "brust-links", label: "Brust links", icon: "↖", top: 38, left: 38 },
-                { key: "brust-mitte", label: "Brust Mitte", icon: "●", top: 48, left: 50 },
-                { key: "brust-rechts", label: "Brust rechts", icon: "↗", top: 38, left: 62 },
-                { key: "bauch", label: "Bauch", icon: "↓", top: 62, left: 50 },
+                { key: "brust-links", label: "Brust links", icon: "↖" },
+                { key: "brust-mitte", label: "Brust Mitte", icon: "●" },
+                { key: "brust-rechts", label: "Brust rechts", icon: "↗" },
+                { key: "bauch", label: "Bauch", icon: "↓" },
               ].map((p) => (
                 <button
                   key={p.key}
                   type="button"
-                  className={`ds-pos-btn ${logoPos.key === p.key ? "active" : ""}`}
-                  onClick={() => setLogoPos({ top: p.top, left: p.left, key: p.key })}
+                  className={`ds-pos-btn ${logoPos === p.key ? "active" : ""}`}
+                  onClick={() => setLogoPos(p.key)}
                 >
                   <span className="ds-pos-icon">{p.icon}</span>
                   <span>{p.label}</span>
@@ -347,7 +336,7 @@ export default function DesignerClient() {
               ))}
             </div>
             <p className="ds-pos-hint">
-              💡 Tipp: Modell drehen für Rückseite — Logo bleibt zur besseren Sichtbarkeit auf der Vorderseite.
+              💡 Logo bleibt mit dem T-Shirt verbunden — drehen Sie das Modell, um es von allen Seiten zu sehen.
             </p>
           </div>
         )}
