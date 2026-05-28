@@ -3342,3 +3342,24 @@ body:has(.cookie-banner) .wa-fab{bottom:120px}
 .ds-logo-overlay{position:absolute;transform:translate(-50%,-50%);
   pointer-events:none;z-index:5;transition:width .25s ease,top .35s ease,left .35s ease;
   filter:drop-shadow(0 2px 8px rgba(0,0,0,.15))}
+
+/* === Designer: Product Picker (4 ürün seçici) === */
+.ds-products{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}
+.ds-product-btn{display:flex;flex-direction:column;align-items:center;gap:4px;
+  padding:14px 10px;border:2px solid #e3e6df;background:#fff;border-radius:10px;
+  cursor:pointer;transition:all .2s;text-align:center}
+.ds-product-btn:hover{border-color:#d9a878;transform:translateY(-2px);
+  box-shadow:0 4px 12px rgba(0,0,0,.05)}
+.ds-product-btn.active{border-color:#1c2722;background:#1c2722;color:#fff;
+  box-shadow:0 4px 14px rgba(28,39,34,.18)}
+.ds-product-icon{font-size:2rem;line-height:1;margin-bottom:2px;filter:grayscale(0)}
+.ds-product-btn.active .ds-product-icon{filter:none}
+.ds-product-label{font-size:.92rem;font-weight:700;color:inherit}
+.ds-product-btn small{font-size:.7rem;color:#9ea7a2;letter-spacing:.04em}
+.ds-product-btn.active small{color:#d9a878}
+
+@media(max-width:600px){
+  .ds-products{grid-template-columns:repeat(2,1fr);gap:8px}
+  .ds-product-btn{padding:10px 6px}
+  .ds-product-icon{font-size:1.6rem}
+}
