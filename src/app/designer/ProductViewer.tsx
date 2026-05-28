@@ -107,9 +107,34 @@ function HoodieModel({ color, logoTex, logoScale, posKey }: any) {
     return list;
   }, [nodes]);
   const pos = POSITIONS.hoodie[posKey] || POSITIONS.hoodie["brust-mitte"];
+
+  // Kapüşon: LatheGeometry ile gerçek kapüşon profili (arkaya yatık oval)
+  const hoodGeo = useMemo(() => {
+    const pts: THREE.Vector2[] = [];
+    const segs = 16;
+    for (let i = 0; i <= segs; i++) {
+      const t = i / segs;
+      const angle = t * Math.PI * 0.95;
+      const r = 0.2 * Math.sin(angle) + 0.001;
+      const y = 0.24 * Math.cos(angle);
+      pts.push(new THREE.Vector2(Math.max(r, 0.001), y));
+    }
+    return new THREE.LatheGeometry(pts, 40);
+  }, []);
+
+  // Drawstring (ip): iki ince tüp
+  const stringGeo = useMemo(() => {
+    const curve = new THREE.CatmullRomCurve3([
+      new THREE.Vector3(-0.04, 0.08, 0.16),
+      new THREE.Vector3(-0.045, -0.05, 0.17),
+      new THREE.Vector3(-0.05, -0.14, 0.16),
+    ]);
+    return new THREE.TubeGeometry(curve, 20, 0.006, 6, false);
+  }, []);
+
   return (
     <group scale={1.7}>
-      {/* Gövde: T-Shirt geometry (biraz daha geniş) */}
+      {/* Gövde: T-Shirt geometry */}
       {meshes.map((m, i) => (
         <mesh key={m.uuid + i} geometry={m.geometry} position={m.position} rotation={m.rotation}
           scale={m.scale} castShadow receiveShadow>
@@ -120,20 +145,25 @@ function HoodieModel({ color, logoTex, logoScale, posKey }: any) {
           )}
         </mesh>
       ))}
-      {/* Kapüşon: yarım sphere arkada üst */}
-      <mesh position={[0, 0.4, -0.05]} castShadow>
-        <sphereGeometry args={[0.22, 32, 16, 0, Math.PI * 2, 0, Math.PI / 1.7]} />
+      {/* Kapüşon: yatık oval, boyna oturur */}
+      <mesh geometry={hoodGeo} position={[0, 0.28, -0.04]} rotation={[-0.35, 0, 0]} castShadow>
         {fabricMat(color)}
         {logoTex && posKey === "kapuze" && (
-          <Decal position={[0, 0.05, 0.18]} rotation={[0, 0, 0]} scale={logoScale * 0.8}
+          <Decal position={[0, 0.08, 0.16]} rotation={[0, 0, 0]} scale={logoScale * 0.7}
             map={logoTex} polygonOffsetFactor={-10} />
         )}
       </mesh>
-      {/* Kanguru cebi: hafif kavisli plane (alt göğüs) */}
-      <mesh position={[0, -0.15, 0.16]} rotation={[Math.PI * 0.05, 0, 0]} castShadow>
-        <planeGeometry args={[0.42, 0.18]} />
-        <meshStandardMaterial color={color} roughness={0.97} metalness={0} side={THREE.DoubleSide}
-          transparent opacity={0.95} />
+      {/* Kanguru cebi: alt göğüste hafif kavisli, belirgin dikiş */}
+      <mesh position={[0, -0.14, 0.165]} rotation={[Math.PI * 0.04, 0, 0]} castShadow>
+        <boxGeometry args={[0.4, 0.16, 0.025]} />
+        <meshStandardMaterial color={color} roughness={0.97} metalness={0} side={THREE.DoubleSide} />
+      </mesh>
+      {/* Drawstring ipler */}
+      <mesh geometry={stringGeo} castShadow>
+        <meshStandardMaterial color="#ffffff" roughness={0.7} />
+      </mesh>
+      <mesh geometry={stringGeo} scale={[-1, 1, 1]} castShadow>
+        <meshStandardMaterial color="#ffffff" roughness={0.7} />
       </mesh>
     </group>
   );
@@ -141,36 +171,52 @@ function HoodieModel({ color, logoTex, logoScale, posKey }: any) {
 
 /* ===================== CAP ===================== */
 function CapModel({ color, logoTex, logoScale }: any) {
+  // Crown: LatheGeometry ile gerçek beyzbol şapkası profili (6-panel kavis)
+  const crownGeo = useMemo(() => {
+    const pts: THREE.Vector2[] = [];
+    const segs = 20;
+    for (let i = 0; i <= segs; i++) {
+      const t = i / segs;
+      // Hafif basık kubbe — gerçek cap silüeti
+      const angle = t * Math.PI * 0.5;
+      const r = 0.26 * Math.sin(angle) * (1 - 0.12 * Math.sin(angle)) + 0.001;
+      const y = 0.2 * Math.cos(angle);
+      pts.push(new THREE.Vector2(Math.max(r, 0.001), y));
+    }
+    return new THREE.LatheGeometry(pts, 48);
+  }, []);
+
+  // Visor: ExtrudeGeometry ile kavisli yarım-ay siperlik
+  const visorGeo = useMemo(() => {
+    const shape = new THREE.Shape();
+    const rOuter = 0.34, rInner = 0.24;
+    shape.absarc(0, 0, rOuter, Math.PI * 1.18, Math.PI * 1.82, false);
+    shape.absarc(0, -0.02, rInner, Math.PI * 1.82, Math.PI * 1.18, true);
+    const geo = new THREE.ExtrudeGeometry(shape, {
+      depth: 0.012, bevelEnabled: true, bevelThickness: 0.004, bevelSize: 0.004, bevelSegments: 2,
+    });
+    geo.center();
+    return geo;
+  }, []);
+
   return (
-    <group scale={2.5} position={[0, -0.05, 0]}>
-      {/* Crown - yarım küre */}
-      <mesh position={[0, 0.05, 0]} castShadow>
-        <sphereGeometry args={[0.25, 48, 32, 0, Math.PI * 2, 0, Math.PI / 2]} />
+    <group scale={2.4} position={[0, -0.08, 0]}>
+      {/* Crown */}
+      <mesh geometry={crownGeo} position={[0, 0.02, 0]} castShadow>
         {fabricMat(color)}
         {logoTex && (
-          <Decal
-            position={[0, 0.05, 0.245]}
-            rotation={[0, 0, 0]}
-            scale={logoScale * 0.6}
-            map={logoTex}
-            polygonOffsetFactor={-10}
-          />
+          <Decal position={[0, 0.08, 0.25]} rotation={[0, 0, 0]} scale={logoScale * 0.5}
+            map={logoTex} polygonOffsetFactor={-10} />
         )}
       </mesh>
-      {/* Yatay bant - cylinder alt çevre */}
-      <mesh position={[0, 0.045, 0]} castShadow>
-        <cylinderGeometry args={[0.251, 0.251, 0.02, 48, 1, true]} />
-        <meshStandardMaterial color={color} roughness={0.95} metalness={0} side={THREE.DoubleSide} />
+      {/* Visor (siperlik) — öne ve hafif aşağı eğik */}
+      <mesh geometry={visorGeo} position={[0, 0.0, 0.22]} rotation={[Math.PI * 0.52, 0, 0]} castShadow>
+        <meshStandardMaterial color={color} roughness={0.65} metalness={0.02} side={THREE.DoubleSide} />
       </mesh>
-      {/* Visor - öne eğik düz plate */}
-      <mesh position={[0, 0.04, 0.28]} rotation={[Math.PI / 6, 0, 0]} castShadow>
-        <cylinderGeometry args={[0.27, 0.32, 0.015, 48, 1, false, Math.PI * 1.05, Math.PI * 0.9]} />
-        <meshStandardMaterial color={color} roughness={0.6} metalness={0.05} side={THREE.DoubleSide} />
-      </mesh>
-      {/* Düğme - üstte küçük noktaba */}
-      <mesh position={[0, 0.295, 0]} castShadow>
-        <sphereGeometry args={[0.012, 16, 8]} />
-        <meshStandardMaterial color={color} roughness={0.4} metalness={0.1} />
+      {/* Üst düğme */}
+      <mesh position={[0, 0.205, 0]} castShadow>
+        <sphereGeometry args={[0.013, 16, 12]} />
+        {fabricMat(color)}
       </mesh>
     </group>
   );
@@ -179,26 +225,56 @@ function CapModel({ color, logoTex, logoScale }: any) {
 /* ===================== TOTE BAG ===================== */
 function ToteBagModel({ color, logoTex, logoScale, posKey }: any) {
   const pos = POSITIONS.tote[posKey] || POSITIONS.tote["mitte"];
+
+  // Gövde: yuvarlatılmış köşeli kumaş çanta (ExtrudeGeometry)
+  const bodyGeo = useMemo(() => {
+    const shape = new THREE.Shape();
+    const w = 0.26, h = 0.3, r = 0.025;
+    shape.moveTo(-w + r, -h);
+    shape.lineTo(w - r, -h);
+    shape.quadraticCurveTo(w, -h, w, -h + r);
+    shape.lineTo(w, h - r);
+    shape.quadraticCurveTo(w, h, w - r, h);
+    shape.lineTo(-w + r, h);
+    shape.quadraticCurveTo(-w, h, -w, h - r);
+    shape.lineTo(-w, -h + r);
+    shape.quadraticCurveTo(-w, -h, -w + r, -h);
+    const geo = new THREE.ExtrudeGeometry(shape, {
+      depth: 0.05, bevelEnabled: true, bevelThickness: 0.012, bevelSize: 0.012, bevelSegments: 3,
+    });
+    geo.center();
+    return geo;
+  }, []);
+
+  // Kulplar: TubeGeometry ile doğal eğrisel sap
+  const handleGeo = useMemo(() => {
+    const curve = new THREE.CatmullRomCurve3([
+      new THREE.Vector3(-0.13, 0.28, 0.0),
+      new THREE.Vector3(-0.12, 0.46, -0.01),
+      new THREE.Vector3(0.12, 0.46, -0.01),
+      new THREE.Vector3(0.13, 0.28, 0.0),
+    ]);
+    return new THREE.TubeGeometry(curve, 40, 0.011, 10, false);
+  }, []);
+
   return (
-    <group scale={1.4} position={[0, -0.05, 0]}>
-      {/* Gövde: hafif bombe box (rounded) */}
-      <mesh position={[0, 0, 0]} castShadow receiveShadow>
-        <boxGeometry args={[0.55, 0.6, 0.08]} />
+    <group scale={1.5} position={[0, -0.05, 0]}>
+      {/* Gövde */}
+      <mesh geometry={bodyGeo} castShadow receiveShadow>
         {fabricMat(color)}
         {logoTex && (
-          <Decal position={pos} rotation={[0, 0, 0]} scale={logoScale * 1.5}
+          <Decal position={pos} rotation={[0, 0, 0]} scale={logoScale * 1.4}
             map={logoTex} polygonOffsetFactor={-10} />
         )}
       </mesh>
-      {/* Sol kulp */}
-      <mesh position={[-0.15, 0.42, 0]} rotation={[Math.PI / 2, 0, 0]} castShadow>
-        <torusGeometry args={[0.12, 0.012, 12, 32, Math.PI]} />
-        <meshStandardMaterial color={color} roughness={0.85} metalness={0} />
+      {/* Üst kenar dikişi (koyu band) */}
+      <mesh position={[0, 0.3, 0]} castShadow>
+        <boxGeometry args={[0.52, 0.02, 0.07]} />
+        <meshStandardMaterial color={color} roughness={0.8} metalness={0} />
       </mesh>
-      {/* Sağ kulp */}
-      <mesh position={[0.15, 0.42, 0]} rotation={[Math.PI / 2, 0, 0]} castShadow>
-        <torusGeometry args={[0.12, 0.012, 12, 32, Math.PI]} />
-        <meshStandardMaterial color={color} roughness={0.85} metalness={0} />
+      {/* Kulplar */}
+      <mesh geometry={handleGeo} castShadow>
+        <meshStandardMaterial color={color} roughness={0.8} metalness={0} side={THREE.DoubleSide} />
       </mesh>
     </group>
   );
