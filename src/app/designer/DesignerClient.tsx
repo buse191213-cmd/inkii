@@ -161,7 +161,56 @@ export default function DesignerClient({ productPhotos }: { productPhotos: Produ
     setColor(hex); setColorName(name); setAdded(false);
   }
 
-  function handleAddToMerkliste() {
+  // Foto-Mockup als ein Bild zusammenfügen (Produkt + Farbe + Logo)
+  async function captureMockup(): Promise<string | null> {
+    if (!useMockup || !productPhoto) return activeLogoUrl;
+    try {
+      const loadImg = (src: string): Promise<HTMLImageElement> =>
+        new Promise((res, rej) => {
+          const i = new Image();
+          i.crossOrigin = "anonymous";
+          i.onload = () => res(i);
+          i.onerror = rej;
+          i.src = src;
+        });
+      const product = await loadImg(productPhoto);
+      const canvas = document.createElement("canvas");
+      canvas.width = product.naturalWidth || 1000;
+      canvas.height = product.naturalHeight || 1200;
+      const ctx = canvas.getContext("2d");
+      if (!ctx) return activeLogoUrl;
+
+      // 1) Ürün fotoğrafı
+      ctx.drawImage(product, 0, 0, canvas.width, canvas.height);
+
+      // 2) Renk katmanı (multiply)
+      if (colorNeedsOverlay) {
+        ctx.globalCompositeOperation = "multiply";
+        ctx.fillStyle = color;
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+        ctx.globalCompositeOperation = "source-over";
+      }
+
+      // 3) Logo (doğru pozisyon + boyut, multiply blend)
+      if (activeLogoUrl) {
+        const logo = await loadImg(activeLogoUrl);
+        const lw = canvas.width * logoScale;
+        const lh = lw * (logo.naturalHeight / Math.max(1, logo.naturalWidth));
+        const cx = (canvas.width * logoX) / 100;
+        const cy = (canvas.height * logoY) / 100;
+        ctx.globalCompositeOperation = "multiply";
+        ctx.drawImage(logo, cx - lw / 2, cy - lh / 2, lw, lh);
+        ctx.globalCompositeOperation = "source-over";
+      }
+
+      return canvas.toDataURL("image/png");
+    } catch (e) {
+      console.error("[designer] Mockup-Aufnahme fehlgeschlagen:", e);
+      return activeLogoUrl; // Fallback: nur Logo
+    }
+  }
+
+  async function handleAddToMerkliste() {
     const id = `designer-${product}-${Date.now()}`;
     const posLabel = useMockup
       ? `X:${logoX}% Y:${logoY}%`
@@ -170,12 +219,16 @@ export default function DesignerClient({ productPhotos }: { productPhotos: Produ
     if (activeLogoUrl) noteParts.push(`Logo: ${logoName}`);
     noteParts.push(`Position: ${posLabel}`);
     noteParts.push(`Größe: ${Math.round(logoScale * 100)}%`);
+
+    // Tam tasarım görüntüsünü yakala (foto-modda ürün+renk+logo birleşik)
+    const designImage = await captureMockup();
+
     addOrUpdate({
       id,
       code: productInfo.code,
       name: `Individueller ${productInfo.label} (Designer)`,
       qty: 1,
-      image: activeLogoUrl ?? null,
+      image: designImage ?? activeLogoUrl ?? null,
       color,
       colorLabel: colorName,
       note: noteParts.join(" · "),
@@ -431,7 +484,7 @@ export default function DesignerClient({ productPhotos }: { productPhotos: Produ
           ) : (
             <>
               <button type="button" className="btn-primary ds-cta"
-                onClick={handleAddToMerkliste} disabled={processing}>
+                onClick={() => void handleAddToMerkliste()} disabled={processing}>
                 Auf Merkzettel hinzufügen
               </button>
               <p className="ds-cta-note">
