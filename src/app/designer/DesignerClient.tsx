@@ -49,6 +49,10 @@ export default function DesignerClient() {
   const [processing, setProcessing] = useState<boolean>(false);
   const [processStep, setProcessStep] = useState<ProcessStep | null>(null);
   const [processError, setProcessError] = useState<string | null>(null);
+  // Logo Position: %-Werte vom Canvas
+  const [logoPos, setLogoPos] = useState<{ top: number; left: number; key: string }>({
+    top: 48, left: 50, key: "brust-mitte",
+  });
   const fileRef = useRef<HTMLInputElement>(null);
 
   // Aktiv genutzte Logo-URL (Original oder optimiert)
@@ -110,6 +114,16 @@ export default function DesignerClient() {
 
   function handleAddToMerkliste() {
     const id = `designer-tshirt-${Date.now()}`;
+    const posLabel = {
+      "brust-links": "Brust links",
+      "brust-mitte": "Brust Mitte",
+      "brust-rechts": "Brust rechts",
+      "bauch": "Bauch",
+    }[logoPos.key] || "Brust Mitte";
+    const noteParts: string[] = [];
+    if (activeLogoUrl) noteParts.push(`Logo: ${logoName}`);
+    noteParts.push(`Position: ${posLabel}`);
+    noteParts.push(`Größe: ${Math.round(logoScale * 100)}%`);
     addOrUpdate({
       id,
       code: "DESIGN-TS",
@@ -118,7 +132,7 @@ export default function DesignerClient() {
       image: activeLogoUrl ?? null,
       color,
       colorLabel: colorName,
-      note: activeLogoUrl ? `Mit eigenem Design (${logoName})` : "Ohne Design – nur Farbe",
+      note: noteParts.join(" · "),
     });
     setAdded(true);
   }
@@ -138,7 +152,12 @@ export default function DesignerClient() {
           {activeLogoUrl && !processing && (
             <div
               className="ds-logo-overlay"
-              style={{ width: `${Math.round(logoScale * 600)}px`, maxWidth: "30%" }}
+              style={{
+                width: `${Math.round(logoScale * 600)}px`,
+                maxWidth: "30%",
+                top: `${logoPos.top}%`,
+                left: `${logoPos.left}%`,
+              }}
             >
               {/* eslint-disable-next-line @next/next/no-img-element */}
               <img src={activeLogoUrl} alt="Ihr Logo" />
@@ -298,6 +317,38 @@ export default function DesignerClient() {
               <small>Klein</small>
               <small>Groß</small>
             </div>
+          </div>
+        )}
+
+        {/* Logo Position */}
+        {activeLogoUrl && (
+          <div className="ds-section">
+            <div className="ds-section-head">
+              <span className="ds-step">04</span>
+              <h3>Position</h3>
+              <span className="ds-section-sub">Wo möchten Sie das Logo?</span>
+            </div>
+            <div className="ds-positions">
+              {[
+                { key: "brust-links", label: "Brust links", icon: "↖", top: 38, left: 38 },
+                { key: "brust-mitte", label: "Brust Mitte", icon: "●", top: 48, left: 50 },
+                { key: "brust-rechts", label: "Brust rechts", icon: "↗", top: 38, left: 62 },
+                { key: "bauch", label: "Bauch", icon: "↓", top: 62, left: 50 },
+              ].map((p) => (
+                <button
+                  key={p.key}
+                  type="button"
+                  className={`ds-pos-btn ${logoPos.key === p.key ? "active" : ""}`}
+                  onClick={() => setLogoPos({ top: p.top, left: p.left, key: p.key })}
+                >
+                  <span className="ds-pos-icon">{p.icon}</span>
+                  <span>{p.label}</span>
+                </button>
+              ))}
+            </div>
+            <p className="ds-pos-hint">
+              💡 Tipp: Modell drehen für Rückseite — Logo bleibt zur besseren Sichtbarkeit auf der Vorderseite.
+            </p>
           </div>
         )}
 

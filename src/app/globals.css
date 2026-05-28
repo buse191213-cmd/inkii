@@ -3323,3 +3323,22 @@ body:has(.cookie-banner) .wa-fab{bottom:120px}
   border-radius:6px;padding:7px 14px;font-size:.78rem;color:#1c2722;cursor:pointer;
   width:100%;transition:all .2s;font-weight:500}
 .ds-toggle-orig:hover{background:#fafbf9;border-color:#1c2722}
+
+/* === Designer: Logo Position Presets === */
+.ds-positions{display:grid;grid-template-columns:repeat(2,1fr);gap:8px}
+.ds-pos-btn{display:flex;align-items:center;gap:10px;padding:11px 14px;border:1px solid #e3e6df;
+  background:#fff;border-radius:8px;cursor:pointer;font-size:.86rem;color:#1c2722;
+  transition:all .15s;font-weight:500;text-align:left}
+.ds-pos-btn:hover{border-color:#1c2722;background:#fafbf9;transform:translateY(-1px)}
+.ds-pos-btn.active{border-color:#1c2722;background:#1c2722;color:#fff}
+.ds-pos-btn.active .ds-pos-icon{color:#d9a878}
+.ds-pos-icon{display:inline-grid;place-items:center;width:22px;height:22px;border-radius:50%;
+  background:#f1f4ef;font-size:.86rem;font-weight:800;color:#1c2722;flex-shrink:0}
+.ds-pos-btn.active .ds-pos-icon{background:rgba(255,255,255,.12)}
+.ds-pos-hint{margin:10px 0 0 0;font-size:.78rem;color:#7a857f;line-height:1.5;
+  padding:8px 12px;background:#fafbf9;border-left:3px solid #d9a878;border-radius:0 6px 6px 0}
+
+/* Position artık dinamik — eski sabit kaldırıldı */
+.ds-logo-overlay{position:absolute;transform:translate(-50%,-50%);
+  pointer-events:none;z-index:5;transition:width .25s ease,top .35s ease,left .35s ease;
+  filter:drop-shadow(0 2px 8px rgba(0,0,0,.15))}
