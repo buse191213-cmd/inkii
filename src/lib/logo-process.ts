@@ -34,22 +34,13 @@ function loadImage(src: string): Promise<HTMLImageElement> {
   });
 }
 
-/** Hochwertiges 2× Upscale via createImageBitmap (Lanczos-ähnlich) + adaptive Schärfung. */
-async function upscaleAndSharpen(dataUrl: string, scale = 2): Promise<string> {
-  const img = await loadImage(dataUrl);
-  const srcW = img.naturalWidth;
-  const srcH = img.naturalHeight;
-  const w = srcW * scale;
-  const h = srcH * scale;
-
+/** Ein einzelner hochwertiger Resize-Schritt (createImageBitmap, Lanczos-ähnlich). */
+async function resizeStep(dataUrl: string, w: number, h: number): Promise<string> {
   const canvas = document.createElement("canvas");
   canvas.width = w;
   canvas.height = h;
   const ctx = canvas.getContext("2d");
   if (!ctx) throw new Error("Canvas nicht verfügbar.");
-
-  // 1) Hochwertiges Resampling: createImageBitmap mit resizeQuality 'high'
-  //    liefert deutlich schärfere Kanten als ctx.drawImage (Lanczos-ähnlich).
   let drawn = false;
   try {
     const resp = await fetch(dataUrl);
@@ -63,23 +54,59 @@ async function upscaleAndSharpen(dataUrl: string, scale = 2): Promise<string> {
     bitmap.close?.();
     drawn = true;
   } catch {
-    // Fallback: klassisches drawImage
+    /* fallback unten */
   }
   if (!drawn) {
+    const img = await loadImage(dataUrl);
     ctx.imageSmoothingQuality = "high";
     ctx.imageSmoothingEnabled = true;
     ctx.drawImage(img, 0, 0, w, h);
   }
-
-  // 2) Adaptive Schärfung — kenarları belirginleştir, gürültüyü artırma
-  try {
-    const id = ctx.getImageData(0, 0, w, h);
-    const out = sharpen(id, 0.5);
-    ctx.putImageData(out, 0, 0);
-  } catch {
-    // ImageData kann bei sehr großen Bildern fehlschlagen — dann nur Upscale
-  }
   return canvas.toDataURL("image/png");
+}
+
+/**
+ * Progressive Hochskalierung auf eine Zielauflösung.
+ * Statt in einem Schritt zu vergrößern, gehen wir in ~1.6×-Stufen vor —
+ * das hält die Kanten deutlich schärfer (Lanczos-Kette). Zielbreite mind.
+ * 1200px, damit kleine remove.bg-Vorschauen druckfähig werden.
+ */
+async function upscaleAndSharpen(dataUrl: string, _scale = 2): Promise<string> {
+  const img = await loadImage(dataUrl);
+  let curW = img.naturalWidth;
+  let curH = img.naturalHeight;
+  let current = dataUrl;
+
+  // Ziel: längere Kante auf mind. 1400px bringen (aber nicht über 4× Original)
+  const longSide = Math.max(curW, curH);
+  const targetLong = Math.min(Math.max(1400, longSide * 2), longSide * 4);
+
+  // Schrittweise vergrößern (~1.6× pro Schritt)
+  while (Math.max(curW, curH) < targetLong) {
+    const factor = Math.min(1.6, targetLong / Math.max(curW, curH));
+    curW = Math.round(curW * factor);
+    curH = Math.round(curH * factor);
+    current = await resizeStep(current, curW, curH);
+  }
+
+  // Abschließende adaptive Schärfung
+  try {
+    const finalImg = await loadImage(current);
+    const canvas = document.createElement("canvas");
+    canvas.width = finalImg.naturalWidth;
+    canvas.height = finalImg.naturalHeight;
+    const ctx = canvas.getContext("2d");
+    if (ctx) {
+      ctx.drawImage(finalImg, 0, 0);
+      const id = ctx.getImageData(0, 0, canvas.width, canvas.height);
+      const out = sharpen(id, 0.6);
+      ctx.putImageData(out, 0, 0);
+      return canvas.toDataURL("image/png");
+    }
+  } catch {
+    /* Schärfung optional */
+  }
+  return current;
 }
 
 /**
