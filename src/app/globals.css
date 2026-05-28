@@ -3384,3 +3384,7 @@ body:has(.cookie-banner) .wa-fab{bottom:120px}
 @media(max-width:1024px){
   .pm-product{max-height:52vh}
 }
+
+/* === Designer: Foto-Modus Pozisyon Slider === */
+.ds-pos-slider-label{display:flex;flex-direction:column;gap:5px;margin-bottom:8px}
+.ds-pos-slider-label > span{font-size:.82rem;color:#5a6660;font-weight:600}

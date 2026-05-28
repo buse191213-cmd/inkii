@@ -94,6 +94,9 @@ export default function DesignerClient({ productPhotos }: { productPhotos: Produ
   const [processStep, setProcessStep] = useState<ProcessStep | null>(null);
   const [processError, setProcessError] = useState<string | null>(null);
   const [logoPos, setLogoPos] = useState<string>("brust-mitte");
+  // Foto-Mockup: freie Logo-Position in % (Standard mittig)
+  const [logoX, setLogoX] = useState<number>(50);
+  const [logoY, setLogoY] = useState<number>(45);
   const fileRef = useRef<HTMLInputElement>(null);
 
   const activeLogoUrl = showOriginal ? originalUrl : processedUrl;
@@ -160,7 +163,9 @@ export default function DesignerClient({ productPhotos }: { productPhotos: Produ
 
   function handleAddToMerkliste() {
     const id = `designer-${product}-${Date.now()}`;
-    const posLabel = POSITION_LABELS[logoPos]?.label || logoPos;
+    const posLabel = useMockup
+      ? `X:${logoX}% Y:${logoY}%`
+      : (POSITION_LABELS[logoPos]?.label || logoPos);
     const noteParts: string[] = [];
     if (activeLogoUrl) noteParts.push(`Logo: ${logoName}`);
     noteParts.push(`Position: ${posLabel}`);
@@ -194,7 +199,8 @@ export default function DesignerClient({ productPhotos }: { productPhotos: Produ
               logoScale={logoScale}
               colorOverlay={color}
               applyColor={colorNeedsOverlay}
-              posKey={logoPos}
+              posX={logoX}
+              posY={logoY}
             />
           ) : (
             <ProductViewer
@@ -361,8 +367,31 @@ export default function DesignerClient({ productPhotos }: { productPhotos: Produ
           </div>
         )}
 
-        {/* Position (nur wenn mehrere Optionen) */}
-        {activeLogoUrl && positionKeys.length > 1 && (
+        {/* Position — Foto-Modus: freie X/Y-Slider, 3D-Modus: Presets */}
+        {activeLogoUrl && useMockup && (
+          <div className="ds-section">
+            <div className="ds-section-head">
+              <span className="ds-step">05</span>
+              <h3>Position</h3>
+              <span className="ds-section-sub">Logo frei platzieren</span>
+            </div>
+            <label className="ds-pos-slider-label">
+              <span>↔ Horizontal</span>
+              <input type="range" min={10} max={90} step={1} value={logoX}
+                onChange={(e) => setLogoX(Number(e.target.value))} className="ds-slider" />
+            </label>
+            <label className="ds-pos-slider-label">
+              <span>↕ Vertikal</span>
+              <input type="range" min={10} max={90} step={1} value={logoY}
+                onChange={(e) => setLogoY(Number(e.target.value))} className="ds-slider" />
+            </label>
+            <p className="ds-pos-hint">
+              💡 Schieben Sie das Logo an die gewünschte Stelle auf dem Produkt.
+            </p>
+          </div>
+        )}
+
+        {activeLogoUrl && !useMockup && positionKeys.length > 1 && (
           <div className="ds-section">
             <div className="ds-section-head">
               <span className="ds-step">05</span>

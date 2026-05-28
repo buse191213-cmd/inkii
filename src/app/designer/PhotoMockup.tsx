@@ -12,19 +12,8 @@ type Props = {
   logoScale: number;       // 0.05 – 0.35 (Anteil der Foto-Breite)
   colorOverlay: string;    // Stofffarbe als multiply-Layer
   applyColor: boolean;     // Farbüberlagerung an/aus
-  posKey: string;          // Logo-Position
-};
-
-// Pozisyon: foto içinde % konum (her ürün için designer'da ayarlanır)
-const POSITION_STYLES: Record<string, { top: string; left: string }> = {
-  "brust-mitte": { top: "42%", left: "50%" },
-  "brust-links": { top: "38%", left: "40%" },
-  "brust-rechts": { top: "38%", left: "60%" },
-  "bauch": { top: "58%", left: "50%" },
-  "vorne": { top: "46%", left: "50%" },
-  "mitte": { top: "48%", left: "50%" },
-  "oben": { top: "32%", left: "50%" },
-  "kapuze": { top: "20%", left: "50%" },
+  posX: number;            // 0–100 (% horizontal)
+  posY: number;            // 0–100 (% vertikal)
 };
 
 export default function PhotoMockup({
@@ -33,10 +22,9 @@ export default function PhotoMockup({
   logoScale,
   colorOverlay,
   applyColor,
-  posKey,
+  posX,
+  posY,
 }: Props) {
-  const posStyle = POSITION_STYLES[posKey] || POSITION_STYLES["brust-mitte"];
-
   return (
     <div className="pm-stage">
       <div className="pm-frame">
@@ -52,13 +40,13 @@ export default function PhotoMockup({
           />
         )}
 
-        {/* Logo overlay */}
+        {/* Logo overlay — serbest konum (X/Y %) */}
         {logoUrl && (
           <div
             className="pm-logo"
             style={{
-              top: posStyle.top,
-              left: posStyle.left,
+              top: `${posY}%`,
+              left: `${posX}%`,
               width: `${Math.round(logoScale * 100)}%`,
             }}
           >
