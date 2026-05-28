@@ -97,6 +97,9 @@ export default function DesignerClient({ productPhotos }: { productPhotos: Produ
   // Foto-Mockup: freie Logo-Position in % (Standard mittig)
   const [logoX, setLogoX] = useState<number>(50);
   const [logoY, setLogoY] = useState<number>(45);
+  // Druckvorschau-Modal
+  const [previewImage, setPreviewImage] = useState<string | null>(null);
+  const [previewLoading, setPreviewLoading] = useState(false);
   const fileRef = useRef<HTMLInputElement>(null);
 
   const activeLogoUrl = showOriginal ? originalUrl : processedUrl;
@@ -210,6 +213,18 @@ export default function DesignerClient({ productPhotos }: { productPhotos: Produ
     }
   }
 
+  async function openPreview() {
+    setPreviewLoading(true);
+    try {
+      const img = await captureMockup();
+      setPreviewImage(img ?? activeLogoUrl);
+    } catch {
+      setPreviewImage(activeLogoUrl);
+    } finally {
+      setPreviewLoading(false);
+    }
+  }
+
   async function handleAddToMerkliste() {
     const id = `designer-${product}-${Date.now()}`;
     const posLabel = useMockup
@@ -279,6 +294,16 @@ export default function DesignerClient({ productPhotos }: { productPhotos: Produ
               onClick={() => setAutoRotate((v) => !v)}
             >
               {autoRotate ? "⏸ Stop" : "▶ Auto-Rotation"}
+            </button>
+          )}
+          {activeLogoUrl && (
+            <button
+              type="button"
+              className="ds-preview-btn"
+              onClick={() => void openPreview()}
+              disabled={previewLoading}
+            >
+              {previewLoading ? "…" : "👁 Druckvorschau"}
             </button>
           )}
         </div>
@@ -500,6 +525,43 @@ export default function DesignerClient({ productPhotos }: { productPhotos: Produ
           <div><strong>✓</strong> Persönliche Beratung</div>
         </div>
       </aside>
+
+      {/* Druckvorschau-Modal */}
+      {previewImage && (
+        <div className="ds-preview-modal" onClick={() => setPreviewImage(null)}>
+          <div className="ds-preview-box" onClick={(e) => e.stopPropagation()}>
+            <button
+              type="button"
+              className="ds-preview-close"
+              onClick={() => setPreviewImage(null)}
+              aria-label="Schließen"
+            >
+              ✕
+            </button>
+            <div className="ds-preview-head">
+              <strong>Druckvorschau</strong>
+              <span>So wird Ihr Design auf dem Produkt aussehen</span>
+            </div>
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img src={previewImage} alt="Druckvorschau" className="ds-preview-img" />
+            <div className="ds-preview-actions">
+              <button
+                type="button"
+                className="btn-primary"
+                onClick={() => {
+                  setPreviewImage(null);
+                  void handleAddToMerkliste();
+                }}
+              >
+                Auf Merkzettel hinzufügen
+              </button>
+              <button type="button" className="btn-ghost" onClick={() => setPreviewImage(null)}>
+                Weiter bearbeiten
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
