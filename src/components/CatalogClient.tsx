@@ -54,13 +54,19 @@ export default function CatalogClient({
   const searchParams = useSearchParams();
   const [cat, setCat] = useState("all");
 
-  // URL-Parameter ?cat=… beim Mount und bei jeder Änderung übernehmen
+  // URL-Parameter ?cat=… beim Mount und bei jeder Änderung übernehmen.
+  // Feste Navi-Kategorien (kleidung/taschen/werbeartikel) immer akzeptieren,
+  // auch wenn (noch) keine Produkte zugeordnet sind — sonst bleibt die alte
+  // Auswahl hängen und es werden falsche Produkte gezeigt.
   useEffect(() => {
     const urlCat = searchParams.get("cat");
-    if (urlCat && categories.some((x) => x.slug === urlCat)) {
+    const FIXED = ["kleidung", "taschen", "werbeartikel"];
+    if (urlCat && (FIXED.includes(urlCat) || categories.some((x) => x.slug === urlCat))) {
       setCat(urlCat);
     } else if (urlCat === null) {
-      // kein Parameter → 'all'
+      setCat("all");
+    } else {
+      // unbekannte Kategorie → nichts erzwingen, aber sicher auf 'all'
       setCat("all");
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
