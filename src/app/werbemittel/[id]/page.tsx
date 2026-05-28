@@ -164,19 +164,7 @@ export default async function ProductDetailPage({
                 </div>
               </div>
 
-              {/* Farbe + Größen + Mengen + Merkzettel-Submit (direkt unter Material) */}
-              <DetailOrderForm
-                productId={product.id}
-                productCode={product.code}
-                productName={product.name}
-                productImage={images[0] ?? null}
-                colors={colors}
-                sizes={sizesList}
-                tiers={tiers}
-                basePriceCents={product.priceCents}
-              />
-
-              {/* Mengenstaffel-Tabelle (unter dem Bestellbereich) */}
+              {/* Mengenstaffel-Tabelle (eski yeri: Material altında) */}
               {SHOW_TIERS && tiers.length > 0 && (
                 <div className="mm-tiers">
                   <div className="mm-tiers-head">
@@ -210,6 +198,18 @@ export default async function ProductDetailPage({
                   </div>
                 </div>
               )}
+
+              {/* Farbe + Größen + Mengen + Merkzettel-Submit */}
+              <DetailOrderForm
+                productId={product.id}
+                productCode={product.code}
+                productName={product.name}
+                productImage={images[0] ?? null}
+                colors={colors}
+                sizes={sizesList}
+                tiers={tiers}
+                basePriceCents={product.priceCents}
+              />
 
               <div className="mm-detail-cta-secondary">
                 <MerkenButton
