@@ -132,7 +132,14 @@ async function removeBgViaApi(dataUrl: string): Promise<string | null> {
       body: JSON.stringify({ imageB64: dataUrl }),
     });
     if (!resp.ok) {
-      console.log(`[logo-process] API nicht verfügbar (Status ${resp.status}) → lokales Modell`);
+      let detail = "";
+      try {
+        const j = await resp.json();
+        detail = JSON.stringify(j);
+      } catch {
+        /* ignore */
+      }
+      console.log(`[logo-process] API nicht verfügbar (Status ${resp.status}) → lokales Modell. Detail: ${detail}`);
       return null;
     }
     const data = await resp.json();

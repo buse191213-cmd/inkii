@@ -23,11 +23,13 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: "no-image" }, { status: 400 });
     }
 
-    // "data:image/...;base64," Präfix entfernen
+    // Data-URL → Binary Buffer → Blob (zuverlässiger als image_file_b64)
     const b64 = imageB64.replace(/^data:image\/\w+;base64,/, "");
+    const buffer = Buffer.from(b64, "base64");
+    const blob = new Blob([buffer], { type: "image/png" });
 
     const form = new FormData();
-    form.append("image_file_b64", b64);
+    form.append("image_file", blob, "logo.png");
     form.append("size", "auto");
     form.append("format", "png");
 
@@ -38,16 +40,16 @@ export async function POST(req: NextRequest) {
     });
 
     if (!resp.ok) {
-      // 402 = Kontingent erschöpft, 403 = Key ungültig usw.
       let detail = "";
       try {
         detail = await resp.text();
       } catch {
         /* ignore */
       }
+      console.error(`[remove-bg] remove.bg Fehler ${resp.status}: ${detail}`);
       return NextResponse.json(
         { error: "removebg-failed", status: resp.status, detail },
-        { status: resp.status === 402 ? 402 : 502 }
+        { status: resp.status === 402 ? 402 : resp.status === 403 ? 403 : 502 }
       );
     }
 
