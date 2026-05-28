@@ -74,7 +74,7 @@ const COLORS: { hex: string; name: string }[] = [
 type ProcessStep = "load" | "remove-bg" | "upscale";
 const STEP_LABELS: Record<ProcessStep, string> = {
   load: "Datei analysieren",
-  "remove-bg": "Hintergrund entfernen (KI · höchste Qualität)",
+  "remove-bg": "Hintergrund entfernen (KI)",
   upscale: "Auflösung & Schärfe verbessern",
 };
 
@@ -288,7 +288,7 @@ export default function DesignerClient({ productPhotos }: { productPhotos: Produ
                     );
                   })}
                 </ul>
-                <small>Erste Optimierung lädt das KI-Modell (~170 MB, einmalig — danach sofort).</small>
+                <small>Erste Optimierung lädt das KI-Modell (~25 MB, einmalig — danach sofort).</small>
               </div>
             ) : activeLogoUrl ? (
               <>

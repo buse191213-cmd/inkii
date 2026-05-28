@@ -120,6 +120,29 @@ function sharpen(imgData: ImageData, amount: number): ImageData {
   return out;
 }
 
+/**
+ * Versucht den Hintergrund über den Server-Proxy (remove.bg) zu entfernen.
+ * Gibt die transparente Data-URL zurück oder null, wenn nicht verfügbar.
+ */
+async function removeBgViaApi(dataUrl: string): Promise<string | null> {
+  try {
+    const resp = await fetch("/api/remove-bg", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ imageB64: dataUrl }),
+    });
+    if (!resp.ok) {
+      console.log(`[logo-process] API nicht verfügbar (Status ${resp.status}) → lokales Modell`);
+      return null;
+    }
+    const data = await resp.json();
+    return typeof data.image === "string" ? data.image : null;
+  } catch (e) {
+    console.log("[logo-process] API nicht erreichbar → lokales Modell:", e);
+    return null;
+  }
+}
+
 /** Vollständige Optimierungspipeline für ein hochgeladenes Logo. */
 export async function processLogo(
   file: File,
@@ -129,29 +152,39 @@ export async function processLogo(
   console.log(`[logo-process] Datei laden: ${file.name} (${(file.size / 1024).toFixed(1)} KB, ${file.type})`);
   const original = await blobToDataUrl(file);
 
-  // 1) Hintergrund entfernen — kann fehlschlagen (WebAssembly, CORS, Model-Download)
+  // 1) Hintergrund entfernen — Hybrid: erst Premium-API, dann lokales ISNet
   onProgress("remove-bg", 2, 3);
   let toUpscale = original;
-  try {
-    console.log("[logo-process] Lade @imgly/background-removal …");
-    const mod = await import("@imgly/background-removal");
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const removeBackground = (mod as any).removeBackground || (mod as any).default;
-    if (typeof removeBackground !== "function") {
-      throw new Error("removeBackground export nicht gefunden");
+  let bgDone = false;
+
+  // 1a) Premium-API (remove.bg über Server-Proxy) — beste Qualität
+  console.log("[logo-process] Versuche Premium-Hintergrundentfernung (API) …");
+  const apiResult = await removeBgViaApi(original);
+  if (apiResult) {
+    toUpscale = apiResult;
+    bgDone = true;
+    console.log("[logo-process] ✓ Hintergrund entfernt (Premium-API)");
+  }
+
+  // 1b) Fallback: lokales ISNet (kostenlos, im Browser)
+  if (!bgDone) {
+    try {
+      console.log("[logo-process] Lokales Modell @imgly/background-removal …");
+      const mod = await import("@imgly/background-removal");
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const removeBackground = (mod as any).removeBackground || (mod as any).default;
+      if (typeof removeBackground !== "function") {
+        throw new Error("removeBackground export nicht gefunden");
+      }
+      const transparentBlob = await removeBackground(file, {
+        output: { format: "image/png", quality: 1.0 },
+      });
+      toUpscale = await blobToDataUrl(transparentBlob);
+      bgDone = true;
+      console.log("[logo-process] ✓ Hintergrund entfernt (lokales Modell)");
+    } catch (err) {
+      console.warn("[logo-process] ⚠ Hintergrund-Entfernung übersprungen:", err);
     }
-    console.log("[logo-process] Starte Hintergrund-Entfernung (höchste Qualität — lädt großes Modell beim 1. Mal) …");
-    const transparentBlob = await removeBackground(file, {
-      // 'isnet' = volle Präzision (beste Kante/Detail), statt 'isnet_fp16' (schnell/klein).
-      // Erfasst feine Details wie dünne Linien, Schrift und Ränder deutlich besser.
-      model: "isnet",
-      output: { format: "image/png", quality: 1.0 },
-    });
-    toUpscale = await blobToDataUrl(transparentBlob);
-    console.log("[logo-process] ✓ Hintergrund entfernt (hohe Qualität)");
-  } catch (err) {
-    console.warn("[logo-process] ⚠ Hintergrund-Entfernung übersprungen:", err);
-    // Bei Fehler: Original verwenden, weiter mit Upscale
   }
 
   // 2) Auflösung hochskalieren (immer ausgeführt)
