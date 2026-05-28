@@ -27,7 +27,7 @@ export const NAV_HREF: Record<NavKey, string> = {
   kleidung: "/werbemittel?cat=kleidung",
   taschen: "/werbemittel?cat=taschen",
   werbeartikel: "/werbemittel?cat=werbeartikel",
-  werbemittel: "/werbemittel",
+  werbemittel: "/werbemittel?cat=werbeartikel",
   webdesign: "/webdesign",
   marketing: "/marketing",
   veredelung: "/veredelung",
@@ -54,7 +54,6 @@ export type NavItemResolved = {
 const DEFAULT_ACTIVE: ReadonlySet<NavKey> = new Set([
   "kleidung",
   "taschen",
-  "werbeartikel",
   "werbemittel",
   "webdesign",
   "marketing",
