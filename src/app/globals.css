@@ -1674,7 +1674,7 @@ body:has(.home-services) footer.site{margin-top:0}
 }
 
 /* === Detail-Seite: Sektionen statt Tabs (sicherer) === */
-.mm-detail-section{margin-bottom:32px;padding-bottom:28px;border-bottom:1px solid var(--line)}
+.mm-detail-section{margin-bottom:16px;padding-bottom:14px;border-bottom:1px solid var(--line)}
 .mm-detail-section:last-of-type{border-bottom:0}
 .mm-detail-h2{font-family:var(--display);font-weight:700;font-size:.78rem;
   letter-spacing:.18em;text-transform:uppercase;color:var(--ink);margin:0 0 14px;
