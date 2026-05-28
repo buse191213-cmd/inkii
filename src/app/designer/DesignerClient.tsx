@@ -63,18 +63,22 @@ export default function DesignerClient() {
     setProcessing(true);
     setAdded(false);
     try {
-      // Dinamik import → SSR build'inde @imgly modülü çağrılmaz
       const { processLogo } = await import("@/lib/logo-process");
       const { original, processed } = await processLogo(file, (step) => {
         setProcessStep(step);
+        console.log(`[designer] step: ${step}`);
       });
+      console.log("[designer] ✓ Logo processed successfully");
       setOriginalUrl(original);
       setProcessedUrl(processed);
     } catch (e) {
-      console.error("[logo] Verarbeitung fehlgeschlagen:", e);
+      const errMsg = e instanceof Error ? e.message : String(e);
+      console.error("[designer] Logo-Optimierung fehlgeschlagen:", e);
+      console.error("[designer] Error message:", errMsg);
       setProcessError(
-        "Optimierung fehlgeschlagen. Verwende Originalbild. (Sehr große Bilder bitte kleiner hochladen.)"
+        `KI-Hintergrund-Entfernung nicht verfügbar: ${errMsg}. Logo wird ohne Optimierung verwendet.`
       );
+      // Fallback: Sadece original'i göster, upscale dahi olmasın
       try {
         const reader = new FileReader();
         reader.onload = () => {

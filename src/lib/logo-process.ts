@@ -90,21 +90,40 @@ export async function processLogo(
   onProgress: ProcessProgress
 ): Promise<{ original: string; processed: string }> {
   onProgress("load", 1, 3);
+  console.log(`[logo-process] Datei laden: ${file.name} (${(file.size / 1024).toFixed(1)} KB, ${file.type})`);
   const original = await blobToDataUrl(file);
 
+  // 1) Hintergrund entfernen — kann fehlschlagen (WebAssembly, CORS, Model-Download)
   onProgress("remove-bg", 2, 3);
-  // Dynamischer Import — @imgly + onnxruntime werden nur clientseitig geladen.
-  // In v1.5+ ist `removeBackground` ein named export, kein default.
-  const mod = await import("@imgly/background-removal");
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const removeBackground = (mod as any).removeBackground || (mod as any).default;
-  const transparentBlob = await removeBackground(file, {
-    output: { format: "image/png" },
-  });
-  const transparentUrl = await blobToDataUrl(transparentBlob);
+  let toUpscale = original;
+  try {
+    console.log("[logo-process] Lade @imgly/background-removal …");
+    const mod = await import("@imgly/background-removal");
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const removeBackground = (mod as any).removeBackground || (mod as any).default;
+    if (typeof removeBackground !== "function") {
+      throw new Error("removeBackground export nicht gefunden");
+    }
+    console.log("[logo-process] Starte Hintergrund-Entfernung (kann 5-30s dauern, lädt Modell beim 1. Mal) …");
+    const transparentBlob = await removeBackground(file, {
+      output: { format: "image/png" },
+    });
+    toUpscale = await blobToDataUrl(transparentBlob);
+    console.log("[logo-process] ✓ Hintergrund entfernt");
+  } catch (err) {
+    console.warn("[logo-process] ⚠ Hintergrund-Entfernung übersprungen:", err);
+    // Bei Fehler: Original verwenden, weiter mit Upscale
+  }
 
+  // 2) Auflösung 2× (immer ausgeführt, auch wenn bg-removal fehlschlägt)
   onProgress("upscale", 3, 3);
-  const processed = await upscaleAndSharpen(transparentUrl, 2);
-
-  return { original, processed };
+  try {
+    console.log("[logo-process] Auflösung 2× hochskalieren …");
+    const processed = await upscaleAndSharpen(toUpscale, 2);
+    console.log("[logo-process] ✓ Auflösung verbessert");
+    return { original, processed };
+  } catch (err) {
+    console.warn("[logo-process] ⚠ Upscale fehlgeschlagen, verwende Original:", err);
+    return { original, processed: toUpscale };
+  }
 }
