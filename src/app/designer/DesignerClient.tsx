@@ -65,16 +65,27 @@ export default function DesignerClient({ productPhotos, d }: { productPhotos: Pr
   const [logoName, setLogoName] = useState<string>("");
   const [color, setColor] = useState<string>("#ffffff");
   const [colorName, setColorName] = useState<string>("Weiß");
-  const [logoScale, setLogoScale] = useState<number>(0.18);
   const [autoRotate, setAutoRotate] = useState<boolean>(true);
   const [added, setAdded] = useState<boolean>(false);
   const [processing, setProcessing] = useState<boolean>(false);
   const [processStep, setProcessStep] = useState<ProcessStep | null>(null);
   const [processError, setProcessError] = useState<string | null>(null);
   const [logoPos, setLogoPos] = useState<string>("brust-mitte");
-  // Foto-Mockup: freie Logo-Position in % (Standard mittig)
-  const [logoX, setLogoX] = useState<number>(50);
-  const [logoY, setLogoY] = useState<number>(45);
+  // Her ürün için ayrı pozisyon + boyut (foto-mockup modunda)
+  type ProdPos = { x: number; y: number; scale: number };
+  const [positions, setPositions] = useState<Record<ProductKey, ProdPos>>({
+    tshirt: { x: 50, y: 40, scale: 0.20 },
+    hoodie: { x: 50, y: 38, scale: 0.20 },
+    cap:    { x: 50, y: 45, scale: 0.30 },
+    tote:   { x: 50, y: 50, scale: 0.30 },
+  });
+  const curPos = positions[product];
+  const logoX = curPos.x;
+  const logoY = curPos.y;
+  const logoScale = curPos.scale;
+  function updatePos(patch: Partial<ProdPos>) {
+    setPositions((prev) => ({ ...prev, [product]: { ...prev[product], ...patch } }));
+  }
   // Druckvorschau-Modal
   const [previewImage, setPreviewImage] = useState<string | null>(null);
   const [previewLoading, setPreviewLoading] = useState(false);
@@ -254,7 +265,7 @@ export default function DesignerClient({ productPhotos, d }: { productPhotos: Pr
               applyColor={colorNeedsOverlay}
               posX={logoX}
               posY={logoY}
-              onPositionChange={(x, y) => { setLogoX(x); setLogoY(y); }}
+              onPositionChange={(x, y) => { updatePos({ x, y }); }}
             />
           ) : (
             <ProductViewer
@@ -433,7 +444,7 @@ export default function DesignerClient({ productPhotos, d }: { productPhotos: Pr
               <span className="ds-section-sub">{Math.round(logoScale * 100)}%</span>
             </div>
             <input type="range" min={0.05} max={0.35} step={0.01}
-              value={logoScale} onChange={(e) => setLogoScale(Number(e.target.value))}
+              value={logoScale} onChange={(e) => updatePos({ scale: Number(e.target.value) })}
               className="ds-slider" />
             <div className="ds-slider-labels">
               <small>{d.sizeLabel.small}</small><small>{d.sizeLabel.big}</small>
@@ -452,12 +463,12 @@ export default function DesignerClient({ productPhotos, d }: { productPhotos: Pr
             <label className="ds-pos-slider-label">
               <span>{d.position.horizontal}</span>
               <input type="range" min={10} max={90} step={1} value={logoX}
-                onChange={(e) => setLogoX(Number(e.target.value))} className="ds-slider" />
+                onChange={(e) => updatePos({ x: Number(e.target.value) })} className="ds-slider" />
             </label>
             <label className="ds-pos-slider-label">
               <span>{d.position.vertical}</span>
               <input type="range" min={10} max={90} step={1} value={logoY}
-                onChange={(e) => setLogoY(Number(e.target.value))} className="ds-slider" />
+                onChange={(e) => updatePos({ y: Number(e.target.value) })} className="ds-slider" />
             </label>
             <p className="ds-pos-hint">{d.position.hintFree}</p>
           </div>
@@ -501,6 +512,7 @@ export default function DesignerClient({ productPhotos, d }: { productPhotos: Pr
                 const photo = productPhotos[key];
                 const productLabel = d.products[key].label;
                 const isActive = product === key;
+                const pos = positions[key];
                 return (
                   <button
                     key={key}
@@ -519,9 +531,9 @@ export default function DesignerClient({ productPhotos, d }: { productPhotos: Pr
                         <div
                           className="ds-mini-logo"
                           style={{
-                            top: `${logoY}%`,
-                            left: `${logoX}%`,
-                            width: `${Math.round(logoScale * 100)}%`,
+                            top: `${pos.y}%`,
+                            left: `${pos.x}%`,
+                            width: `${Math.round(pos.scale * 100)}%`,
                           }}
                         >
                           {/* eslint-disable-next-line @next/next/no-img-element */}
@@ -531,7 +543,10 @@ export default function DesignerClient({ productPhotos, d }: { productPhotos: Pr
                     ) : (
                       <div className="ds-mini-frame ds-mini-3d">
                         <span className="ds-mini-icon">{PRODUCT_ICONS[key]}</span>
-                        <div className="ds-mini-logo-3d">
+                        <div
+                          className="ds-mini-logo-3d"
+                          style={{ width: `${Math.round(pos.scale * 250)}%` }}
+                        >
                           {/* eslint-disable-next-line @next/next/no-img-element */}
                           <img src={activeLogoUrl} alt="" draggable={false} />
                         </div>
