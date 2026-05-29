@@ -311,4 +311,64 @@ export type Dictionary = {
     textil: { title: string; text: string; cta: string };
     werbe: { title: string; text: string; cta: string };
   };
+  textilSub: {
+    kicker: string;
+    h1: string;
+    intro: string;
+    methods: { title: string; text: string }[];
+    ctaTitle: string;
+    ctaText: string;
+    ctaBtn: string;
+  };
+  werbeSub: {
+    kicker: string;
+    h1: string;
+    intro: string;
+    categories: { title: string; text: string }[];
+    ctaTitle: string;
+    ctaText: string;
+    ctaBtn: string;
+  };
+  designer: {
+    kicker: string;
+    title: string;
+    lead: string;
+    steps: { product: string; upload: string; color: string; size: string; position: string };
+    products: {
+      tshirt: { label: string; sub: string };
+      hoodie: { label: string; sub: string };
+      cap: { label: string; sub: string };
+      tote: { label: string; sub: string };
+    };
+    upload: { drop: string; or: string; hint: string; change: string };
+    processing: { title: string; sub: string; modelNote: string };
+    processSteps: { load: string; removeBg: string; upscale: string };
+    badges: { bgRemoved: string; upscaled: string };
+    warn: string;
+    toggleOrig: string;
+    toggleOpt: string;
+    colors: {
+      weiss: string; schwarz: string; grau: string; navy: string; blau: string;
+      gruen: string; rot: string; beige: string; gelb: string; lila: string;
+    };
+    sizeLabel: { small: string; big: string };
+    position: {
+      freePlace: string; whereLogo: string;
+      horizontal: string; vertical: string;
+      hintFree: string; hint3d: string;
+    };
+    positions: {
+      brustMitte: string; brustLinks: string; brustRechts: string;
+      bauch: string; vorne: string; mitte: string; oben: string; kapuze: string;
+    };
+    cta: string;
+    ctaNote: string;
+    success: { title: string; sub: string; sendInquiry: string; more: string };
+    trust: { ai: string; day24: string; personal: string };
+    stageHint: { photo: string; threeD: string };
+    rotation: { stop: string; start: string };
+    preview: { btn: string; title: string; sub: string; addToList: string; edit: string };
+    note: { logo: string; position: string; size: string };
+    productName: string;
+  };
 };

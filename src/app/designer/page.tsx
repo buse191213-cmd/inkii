@@ -2,6 +2,8 @@ import type { Metadata } from "next";
 import SiteShell from "@/components/SiteShell";
 import DesignerClient from "./DesignerClient";
 import { getHomeImage } from "@/lib/home-images";
+import { getLocale } from "@/lib/i18n-server";
+import { getDictionary } from "@/dictionaries";
 
 export const metadata: Metadata = {
   title: "3D-Designer · Ihr Design auf dem Produkt",
@@ -10,7 +12,8 @@ export const metadata: Metadata = {
 };
 
 export default async function DesignerPage() {
-  // Admin'den yüklenen ürün fotoğrafları (varsa foto-mockup, yoksa 3D)
+  const locale = await getLocale();
+  const d = getDictionary(locale).designer;
   const productPhotos = {
     tshirt: await getHomeImage("designer-tshirt"),
     hoodie: await getHomeImage("designer-hoodie"),
@@ -20,7 +23,7 @@ export default async function DesignerPage() {
 
   return (
     <SiteShell>
-      <DesignerClient productPhotos={productPhotos} />
+      <DesignerClient productPhotos={productPhotos} d={d} />
     </SiteShell>
   );
 }

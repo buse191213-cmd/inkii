@@ -4,13 +4,14 @@ import { useState, useRef } from "react";
 import dynamic from "next/dynamic";
 import Link from "next/link";
 import { useMerkliste } from "@/components/MerklisteProvider";
+import type { Dictionary } from "@/dictionaries/types";
 
 const ProductViewer = dynamic(() => import("./ProductViewer"), {
   ssr: false,
   loading: () => (
     <div className="ds-loading">
       <div className="ds-spinner" />
-      <p>3D-Modell wird geladen…</p>
+      <p>3D…</p>
     </div>
   ),
 });
@@ -24,25 +25,12 @@ type ProductPhotos = {
   tote: string | null;
 };
 
+type DD = Dictionary["designer"];
 type ProductKey = "tshirt" | "hoodie" | "cap" | "tote";
 
-const PRODUCTS: { key: ProductKey; label: string; sub: string; icon: string; code: string }[] = [
-  { key: "tshirt", label: "T-Shirt", sub: "Klassisch", icon: "👕", code: "DESIGN-TS" },
-  { key: "hoodie", label: "Hoodie", sub: "Mit Kapuze", icon: "🧥", code: "DESIGN-HD" },
-  { key: "cap",    label: "Cap",    sub: "5-Panel",    icon: "🧢", code: "DESIGN-CAP" },
-  { key: "tote",   label: "Tasche", sub: "Tote Bag",   icon: "🛍️", code: "DESIGN-TOTE" },
-];
-
-const POSITION_LABELS: Record<string, { label: string; icon: string }> = {
-  "brust-mitte":  { label: "Brust Mitte",  icon: "●" },
-  "brust-links":  { label: "Brust links",  icon: "↖" },
-  "brust-rechts": { label: "Brust rechts", icon: "↗" },
-  "bauch":        { label: "Bauch",        icon: "↓" },
-  "kapuze":       { label: "Kapuze",       icon: "⌒" },
-  "vorne":        { label: "Vorne",        icon: "●" },
-  "mitte":        { label: "Mitte",        icon: "●" },
-  "oben":         { label: "Oben",         icon: "↑" },
-};
+const PRODUCT_KEYS: ProductKey[] = ["tshirt", "hoodie", "cap", "tote"];
+const PRODUCT_ICONS: Record<ProductKey, string> = { tshirt: "👕", hoodie: "🧥", cap: "🧢", tote: "🛍️" };
+const PRODUCT_CODES: Record<ProductKey, string> = { tshirt: "DESIGN-TS", hoodie: "DESIGN-HD", cap: "DESIGN-CAP", tote: "DESIGN-TOTE" };
 
 const POSITION_KEYS_PER_PRODUCT: Record<ProductKey, string[]> = {
   tshirt: ["brust-links", "brust-mitte", "brust-rechts", "bauch"],
@@ -52,33 +40,23 @@ const POSITION_KEYS_PER_PRODUCT: Record<ProductKey, string[]> = {
 };
 
 const DEFAULT_POS: Record<ProductKey, string> = {
-  tshirt: "brust-mitte",
-  hoodie: "brust-mitte",
-  cap:    "vorne",
-  tote:   "mitte",
+  tshirt: "brust-mitte", hoodie: "brust-mitte", cap: "vorne", tote: "mitte",
 };
 
-const COLORS: { hex: string; name: string }[] = [
-  { hex: "#ffffff", name: "Weiß" },
-  { hex: "#1c1c1c", name: "Schwarz" },
-  { hex: "#7a7a7a", name: "Grau" },
-  { hex: "#1c2e4a", name: "Navy" },
-  { hex: "#2d5a8a", name: "Blau" },
-  { hex: "#3d7045", name: "Grün" },
-  { hex: "#b8463a", name: "Rot" },
-  { hex: "#d9a878", name: "Beige" },
-  { hex: "#e6b800", name: "Gelb" },
-  { hex: "#6b3e8a", name: "Lila" },
-];
+const POSITION_ICONS: Record<string, string> = {
+  "brust-mitte": "●", "brust-links": "↖", "brust-rechts": "↗",
+  "bauch": "↓", "kapuze": "⌒", "vorne": "●", "mitte": "●", "oben": "↑",
+};
+
+const COLOR_KEYS = ["weiss", "schwarz", "grau", "navy", "blau", "gruen", "rot", "beige", "gelb", "lila"] as const;
+const COLOR_HEX: Record<typeof COLOR_KEYS[number], string> = {
+  weiss: "#ffffff", schwarz: "#1c1c1c", grau: "#7a7a7a", navy: "#1c2e4a", blau: "#2d5a8a",
+  gruen: "#3d7045", rot: "#b8463a", beige: "#d9a878", gelb: "#e6b800", lila: "#6b3e8a",
+};
 
 type ProcessStep = "load" | "remove-bg" | "upscale";
-const STEP_LABELS: Record<ProcessStep, string> = {
-  load: "Datei analysieren",
-  "remove-bg": "Hintergrund entfernen (KI)",
-  upscale: "Auflösung & Schärfe verbessern",
-};
 
-export default function DesignerClient({ productPhotos }: { productPhotos: ProductPhotos }) {
+export default function DesignerClient({ productPhotos, d }: { productPhotos: ProductPhotos; d: DD }) {
   const { addOrUpdate } = useMerkliste();
   const [product, setProduct] = useState<ProductKey>("tshirt");
   const [originalUrl, setOriginalUrl] = useState<string | null>(null);
@@ -104,7 +82,7 @@ export default function DesignerClient({ productPhotos }: { productPhotos: Produ
 
   const activeLogoUrl = showOriginal ? originalUrl : processedUrl;
   const positionKeys = POSITION_KEYS_PER_PRODUCT[product];
-  const productInfo = PRODUCTS.find((p) => p.key === product)!;
+  const productInfo = { code: PRODUCT_CODES[product], label: d.products[product].label };
 
   // Bu ürün için admin foto yüklediyse → foto-mockup, yoksa → 3D model
   const productPhoto = productPhotos[product];
@@ -232,21 +210,23 @@ export default function DesignerClient({ productPhotos }: { productPhotos: Produ
 
   async function handleAddToMerkliste() {
     const id = `designer-${product}-${Date.now()}`;
+    // 3D modunda pozisyon anahtarı (örn "brust-mitte") → dict key (brustMitte)
+    const posDictKey = logoPos.replace(/-([a-z])/g, (_, c) => c.toUpperCase()) as keyof DD["positions"];
     const posLabel = useMockup
       ? `X:${logoX}% Y:${logoY}%`
-      : (POSITION_LABELS[logoPos]?.label || logoPos);
+      : (d.positions[posDictKey] || logoPos);
     const noteParts: string[] = [];
-    if (activeLogoUrl) noteParts.push(`Logo: ${logoName}`);
-    noteParts.push(`Position: ${posLabel}`);
-    noteParts.push(`Größe: ${Math.round(logoScale * 100)}%`);
+    if (activeLogoUrl) noteParts.push(`${d.note.logo}: ${logoName}`);
+    noteParts.push(`${d.note.position}: ${posLabel}`);
+    noteParts.push(`${d.note.size}: ${Math.round(logoScale * 100)}%`);
 
-    // Tam tasarım görüntüsünü yakala (foto-modda ürün+renk+logo birleşik)
+    // Tam tasarım görüntüsünü yakala
     const designImage = await captureMockup();
 
     addOrUpdate({
       id,
       code: productInfo.code,
-      name: `Individueller ${productInfo.label} (Designer)`,
+      name: `${d.productName} ${productInfo.label} (Designer)`,
       qty: 1,
       image: designImage ?? activeLogoUrl ?? null,
       color,
@@ -286,29 +266,19 @@ export default function DesignerClient({ productPhotos }: { productPhotos: Produ
             />
           )}
           <div className="ds-stage-hint">
-            <span>
-              {useMockup
-                ? "📸 Realistische Produktvorschau"
-                : "🖱️ Ziehen zum Drehen · Scrollen für Zoom"}
-            </span>
+            <span>{useMockup ? d.stageHint.photo : d.stageHint.threeD}</span>
           </div>
           {!useMockup && (
-            <button
-              type="button"
+            <button type="button"
               className={`ds-rotate-btn ${autoRotate ? "active" : ""}`}
-              onClick={() => setAutoRotate((v) => !v)}
-            >
-              {autoRotate ? "⏸ Stop" : "▶ Auto-Rotation"}
+              onClick={() => setAutoRotate((v) => !v)}>
+              {autoRotate ? d.rotation.stop : d.rotation.start}
             </button>
           )}
           {activeLogoUrl && (
-            <button
-              type="button"
-              className="ds-preview-btn"
-              onClick={() => void openPreview()}
-              disabled={previewLoading}
-            >
-              {previewLoading ? "…" : "👁 Druckvorschau"}
+            <button type="button" className="ds-preview-btn"
+              onClick={() => void openPreview()} disabled={previewLoading}>
+              {previewLoading ? "…" : d.preview.btn}
             </button>
           )}
         </div>
@@ -316,33 +286,33 @@ export default function DesignerClient({ productPhotos }: { productPhotos: Produ
 
       <aside className="ds-panel">
         <div className="ds-panel-head">
-          <p className="kicker">3D-Designer</p>
-          <h1>Eigenes Design erstellen</h1>
-          <p className="ds-lead">
-            Wählen Sie Ihr Produkt, laden Sie Ihr Logo hoch — unsere KI entfernt
-            den Hintergrund und verbessert die Auflösung automatisch.
-          </p>
+          <p className="kicker">{d.kicker}</p>
+          <h1>{d.title}</h1>
+          <p className="ds-lead">{d.lead}</p>
         </div>
 
         {/* Produkt-Auswahl */}
         <div className="ds-section">
           <div className="ds-section-head">
             <span className="ds-step">01</span>
-            <h3>Produkt wählen</h3>
+            <h3>{d.steps.product}</h3>
           </div>
           <div className="ds-products">
-            {PRODUCTS.map((p) => (
-              <button
-                key={p.key}
-                type="button"
-                className={`ds-product-btn ${product === p.key ? "active" : ""}`}
-                onClick={() => switchProduct(p.key)}
-              >
-                <span className="ds-product-icon">{p.icon}</span>
-                <span className="ds-product-label">{p.label}</span>
-                <small>{p.sub}</small>
-              </button>
-            ))}
+            {PRODUCT_KEYS.map((key) => {
+              const p = d.products[key];
+              return (
+                <button
+                  key={key}
+                  type="button"
+                  className={`ds-product-btn ${product === key ? "active" : ""}`}
+                  onClick={() => switchProduct(key)}
+                >
+                  <span className="ds-product-icon">{PRODUCT_ICONS[key]}</span>
+                  <span className="ds-product-label">{p.label}</span>
+                  <small>{p.sub}</small>
+                </button>
+              );
+            })}
           </div>
         </div>
 
@@ -350,7 +320,7 @@ export default function DesignerClient({ productPhotos }: { productPhotos: Produ
         <div className="ds-section">
           <div className="ds-section-head">
             <span className="ds-step">02</span>
-            <h3>Logo hochladen</h3>
+            <h3>{d.steps.upload}</h3>
           </div>
           <div
             className={`ds-drop ${processedUrl || originalUrl ? "has-file" : ""} ${processing ? "is-processing" : ""}`}
@@ -361,35 +331,38 @@ export default function DesignerClient({ productPhotos }: { productPhotos: Produ
             {processing ? (
               <div className="ds-process">
                 <div className="ds-spinner" />
-                <strong>Dein Design wird optimiert</strong>
-                <span>Unsere KI analysiert dein Design für den Druck.</span>
+                <strong>{d.processing.title}</strong>
+                <span>{d.processing.sub}</span>
                 <ul className="ds-steps">
-                  {(Object.keys(STEP_LABELS) as ProcessStep[]).map((s) => {
+                  {(["load", "remove-bg", "upscale"] as ProcessStep[]).map((s) => {
                     const isDone = processStep && (
                       (processStep === "remove-bg" && s === "load") ||
                       (processStep === "upscale" && (s === "load" || s === "remove-bg"))
                     );
                     const isActive = processStep === s;
+                    const label = s === "load" ? d.processSteps.load
+                      : s === "remove-bg" ? d.processSteps.removeBg
+                      : d.processSteps.upscale;
                     return (
                       <li key={s} className={isDone ? "done" : isActive ? "active" : ""}>
-                        {isDone ? "✓" : isActive ? "⏳" : "○"} {STEP_LABELS[s]}
+                        {isDone ? "✓" : isActive ? "⏳" : "○"} {label}
                       </li>
                     );
                   })}
                 </ul>
-                <small>Erste Optimierung lädt das KI-Modell (~25 MB, einmalig — danach sofort).</small>
+                <small>{d.processing.modelNote}</small>
               </div>
             ) : activeLogoUrl ? (
               <>
                 {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img src={activeLogoUrl} alt="Logo Vorschau" className="ds-drop-preview" />
+                <img src={activeLogoUrl} alt="Logo" className="ds-drop-preview" />
                 <div className="ds-drop-info">
                   <strong>{logoName}</strong>
-                  <span>Klicken zum Ändern</span>
+                  <span>{d.upload.change}</span>
                   {processedUrl && processedUrl !== originalUrl && (
                     <div className="ds-ai-badges">
-                      <span className="ds-badge-ok">✓ Hintergrund entfernt</span>
-                      <span className="ds-badge-ok">✓ Auflösung 2×</span>
+                      <span className="ds-badge-ok">✓ {d.badges.bgRemoved}</span>
+                      <span className="ds-badge-ok">✓ {d.badges.upscaled}</span>
                     </div>
                   )}
                 </div>
@@ -399,20 +372,20 @@ export default function DesignerClient({ productPhotos }: { productPhotos: Produ
                 <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
                   <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M17 8l-5-5-5 5M12 3v12" strokeLinecap="round" strokeLinejoin="round" />
                 </svg>
-                <strong>Datei hier ablegen</strong>
-                <span>oder klicken zum Auswählen</span>
-                <small>PNG, JPG · KI entfernt den Hintergrund automatisch</small>
+                <strong>{d.upload.drop}</strong>
+                <span>{d.upload.or}</span>
+                <small>{d.upload.hint}</small>
               </>
             )}
             <input ref={fileRef} type="file" accept="image/*" hidden
               onChange={(e) => { const f = e.target.files?.[0]; if (f) handleFile(f); }} />
           </div>
 
-          {processError && <div className="ds-warn">{processError}</div>}
+          {processError && <div className="ds-warn">{d.warn}</div>}
 
           {processedUrl && originalUrl && processedUrl !== originalUrl && (
             <button type="button" className="ds-toggle-orig" onClick={() => setShowOriginal((v) => !v)}>
-              {showOriginal ? "← Optimierte Version" : "Original anzeigen →"}
+              {showOriginal ? d.toggleOpt : d.toggleOrig}
             </button>
           )}
         </div>
@@ -421,15 +394,19 @@ export default function DesignerClient({ productPhotos }: { productPhotos: Produ
         <div className="ds-section">
           <div className="ds-section-head">
             <span className="ds-step">03</span>
-            <h3>Farbe wählen</h3>
+            <h3>{d.steps.color}</h3>
             <span className="ds-section-sub">{colorName}</span>
           </div>
           <div className="ds-colors">
-            {COLORS.map((c) => (
-              <button key={c.hex} type="button" style={{ background: c.hex }}
-                className={`ds-color ${color === c.hex ? "active" : ""}`}
-                onClick={() => handleSelectColor(c.hex, c.name)} title={c.name} aria-label={c.name} />
-            ))}
+            {COLOR_KEYS.map((k) => {
+              const hex = COLOR_HEX[k];
+              const name = d.colors[k];
+              return (
+                <button key={hex} type="button" style={{ background: hex }}
+                  className={`ds-color ${color === hex ? "active" : ""}`}
+                  onClick={() => handleSelectColor(hex, name)} title={name} aria-label={name} />
+              );
+            })}
           </div>
         </div>
 
@@ -438,14 +415,14 @@ export default function DesignerClient({ productPhotos }: { productPhotos: Produ
           <div className="ds-section">
             <div className="ds-section-head">
               <span className="ds-step">04</span>
-              <h3>Logo-Größe</h3>
+              <h3>{d.steps.size}</h3>
               <span className="ds-section-sub">{Math.round(logoScale * 100)}%</span>
             </div>
             <input type="range" min={0.05} max={0.35} step={0.01}
               value={logoScale} onChange={(e) => setLogoScale(Number(e.target.value))}
               className="ds-slider" />
             <div className="ds-slider-labels">
-              <small>Klein</small><small>Groß</small>
+              <small>{d.sizeLabel.small}</small><small>{d.sizeLabel.big}</small>
             </div>
           </div>
         )}
@@ -455,22 +432,20 @@ export default function DesignerClient({ productPhotos }: { productPhotos: Produ
           <div className="ds-section">
             <div className="ds-section-head">
               <span className="ds-step">05</span>
-              <h3>Position</h3>
-              <span className="ds-section-sub">Logo frei platzieren</span>
+              <h3>{d.steps.position}</h3>
+              <span className="ds-section-sub">{d.position.freePlace}</span>
             </div>
             <label className="ds-pos-slider-label">
-              <span>↔ Horizontal</span>
+              <span>{d.position.horizontal}</span>
               <input type="range" min={10} max={90} step={1} value={logoX}
                 onChange={(e) => setLogoX(Number(e.target.value))} className="ds-slider" />
             </label>
             <label className="ds-pos-slider-label">
-              <span>↕ Vertikal</span>
+              <span>{d.position.vertical}</span>
               <input type="range" min={10} max={90} step={1} value={logoY}
                 onChange={(e) => setLogoY(Number(e.target.value))} className="ds-slider" />
             </label>
-            <p className="ds-pos-hint">
-              💡 Schieben Sie das Logo an die gewünschte Stelle auf dem Produkt.
-            </p>
+            <p className="ds-pos-hint">{d.position.hintFree}</p>
           </div>
         )}
 
@@ -478,25 +453,25 @@ export default function DesignerClient({ productPhotos }: { productPhotos: Produ
           <div className="ds-section">
             <div className="ds-section-head">
               <span className="ds-step">05</span>
-              <h3>Position</h3>
-              <span className="ds-section-sub">Wo soll das Logo?</span>
+              <h3>{d.steps.position}</h3>
+              <span className="ds-section-sub">{d.position.whereLogo}</span>
             </div>
             <div className="ds-positions">
               {positionKeys.map((key) => {
-                const info = POSITION_LABELS[key] || { label: key, icon: "●" };
+                const dictKey = key.replace(/-([a-z])/g, (_, c) => c.toUpperCase()) as keyof DD["positions"];
+                const label = d.positions[dictKey] || key;
+                const icon = POSITION_ICONS[key] || "●";
                 return (
                   <button key={key} type="button"
                     className={`ds-pos-btn ${logoPos === key ? "active" : ""}`}
                     onClick={() => setLogoPos(key)}>
-                    <span className="ds-pos-icon">{info.icon}</span>
-                    <span>{info.label}</span>
+                    <span className="ds-pos-icon">{icon}</span>
+                    <span>{label}</span>
                   </button>
                 );
               })}
             </div>
-            <p className="ds-pos-hint">
-              💡 Drehen Sie das Modell — das Logo bleibt mit dem Produkt verbunden.
-            </p>
+            <p className="ds-pos-hint">{d.position.hint3d}</p>
           </div>
         )}
 
@@ -504,30 +479,28 @@ export default function DesignerClient({ productPhotos }: { productPhotos: Produ
         <div className="ds-section ds-section-cta">
           {added ? (
             <div className="ds-success">
-              <strong>✓ Zum Merkzettel hinzugefügt!</strong>
-              <p>Ihr individuelles Design ist gespeichert.</p>
-              <Link href="/merkzettel" className="btn-primary">Anfrage abschicken →</Link>
+              <strong>{d.success.title}</strong>
+              <p>{d.success.sub}</p>
+              <Link href="/merkzettel" className="btn-primary">{d.success.sendInquiry}</Link>
               <button type="button" className="btn-ghost" onClick={() => setAdded(false)}>
-                Weiteres Design
+                {d.success.more}
               </button>
             </div>
           ) : (
             <>
               <button type="button" className="btn-primary ds-cta"
                 onClick={() => void handleAddToMerkliste()} disabled={processing}>
-                Auf Merkzettel hinzufügen
+                {d.cta}
               </button>
-              <p className="ds-cta-note">
-                Wir erstellen ein unverbindliches Angebot mit Ihrem Design — Antwort innerhalb von 24 Stunden.
-              </p>
+              <p className="ds-cta-note">{d.ctaNote}</p>
             </>
           )}
         </div>
 
         <div className="ds-trust">
-          <div><strong>✓</strong> KI-gestützte Designoptimierung</div>
-          <div><strong>✓</strong> Angebot in 24 Stunden</div>
-          <div><strong>✓</strong> Persönliche Beratung</div>
+          <div><strong>✓</strong> {d.trust.ai}</div>
+          <div><strong>✓</strong> {d.trust.day24}</div>
+          <div><strong>✓</strong> {d.trust.personal}</div>
         </div>
       </aside>
 
@@ -535,33 +508,21 @@ export default function DesignerClient({ productPhotos }: { productPhotos: Produ
       {previewImage && (
         <div className="ds-preview-modal" onClick={() => setPreviewImage(null)}>
           <div className="ds-preview-box" onClick={(e) => e.stopPropagation()}>
-            <button
-              type="button"
-              className="ds-preview-close"
-              onClick={() => setPreviewImage(null)}
-              aria-label="Schließen"
-            >
-              ✕
-            </button>
+            <button type="button" className="ds-preview-close"
+              onClick={() => setPreviewImage(null)} aria-label="X">✕</button>
             <div className="ds-preview-head">
-              <strong>Druckvorschau</strong>
-              <span>So wird Ihr Design auf dem Produkt aussehen</span>
+              <strong>{d.preview.title}</strong>
+              <span>{d.preview.sub}</span>
             </div>
             {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img src={previewImage} alt="Druckvorschau" className="ds-preview-img" />
+            <img src={previewImage} alt={d.preview.title} className="ds-preview-img" />
             <div className="ds-preview-actions">
-              <button
-                type="button"
-                className="btn-primary"
-                onClick={() => {
-                  setPreviewImage(null);
-                  void handleAddToMerkliste();
-                }}
-              >
-                Auf Merkzettel hinzufügen
+              <button type="button" className="btn-primary"
+                onClick={() => { setPreviewImage(null); void handleAddToMerkliste(); }}>
+                {d.preview.addToList}
               </button>
               <button type="button" className="btn-ghost" onClick={() => setPreviewImage(null)}>
-                Weiter bearbeiten
+                {d.preview.edit}
               </button>
             </div>
           </div>
