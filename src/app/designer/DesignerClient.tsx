@@ -178,8 +178,13 @@ export default function DesignerClient({ productPhotos }: { productPhotos: Produ
         });
       const product = await loadImg(productPhoto);
       const canvas = document.createElement("canvas");
-      canvas.width = product.naturalWidth || 1000;
-      canvas.height = product.naturalHeight || 1200;
+      // Mobil için tavan: 1600px
+      const MAX = 1600;
+      const srcW = product.naturalWidth || 1000;
+      const srcH = product.naturalHeight || 1200;
+      const scale = Math.min(1, MAX / Math.max(srcW, srcH));
+      canvas.width = Math.round(srcW * scale);
+      canvas.height = Math.round(srcH * scale);
       const ctx = canvas.getContext("2d");
       if (!ctx) return activeLogoUrl;
 

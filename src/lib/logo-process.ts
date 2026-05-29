@@ -34,6 +34,46 @@ function loadImage(src: string): Promise<HTMLImageElement> {
   });
 }
 
+/**
+ * Verkleinert große Eingabebilder vor der Pipeline.
+ * Auf Mobilgeräten verursachen Handy-Fotos (4K, 8MP+) sonst OOM-Crashes
+ * im Browser, da @imgly + Canvas + WebGL den RAM überlasten.
+ */
+async function resizeIfTooBig(file: File, maxDim = 1500): Promise<File> {
+  // Kleine Dateien direkt durchlassen
+  if (file.size < 500_000) return file;
+  let url: string | null = null;
+  try {
+    url = URL.createObjectURL(file);
+    const img = await loadImage(url);
+    if (img.naturalWidth <= maxDim && img.naturalHeight <= maxDim) return file;
+    const scale = maxDim / Math.max(img.naturalWidth, img.naturalHeight);
+    const w = Math.round(img.naturalWidth * scale);
+    const h = Math.round(img.naturalHeight * scale);
+    const canvas = document.createElement("canvas");
+    canvas.width = w;
+    canvas.height = h;
+    const ctx = canvas.getContext("2d");
+    if (!ctx) return file;
+    ctx.imageSmoothingQuality = "high";
+    ctx.drawImage(img, 0, 0, w, h);
+    return await new Promise<File>((res) => {
+      canvas.toBlob(
+        (blob) => {
+          if (!blob) return res(file);
+          res(new File([blob], file.name, { type: "image/jpeg" }));
+        },
+        "image/jpeg",
+        0.92
+      );
+    });
+  } catch {
+    return file;
+  } finally {
+    if (url) URL.revokeObjectURL(url);
+  }
+}
+
 /** Ein einzelner hochwertiger Resize-Schritt (createImageBitmap, Lanczos-ähnlich). */
 async function resizeStep(dataUrl: string, w: number, h: number): Promise<string> {
   const canvas = document.createElement("canvas");
@@ -77,9 +117,13 @@ async function upscaleAndSharpen(dataUrl: string, _scale = 2): Promise<string> {
   let curH = img.naturalHeight;
   let current = dataUrl;
 
-  // Ziel: längere Kante auf mind. 1400px bringen (aber nicht über 4× Original)
+  // Ziel: längere Kante auf mind. 1400px (aber Tavan 2000 für mobile RAM)
   const longSide = Math.max(curW, curH);
-  const targetLong = Math.min(Math.max(1400, longSide * 2), longSide * 4);
+  const targetLong = Math.min(
+    Math.max(1400, longSide * 2),
+    longSide * 4,
+    2000
+  );
 
   // Schrittweise vergrößern (~1.6× pro Schritt)
   while (Math.max(curW, curH) < targetLong) {
@@ -185,7 +229,16 @@ export async function processLogo(
   onProgress("load", 1, 3);
   console.log("%c[logo-process] PIPELINE v2 — Hybrid (API + ISNet)", "color:#0a0;font-weight:bold");
   console.log(`[logo-process] Datei laden: ${file.name} (${(file.size / 1024).toFixed(1)} KB, ${file.type})`);
-  const original = await blobToDataUrl(file);
+
+  // Mobilgeräte schützen: zu große Bilder vorab verkleinern (max 1500px Kante)
+  let workFile: File = file;
+  const safeFile = await resizeIfTooBig(file, 1500);
+  if (safeFile !== file) {
+    console.log(`[logo-process] Eingabe verkleinert: ${(safeFile.size / 1024).toFixed(1)} KB`);
+    workFile = safeFile;
+  }
+
+  const original = await blobToDataUrl(workFile);
 
   // 1) Hintergrund entfernen — Hybrid: erst Premium-API, dann lokales ISNet
   onProgress("remove-bg", 2, 3);
@@ -211,7 +264,7 @@ export async function processLogo(
       if (typeof removeBackground !== "function") {
         throw new Error("removeBackground export nicht gefunden");
       }
-      const transparentBlob = await removeBackground(file, {
+      const transparentBlob = await removeBackground(workFile, {
         output: { format: "image/png", quality: 1.0 },
       });
       toUpscale = await blobToDataUrl(transparentBlob);
