@@ -496,7 +496,7 @@ const tr: Dictionary = {
     ctaNote: "Tasarımınız için bağlayıcı olmayan bir teklif hazırlarız — 24 saat içinde yanıt.",
     success: { title: "✓ Listeye eklendi!", sub: "Kişisel tasarımınız kaydedildi.", sendInquiry: "Talebi gönder →", more: "Başka tasarım" },
     trust: { ai: "Yapay zeka destekli tasarım optimizasyonu", day24: "24 saat içinde teklif", personal: "Kişisel danışmanlık" },
-    stageHint: { photo: "📸 Gerçekçi ürün önizleme", threeD: "🖱️ Döndürmek için sürükleyin · Yakınlaştırmak için kaydırın" },
+    stageHint: { photo: "🖱️ Logoyu sürükleyerek taşıyın", threeD: "🖱️ Döndürmek için sürükleyin · Yakınlaştırmak için kaydırın" },
     rotation: { stop: "⏸ Durdur", start: "▶ Otomatik dönüş" },
     preview: { btn: "👁 Baskı önizleme", title: "Baskı önizleme", sub: "Tasarımınız ürün üzerinde böyle görünecek", addToList: "Listeye ekle", edit: "Düzenlemeye devam et" },
     note: { logo: "Logo", position: "Konum", size: "Boyut" },

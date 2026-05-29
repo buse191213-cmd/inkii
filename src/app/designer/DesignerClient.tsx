@@ -254,6 +254,7 @@ export default function DesignerClient({ productPhotos, d }: { productPhotos: Pr
               applyColor={colorNeedsOverlay}
               posX={logoX}
               posY={logoY}
+              onPositionChange={(x, y) => { setLogoX(x); setLogoY(y); }}
             />
           ) : (
             <ProductViewer

@@ -3422,3 +3422,11 @@ body:has(.cookie-banner) .wa-fab{bottom:120px}
   .ds-preview-actions{flex-direction:column}
   .ds-preview-actions .btn-ghost{width:100%}
 }
+
+/* === Designer: Sürükle-bırak logo === */
+.pm-logo.draggable{cursor:grab;touch-action:none}
+.pm-logo.draggable:hover{filter:drop-shadow(0 0 8px rgba(63,156,92,.4))}
+.pm-logo.dragging{cursor:grabbing;filter:drop-shadow(0 4px 16px rgba(63,156,92,.55));z-index:5}
+.pm-logo.draggable::before{content:"";position:absolute;inset:-8px;border:2px dashed transparent;
+  border-radius:6px;pointer-events:none;transition:.18s}
+.pm-logo.draggable:hover::before,.pm-logo.dragging::before{border-color:rgba(63,156,92,.55)}

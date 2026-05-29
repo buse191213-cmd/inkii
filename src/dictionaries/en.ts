@@ -496,7 +496,7 @@ const en: Dictionary = {
     ctaNote: "We'll create a no-obligation quote with your design — reply within 24 hours.",
     success: { title: "✓ Added to wishlist!", sub: "Your custom design is saved.", sendInquiry: "Send inquiry →", more: "Another design" },
     trust: { ai: "AI-powered design optimization", day24: "Quote in 24 hours", personal: "Personal advice" },
-    stageHint: { photo: "📸 Realistic product preview", threeD: "🖱️ Drag to rotate · Scroll to zoom" },
+    stageHint: { photo: "🖱️ Drag the logo to move it", threeD: "🖱️ Drag to rotate · Scroll to zoom" },
     rotation: { stop: "⏸ Stop", start: "▶ Auto-rotation" },
     preview: { btn: "👁 Print preview", title: "Print preview", sub: "This is how your design will look on the product", addToList: "Add to wishlist", edit: "Continue editing" },
     note: { logo: "Logo", position: "Position", size: "Size" },
