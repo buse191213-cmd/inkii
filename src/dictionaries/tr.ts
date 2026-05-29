@@ -501,6 +501,8 @@ const tr: Dictionary = {
     preview: { btn: "👁 Baskı önizleme", title: "Baskı önizleme", sub: "Tasarımınız ürün üzerinde böyle görünecek", addToList: "Listeye ekle", edit: "Düzenlemeye devam et" },
     note: { logo: "Logo", position: "Konum", size: "Boyut" },
     productName: "Özel",
+    compare: { title: "AI iyileştirme", before: "Orijinal", after: "İyileştirilmiş" },
+    allProducts: { title: "Logonuz tüm ürünler üzerinde", sub: "Geçmek için bir ürüne dokunun" },
   },
 };
 

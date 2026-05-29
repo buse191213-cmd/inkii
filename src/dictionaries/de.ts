@@ -501,6 +501,8 @@ const de: Dictionary = {
     preview: { btn: "👁 Druckvorschau", title: "Druckvorschau", sub: "So wird Ihr Design auf dem Produkt aussehen", addToList: "Auf Merkzettel hinzufügen", edit: "Weiter bearbeiten" },
     note: { logo: "Logo", position: "Position", size: "Größe" },
     productName: "Individueller",
+    compare: { title: "KI-Verbesserung", before: "Original", after: "Optimiert" },
+    allProducts: { title: "Ihr Logo auf allen Produkten", sub: "Tippen Sie auf ein Produkt zum Wechseln" },
   },
 };
 

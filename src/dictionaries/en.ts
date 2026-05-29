@@ -501,6 +501,8 @@ const en: Dictionary = {
     preview: { btn: "👁 Print preview", title: "Print preview", sub: "This is how your design will look on the product", addToList: "Add to wishlist", edit: "Continue editing" },
     note: { logo: "Logo", position: "Position", size: "Size" },
     productName: "Custom",
+    compare: { title: "AI improvement", before: "Original", after: "Optimized" },
+    allProducts: { title: "Your logo on all products", sub: "Tap a product to switch" },
   },
 };
 

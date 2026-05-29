@@ -385,9 +385,22 @@ export default function DesignerClient({ productPhotos, d }: { productPhotos: Pr
           {processError && <div className="ds-warn">{d.warn}</div>}
 
           {processedUrl && originalUrl && processedUrl !== originalUrl && (
-            <button type="button" className="ds-toggle-orig" onClick={() => setShowOriginal((v) => !v)}>
-              {showOriginal ? d.toggleOpt : d.toggleOrig}
-            </button>
+            <div className="ds-compare">
+              <div className="ds-compare-title">{d.compare.title}</div>
+              <div className="ds-compare-grid">
+                <div className="ds-compare-item">
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <img src={originalUrl} alt={d.compare.before} />
+                  <span>{d.compare.before}</span>
+                </div>
+                <div className="ds-compare-arrow">→</div>
+                <div className="ds-compare-item highlighted">
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <img src={processedUrl} alt={d.compare.after} />
+                  <span>✨ {d.compare.after}</span>
+                </div>
+              </div>
+            </div>
           )}
         </div>
 
@@ -473,6 +486,62 @@ export default function DesignerClient({ productPhotos, d }: { productPhotos: Pr
               })}
             </div>
             <p className="ds-pos-hint">{d.position.hint3d}</p>
+          </div>
+        )}
+
+        {/* Tüm ürünler galerisi — logo varsa, müşteri farklı ürünleri görsün */}
+        {activeLogoUrl && (
+          <div className="ds-section">
+            <div className="ds-section-head">
+              <h3>{d.allProducts.title}</h3>
+              <span className="ds-section-sub">{d.allProducts.sub}</span>
+            </div>
+            <div className="ds-all-products">
+              {PRODUCT_KEYS.map((key) => {
+                const photo = productPhotos[key];
+                const productLabel = d.products[key].label;
+                const isActive = product === key;
+                return (
+                  <button
+                    key={key}
+                    type="button"
+                    className={`ds-mini-card ${isActive ? "active" : ""}`}
+                    onClick={() => switchProduct(key)}
+                    title={productLabel}
+                  >
+                    {photo ? (
+                      <div className="ds-mini-frame">
+                        {/* eslint-disable-next-line @next/next/no-img-element */}
+                        <img src={photo} alt={productLabel} className="ds-mini-product" draggable={false} />
+                        {colorNeedsOverlay && (
+                          <div className="ds-mini-color" style={{ backgroundColor: color }} />
+                        )}
+                        <div
+                          className="ds-mini-logo"
+                          style={{
+                            top: `${logoY}%`,
+                            left: `${logoX}%`,
+                            width: `${Math.round(logoScale * 100)}%`,
+                          }}
+                        >
+                          {/* eslint-disable-next-line @next/next/no-img-element */}
+                          <img src={activeLogoUrl} alt="" draggable={false} />
+                        </div>
+                      </div>
+                    ) : (
+                      <div className="ds-mini-frame ds-mini-3d">
+                        <span className="ds-mini-icon">{PRODUCT_ICONS[key]}</span>
+                        <div className="ds-mini-logo-3d">
+                          {/* eslint-disable-next-line @next/next/no-img-element */}
+                          <img src={activeLogoUrl} alt="" draggable={false} />
+                        </div>
+                      </div>
+                    )}
+                    <span className="ds-mini-label">{productLabel}</span>
+                  </button>
+                );
+              })}
+            </div>
           </div>
         )}
 

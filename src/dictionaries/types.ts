@@ -370,5 +370,7 @@ export type Dictionary = {
     preview: { btn: string; title: string; sub: string; addToList: string; edit: string };
     note: { logo: string; position: string; size: string };
     productName: string;
+    compare: { title: string; before: string; after: string };
+    allProducts: { title: string; sub: string };
   };
 };
