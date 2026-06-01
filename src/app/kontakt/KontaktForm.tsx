@@ -74,7 +74,7 @@ export default function KontaktForm() {
 
       <div className="kf-row">
         <div className="kf-field">
-          <label htmlFor="email">Arbeits-E-Mail</label>
+          <label htmlFor="email">E-Mail</label>
           <input id="email" name="email" type="email" placeholder="name@firma.de" required />
         </div>
         <div className="kf-field">
