@@ -426,12 +426,6 @@ const en: Dictionary = {
     kicker: "Textile finishing",
     h1: "Textile finishing.",
     intro: "Textile printing & embroidery for corporate and workwear as well as team and sportswear.",
-    boxes: [
-      { title: "Screen Print" },
-      { title: "Embroidery" },
-      { title: "DTF Print" },
-      { title: "Flock Print" },
-    ],
     details: [
       { title: "Screen Print", text: "Brilliant colors and high opacity, ideal for large quantities and long-lasting results." },
       { title: "Embroidery", text: "High-quality, elegant and extremely durable, perfect for logos and corporate branding." },

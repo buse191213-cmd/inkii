@@ -30,6 +30,7 @@ export const HOME_SLOTS: HomeSlot[] = [
   { slot: "tv-method-2", label: "Textilveredelung — Stickerei (Foto)", group: "feature", size: "800×800", ratio: "1/1" },
   { slot: "tv-method-3", label: "Textilveredelung — DTF-Druck (Foto)", group: "feature", size: "800×800", ratio: "1/1" },
   { slot: "tv-method-4", label: "Textilveredelung — Flockdruck (Foto)", group: "feature", size: "800×800", ratio: "1/1" },
+  { slot: "tv-method-5", label: "Textilveredelung — Patches (Foto)", group: "feature", size: "800×800", ratio: "1/1" },
   { slot: "nh-hero", label: "Nachhaltigkeit — Titelbild (großer Hero-Bereich)", group: "nachhaltigkeit", size: "1920×900", ratio: "21/9" },
   { slot: "nh-1", label: "Nachhaltigkeit — Karte 1: Faire Textilien", group: "nachhaltigkeit", size: "800×1000", ratio: "4/5" },
   { slot: "nh-2", label: "Nachhaltigkeit — Karte 2: Wassersparende Verfahren", group: "nachhaltigkeit", size: "800×1000", ratio: "4/5" },

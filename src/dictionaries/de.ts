@@ -426,12 +426,6 @@ const de: Dictionary = {
     kicker: "Textilveredelung",
     h1: "Textilveredelung.",
     intro: "Textildruck & Bestickung für Firmen- und Berufsbekleidung sowie für Team- und Sportbekleidung.",
-    boxes: [
-      { title: "Siebdruck" },
-      { title: "Stickerei" },
-      { title: "DTF-Druck" },
-      { title: "Flockdruck" },
-    ],
     details: [
       { title: "Siebdruck", text: "Brillante Farben und hohe Deckkraft, ideal für große Stückzahlen und langlebige Ergebnisse." },
       { title: "Stickerei", text: "Hochwertig, edel und extrem strapazierfähig, perfekt für Logos und Corporate Branding." },

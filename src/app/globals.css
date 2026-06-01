@@ -3467,37 +3467,3 @@ body:has(.cookie-banner) .wa-fab{bottom:120px}
 @media(max-width:520px){
   .ds-all-products{grid-template-columns:repeat(2,1fr)}
 }
-
-/* === /bereiche/textilveredelung sayfası === */
-/* 4 lu kutu grid */
-.tv-boxes{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-top:20px}
-.tv-box{position:relative;display:flex;flex-direction:column;background:#fff;
-  border:1px solid #e3e6df;border-radius:14px;overflow:hidden;transition:.22s}
-.tv-box:hover{transform:translateY(-3px);box-shadow:0 14px 30px rgba(28,39,34,.10);
-  border-color:#cdd6c9}
-.tv-box-img{width:100%;aspect-ratio:1/1;background:#f4f5f1 center/cover no-repeat}
-.tv-box-label{padding:14px 12px;font-family:Georgia,serif;font-size:1.05rem;
-  font-weight:600;color:#1c2722;text-align:center;letter-spacing:.01em}
-@media(max-width:780px){
-  .tv-boxes{grid-template-columns:repeat(2,1fr);gap:12px}
-  .tv-box-label{font-size:.95rem;padding:10px 8px}
-}
-
-/* 5 numaralı detay listesi */
-.tv-details-section{background:#f9faf6;padding-top:30px;padding-bottom:30px}
-.tv-details{display:flex;flex-direction:column;gap:14px}
-.tv-detail{display:grid;grid-template-columns:auto 1fr;gap:18px;align-items:start;
-  padding:18px 20px;background:#fff;border:1px solid #e8eae3;border-radius:12px;
-  transition:.18s}
-.tv-detail:hover{border-color:#3f9c5c;box-shadow:0 4px 14px rgba(63,156,92,.10)}
-.tv-detail-num{font-family:Georgia,serif;font-size:2rem;font-weight:700;color:#3f9c5c;
-  line-height:1;min-width:42px}
-.tv-detail-title{font-family:Georgia,serif;font-size:1.2rem;color:#1c2722;
-  margin:0 0 6px 0;font-weight:600}
-.tv-detail-text{margin:0;font-size:.94rem;line-height:1.55;color:#4a5450}
-@media(max-width:600px){
-  .tv-detail{padding:14px;gap:12px}
-  .tv-detail-num{font-size:1.6rem;min-width:34px}
-  .tv-detail-title{font-size:1.05rem}
-  .tv-detail-text{font-size:.88rem}
-}

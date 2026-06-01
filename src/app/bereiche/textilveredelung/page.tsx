@@ -18,11 +18,12 @@ export default async function TextilveredelungDetailPage() {
   const d = getDictionary(locale);
   const t = d.textilSub;
   const heroImg = await getHomeImage("area-1");
-  const boxImgs = [
+  const imgs = [
     await getHomeImage("tv-method-1"),
     await getHomeImage("tv-method-2"),
     await getHomeImage("tv-method-3"),
     await getHomeImage("tv-method-4"),
+    await getHomeImage("tv-method-5"),
   ];
 
   return (
@@ -45,34 +46,19 @@ export default async function TextilveredelungDetailPage() {
         </div>
       </section>
 
-      {/* 4'lü Kutu Grid — Foto + İsim */}
+      {/* 5 yöntem yan yana (mm-page-tile pattern, /veredelung ile aynı) */}
       <section className="mm-page-section">
         <div className="wrap">
-          <div className="tv-boxes">
-            {t.boxes.map((b, i) => (
-              <div className="tv-box" key={b.title}>
-                <div
-                  className="tv-box-img"
-                  style={boxImgs[i] ? { backgroundImage: `url(${boxImgs[i]})` } : undefined}
-                />
-                <div className="tv-box-label">{b.title}</div>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* 5 Numaralı Detay Listesi */}
-      <section className="mm-page-section tv-details-section">
-        <div className="wrap">
-          <div className="tv-details">
-            {t.details.map((det, i) => (
-              <div className="tv-detail" key={det.title}>
-                <span className="tv-detail-num">0{i + 1}</span>
-                <div className="tv-detail-body">
-                  <h3 className="tv-detail-title">{det.title}</h3>
-                  <p className="tv-detail-text">{det.text}</p>
-                </div>
+          <div className="mm-page-tiles cols-5">
+            {t.details.map((m, i) => (
+              <div
+                key={m.title}
+                className="mm-page-tile"
+                style={imgs[i] ? { backgroundImage: `url(${imgs[i]})` } : undefined}
+              >
+                <div className="mm-page-tile-label">0{i + 1}</div>
+                <h3 className="mm-page-tile-title">{m.title}</h3>
+                <p className="mm-page-tile-desc">{m.text}</p>
               </div>
             ))}
           </div>
