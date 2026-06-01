@@ -13,7 +13,6 @@ type NavItem = { href: string; key: keyof Dictionary["nav"] };
 const FALLBACK_NAV: NavItem[] = [
   { href: "/werbemittel?cat=kleidung", key: "kleidung" },
   { href: "/werbemittel?cat=taschen", key: "taschen" },
-  { href: "/werbemittel?cat=werbeartikel", key: "werbeartikel" },
   { href: "/werbemittel", key: "werbemittel" },
   { href: "/webdesign", key: "webdesign" },
   { href: "/marketing", key: "marketing" },
