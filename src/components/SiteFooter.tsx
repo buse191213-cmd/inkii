@@ -56,7 +56,7 @@ export default function SiteFooter({
         </div>
         <div className="foot-bottom">
           <span>
-            © {new Date().getFullYear()} <span translate="no">INKII</span> — {t.copyright}
+            © {new Date().getFullYear()} <span translate="no">INKII WORKS</span> — {t.copyright}
           </span>
         </div>
         <p className="foot-note">{t.note}</p>

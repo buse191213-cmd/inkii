@@ -41,8 +41,8 @@ header.site{position:sticky;top:38px;z-index:50;background:#fff;
 .head-row > nav.main{justify-self:center}
 .head-row > .head-actions{justify-self:end}
 .logo{display:inline-flex;align-items:center;text-decoration:none;cursor:pointer}
-.logo img{height:38px;width:auto;display:block}
-@media(max-width:600px){.logo img{height:32px}}
+.logo img{height:50px;width:auto;display:block}
+@media(max-width:600px){.logo img{height:40px}}
 /* Admin-Seitenleiste verwendet weiterhin Text-Logo: */
 .logo-name{font-weight:800;font-size:1.5rem;letter-spacing:.15em;margin-right:-.15em;
   font-family:var(--display);color:var(--ink);line-height:1}
@@ -366,7 +366,7 @@ footer.site ul a:hover{color:var(--leaf)}
   .burger{display:flex !important}
   .head-actions{gap:8px}
   .head-actions .icon-btn{width:38px;height:38px}
-  .logo img{height:34px}
+  .logo img{height:44px}
   .head-row{gap:14px;height:60px}
   .cart-pill{padding:7px 12px}
 }
@@ -389,7 +389,7 @@ footer.site ul a:hover{color:var(--leaf)}
   /* Header: sticky'i sayfanın üstüne sabitle, ufak boyut */
   header.site{top:0}
   .head-row{height:56px;gap:8px}
-  .logo img{height:30px}
+  .logo img{height:38px}
   .head-actions{gap:6px}
   .cart-pill{padding:6px 10px;font-size:.78rem;gap:6px}
   .cart-pill svg{width:14px;height:14px}
@@ -398,7 +398,7 @@ footer.site ul a:hover{color:var(--leaf)}
 @media(max-width:420px){
   /* En küçük telefonlar: logo + heart-count + burger sığsın */
   .head-row{gap:4px}
-  .logo img{height:26px}
+  .logo img{height:34px}
   .cart-pill{padding:5px 8px;font-size:.72rem}
   .cart-pill .label,.cart-pill span:not(.count){display:none}
   .burger{width:36px;height:36px}
@@ -1234,7 +1234,7 @@ body:has(.hero-full) header.site .head-row > nav.main{justify-self:center !impor
 body.is-home header.site .head-row > .head-actions,
 body:has(.hero-full) header.site .head-row > .head-actions{justify-self:end !important}
 body.is-home header.site .logo img,
-body:has(.hero-full) header.site .logo img{filter:brightness(0) invert(1);height:34px}
+body:has(.hero-full) header.site .logo img{filter:brightness(0) invert(1);height:44px}
 body.is-home header.site nav.main a,
 body:has(.hero-full) header.site nav.main a{color:rgba(255,255,255,.92)}
 body.is-home header.site nav.main a:hover,
@@ -2796,7 +2796,7 @@ body:has(.home-services) footer.site{margin-top:0}
   .mm-page-cta{padding:50px 18px}
 
   /* Logo daha küçük */
-  .logo img{height:30px}
+  .logo img{height:38px}
 
   /* Drawer link daha küçük */
   .drawer a{font-size:1.2rem;padding:14px 0}
