@@ -234,14 +234,6 @@ export default function DesignerClient({ productPhotos, d }: { productPhotos: Pr
     // Tam tasarım görüntüsünü yakala
     const designImage = await captureMockup();
 
-    // Designer ürünleri Merkzettel'den shop kategorisine yönlendirilsin
-    const PRODUCT_SHOP_LINK: Record<ProductKey, string> = {
-      tshirt: "/werbemittel?cat=kleidung",
-      hoodie: "/werbemittel?cat=kleidung",
-      cap:    "/werbemittel?cat=werbeartikel",
-      tote:   "/werbemittel?cat=werbeartikel",
-    };
-
     addOrUpdate({
       id,
       code: productInfo.code,
@@ -251,7 +243,6 @@ export default function DesignerClient({ productPhotos, d }: { productPhotos: Pr
       color,
       colorLabel: colorName,
       note: noteParts.join(" · "),
-      linkHref: PRODUCT_SHOP_LINK[product],
     });
     setAdded(true);
   }

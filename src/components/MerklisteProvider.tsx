@@ -20,7 +20,6 @@ export type MerkItem = {
   note?: string;
   color?: string | null;     // Hex-Code (z. B. #3F9C5C) oder Slug
   colorLabel?: string | null;
-  linkHref?: string;         // Optional: eigener Link statt /werbemittel/{id} (z.B. Designer-Produkte)
 };
 
 type MerklisteContextValue = {
@@ -116,7 +115,6 @@ export function MerklisteProvider({ children }: { children: React.ReactNode }) {
         note: item.note && item.note.trim() ? item.note.trim() : undefined,
         color: item.color ?? null,
         colorLabel: item.colorLabel ?? null,
-        linkHref: item.linkHref,
       };
       if (idx === -1) return [...cur, next];
       const copy = [...cur];

@@ -89,7 +89,7 @@ export default function MerklisteView({
                 </div>
                 <div className="merk-info">
                   {it.code && <div className="merk-code">{t.artNr} {it.code}</div>}
-                  <Link href={it.linkHref ?? `/werbemittel/${it.id}`} className="merk-name">{it.name}</Link>
+                  <Link href={`/werbemittel/${it.id}`} className="merk-name">{it.name}</Link>
                   {it.color && (
                     <div className="merk-color-row">
                       <span className="merk-color-dot" style={{ background: it.color }} aria-hidden />

@@ -93,7 +93,7 @@ export default async function HomePage() {
             BEKLEIDUNG
           </div>
         </Link>
-        <Link href="/werbemittel?cat=taschen" className="home-tile">
+        <Link href="/werbemittel?cat=werbeartikel" className="home-tile">
           <div
             className="home-tile-img"
             style={tile2 ? { backgroundImage: `url(${tile2})` } : undefined}
@@ -101,7 +101,7 @@ export default async function HomePage() {
           <div className="home-tile-label">
             INDIVIDUELLE
             <br />
-            TASCHEN
+            WERBEARTIKEL
           </div>
         </Link>
       </section>
