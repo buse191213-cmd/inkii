@@ -548,7 +548,7 @@ export default function ProductManager({
                             }}
                           />
                           <span className="page-chip-label">
-                            {slug === "kleidung" && "Kleidung"}
+                            {slug === "kleidung" && "Textilveredelung"}
                             {slug === "taschen" && "Taschen"}
                             {slug === "werbeartikel" && "Werbeartikel"}
                           </span>

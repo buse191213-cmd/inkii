@@ -119,7 +119,7 @@ export default function CategoryForm({ categories }: { categories: AdminCat[] })
           </svg>
           <input
             className="cat-input-inline"
-            placeholder="Neue Kategorie hinzufügen — z. B. Kleidung, Taschen, Werbeartikel"
+            placeholder="Neue Kategorie hinzufügen — z. B. Textilveredelung, Taschen, Werbeartikel"
             value={name}
             onChange={(e) => {
               setName(e.target.value);

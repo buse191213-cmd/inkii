@@ -13,7 +13,6 @@ export type Dictionary = {
     kontakt: string;
     kleidung: string;
     taschen: string;
-    werbeartikel: string;
     webdesign: string;
     marketing: string;
   };

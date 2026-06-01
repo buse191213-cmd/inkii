@@ -131,7 +131,7 @@ export default function CatalogClient({
   // Slug → Anzeigename mit Erstbuchstabe-Großschreibung (falls Admin "kleidung" eingegeben hat)
   const cap = (s: string) => s.charAt(0).toUpperCase() + s.slice(1);
   const SLUG_LABEL: Record<string, string> = {
-    kleidung: "Kleidung",
+    kleidung: "Textilveredelung",
     taschen: "Taschen",
     werbeartikel: "Werbeartikel",
   };
