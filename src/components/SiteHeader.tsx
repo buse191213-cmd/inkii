@@ -71,7 +71,7 @@ function SiteHeaderInner({
             <span className="u-star">★</span> Premium Werbemittel-Service
           </span>
           <span className="u-center">
-            Kostenlose Designs &amp; unverbindliches Angebot in 24 Stunden
+            Kostenlose Designs &amp; unverbindliches Angebot innerhalb 24 Stunden
           </span>
           <div className="u-right">
             <Link href="/ueber-uns">Über Uns</Link>

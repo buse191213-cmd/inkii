@@ -109,7 +109,7 @@ export default async function LeistungenPage() {
 
       <section className="mm-page-cta">
         <h2 className="mm-page-cta-h">Was darf es sein?</h2>
-        <p className="mm-page-cta-p">Schicken Sie uns Ihre Anfrage — kostenlose Designs &amp; Angebot in 24 Stunden.</p>
+        <p className="mm-page-cta-p">Schicken Sie uns Ihre Anfrage — kostenlose Designs &amp; Angebot innerhalb 24 Stunden.</p>
         <Link href="/kontakt" className="mm-page-cta-btn">{d.nav.kontakt}</Link>
       </section>
     </SiteShell>

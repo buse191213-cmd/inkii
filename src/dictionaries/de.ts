@@ -331,7 +331,7 @@ const de: Dictionary = {
         desc: "Logo, Farbwelt, Typografie und ein konsistentes Design-System für alle Kanäle." },
     ],
     ctaH: "Bereit für Ihre neue Website?",
-    ctaP: "Kostenloses Konzept und Angebot in 24 Stunden.",
+    ctaP: "Kostenloses Konzept und Angebot innerhalb 24 Stunden.",
   },
   marketing: {
     metaTitle: "Marketing | INKII Digital Studio",
@@ -495,7 +495,7 @@ const de: Dictionary = {
     cta: "Auf Merkzettel hinzufügen",
     ctaNote: "Wir erstellen ein unverbindliches Angebot mit Ihrem Design — Antwort innerhalb von 24 Stunden.",
     success: { title: "✓ Zum Merkzettel hinzugefügt!", sub: "Ihr individuelles Design ist gespeichert.", sendInquiry: "Anfrage abschicken →", more: "Weiteres Design" },
-    trust: { ai: "KI-gestützte Designoptimierung", day24: "Angebot in 24 Stunden", personal: "Persönliche Beratung" },
+    trust: { ai: "KI-gestützte Designoptimierung", day24: "Angebot innerhalb 24 Stunden", personal: "Persönliche Beratung" },
     stageHint: { photo: "🖱️ Logo ziehen zum Verschieben", threeD: "🖱️ Ziehen zum Drehen · Scrollen für Zoom" },
     rotation: { stop: "⏸ Stop", start: "▶ Auto-Rotation" },
     preview: { btn: "👁 Druckvorschau", title: "Druckvorschau", sub: "So wird Ihr Design auf dem Produkt aussehen", addToList: "Auf Merkzettel hinzufügen", edit: "Weiter bearbeiten" },

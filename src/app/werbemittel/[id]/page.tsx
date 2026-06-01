@@ -227,7 +227,7 @@ export default async function ProductDetailPage({
 
               <div className="mm-detail-trust">
                 <div><strong>✓</strong> Kostenlose Designvorschläge</div>
-                <div><strong>✓</strong> Angebot in 24 Stunden</div>
+                <div><strong>✓</strong> Angebot innerhalb 24 Stunden</div>
                 <div><strong>✓</strong> Persönliche Beratung</div>
               </div>
             </div>
