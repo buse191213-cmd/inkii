@@ -43,7 +43,7 @@ export default async function UeberUnsPage() {
             <span className="active">Über Uns</span>
           </div>
           <h1 className="mm-page-h1">{u.h1}</h1>
-          <p className="mm-page-lead">{u.intro}</p>
+          {u.intro && <p className="mm-page-lead">{u.intro}</p>}
         </div>
       </section>
 
@@ -56,7 +56,7 @@ export default async function UeberUnsPage() {
               <h2 className="mm-page-h2">{u.storyTitle}</h2>
             </div>
             <div className="mm-story-text">
-              <p>{u.intro}</p>
+              {u.intro && <p>{u.intro}</p>}
               <p>{u.storyText}</p>
             </div>
           </div>

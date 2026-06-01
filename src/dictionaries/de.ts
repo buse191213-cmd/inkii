@@ -108,7 +108,7 @@ const de: Dictionary = {
   },
   ueberUns: {
     h1: "Ihr Partner für Veredelung.",
-    intro: "Was als kleine Druckerei begann, ist heute ein eingespieltes Team für Textilveredelung, Teamwear und Werbemittel.",
+    intro: "",
     storyKicker: "Unsere Geschichte",
     storyTitle: "Aus Leidenschaft fürs Detail.",
     storyText: "Wir glauben, dass gute Werbung mit guter Beratung beginnt. Deshalb nehmen wir uns Zeit für jedes Projekt – ob ein einzelnes Trikot oder die Ausstattung eines ganzen Unternehmens. Persönlich, ehrlich und mit dem Anspruch, ein Ergebnis zu liefern, das überzeugt.",
