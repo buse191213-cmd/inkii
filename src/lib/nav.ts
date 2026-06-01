@@ -25,7 +25,7 @@ export const NAV_HREF: Record<NavKey, string> = {
   home: "/",
   kleidung: "/werbemittel?cat=kleidung",
   taschen: "/werbemittel?cat=taschen",
-  werbemittel: "/werbemittel",
+  werbemittel: "/werbemittel?cat=werbeartikel",
   webdesign: "/webdesign",
   marketing: "/marketing",
   veredelung: "/veredelung",
