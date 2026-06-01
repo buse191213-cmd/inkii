@@ -168,7 +168,7 @@ export default async function ProductDetailPage({
               {SHOW_TIERS && tiers.length > 0 && (
                 <div className="mm-tiers">
                   <div className="mm-tiers-head">
-                    <span>Menge auswählen</span>
+                    <span>Staffelpreise</span>
                   </div>
                   <div className="mm-tiers-list">
                     {tiers.map((t, i) => {
