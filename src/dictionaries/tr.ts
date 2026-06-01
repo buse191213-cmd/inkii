@@ -426,11 +426,18 @@ const tr: Dictionary = {
     kicker: "Tekstil İşleme",
     h1: "Tekstil İşleme.",
     intro: "Kurumsal ve iş kıyafetleri ile takım ve spor kıyafetleri için tekstil baskı ve nakış.",
-    methods: [
-      { title: "Nakış", text: "Şık ve profesyonel görünüm için yüksek kaliteli işleme — kurumsal kıyafetler için ideal." },
-      { title: "DTF Baskı", text: "Parlak renkler, keskin detaylar ve yüksek dayanıklılık sunan modern direkt baskı yöntemi." },
-      { title: "Serigrafi", text: "Büyük üretim adetleri ve spor ürünleri için verimli — sağlam ve renk haslığı yüksek." },
-      { title: "Flex/Flok Baskı", text: "Temiz kenarlar, canlı renkler ve uzun ömürlü görünüm — yazılar, isimler ve logolar için." },
+    boxes: [
+      { title: "Serigrafi" },
+      { title: "Nakış" },
+      { title: "DTF Baskı" },
+      { title: "Flok Baskı" },
+    ],
+    details: [
+      { title: "Serigrafi", text: "Canlı renkler ve yüksek opaklık, büyük adetler ve uzun ömürlü sonuçlar için ideal." },
+      { title: "Nakış", text: "Kaliteli, şık ve son derece dayanıklı, logolar ve kurumsal markalama için mükemmel." },
+      { title: "DTF Baskı", text: "Foto baskı kalitesinde detaylı motifler, tüm kumaş renklerine uygun ve yıkamaya dayanıklı." },
+      { title: "Flok Baskı", text: "Net hatlarla dokunsal işleme, sağlam, canlı renkler ve çok yönlü kullanım." },
+      { title: "Yamalar", text: "Esnek kullanım için değiştirilebilir çözüm, günlük hayatta dayanıklı ve tek tip görünüm için ideal." },
     ],
     ctaTitle: "İşleme için hazır mısınız?",
     ctaText: "Logonuzu bize gönderin — gerisini biz halledelim.",

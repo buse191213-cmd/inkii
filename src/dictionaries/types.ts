@@ -314,7 +314,8 @@ export type Dictionary = {
     kicker: string;
     h1: string;
     intro: string;
-    methods: { title: string; text: string }[];
+    boxes: { title: string }[];
+    details: { title: string; text: string }[];
     ctaTitle: string;
     ctaText: string;
     ctaBtn: string;

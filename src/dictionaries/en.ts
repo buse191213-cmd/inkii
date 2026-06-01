@@ -426,11 +426,18 @@ const en: Dictionary = {
     kicker: "Textile finishing",
     h1: "Textile finishing.",
     intro: "Textile printing & embroidery for corporate and workwear as well as team and sportswear.",
-    methods: [
-      { title: "Embroidery", text: "High-quality finishing for an elegant, professional look — ideal for corporate apparel." },
-      { title: "DTF print", text: "Modern direct-print process with brilliant colors, sharp details and high durability." },
-      { title: "Screen print", text: "Efficient for larger quantities and sports items — robust and color-fast." },
-      { title: "Flex/flock print", text: "Clean edges, strong colors and long-lasting look for lettering, names and logos." },
+    boxes: [
+      { title: "Screen Print" },
+      { title: "Embroidery" },
+      { title: "DTF Print" },
+      { title: "Flock Print" },
+    ],
+    details: [
+      { title: "Screen Print", text: "Brilliant colors and high opacity, ideal for large quantities and long-lasting results." },
+      { title: "Embroidery", text: "High-quality, elegant and extremely durable, perfect for logos and corporate branding." },
+      { title: "DTF Print", text: "Detailed motifs in photo print quality, suitable for all fabric colors and wash-resistant." },
+      { title: "Flock Print", text: "Haptic finishing with clear contours, robust, vibrant colors and versatile." },
+      { title: "Patches", text: "Interchangeable solution for flexible use, durable in everyday life and ideal for a uniform appearance." },
     ],
     ctaTitle: "Ready for your finishing?",
     ctaText: "Send us your logo — we'll do the rest.",

@@ -9,7 +9,7 @@ export const dynamic = "force-dynamic";
 
 export const metadata: Metadata = {
   title: "Textilveredelung | INKII Works",
-  description: "Veredelungsmethoden für professionelle Unternehmensbekleidung – Stickerei, DTF, Siebdruck und mehr.",
+  description: "Siebdruck, Stickerei, DTF-Druck, Flockdruck und Patches — alle Veredelungsmethoden im Überblick.",
   alternates: { canonical: "/bereiche/textilveredelung" },
 };
 
@@ -18,11 +18,16 @@ export default async function TextilveredelungDetailPage() {
   const d = getDictionary(locale);
   const t = d.textilSub;
   const heroImg = await getHomeImage("area-1");
-  const img1 = await getHomeImage("feat-1");
-  const img2 = await getHomeImage("feat-2");
+  const boxImgs = [
+    await getHomeImage("tv-method-1"),
+    await getHomeImage("tv-method-2"),
+    await getHomeImage("tv-method-3"),
+    await getHomeImage("tv-method-4"),
+  ];
 
   return (
     <SiteShell>
+      {/* Hero */}
       <section
         className="mm-page-hero"
         style={heroImg ? { backgroundImage: `url(${heroImg})` } : undefined}
@@ -40,26 +45,41 @@ export default async function TextilveredelungDetailPage() {
         </div>
       </section>
 
-      <section className="mm-split">
-        <div className="mm-split-img" style={img1 ? { backgroundImage: `url(${img1})` } : undefined} />
-        <div className="mm-split-body">
-          <span className="mm-page-kicker">{t.methods[0].title}</span>
-          <h2 className="mm-page-h2">{t.methods[0].title}</h2>
-          <p>{t.methods[0].text}</p>
-          <p>{t.methods[1].text}</p>
+      {/* 4'lü Kutu Grid — Foto + İsim */}
+      <section className="mm-page-section">
+        <div className="wrap">
+          <div className="tv-boxes">
+            {t.boxes.map((b, i) => (
+              <div className="tv-box" key={b.title}>
+                <div
+                  className="tv-box-img"
+                  style={boxImgs[i] ? { backgroundImage: `url(${boxImgs[i]})` } : undefined}
+                />
+                <div className="tv-box-label">{b.title}</div>
+              </div>
+            ))}
+          </div>
         </div>
       </section>
 
-      <section className="mm-split mm-split-reverse">
-        <div className="mm-split-img" style={img2 ? { backgroundImage: `url(${img2})` } : undefined} />
-        <div className="mm-split-body">
-          <span className="mm-page-kicker">{t.methods[2].title}</span>
-          <h2 className="mm-page-h2">{t.methods[2].title}</h2>
-          <p>{t.methods[2].text}</p>
-          <p>{t.methods[3].text}</p>
+      {/* 5 Numaralı Detay Listesi */}
+      <section className="mm-page-section tv-details-section">
+        <div className="wrap">
+          <div className="tv-details">
+            {t.details.map((det, i) => (
+              <div className="tv-detail" key={det.title}>
+                <span className="tv-detail-num">0{i + 1}</span>
+                <div className="tv-detail-body">
+                  <h3 className="tv-detail-title">{det.title}</h3>
+                  <p className="tv-detail-text">{det.text}</p>
+                </div>
+              </div>
+            ))}
+          </div>
         </div>
       </section>
 
+      {/* CTA */}
       <section className="mm-page-cta">
         <h2 className="mm-page-cta-h">{t.ctaTitle}</h2>
         <p className="mm-page-cta-p">{t.ctaText}</p>
