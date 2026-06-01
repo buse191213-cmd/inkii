@@ -56,7 +56,6 @@ export default async function WerbeartikelDetailPage() {
           <span className="mm-page-kicker">{t.categories[2].title}</span>
           <h2 className="mm-page-h2">{t.categories[2].title}</h2>
           <p>{t.categories[2].text}</p>
-          <p>{t.categories[3].text}</p>
         </div>
       </section>
 

@@ -443,7 +443,7 @@ const en: Dictionary = {
     categories: [
       { title: "Bottles & cups", text: "Personalized with logo or slogan — sustainable and practical for daily use." },
       { title: "Bags & backpacks", text: "Practical companions for events, trade fairs and daily use." },
-      { title: "Office & stationery", text: "Pens, notebooks, mouse pads — small things with big impact." },
+      { title: "Promotional items", text: "Pens, notebooks, mouse pads and more — small things with big impact." },
       { title: "Apparel & fashion", text: "T-shirts, caps, hoodies — your brand to wear." },
     ],
     ctaTitle: "Ready for your merchandise?",

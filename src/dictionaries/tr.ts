@@ -443,7 +443,7 @@ const tr: Dictionary = {
     categories: [
       { title: "Şişeler & Bardaklar", text: "Logo veya slogan ile kişiselleştirilmiş — sürdürülebilir ve günlük kullanıma uygun." },
       { title: "Çantalar & Sırt Çantaları", text: "Etkinlikler, fuarlar ve günlük kullanım için pratik yardımcılar." },
-      { title: "Ofis & Kırtasiye", text: "Kalemler, defterler, mouse pad'ler — küçük ama büyük etki." },
+      { title: "Tanıtım Ürünleri", text: "Kalem, defter, mouse pad ve daha fazlası — küçük ama büyük etki." },
       { title: "Tekstil & Moda", text: "T-shirt, şapka, hoodie — markanızı giyilebilir kılar." },
     ],
     ctaTitle: "Tanıtım ürünü için hazır mısınız?",

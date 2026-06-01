@@ -4,7 +4,7 @@ const db = new PrismaClient();
 
 const categories = [
   { slug: "drinkware", name: "Trinkware" },
-  { slug: "office", name: "Schreiben & Büro" },
+  { slug: "office", name: "Werbeartikel" },
   { slug: "tech", name: "Technik & Mobil" },
   { slug: "bags", name: "Taschen & Reise" },
   { slug: "tools", name: "Schlüssel & Tools" },

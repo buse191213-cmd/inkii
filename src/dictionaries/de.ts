@@ -443,7 +443,7 @@ const de: Dictionary = {
     categories: [
       { title: "Trinkflaschen & Becher", text: "Personalisiert mit Logo oder Slogan — nachhaltig und alltagstauglich." },
       { title: "Taschen & Rucksäcke", text: "Praktische Begleiter für Events, Messen und den täglichen Gebrauch." },
-      { title: "Büro & Schreibwaren", text: "Stifte, Notizbücher, Mousepads — kleine Dinge mit großer Wirkung." },
+      { title: "Werbeartikel", text: "Stifte, Notizbücher, Mousepads und u.v.m — kleine Dinge mit großer Wirkung." },
       { title: "Textilien & Mode", text: "T-Shirts, Caps, Hoodies — Ihre Marke zum Anziehen." },
     ],
     ctaTitle: "Bereit für Ihren Werbeartikel?",
