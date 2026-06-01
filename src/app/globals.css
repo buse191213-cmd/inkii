@@ -28,7 +28,8 @@ button,input,select,textarea{font-family:var(--body)}
   height:38px;padding:0 28px;max-width:none;gap:24px}
 .utility .u-left{justify-self:start;display:flex;align-items:center;gap:6px;font-weight:500;color:rgba(255,255,255,.85)}
 .utility .u-star{color:#e8b04a;font-size:.95rem;line-height:1}
-.utility .u-center{justify-self:center;text-align:center;font-style:italic;color:rgba(255,255,255,.82);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.utility .u-center{justify-self:center;text-align:center;font-style:italic;color:rgba(255,255,255,.82);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;transform:translateX(-60px)}
+@media(max-width:900px){.utility .u-center{transform:none}}
 .utility .u-right{justify-self:end;display:flex;gap:18px;align-items:center}
 .utility a{font-weight:500;color:rgba(255,255,255,.82);text-decoration:none;transition:color .18s}
 .utility a:hover{color:#fff}
