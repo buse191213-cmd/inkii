@@ -128,7 +128,7 @@ const de: Dictionary = {
       { t: "Digitale Plattform", p: "Neue Web-Plattform mit Katalog und Self-Service-Bereich." },
     ],
     teamKicker: "Team",
-    teamTitle: "Die Menschen hinter INKII",
+    teamTitle: "Die Menschen hinter INKII WORKS",
     team: [
       { n: "Projektleitung", r: "Beratung & Angebote" },
       { n: "Grafik & Design", r: "Layout & Datencheck" },
