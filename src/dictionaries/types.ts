@@ -4,7 +4,6 @@
 export type Dictionary = {
   nav: {
     home: string;
-    veredelung: string;
     werbemittel: string;
     leistungen: string;
     bereiche: string;

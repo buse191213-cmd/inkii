@@ -14,7 +14,7 @@ export function pageMetadata({
 }: {
   title: string;
   description: string;
-  /** z. B. "/veredelung" — wird zum kanonischen Pfad. */
+  /** z. B. "/bereiche/textilveredelung" — wird zum kanonischen Pfad. */
   path: string;
   /** Optional: eigenes OG-Bild für diese Seite (sonst Layout-Default). */
   image?: string;

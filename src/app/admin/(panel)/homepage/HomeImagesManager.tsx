@@ -18,6 +18,7 @@ export default function HomeImagesManager({
   const bz = HOME_SLOTS.filter((s) => s.group === "bereiche");
   const pg = HOME_SLOTS.filter((s) => s.group === "page");
   const dz = HOME_SLOTS.filter((s) => s.group === "designer");
+  const tv = HOME_SLOTS.filter((s) => s.group === "textil-method");
 
   return (
     <>
@@ -145,6 +146,25 @@ export default function HomeImagesManager({
           </p>
           <div className="home-img-grid">
             {dz.map((s) => (
+              <Slot key={s.slot} slot={s.slot} label={s.label} meta={s} current={images[s.slot] ?? null} />
+            ))}
+          </div>
+        </div>
+      </div>
+
+      {/* Textilveredelung Yöntem Fotoları */}
+      <div className="panel" style={{ marginBottom: 18 }}>
+        <div className="panel-head">
+          <h3>Textilveredelung — Methodenbilder</h3>
+        </div>
+        <div className="panel-body">
+          <p className="hero-vid-state">
+            Die fünf Bilder auf der Seite <b>/bereiche/textilveredelung</b> —
+            Siebdruck, Stickerei, DTF-Druck, Flockdruck und Patches.
+            Empfohlen: quadratisches Format (800×800 px).
+          </p>
+          <div className="home-img-grid">
+            {tv.map((s) => (
               <Slot key={s.slot} slot={s.slot} label={s.label} meta={s} current={images[s.slot] ?? null} />
             ))}
           </div>

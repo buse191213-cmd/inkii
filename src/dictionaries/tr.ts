@@ -3,7 +3,6 @@ import type { Dictionary } from "./types";
 const tr: Dictionary = {
   nav: {
     home: "Ana Sayfa",
-    veredelung: "Tekstil Baskı",
     werbemittel: "Tanıtım Ürünleri",
     leistungen: "Hizmetler",
     bereiche: "Alanlar",

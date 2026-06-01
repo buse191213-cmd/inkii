@@ -1794,7 +1794,9 @@ body:has(.home-services) footer.site{margin-top:0}
 .mm-page-tile-title{font-family:var(--display);font-weight:800;
   font-size:1.6rem;letter-spacing:-.01em;line-height:1.1;margin:0 0 6px}
 .mm-page-tile-desc{font-size:.92rem;color:rgba(255,255,255,.85);
-  line-height:1.45;margin:0;max-width:280px}
+  line-height:1.45;margin:0;max-width:280px;
+  /* Açıklama uzunluğu farklı olsa da kart yüksekliği eşit, başlıklar aynı dikey hizada */
+  min-height:4.2em}
 
 /* 3 sütun grid */
 .mm-page-tiles.cols-3{grid-template-columns:repeat(3,1fr)}

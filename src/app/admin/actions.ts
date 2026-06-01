@@ -33,7 +33,6 @@ function refreshPublicPages() {
   revalidatePath("/leistungen");
   revalidatePath("/bereiche");
   revalidatePath("/nachhaltigkeit");
-  revalidatePath("/veredelung");
   revalidatePath("/ueber-uns");
   revalidatePath("/admin/homepage");
 }

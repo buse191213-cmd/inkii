@@ -3,7 +3,6 @@ import type { Dictionary } from "./types";
 const de: Dictionary = {
   nav: {
     home: "Home",
-    veredelung: "Textilveredelung",
     werbemittel: "Werbeartikel",
     leistungen: "Leistungen",
     bereiche: "Bereiche",

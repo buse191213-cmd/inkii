@@ -30,7 +30,7 @@ export default async function LeistungenPage() {
     {
       label: "Professionelle Textilveredelung",
       desc: "Siebdruck, Stickerei, DTF, Flockdruck und Patches — alle Verfahren aus einer Hand.",
-      img: f1, href: "/veredelung",
+      img: f1, href: "/bereiche/textilveredelung",
     },
     {
       label: "Firmen- und Berufsbekleidung",

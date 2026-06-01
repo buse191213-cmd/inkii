@@ -4,7 +4,7 @@
 export type HomeSlot = {
   slot: string;
   label: string;
-  group: "home-tiles" | "category" | "feature" | "nachhaltigkeit" | "leistungen" | "bereiche" | "page" | "designer";
+  group: "home-tiles" | "category" | "feature" | "nachhaltigkeit" | "leistungen" | "bereiche" | "page" | "designer" | "textil-method";
   /** Empfohlene Mindestgröße (px) für das Bild, z. B. "1600×900". */
   size?: string;
   /** Seitenverhältnis als CSS aspect-ratio, z. B. "16/9", "4/3", "1/1". */
@@ -26,11 +26,11 @@ export const HOME_SLOTS: HomeSlot[] = [
   { slot: "feat-6", label: "Leistung 6 — Webdesign & digitale Lösungen", group: "feature", size: "800×1000", ratio: "4/5" },
   { slot: "feat-7", label: "Leistung 7 — Onlineshops für Unternehmen", group: "feature", size: "800×1000", ratio: "4/5" },
   { slot: "feat-8", label: "Leistung 8 — Ganzheitliche Marketinglösungen", group: "feature", size: "800×1000", ratio: "4/5" },
-  { slot: "tv-method-1", label: "Textilveredelung — Siebdruck (Foto)", group: "feature", size: "800×800", ratio: "1/1" },
-  { slot: "tv-method-2", label: "Textilveredelung — Stickerei (Foto)", group: "feature", size: "800×800", ratio: "1/1" },
-  { slot: "tv-method-3", label: "Textilveredelung — DTF-Druck (Foto)", group: "feature", size: "800×800", ratio: "1/1" },
-  { slot: "tv-method-4", label: "Textilveredelung — Flockdruck (Foto)", group: "feature", size: "800×800", ratio: "1/1" },
-  { slot: "tv-method-5", label: "Textilveredelung — Patches (Foto)", group: "feature", size: "800×800", ratio: "1/1" },
+  { slot: "tv-method-1", label: "Textilveredelung — Siebdruck (Foto)", group: "textil-method", size: "800×800", ratio: "1/1" },
+  { slot: "tv-method-2", label: "Textilveredelung — Stickerei (Foto)", group: "textil-method", size: "800×800", ratio: "1/1" },
+  { slot: "tv-method-3", label: "Textilveredelung — DTF-Druck (Foto)", group: "textil-method", size: "800×800", ratio: "1/1" },
+  { slot: "tv-method-4", label: "Textilveredelung — Flockdruck (Foto)", group: "textil-method", size: "800×800", ratio: "1/1" },
+  { slot: "tv-method-5", label: "Textilveredelung — Patches (Foto)", group: "textil-method", size: "800×800", ratio: "1/1" },
   { slot: "nh-hero", label: "Nachhaltigkeit — Titelbild (großer Hero-Bereich)", group: "nachhaltigkeit", size: "1920×900", ratio: "21/9" },
   { slot: "nh-1", label: "Nachhaltigkeit — Karte 1: Faire Textilien", group: "nachhaltigkeit", size: "800×1000", ratio: "4/5" },
   { slot: "nh-2", label: "Nachhaltigkeit — Karte 2: Wassersparende Verfahren", group: "nachhaltigkeit", size: "800×1000", ratio: "4/5" },

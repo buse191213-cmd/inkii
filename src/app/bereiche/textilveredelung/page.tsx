@@ -46,7 +46,7 @@ export default async function TextilveredelungDetailPage() {
         </div>
       </section>
 
-      {/* 5 yöntem yan yana (mm-page-tile pattern, /veredelung ile aynı) */}
+      {/* 5 yöntem yan yana (mm-page-tile pattern, /bereiche/textilveredelung pattern) */}
       <section className="mm-page-section">
         <div className="wrap">
           <div className="mm-page-tiles cols-5">
