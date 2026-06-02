@@ -20,7 +20,6 @@ export default async function Page() {
   const imgs = [
     await getHomeImage("pw-1"),
     await getHomeImage("pw-2"),
-    await getHomeImage("pw-3"),
     await getHomeImage("pw-4"),
     await getHomeImage("pw-5"),
   ];
@@ -51,8 +50,8 @@ export default async function Page() {
               </div>
             ))}
           </div>
-          <div className="mm-page-tiles cols-3">
-            {t.details.slice(2,5).map((m, i) => (
+          <div className="mm-page-tiles cols-2">
+            {t.details.slice(2,4).map((m, i) => (
               <div key={m.title} className="mm-page-tile"
                 style={imgs[i+2] ? { backgroundImage: `url(${imgs[i+2]})` } : undefined}>
                 <div className="mm-page-tile-label">0{i + 3}</div>

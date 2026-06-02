@@ -470,7 +470,6 @@ const tr: Dictionary = {
     details: [
       { title: "Termos & Su Şişesi", text: "Paslanmaz çelik, yalıtımlı ve özel kazıma ya da baskı — günlük kullanımda sürdürülebilir." },
       { title: "Şapka & Bere", text: "Etkinlikler ve takımlar için premium kalitede nakışlı veya baskılı baş aksesuarları." },
-      { title: "Power Bank & Teknoloji", text: "Logonuzla yüksek kaliteli elektronik — modern, kullanışlı ve dayanıklı." },
       { title: "Kumaş & Deri Ürünleri", text: "Gerçek malzemelerden defterler, klasörler ve çantalar — değerli ve temsili." },
       { title: "Premium Kalem & Setler", text: "Özel günler için metal tükenmez kalemler, yazı setleri ve hediye kutuları." },
     ],
