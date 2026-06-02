@@ -361,6 +361,7 @@ export type Dictionary = {
     tileRightL2: string;
     fahrzeugLabel: string;
     fahrzeugSub: string;
+    fahrzeugSub2: string;
   };
   legal: {
     impressumTitle: string;

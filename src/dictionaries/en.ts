@@ -507,7 +507,8 @@ const en: Dictionary = {
     tileRightL1: "CUSTOM",
     tileRightL2: "PROMOTIONAL ITEMS",
     fahrzeugLabel: "VEHICLE LETTERING",
-    fahrzeugSub: "Vehicle lettering and effective outdoor advertising — from foil to complete design.",
+    fahrzeugSub: "Vehicle lettering and effective outdoor advertising",
+    fahrzeugSub2: "We turn surfaces into eye-catchers",
   },
   legal: {
     impressumTitle: "Imprint",

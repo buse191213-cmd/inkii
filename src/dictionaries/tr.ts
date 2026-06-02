@@ -507,7 +507,8 @@ const tr: Dictionary = {
     tileRightL1: "ÖZEL",
     tileRightL2: "TANITIM ÜRÜNLERİ",
     fahrzeugLabel: "ARAÇ GİYDİRME",
-    fahrzeugSub: "Araç giydirme ve etkili dış mekan reklamcılığı — folyodan komple tasarıma.",
+    fahrzeugSub: "Araç giydirme ve etkili dış mekan reklamcılığı",
+    fahrzeugSub2: "Yüzeyi göz alıcı kılıyoruz",
   },
   legal: {
     impressumTitle: "Yasal Bilgi (Impressum)",

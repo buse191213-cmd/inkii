@@ -3498,6 +3498,7 @@ body:has(.cookie-banner) .wa-fab{bottom:120px}
 .fahrzeug-label{font-family:var(--display);font-weight:800;
   font-size:1.9rem;letter-spacing:.02em;line-height:1.05;margin-bottom:8px}
 .fahrzeug-sub{font-size:1rem;color:rgba(255,255,255,.92);line-height:1.45;max-width:520px}
+.fahrzeug-sub2{font-size:1.05rem;color:#fff;font-style:italic;line-height:1.4;margin-top:6px;max-width:520px;letter-spacing:.01em}
 @media(max-width:780px){
   .fahrzeug-banner{aspect-ratio:auto;min-height:auto}
   .fahrzeug-text{padding:24px 20px;min-height:160px}

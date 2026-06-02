@@ -507,7 +507,8 @@ const de: Dictionary = {
     tileRightL1: "INDIVIDUELLE",
     tileRightL2: "WERBEARTIKEL",
     fahrzeugLabel: "FAHRZEUGBESCHRIFTUNG",
-    fahrzeugSub: "Fahrzeugbeschriftung und effektive Außenwerbung — von der Folie bis zum Komplettdesign.",
+    fahrzeugSub: "Fahrzeugbeschriftung und effektive Außenwerbung",
+    fahrzeugSub2: "Wir aus Fläche einen Blickfang",
   },
   legal: {
     impressumTitle: "Impressum",

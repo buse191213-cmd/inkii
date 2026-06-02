@@ -120,6 +120,7 @@ export default async function HomePage() {
           <div className="fahrzeug-text">
             <div className="fahrzeug-label">{t.fahrzeugLabel}</div>
             <div className="fahrzeug-sub">{t.fahrzeugSub}</div>
+            <div className="fahrzeug-sub2">{t.fahrzeugSub2}</div>
           </div>
         </Link>
       </section>
