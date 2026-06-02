@@ -3482,7 +3482,7 @@ body:has(.cookie-banner) .wa-fab{bottom:120px}
 @media(max-width:600px){.bereich-grid .mm-page-tile{min-height:280px}.bereich-grid .mm-page-tile-title{font-size:1.15rem}}
 
 /* === Fahrzeugbeschriftung Banner (ana sayfa, uzunlamasına) === */
-.home-fahrzeug{padding:0 0 24px}
+.home-fahrzeug{padding:24px 0 24px}
 .fahrzeug-banner{display:block;position:relative;width:100%;
   min-height:200px;aspect-ratio:6/1;
   background:#1c2722 center/cover no-repeat;
