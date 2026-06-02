@@ -3,10 +3,15 @@ import SiteShell from "@/components/SiteShell";
 import BodyClass from "@/components/BodyClass";
 import { getHeroVideoSrc } from "@/lib/hero-video";
 import { getHomeImage } from "@/lib/home-images";
+import { getLocale } from "@/lib/i18n-server";
+import { getDictionary } from "@/dictionaries";
 
 export const dynamic = "force-dynamic";
 
 export default async function HomePage() {
+  const locale = await getLocale();
+  const d = getDictionary(locale);
+  const t = d.home;
   const heroVideoSrc = await getHeroVideoSrc();
   const tile1 = await getHomeImage("home-tile-1");
   const tile2 = await getHomeImage("home-tile-2");
@@ -17,30 +22,10 @@ export default async function HomePage() {
   const svcFahrzeug = await getHomeImage("fb-banner");
 
   const services = [
-    {
-      label: "TEXTILVEREDELUNG",
-      sub: "Textildruck & Bestickung für Firmen- und Berufsbekleidung sowie für Team- und Sportbekleidung.",
-      href: "/bereiche/textilveredelung",
-      img: svcDruck,
-    },
-    {
-      label: "WERBEARTIKEL",
-      sub: "Textildruck & Bestickung für Taschen und mehr.",
-      href: "/bereiche/werbeartikel",
-      img: svcWerbe,
-    },
-    {
-      label: "WEBDESIGN",
-      sub: "Moderne Websites und Online-Shops aus einer Hand.",
-      href: "/webdesign",
-      img: svcWeb,
-    },
-    {
-      label: "MARKETING",
-      sub: "Ganzheitliche Marketinglösungen — von der Marke bis zur Kampagne.",
-      href: "/marketing",
-      img: svcMkt,
-    },
+    { label: t.services[0].label, sub: t.services[0].sub, href: "/bereiche/textilveredelung", img: svcDruck },
+    { label: t.services[1].label, sub: t.services[1].sub, href: "/bereiche/werbeartikel", img: svcWerbe },
+    { label: t.services[2].label, sub: t.services[2].sub, href: "/webdesign", img: svcWeb },
+    { label: t.services[3].label, sub: t.services[3].sub, href: "/marketing", img: svcMkt },
   ];
 
   return (
@@ -89,9 +74,9 @@ export default async function HomePage() {
             style={tile1 ? { backgroundImage: `url(${tile1})` } : undefined}
           />
           <div className="home-tile-label">
-            INDIVIDUELLE
+            {t.tileLeftL1}
             <br />
-            BEKLEIDUNG
+            {t.tileLeftL2}
           </div>
         </Link>
         <Link href="/werbemittel?cat=werbeartikel" className="home-tile">
@@ -100,9 +85,9 @@ export default async function HomePage() {
             style={tile2 ? { backgroundImage: `url(${tile2})` } : undefined}
           />
           <div className="home-tile-label">
-            INDIVIDUELLE
+            {t.tileRightL1}
             <br />
-            WERBEARTIKEL
+            {t.tileRightL2}
           </div>
         </Link>
       </section>
@@ -133,11 +118,8 @@ export default async function HomePage() {
         >
           <div className="fahrzeug-overlay" />
           <div className="fahrzeug-text">
-            <div className="fahrzeug-label">FAHRZEUGBESCHRIFTUNG</div>
-            <div className="fahrzeug-sub">
-              Fahrzeugbeschriftung und effektive Außenwerbung — von der Folie bis zum
-              Komplettdesign.
-            </div>
+            <div className="fahrzeug-label">{t.fahrzeugLabel}</div>
+            <div className="fahrzeug-sub">{t.fahrzeugSub}</div>
           </div>
         </Link>
       </section>
