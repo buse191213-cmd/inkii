@@ -1,4 +1,5 @@
 import Link from "next/link";
+import Image from "next/image";
 import SiteShell from "@/components/SiteShell";
 import BodyClass from "@/components/BodyClass";
 import { getHeroVideoSrc } from "@/lib/hero-video";
@@ -6,7 +7,7 @@ import { getHomeImage } from "@/lib/home-images";
 import { getLocale } from "@/lib/i18n-server";
 import { getDictionary } from "@/dictionaries";
 
-export const dynamic = "force-dynamic";
+export const revalidate = 60;
 
 export default async function HomePage() {
   const locale = await getLocale();
@@ -69,10 +70,11 @@ export default async function HomePage() {
       {/* === 2 große Bildkacheln === */}
       <section className="home-tiles">
         <Link href="/werbemittel?cat=kleidung" className="home-tile">
-          <div
-            className="home-tile-img"
-            style={tile1 ? { backgroundImage: `url(${tile1})` } : undefined}
-          />
+          <div className="home-tile-img">
+            {tile1 && (
+              <Image src={tile1} alt={t.tileLeftL1} fill sizes="(max-width: 768px) 100vw, 50vw" style={{ objectFit: "cover" }} />
+            )}
+          </div>
           <div className="home-tile-label">
             {t.tileLeftL1}
             <br />
@@ -80,10 +82,11 @@ export default async function HomePage() {
           </div>
         </Link>
         <Link href="/werbemittel?cat=werbeartikel" className="home-tile">
-          <div
-            className="home-tile-img"
-            style={tile2 ? { backgroundImage: `url(${tile2})` } : undefined}
-          />
+          <div className="home-tile-img">
+            {tile2 && (
+              <Image src={tile2} alt={t.tileRightL1} fill sizes="(max-width: 768px) 100vw, 50vw" style={{ objectFit: "cover" }} />
+            )}
+          </div>
           <div className="home-tile-label">
             {t.tileRightL1}
             <br />
@@ -96,10 +99,11 @@ export default async function HomePage() {
       <section className="home-services">
         {services.map((s) => (
           <Link key={s.label} href={s.href} className="svc-box">
-            <div
-              className="svc-img"
-              style={s.img ? { backgroundImage: `url(${s.img})` } : undefined}
-            />
+            <div className="svc-img">
+              {s.img && (
+                <Image src={s.img} alt={s.label} fill sizes="(max-width: 768px) 100vw, 25vw" style={{ objectFit: "cover" }} />
+              )}
+            </div>
             <div className="svc-overlay" />
             <div className="svc-text">
               <div className="svc-label">{s.label}</div>
@@ -111,11 +115,10 @@ export default async function HomePage() {
 
       {/* === Fahrzeugbeschriftung Banner — uzunlamasına === */}
       <section className="home-fahrzeug">
-        <Link
-          href="/fahrzeugbeschriftung"
-          className="fahrzeug-banner"
-          style={svcFahrzeug ? { backgroundImage: `url(${svcFahrzeug})` } : undefined}
-        >
+        <Link href="/fahrzeugbeschriftung" className="fahrzeug-banner">
+          {svcFahrzeug && (
+            <Image src={svcFahrzeug} alt={t.fahrzeugSub} fill sizes="100vw" style={{ objectFit: "cover" }} priority={false} />
+          )}
           <div className="fahrzeug-overlay" />
           <div className="fahrzeug-text">
             <div className="fahrzeug-sub">{t.fahrzeugSub}</div>
