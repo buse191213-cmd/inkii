@@ -3474,5 +3474,7 @@ body:has(.cookie-banner) .wa-fab{bottom:120px}
 }
 
 /* === Bereich alt sayfaları: 2+3 grid, tüm kartlar AYNI yükseklikte === */
-.bereich-grid .mm-page-tile{aspect-ratio:unset;min-height:340px}
-@media(max-width:600px){.bereich-grid .mm-page-tile{min-height:280px}}
+.bereich-grid .mm-page-tile{aspect-ratio:unset;min-height:380px}
+/* Title yukarıdan başlasın: 1 ve 3 satırlı başlıklar aynı satırdan başlar */
+.bereich-grid .mm-page-tile-title{min-height:3.3em;align-items:flex-start}
+@media(max-width:600px){.bereich-grid .mm-page-tile{min-height:300px}}
