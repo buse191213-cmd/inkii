@@ -41,7 +41,7 @@ export default async function Page() {
       </section>
       <section className="mm-page-section">
         <div className="wrap">
-          <div className="mm-page-tiles cols-5">
+          <div className="mm-page-tiles">
             {t.details.map((m, i) => (
               <div key={m.title} className="mm-page-tile"
                 style={imgs[i] ? { backgroundImage: `url(${imgs[i]})` } : undefined}>

@@ -49,7 +49,7 @@ export default async function TextilveredelungDetailPage() {
       {/* 5 yöntem yan yana (mm-page-tile pattern, /bereiche/textilveredelung pattern) */}
       <section className="mm-page-section">
         <div className="wrap">
-          <div className="mm-page-tiles cols-5">
+          <div className="mm-page-tiles">
             {t.details.map((m, i) => (
               <div
                 key={m.title}
