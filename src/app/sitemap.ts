@@ -13,6 +13,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     "/bereiche/firmenkleidung",
     "/bereiche/premium-werbemittel",
     "/bereiche/onlineshops",
+    "/fahrzeugbeschriftung",
     "/werbemittel",
     "/leistungen",
     "/bereiche",

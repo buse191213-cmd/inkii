@@ -481,6 +481,21 @@ const de: Dictionary = {
     ctaText: "Wir analysieren Ihre Anforderungen und erstellen ein unverbindliches Konzept.",
     ctaBtn: "Kontakt",
   },
+  fahrzeug: {
+    kicker: "Fahrzeugbeschriftung",
+    h1: "Fahrzeugbeschriftung & Außenwerbung.",
+    intro: "Ihr Fahrzeug als rollende Visitenkarte. Wir gestalten und montieren Fahrzeugbeschriftungen und effektive Außenwerbung — vom kleinen Schriftzug bis zur Vollverklebung.",
+    details: [
+      { title: "Folienbeschriftung", text: "Hochwertige Klebefolien für Schriftzüge, Logos und Designs auf Fahrzeugen jeder Größe." },
+      { title: "Vollverklebung", text: "Komplette Fahrzeuggestaltung — vom Kleintransporter bis zum LKW, in jeder Farbe oder Optik." },
+      { title: "Magnetschilder", text: "Flexible Werbung zum Wechseln — ideal für temporäre Aktionen und mehrere Fahrzeuge." },
+      { title: "Schaufenster & Schilder", text: "Schaufensterbeschriftung, Werbeschilder und Bauzaunbanner für maximale Sichtbarkeit." },
+      { title: "Design & Montage", text: "Wir übernehmen die komplette Umsetzung — vom Entwurf bis zur fachgerechten Montage." },
+    ],
+    ctaTitle: "Bereit für mehr Sichtbarkeit?",
+    ctaText: "Schicken Sie uns Ihre Fahrzeugdaten — wir erstellen ein passendes Angebot.",
+    ctaBtn: "Kontakt",
+  },
   werbeSub: {
     kicker: "Werbeartikel",
     h1: "Werbeartikel.",

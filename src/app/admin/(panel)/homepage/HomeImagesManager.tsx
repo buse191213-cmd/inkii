@@ -22,6 +22,7 @@ export default function HomeImagesManager({
   const fk = HOME_SLOTS.filter((s) => s.group === "firmen-method");
   const pw = HOME_SLOTS.filter((s) => s.group === "premium-method");
   const os = HOME_SLOTS.filter((s) => s.group === "onlineshops-method");
+  const fb = HOME_SLOTS.filter((s) => s.group === "fahrzeug-method");
 
   return (
     <>
@@ -222,6 +223,24 @@ export default function HomeImagesManager({
           </p>
           <div className="home-img-grid">
             {os.map((s) => (
+              <Slot key={s.slot} slot={s.slot} label={s.label} meta={s} current={images[s.slot] ?? null} />
+            ))}
+          </div>
+        </div>
+      </div>
+
+      {/* Fahrzeugbeschriftung */}
+      <div className="panel" style={{ marginBottom: 18 }}>
+        <div className="panel-head">
+          <h3>Fahrzeugbeschriftung — Bilder</h3>
+        </div>
+        <div className="panel-body">
+          <p className="hero-vid-state">
+            <b>Banner</b> (1800×600) erscheint auf der Startseite. <b>Hero</b> und
+            die 5 Methodenbilder erscheinen auf der Seite <b>/fahrzeugbeschriftung</b>.
+          </p>
+          <div className="home-img-grid">
+            {fb.map((s) => (
               <Slot key={s.slot} slot={s.slot} label={s.label} meta={s} current={images[s.slot] ?? null} />
             ))}
           </div>

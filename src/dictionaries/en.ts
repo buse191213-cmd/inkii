@@ -481,6 +481,21 @@ const en: Dictionary = {
     ctaText: "We analyze your requirements and create a no-obligation concept.",
     ctaBtn: "Contact",
   },
+  fahrzeug: {
+    kicker: "Vehicle Lettering",
+    h1: "Vehicle Lettering & Outdoor Advertising.",
+    intro: "Your vehicle as a rolling business card. We design and install vehicle lettering and effective outdoor advertising — from small lettering to full wraps.",
+    details: [
+      { title: "Foil Lettering", text: "High-quality adhesive foils for lettering, logos and designs on vehicles of any size." },
+      { title: "Full Wrap", text: "Complete vehicle design — from vans to trucks, in any color or look." },
+      { title: "Magnetic Signs", text: "Flexible advertising to swap — ideal for temporary campaigns and multiple vehicles." },
+      { title: "Storefronts & Signs", text: "Storefront lettering, advertising signs and construction fence banners for maximum visibility." },
+      { title: "Design & Installation", text: "We handle the complete implementation — from concept to professional installation." },
+    ],
+    ctaTitle: "Ready for more visibility?",
+    ctaText: "Send us your vehicle data — we'll create a tailored offer.",
+    ctaBtn: "Contact",
+  },
   werbeSub: {
     kicker: "Merchandise",
     h1: "Merchandise.",

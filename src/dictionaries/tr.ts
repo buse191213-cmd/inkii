@@ -481,6 +481,21 @@ const tr: Dictionary = {
     ctaText: "İhtiyaçlarınızı analiz edip bağlayıcı olmayan bir konsept hazırlıyoruz.",
     ctaBtn: "İletişim",
   },
+  fahrzeug: {
+    kicker: "Araç Giydirme",
+    h1: "Araç Giydirme & Dış Mekan Reklamcılığı.",
+    intro: "Aracınız hareketli bir kartvizit olsun. Araç giydirme ve etkili dış mekan reklamcılığı yapıyoruz — küçük yazılardan tam kaplamaya.",
+    details: [
+      { title: "Folyo Yazı", text: "Her boyutta araç için yazı, logo ve tasarımlar için yüksek kaliteli yapışkan folyolar." },
+      { title: "Tam Kaplama", text: "Komple araç tasarımı — minibüsten kamyona, her renk veya görünümde." },
+      { title: "Mıknatıs Tabela", text: "Değiştirilebilir esnek reklam — geçici kampanyalar ve birden çok araç için ideal." },
+      { title: "Vitrin & Tabela", text: "Vitrin yazıları, reklam tabelaları ve inşaat çiti afişleri ile maksimum görünürlük." },
+      { title: "Tasarım & Montaj", text: "Komple süreç bizde — konsepten profesyonel montaja kadar." },
+    ],
+    ctaTitle: "Daha fazla görünürlük için hazır mısınız?",
+    ctaText: "Araç bilgilerinizi gönderin — size uygun bir teklif hazırlayalım.",
+    ctaBtn: "İletişim",
+  },
   werbeSub: {
     kicker: "Tanıtım Ürünleri",
     h1: "Tanıtım Ürünleri.",

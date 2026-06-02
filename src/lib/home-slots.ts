@@ -4,7 +4,7 @@
 export type HomeSlot = {
   slot: string;
   label: string;
-  group: "home-tiles" | "category" | "feature" | "nachhaltigkeit" | "leistungen" | "bereiche" | "page" | "designer" | "textil-method" | "firmen-method" | "premium-method" | "onlineshops-method";
+  group: "home-tiles" | "category" | "feature" | "nachhaltigkeit" | "leistungen" | "bereiche" | "page" | "designer" | "textil-method" | "firmen-method" | "premium-method" | "onlineshops-method" | "fahrzeug-method";
   /** Empfohlene Mindestgröße (px) für das Bild, z. B. "1600×900". */
   size?: string;
   /** Seitenverhältnis als CSS aspect-ratio, z. B. "16/9", "4/3", "1/1". */
@@ -49,6 +49,14 @@ export const HOME_SLOTS: HomeSlot[] = [
   { slot: "os-3", label: "Onlineshops — ERP/PIM (Foto)", group: "onlineshops-method", size: "800×800", ratio: "1/1" },
   { slot: "os-4", label: "Onlineshops — Design & UX (Foto)", group: "onlineshops-method", size: "800×800", ratio: "1/1" },
   { slot: "os-5", label: "Onlineshops — Hosting & Support (Foto)", group: "onlineshops-method", size: "800×800", ratio: "1/1" },
+  { slot: "fb-banner", label: "Fahrzeug — Startseite Banner (uzun)", group: "fahrzeug-method", size: "1800×600", ratio: "3/1" },
+  { slot: "fb-hero", label: "Fahrzeug — Hero Foto", group: "fahrzeug-method", size: "1600×800", ratio: "2/1" },
+  { slot: "fb-1", label: "Fahrzeug — Folienbeschriftung (Foto)", group: "fahrzeug-method", size: "800×800", ratio: "1/1" },
+  { slot: "fb-2", label: "Fahrzeug — Vollverklebung (Foto)", group: "fahrzeug-method", size: "800×800", ratio: "1/1" },
+  { slot: "fb-3", label: "Fahrzeug — Magnetschilder (Foto)", group: "fahrzeug-method", size: "800×800", ratio: "1/1" },
+  { slot: "fb-4", label: "Fahrzeug — Schaufenster (Foto)", group: "fahrzeug-method", size: "800×800", ratio: "1/1" },
+  { slot: "fb-5", label: "Fahrzeug — Design & Montage (Foto)", group: "fahrzeug-method", size: "800×800", ratio: "1/1" },
+
   { slot: "nh-hero", label: "Nachhaltigkeit — Titelbild (großer Hero-Bereich)", group: "nachhaltigkeit", size: "1920×900", ratio: "21/9" },
   { slot: "nh-1", label: "Nachhaltigkeit — Karte 1: Faire Textilien", group: "nachhaltigkeit", size: "800×1000", ratio: "4/5" },
   { slot: "nh-2", label: "Nachhaltigkeit — Karte 2: Wassersparende Verfahren", group: "nachhaltigkeit", size: "800×1000", ratio: "4/5" },

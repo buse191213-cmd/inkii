@@ -3480,3 +3480,27 @@ body:has(.cookie-banner) .wa-fab{bottom:120px}
 /* Numara (01,02,03...) title'a yakın çekildi — boşluk küçüldü */
 .bereich-grid .mm-page-tile-label{position:relative;top:1.3em;margin-bottom:0}
 @media(max-width:600px){.bereich-grid .mm-page-tile{min-height:280px}.bereich-grid .mm-page-tile-title{font-size:1.15rem}}
+
+/* === Fahrzeugbeschriftung Banner (ana sayfa, uzunlamasına) === */
+.home-fahrzeug{padding:0 24px 24px}
+.fahrzeug-banner{display:block;position:relative;width:100%;
+  min-height:200px;aspect-ratio:6/1;
+  background:#1c2722 center/cover no-repeat;
+  overflow:hidden;text-decoration:none;color:#fff;
+  transition:.3s}
+.fahrzeug-banner:hover{transform:translateY(-2px);box-shadow:0 14px 36px rgba(0,0,0,.18)}
+.fahrzeug-overlay{position:absolute;inset:0;
+  background:linear-gradient(90deg,rgba(0,0,0,.65) 0%,rgba(0,0,0,.35) 60%,rgba(0,0,0,.55) 100%);
+  pointer-events:none}
+.fahrzeug-text{position:relative;z-index:1;
+  display:flex;flex-direction:column;justify-content:center;
+  height:100%;min-height:200px;padding:32px 48px;max-width:760px}
+.fahrzeug-label{font-family:var(--display);font-weight:800;
+  font-size:1.9rem;letter-spacing:.02em;line-height:1.05;margin-bottom:8px}
+.fahrzeug-sub{font-size:1rem;color:rgba(255,255,255,.92);line-height:1.45;max-width:520px}
+@media(max-width:780px){
+  .fahrzeug-banner{aspect-ratio:auto;min-height:auto}
+  .fahrzeug-text{padding:24px 20px;min-height:160px}
+  .fahrzeug-label{font-size:1.4rem}
+  .fahrzeug-sub{font-size:.92rem}
+}

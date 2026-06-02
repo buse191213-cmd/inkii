@@ -14,6 +14,7 @@ export default async function HomePage() {
   const svcWerbe = await getHomeImage("area-2");
   const svcWeb = await getHomeImage("area-3");
   const svcMkt = await getHomeImage("area-4");
+  const svcFahrzeug = await getHomeImage("fb-banner");
 
   const services = [
     {
@@ -121,6 +122,24 @@ export default async function HomePage() {
             </div>
           </Link>
         ))}
+      </section>
+
+      {/* === Fahrzeugbeschriftung Banner — uzunlamasına === */}
+      <section className="home-fahrzeug">
+        <Link
+          href="/fahrzeugbeschriftung"
+          className="fahrzeug-banner"
+          style={svcFahrzeug ? { backgroundImage: `url(${svcFahrzeug})` } : undefined}
+        >
+          <div className="fahrzeug-overlay" />
+          <div className="fahrzeug-text">
+            <div className="fahrzeug-label">FAHRZEUGBESCHRIFTUNG</div>
+            <div className="fahrzeug-sub">
+              Fahrzeugbeschriftung und effektive Außenwerbung — von der Folie bis zum
+              Komplettdesign.
+            </div>
+          </div>
+        </Link>
       </section>
 
       {/* === Tagline unter den Kacheln === */}
