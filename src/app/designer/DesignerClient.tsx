@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import Link from "next/link";
 import { useMerkliste } from "@/components/MerklisteProvider";
 import type { Dictionary } from "@/dictionaries/types";
