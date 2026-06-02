@@ -10,7 +10,6 @@ export const NAV_KEYS = [
   "webdesign",
   "marketing",
   // Sekundär (per Admin abschaltbar):
-  "leistungen",
   "bereiche",
   "nachhaltigkeit",
   "ueberUns",
@@ -27,7 +26,6 @@ export const NAV_HREF: Record<NavKey, string> = {
   werbemittel: "/werbemittel?cat=werbeartikel",
   webdesign: "/webdesign",
   marketing: "/marketing",
-  leistungen: "/leistungen",
   bereiche: "/bereiche",
   nachhaltigkeit: "/nachhaltigkeit",
   ueberUns: "/ueber-uns",

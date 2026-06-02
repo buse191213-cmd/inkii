@@ -4,7 +4,6 @@ const en: Dictionary = {
   nav: {
     home: "Home",
     werbemittel: "Promotional Items",
-    leistungen: "Services",
     bereiche: "Areas",
     nachhaltigkeit: "Sustainability",
     ueberUns: "About Us",

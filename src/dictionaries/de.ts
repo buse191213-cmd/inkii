@@ -4,7 +4,6 @@ const de: Dictionary = {
   nav: {
     home: "Home",
     werbemittel: "Werbeartikel",
-    leistungen: "Leistungen",
     bereiche: "Bereiche",
     nachhaltigkeit: "Nachhaltigkeit",
     ueberUns: "Über Uns",

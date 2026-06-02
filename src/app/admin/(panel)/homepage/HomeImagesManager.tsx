@@ -12,9 +12,7 @@ export default function HomeImagesManager({
 }) {
   const tiles = HOME_SLOTS.filter((s) => s.group === "home-tiles");
   const cats = HOME_SLOTS.filter((s) => s.group === "category");
-  const feats = HOME_SLOTS.filter((s) => s.group === "feature");
   const nh = HOME_SLOTS.filter((s) => s.group === "nachhaltigkeit");
-  const ls = HOME_SLOTS.filter((s) => s.group === "leistungen");
   const bz = HOME_SLOTS.filter((s) => s.group === "bereiche");
   const pg = HOME_SLOTS.filter((s) => s.group === "page");
   const dz = HOME_SLOTS.filter((s) => s.group === "designer");
@@ -67,23 +65,6 @@ export default function HomeImagesManager({
 
       <div className="panel" style={{ marginBottom: 18 }}>
         <div className="panel-head">
-          <h3>Leistungs-Kacheln</h3>
-        </div>
-        <div className="panel-body">
-          <p className="hero-vid-state">
-            Hintergrundbilder für die sechs Leistungs-Karten. Der Text bleibt
-            durch einen hellen Schleier gut lesbar.
-          </p>
-          <div className="home-img-grid">
-            {feats.map((s) => (
-              <Slot key={s.slot} slot={s.slot} label={s.label} meta={s} current={images[s.slot] ?? null} />
-            ))}
-          </div>
-        </div>
-      </div>
-
-      <div className="panel" style={{ marginBottom: 18 }}>
-        <div className="panel-head">
           <h3>Nachhaltigkeit — Naturbilder</h3>
         </div>
         <div className="panel-body">
@@ -100,22 +81,6 @@ export default function HomeImagesManager({
           </div>
         </div>
       </div>
-
-      <div className="panel" style={{ marginBottom: 18 }}>
-        <div className="panel-head">
-          <h3>Leistungen-Seite — Titelbild</h3>
-        </div>
-        <div className="panel-body">
-          <p className="hero-vid-state">
-            Großes Titelbild für den Kopfbereich der Leistungen-Seite. Ohne
-            Bild wird ein farbiger Verlauf angezeigt.
-          </p>
-          <div className="home-img-grid">
-            {ls.map((s) => (
-              <Slot key={s.slot} slot={s.slot} label={s.label} meta={s} current={images[s.slot] ?? null} />
-            ))}
-          </div>
-        </div>
       </div>
 
       <div className="panel">

@@ -4,7 +4,6 @@ const tr: Dictionary = {
   nav: {
     home: "Ana Sayfa",
     werbemittel: "Tanıtım Ürünleri",
-    leistungen: "Hizmetler",
     bereiche: "Alanlar",
     nachhaltigkeit: "Sürdürülebilirlik",
     ueberUns: "Hakkımızda",

@@ -30,7 +30,6 @@ function refreshAll() {
 
 function refreshPublicPages() {
   revalidatePath("/");
-  revalidatePath("/leistungen");
   revalidatePath("/bereiche");
   revalidatePath("/nachhaltigkeit");
   revalidatePath("/ueber-uns");
