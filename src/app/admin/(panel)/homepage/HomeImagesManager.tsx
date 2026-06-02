@@ -81,7 +81,6 @@ export default function HomeImagesManager({
           </div>
         </div>
       </div>
-      </div>
 
       <div className="panel">
         <div className="panel-head">
