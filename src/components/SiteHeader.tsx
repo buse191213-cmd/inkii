@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import Image from "next/image";
 import { usePathname, useSearchParams } from "next/navigation";
 import { Suspense, useState } from "react";
 import { useMerkliste } from "./MerklisteProvider";
@@ -104,7 +105,7 @@ function SiteHeaderInner({
               aria-label="INKII WORKS – Startseite"
             >
               {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img src="/inkii-logo.png" alt="INKII WORKS" />
+              <Image src="/inkii-logo.png" alt="INKII WORKS" width={200} height={60} priority />
             </Link>
           </div>
 

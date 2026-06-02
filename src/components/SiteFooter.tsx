@@ -1,4 +1,5 @@
 import Link from "next/link";
+import Image from "next/image";
 import type { Dictionary } from "@/dictionaries/types";
 import CookieSettingsLink from "@/components/CookieSettingsLink";
 
@@ -16,7 +17,7 @@ export default function SiteFooter({
           <div className="foot-brand">
             <div className="logo" translate="no">
               {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img src="/inkii-logo.png" alt="INKII WORKS" />
+              <Image src="/inkii-logo.png" alt="INKII WORKS" width={200} height={60} priority />
             </div>
             <p>{t.tagline}</p>
           </div>

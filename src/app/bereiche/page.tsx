@@ -5,7 +5,7 @@ import { getLocale } from "@/lib/i18n-server";
 import { getDictionary } from "@/dictionaries";
 import { getHomeImage } from "@/lib/home-images";
 
-export const dynamic = "force-dynamic";
+export const revalidate = 60;
 
 export const metadata: Metadata = {
   title: "Bereiche",

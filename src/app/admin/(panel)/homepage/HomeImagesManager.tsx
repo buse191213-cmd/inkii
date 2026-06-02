@@ -15,7 +15,6 @@ export default function HomeImagesManager({
   const nh = HOME_SLOTS.filter((s) => s.group === "nachhaltigkeit");
   const bz = HOME_SLOTS.filter((s) => s.group === "bereiche");
   const pg = HOME_SLOTS.filter((s) => s.group === "page");
-  const dz = HOME_SLOTS.filter((s) => s.group === "designer");
   const tv = HOME_SLOTS.filter((s) => s.group === "textil-method");
   const fk = HOME_SLOTS.filter((s) => s.group === "firmen-method");
   const pw = HOME_SLOTS.filter((s) => s.group === "premium-method");
@@ -113,26 +112,6 @@ export default function HomeImagesManager({
           </p>
           <div className="home-img-grid">
             {pg.map((s) => (
-              <Slot key={s.slot} slot={s.slot} label={s.label} meta={s} current={images[s.slot] ?? null} />
-            ))}
-          </div>
-        </div>
-      </div>
-
-      <div className="panel" style={{ marginTop: 18 }}>
-        <div className="panel-head">
-          <h3>3D-Designer — Produktfotos</h3>
-        </div>
-        <div className="panel-body">
-          <p className="hero-vid-state">
-            Echte Produktfotos für den <b>3D-Designer</b>. Empfohlen: Foto von
-            vorne, <b>ohne Logo</b>, neutraler/heller Hintergrund, mittig. Das
-            hochgeladene Logo des Kunden wird realistisch darauf platziert. Ohne
-            Foto wird das 3D-Modell angezeigt. Beste Ergebnisse mit freigestelltem
-            oder weißem Hintergrund.
-          </p>
-          <div className="home-img-grid">
-            {dz.map((s) => (
               <Slot key={s.slot} slot={s.slot} label={s.label} meta={s} current={images[s.slot] ?? null} />
             ))}
           </div>

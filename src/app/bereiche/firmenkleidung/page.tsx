@@ -5,7 +5,7 @@ import { getHomeImage } from "@/lib/home-images";
 import { getLocale } from "@/lib/i18n-server";
 import { getDictionary } from "@/dictionaries";
 
-export const dynamic = "force-dynamic";
+export const revalidate = 60;
 
 export const metadata: Metadata = {
   title: "Firmen- & Berufsbekleidung | INKII Works",

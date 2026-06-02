@@ -8,18 +8,17 @@ const nextConfig = {
   reactStrictMode: true,
   outputFileTracingRoot: __dirname,
   experimental: {
-    serverActions: {
-      bodySizeLimit: "6mb",
-    },
+    serverActions: { bodySizeLimit: "6mb" },
   },
-  // onnxruntime-web ist ein reines Browser-Paket (WASM/WebGPU).
-  // Webpack soll es serverseitig NICHT bundeln — sonst Build-Fehler.
-  webpack: (config, { isServer }) => {
-    if (isServer) {
-      config.externals = config.externals || [];
-      config.externals.push("onnxruntime-web", "@imgly/background-removal");
-    }
-    return config;
+  // next/image için Vercel Blob domain'i izin ver
+  images: {
+    remotePatterns: [
+      { protocol: "https", hostname: "*.public.blob.vercel-storage.com" },
+      { protocol: "https", hostname: "*.vercel-storage.com" },
+    ],
+    formats: ["image/webp"],
+    deviceSizes: [640, 750, 828, 1080, 1200, 1920],
+    imageSizes: [16, 32, 48, 64, 96, 128, 256, 384],
   },
 };
 

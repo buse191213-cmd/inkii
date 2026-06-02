@@ -1,6 +1,7 @@
 "use client";
 
 import { useActionState } from "react";
+import Image from "next/image";
 import { loginAction, LoginState } from "./actions";
 
 const initial: LoginState = {};
@@ -12,7 +13,7 @@ export default function LoginForm() {
     <form className="login-card" action={formAction}>
       <div className="login-logo" translate="no">
         {/* eslint-disable-next-line @next/next/no-img-element */}
-        <img src="/inkii-logo.png" alt="INKII WORKS" />
+        <Image src="/inkii-logo.png" alt="INKII WORKS" width={200} height={60} priority />
       </div>
       <p className="sub">Admin-Panel</p>
 

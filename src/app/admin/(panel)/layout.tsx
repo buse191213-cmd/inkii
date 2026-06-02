@@ -1,5 +1,6 @@
 import { db } from "@/lib/db";
 import AdminNav from "./AdminNav";
+import Image from "next/image";
 import { logout } from "../actions";
 
 export const dynamic = "force-dynamic";
@@ -20,7 +21,7 @@ export default async function PanelLayout({
         <div className="topbar">
           <div className="topbar-left">
             {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img src="/inkii-logo.png" alt="INKII WORKS" className="topbar-logo" />
+            <Image src="/inkii-logo.png" alt="INKII WORKS" className="topbar-logo" width={140} height={42} />
             <span className="topbar-sep">Admin</span>
           </div>
           <div className="tb-right">

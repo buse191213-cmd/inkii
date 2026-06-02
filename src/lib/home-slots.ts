@@ -4,7 +4,7 @@
 export type HomeSlot = {
   slot: string;
   label: string;
-  group: "home-tiles" | "category" | "nachhaltigkeit" | "bereiche" | "page" | "designer" | "textil-method" | "firmen-method" | "premium-method" | "onlineshops-method" | "fahrzeug-method" | "werbeartikel-img";
+  group: "home-tiles" | "category" | "nachhaltigkeit" | "bereiche" | "page" | "textil-method" | "firmen-method" | "premium-method" | "onlineshops-method" | "fahrzeug-method" | "werbeartikel-img";
   /** Empfohlene Mindestgröße (px) für das Bild, z. B. "1600×900". */
   size?: string;
   /** Seitenverhältnis als CSS aspect-ratio, z. B. "16/9", "4/3", "1/1". */
@@ -75,10 +75,6 @@ export const HOME_SLOTS: HomeSlot[] = [
   { slot: "sport-6", label: "Sportartikel — Bild 6 (Mood-Bild)", group: "page", size: "900×1200", ratio: "3/4" },
   { slot: "sport-7", label: "Sportartikel — Bild 7 (Mood-Bild)", group: "page", size: "900×1200", ratio: "3/4" },
   { slot: "sport-8", label: "Sportartikel — Bild 8 (Mood-Bild)", group: "page", size: "900×1200", ratio: "3/4" },
-  { slot: "designer-tshirt", label: "Designer — T-Shirt Foto (vorne, ohne Logo)", group: "designer", size: "1000×1200", ratio: "5/6" },
-  { slot: "designer-hoodie", label: "Designer — Hoodie Foto (vorne, ohne Logo)", group: "designer", size: "1000×1200", ratio: "5/6" },
-  { slot: "designer-cap", label: "Designer — Cap Foto (vorne, ohne Logo)", group: "designer", size: "1000×1200", ratio: "5/6" },
-  { slot: "designer-tote", label: "Designer — Tasche Foto (vorne, ohne Logo)", group: "designer", size: "1000×1200", ratio: "5/6" },
 ];
 
 export const HOME_SLOT_IDS: string[] = HOME_SLOTS.map((s) => s.slot);

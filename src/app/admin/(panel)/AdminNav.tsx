@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import Image from "next/image";
 import { usePathname } from "next/navigation";
 import { useState } from "react";
 
@@ -67,7 +68,7 @@ export default function AdminNav({ inquiryCount }: { inquiryCount: number }) {
       <aside className={`side${open ? " open" : ""}`}>
         <div className="side-logo" translate="no">
           {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img src="/inkii-logo.png" alt="INKII WORKS" />
+          <Image src="/inkii-logo.png" alt="INKII WORKS" width={200} height={60} priority />
           <small>Admin</small>
         </div>
         <nav className="side-nav">
