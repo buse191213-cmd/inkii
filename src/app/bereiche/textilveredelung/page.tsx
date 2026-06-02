@@ -17,7 +17,7 @@ export default async function TextilveredelungDetailPage() {
   const locale = await getLocale();
   const d = getDictionary(locale);
   const t = d.textilSub;
-  const heroImg = await getHomeImage("area-1");
+  const heroImg = await getHomeImage("tv-hero");
   const imgs = [
     await getHomeImage("tv-method-1"),
     await getHomeImage("tv-method-2"),

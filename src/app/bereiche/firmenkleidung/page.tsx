@@ -16,7 +16,7 @@ export default async function Page() {
   const locale = await getLocale();
   const d = getDictionary(locale);
   const t = d.firmenSub;
-  const heroImg = await getHomeImage("area-1");
+  const heroImg = await getHomeImage("fk-hero");
   const imgs = [
     await getHomeImage("fk-1"),
     await getHomeImage("fk-2"),

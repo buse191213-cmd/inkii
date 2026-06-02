@@ -16,7 +16,7 @@ export default async function Page() {
   const locale = await getLocale();
   const d = getDictionary(locale);
   const t = d.premiumSub;
-  const heroImg = await getHomeImage("area-1");
+  const heroImg = await getHomeImage("pw-hero");
   const imgs = [
     await getHomeImage("pw-1"),
     await getHomeImage("pw-2"),
