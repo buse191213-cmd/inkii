@@ -47,16 +47,29 @@ export default async function TextilveredelungDetailPage() {
       </section>
 
       {/* 5 yöntem yan yana (mm-page-tile pattern, /bereiche/textilveredelung pattern) */}
-      <section className="mm-page-section">
+      <section className="mm-page-section bereich-grid">
         <div className="wrap">
-          <div className="mm-page-tiles">
-            {t.details.map((m, i) => (
+          <div className="mm-page-tiles cols-2" style={{ marginBottom: 14 }}>
+            {t.details.slice(0, 2).map((m, i) => (
               <div
                 key={m.title}
                 className="mm-page-tile"
                 style={imgs[i] ? { backgroundImage: `url(${imgs[i]})` } : undefined}
               >
                 <div className="mm-page-tile-label">0{i + 1}</div>
+                <h3 className="mm-page-tile-title">{m.title}</h3>
+                <p className="mm-page-tile-desc">{m.text}</p>
+              </div>
+            ))}
+          </div>
+          <div className="mm-page-tiles cols-3">
+            {t.details.slice(2, 5).map((m, i) => (
+              <div
+                key={m.title}
+                className="mm-page-tile"
+                style={imgs[i + 2] ? { backgroundImage: `url(${imgs[i + 2]})` } : undefined}
+              >
+                <div className="mm-page-tile-label">0{i + 3}</div>
                 <h3 className="mm-page-tile-title">{m.title}</h3>
                 <p className="mm-page-tile-desc">{m.text}</p>
               </div>

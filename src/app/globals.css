@@ -3472,3 +3472,7 @@ body:has(.cookie-banner) .wa-fab{bottom:120px}
 @media(max-width:520px){
   .ds-all-products{grid-template-columns:repeat(2,1fr)}
 }
+
+/* === Bereich alt sayfaları: 2+3 grid, tüm kartlar AYNI yükseklikte === */
+.bereich-grid .mm-page-tile{aspect-ratio:unset;min-height:340px}
+@media(max-width:600px){.bereich-grid .mm-page-tile{min-height:280px}}
