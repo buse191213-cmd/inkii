@@ -1,20 +1,11 @@
 "use client";
 
 import { useState, useRef } from "react";
-import dynamic from "next/dynamic";
 import Link from "next/link";
 import { useMerkliste } from "@/components/MerklisteProvider";
 import type { Dictionary } from "@/dictionaries/types";
 
-const ProductViewer = dynamic(() => import("./ProductViewer"), {
-  ssr: false,
-  loading: () => (
-    <div className="ds-loading">
-      <div className="ds-spinner" />
-      <p>3D…</p>
-    </div>
-  ),
-});
+// 3D ProductViewer kaldırıldı — sadece admin'den yüklenen ürün foto'ları kullanılıyor
 
 import PhotoMockup from "./PhotoMockup";
 
@@ -65,7 +56,6 @@ export default function DesignerClient({ productPhotos, d }: { productPhotos: Pr
   const [logoName, setLogoName] = useState<string>("");
   const [color, setColor] = useState<string>("#ffffff");
   const [colorName, setColorName] = useState<string>("Weiß");
-  const [autoRotate, setAutoRotate] = useState<boolean>(true);
   const [added, setAdded] = useState<boolean>(false);
   const [processing, setProcessing] = useState<boolean>(false);
   const [processStep, setProcessStep] = useState<ProcessStep | null>(null);
@@ -256,37 +246,27 @@ export default function DesignerClient({ productPhotos, d }: { productPhotos: Pr
             background: `radial-gradient(circle at 50% 40%, ${color}22 0%, transparent 60%), linear-gradient(180deg, #f4f5f1 0%, #e8ebe6 100%)`,
           }}
         >
-          {useMockup ? (
+          {productPhoto ? (
             <PhotoMockup
-              photoUrl={productPhoto!}
+              photoUrl={productPhoto}
               logoUrl={activeLogoUrl}
               logoScale={logoScale}
               colorOverlay={color}
-              applyColor={colorNeedsOverlay}
+              applyColor={false}
               posX={logoX}
               posY={logoY}
               onPositionChange={(x, y) => { updatePos({ x, y }); }}
             />
           ) : (
-            <ProductViewer
-              product={product}
-              color={color}
-              logoUrl={activeLogoUrl}
-              logoScale={logoScale}
-              positionKey={logoPos}
-              autoRotate={autoRotate}
-            />
+            <div className="ds-no-photo">
+              <span className="ds-no-photo-icon">{PRODUCT_ICONS[product]}</span>
+              <p>{d.products[product].label}</p>
+              <small>Admin → Startseite → 3D-Designer Fotos</small>
+            </div>
           )}
           <div className="ds-stage-hint">
-            <span>{useMockup ? d.stageHint.photo : d.stageHint.threeD}</span>
+            <span>{d.stageHint.photo}</span>
           </div>
-          {!useMockup && (
-            <button type="button"
-              className={`ds-rotate-btn ${autoRotate ? "active" : ""}`}
-              onClick={() => setAutoRotate((v) => !v)}>
-              {autoRotate ? d.rotation.stop : d.rotation.start}
-            </button>
-          )}
           {activeLogoUrl && (
             <button type="button" className="ds-preview-btn"
               onClick={() => void openPreview()} disabled={previewLoading}>
