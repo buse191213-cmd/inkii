@@ -3529,3 +3529,28 @@ body:has(.cookie-banner) .wa-fab{bottom:120px}
   .ds-prod-card{padding:8px}
   .ds-prod-card-name{font-size:.88rem}
 }
+
+/* === Designer: Sol stage altı 4 ürün önizleme strip === */
+.ds-stage-strip{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;
+  margin-top:10px;padding:0}
+.ds-strip-item{display:flex;flex-direction:column;align-items:center;gap:4px;
+  padding:6px;background:#fff;border:2px solid #e3e6df;border-radius:10px;
+  cursor:pointer;transition:.18s;font-family:inherit}
+.ds-strip-item:hover{border-color:#cdd6c9;transform:translateY(-2px)}
+.ds-strip-item.active{border-color:#3f9c5c;background:#f9faf6;
+  box-shadow:0 4px 12px rgba(63,156,92,.15)}
+.ds-strip-frame{position:relative;width:100%;aspect-ratio:1/1;
+  background:#f4f5f1;border-radius:6px;display:flex;align-items:center;
+  justify-content:center;overflow:hidden}
+.ds-strip-photo{max-width:88%;max-height:88%;object-fit:contain}
+.ds-strip-icon{font-size:1.8rem;opacity:.5}
+.ds-strip-logo{position:absolute;transform:translate(-50%,-50%);pointer-events:none}
+.ds-strip-logo img{width:100%;height:auto;display:block;
+  mix-blend-mode:multiply;opacity:.93}
+.ds-strip-label{font-size:.75rem;font-weight:600;color:#1c2722;text-align:center;
+  line-height:1.1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
+  max-width:100%}
+@media(max-width:600px){
+  .ds-stage-strip{gap:6px}
+  .ds-strip-label{font-size:.68rem}
+}

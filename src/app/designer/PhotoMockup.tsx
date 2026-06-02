@@ -67,22 +67,8 @@ export default function PhotoMockup({
         {/* eslint-disable-next-line @next/next/no-img-element */}
         <img src={photoUrl} alt="Produkt" className="pm-product" draggable={false} />
 
-        {applyColor && (
-          <div
-            className="pm-color-layer"
-            style={{
-              backgroundColor: colorOverlay,
-              maskImage: `url(${photoUrl})`,
-              WebkitMaskImage: `url(${photoUrl})`,
-              maskSize: "contain",
-              WebkitMaskSize: "contain",
-              maskPosition: "center",
-              WebkitMaskPosition: "center",
-              maskRepeat: "no-repeat",
-              WebkitMaskRepeat: "no-repeat",
-            }}
-          />
-        )}
+        {/* Renk overlay artık görsel olarak uygulanmıyor —
+            renk seçimi sadece Merkzettel'e bilgi olarak geçer */}
 
         {logoUrl && (
           <div

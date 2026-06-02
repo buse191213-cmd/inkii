@@ -294,6 +294,50 @@ export default function DesignerClient({ productPhotos, d }: { productPhotos: Pr
             </button>
           )}
         </div>
+
+        {/* Sol stage altı: 4 ürün önizleme strip (hep görünür) */}
+        <div className="ds-stage-strip">
+          {PRODUCT_KEYS.map((key) => {
+            const photo = productPhotos[key];
+            const productLabel = d.products[key].label;
+            const isActive = product === key;
+            const pos = positions[key];
+            return (
+              <button
+                key={key}
+                type="button"
+                className={`ds-strip-item ${isActive ? "active" : ""}`}
+                onClick={() => switchProduct(key)}
+                title={productLabel}
+              >
+                {photo ? (
+                  <div className="ds-strip-frame">
+                    {/* eslint-disable-next-line @next/next/no-img-element */}
+                    <img src={photo} alt={productLabel} className="ds-strip-photo" draggable={false} />
+                    {activeLogoUrl && (
+                      <div
+                        className="ds-strip-logo"
+                        style={{
+                          top: `${pos.y}%`,
+                          left: `${pos.x}%`,
+                          width: `${Math.round(pos.scale * 100)}%`,
+                        }}
+                      >
+                        {/* eslint-disable-next-line @next/next/no-img-element */}
+                        <img src={activeLogoUrl} alt="" draggable={false} />
+                      </div>
+                    )}
+                  </div>
+                ) : (
+                  <div className="ds-strip-frame">
+                    <span className="ds-strip-icon">{PRODUCT_ICONS[key]}</span>
+                  </div>
+                )}
+                <span className="ds-strip-label">{productLabel}</span>
+              </button>
+            );
+          })}
+        </div>
       </div>
 
       <aside className="ds-panel">
@@ -534,22 +578,7 @@ export default function DesignerClient({ productPhotos, d }: { productPhotos: Pr
                       <div className="ds-mini-frame">
                         {/* eslint-disable-next-line @next/next/no-img-element */}
                         <img src={photo} alt={productLabel} className="ds-mini-product" draggable={false} />
-                        {colorNeedsOverlay && (
-                          <div
-                            className="ds-mini-color"
-                            style={{
-                              backgroundColor: color,
-                              maskImage: `url(${photo})`,
-                              WebkitMaskImage: `url(${photo})`,
-                              maskSize: "contain",
-                              WebkitMaskSize: "contain",
-                              maskPosition: "center",
-                              WebkitMaskPosition: "center",
-                              maskRepeat: "no-repeat",
-                              WebkitMaskRepeat: "no-repeat",
-                            }}
-                          />
-                        )}
+                        {/* Renk overlay artık yok — temiz foto */}
                         <div
                           className="ds-mini-logo"
                           style={{
