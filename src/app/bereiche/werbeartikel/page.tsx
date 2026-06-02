@@ -18,8 +18,8 @@ export default async function WerbeartikelDetailPage() {
   const d = getDictionary(locale);
   const t = d.werbeSub;
   const heroImg = await getHomeImage("area-2");
-  const img1 = await getHomeImage("feat-3");
-  const img2 = await getHomeImage("feat-4");
+  const img1 = await getHomeImage("wa-1");
+  const img2 = await getHomeImage("wa-2");
 
   return (
     <SiteShell>
