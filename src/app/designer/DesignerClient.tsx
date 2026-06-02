@@ -311,13 +311,13 @@ export default function DesignerClient({ productPhotos, d }: { productPhotos: Pr
                     <div className="ds-mockup-frame">
                       {/* eslint-disable-next-line @next/next/no-img-element */}
                       <img src={cleanPhoto} alt={productLabel} className="ds-mockup-photo" draggable={false} />
-                      {color.toLowerCase() !== "#ffffff" && (
+                      {color.toLowerCase() !== "#ffffff" && bgRemovedPhotos[key] && (
                         <div
                           className="ds-mockup-color"
                           style={{
                             backgroundColor: color,
-                            maskImage: `url(${cleanPhoto})`,
-                            WebkitMaskImage: `url(${cleanPhoto})`,
+                            maskImage: `url(${bgRemovedPhotos[key]})`,
+                            WebkitMaskImage: `url(${bgRemovedPhotos[key]})`,
                             maskSize: "80% 80%",
                             WebkitMaskSize: "80% 80%",
                             maskPosition: "center",
