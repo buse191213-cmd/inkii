@@ -32,7 +32,6 @@ export const HOME_SLOTS: HomeSlot[] = [
   // Premium Werbemittel
   { slot: "pw-1", label: "Premium Werbemittel — Trinkflaschen (Foto)", group: "premium-method", size: "800×800", ratio: "1/1" },
   { slot: "pw-2", label: "Premium Werbemittel — Caps (Foto)", group: "premium-method", size: "800×800", ratio: "1/1" },
-  { slot: "pw-3", label: "Premium Werbemittel — Power Banks (Foto)", group: "premium-method", size: "800×800", ratio: "1/1" },
   { slot: "pw-4", label: "Premium Werbemittel — Stoff & Leder (Foto)", group: "premium-method", size: "800×800", ratio: "1/1" },
   { slot: "pw-5", label: "Premium Werbemittel — Premium-Stifte (Foto)", group: "premium-method", size: "800×800", ratio: "1/1" },
   // Onlineshops

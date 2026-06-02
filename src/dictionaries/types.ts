@@ -98,31 +98,6 @@ export type Dictionary = {
     ctaText: string;
     ctaBtn: string;
   };
-  leistungen: {
-    h1: string;
-    intro: string;
-    servKicker: string;
-    servTitle: string;
-    services: { t: string; p: string }[];
-    showKicker: string;
-    showTitle: string;
-    showTextA: string;
-    showTextB: string;
-    showEmpty: string;
-    showFallbackCat: string;
-    showFoot: string;
-    techKicker: string;
-    techTitle: string;
-    techniques: { t: string; p: string }[];
-    techFoot: string;
-    stepsKicker: string;
-    stepsTitle: string;
-    steps: { t: string; p: string }[];
-    ctaTitle: string;
-    ctaText: string;
-    ctaBtn1: string;
-    ctaBtn2: string;
-  };
   common: {
     merken: string;
     gemerkt: string;
