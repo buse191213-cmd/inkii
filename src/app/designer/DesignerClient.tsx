@@ -81,6 +81,55 @@ export default function DesignerClient({ productPhotos, d }: { productPhotos: Pr
   const [previewLoading, setPreviewLoading] = useState(false);
   const fileRef = useRef<HTMLInputElement>(null);
 
+  // Otomatik arka plan kaldırılmış ürün fotoları (renk değişimi için)
+  const [bgRemovedPhotos, setBgRemovedPhotos] = useState<Partial<Record<ProductKey, string>>>({});
+
+  // İlk render'da ürün fotolarının BG'sini kaldır (cache'lensin diye sessionStorage'da tut)
+  useEffect(() => {
+    PRODUCT_KEYS.forEach(async (key) => {
+      const photo = productPhotos[key];
+      if (!photo) return;
+
+      // Cache kontrolü
+      const cacheKey = `bg-removed:${photo}`;
+      try {
+        const cached = sessionStorage.getItem(cacheKey);
+        if (cached) {
+          setBgRemovedPhotos((prev) => ({ ...prev, [key]: cached }));
+          return;
+        }
+      } catch {}
+
+      try {
+        // Foto'yu data URL'e çevir
+        const imgRes = await fetch(photo);
+        const blob = await imgRes.blob();
+        const reader = new FileReader();
+        reader.onload = async () => {
+          const dataUrl = reader.result as string;
+          try {
+            const apiRes = await fetch("/api/remove-bg", {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({ imageB64: dataUrl }),
+            });
+            if (!apiRes.ok) return;
+            const resultBlob = await apiRes.blob();
+            const reader2 = new FileReader();
+            reader2.onload = () => {
+              const resultDataUrl = reader2.result as string;
+              try { sessionStorage.setItem(cacheKey, resultDataUrl); } catch {}
+              setBgRemovedPhotos((prev) => ({ ...prev, [key]: resultDataUrl }));
+            };
+            reader2.readAsDataURL(resultBlob);
+          } catch {}
+        };
+        reader.readAsDataURL(blob);
+      } catch {}
+    });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
   const activeLogoUrl = showOriginal ? originalUrl : processedUrl;
   const positionKeys = POSITION_KEYS_PER_PRODUCT[product];
   const productInfo = { code: PRODUCT_CODES[product], label: d.products[product].label };
@@ -245,6 +294,7 @@ export default function DesignerClient({ productPhotos, d }: { productPhotos: Pr
           <div className="ds-mockup-grid">
             {PRODUCT_KEYS.map((key) => {
               const photo = productPhotos[key];
+              const cleanPhoto = bgRemovedPhotos[key] || photo;
               const productLabel = d.products[key].label;
               const isActive = product === key;
               const pos = positions[key];
@@ -257,17 +307,17 @@ export default function DesignerClient({ productPhotos, d }: { productPhotos: Pr
                   tabIndex={0}
                 >
                   <div className="ds-mockup-label">{productLabel}</div>
-                  {photo ? (
+                  {cleanPhoto ? (
                     <div className="ds-mockup-frame">
                       {/* eslint-disable-next-line @next/next/no-img-element */}
-                      <img src={photo} alt={productLabel} className="ds-mockup-photo" draggable={false} />
+                      <img src={cleanPhoto} alt={productLabel} className="ds-mockup-photo" draggable={false} />
                       {color.toLowerCase() !== "#ffffff" && (
                         <div
                           className="ds-mockup-color"
                           style={{
                             backgroundColor: color,
-                            maskImage: `url(${photo})`,
-                            WebkitMaskImage: `url(${photo})`,
+                            maskImage: `url(${cleanPhoto})`,
+                            WebkitMaskImage: `url(${cleanPhoto})`,
                             maskSize: "80% 80%",
                             WebkitMaskSize: "80% 80%",
                             maskPosition: "center",
