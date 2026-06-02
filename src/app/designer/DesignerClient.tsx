@@ -303,25 +303,34 @@ export default function DesignerClient({ productPhotos, d }: { productPhotos: Pr
           <p className="ds-lead">{d.lead}</p>
         </div>
 
-        {/* Produkt-Auswahl */}
+        {/* Produkt-Auswahl — gerçek foto'larla kart */}
         <div className="ds-section">
           <div className="ds-section-head">
             <span className="ds-step">01</span>
             <h3>{d.steps.product}</h3>
           </div>
-          <div className="ds-products">
+          <div className="ds-products-grid">
             {PRODUCT_KEYS.map((key) => {
               const p = d.products[key];
+              const photo = productPhotos[key];
+              const isActive = product === key;
               return (
                 <button
                   key={key}
                   type="button"
-                  className={`ds-product-btn ${product === key ? "active" : ""}`}
+                  className={`ds-prod-card ${isActive ? "active" : ""}`}
                   onClick={() => switchProduct(key)}
+                  title={p.label}
                 >
-                  <span className="ds-product-icon">{PRODUCT_ICONS[key]}</span>
-                  <span className="ds-product-label">{p.label}</span>
-                  <small>{p.sub}</small>
+                  <div className="ds-prod-card-photo">
+                    {photo ? (
+                      // eslint-disable-next-line @next/next/no-img-element
+                      <img src={photo} alt={p.label} draggable={false} />
+                    ) : (
+                      <span className="ds-prod-card-icon">{PRODUCT_ICONS[key]}</span>
+                    )}
+                  </div>
+                  <div className="ds-prod-card-name">{p.label}</div>
                 </button>
               );
             })}
@@ -526,7 +535,20 @@ export default function DesignerClient({ productPhotos, d }: { productPhotos: Pr
                         {/* eslint-disable-next-line @next/next/no-img-element */}
                         <img src={photo} alt={productLabel} className="ds-mini-product" draggable={false} />
                         {colorNeedsOverlay && (
-                          <div className="ds-mini-color" style={{ backgroundColor: color }} />
+                          <div
+                            className="ds-mini-color"
+                            style={{
+                              backgroundColor: color,
+                              maskImage: `url(${photo})`,
+                              WebkitMaskImage: `url(${photo})`,
+                              maskSize: "contain",
+                              WebkitMaskSize: "contain",
+                              maskPosition: "center",
+                              WebkitMaskPosition: "center",
+                              maskRepeat: "no-repeat",
+                              WebkitMaskRepeat: "no-repeat",
+                            }}
+                          />
                         )}
                         <div
                           className="ds-mini-logo"

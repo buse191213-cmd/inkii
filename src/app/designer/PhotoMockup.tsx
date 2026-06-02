@@ -68,7 +68,20 @@ export default function PhotoMockup({
         <img src={photoUrl} alt="Produkt" className="pm-product" draggable={false} />
 
         {applyColor && (
-          <div className="pm-color-layer" style={{ backgroundColor: colorOverlay }} />
+          <div
+            className="pm-color-layer"
+            style={{
+              backgroundColor: colorOverlay,
+              maskImage: `url(${photoUrl})`,
+              WebkitMaskImage: `url(${photoUrl})`,
+              maskSize: "contain",
+              WebkitMaskSize: "contain",
+              maskPosition: "center",
+              WebkitMaskPosition: "center",
+              maskRepeat: "no-repeat",
+              WebkitMaskRepeat: "no-repeat",
+            }}
+          />
         )}
 
         {logoUrl && (

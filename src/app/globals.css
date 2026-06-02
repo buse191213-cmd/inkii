@@ -3507,3 +3507,25 @@ body:has(.cookie-banner) .wa-fab{bottom:120px}
   .fahrzeug-sub{font-size:1.4rem}
   .fahrzeug-sub2{font-size:.92rem}
 }
+
+/* === Designer: Yeni ürün seçim kartları (foto'lu, büyük, yan yana) === */
+.ds-products-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}
+.ds-prod-card{display:flex;flex-direction:column;align-items:center;gap:8px;
+  padding:10px;background:#fff;border:2px solid #e3e6df;border-radius:14px;
+  cursor:pointer;transition:.18s;font-family:inherit}
+.ds-prod-card:hover{border-color:#cdd6c9;transform:translateY(-2px);
+  box-shadow:0 8px 20px rgba(28,39,34,.08)}
+.ds-prod-card.active{border-color:#3f9c5c;background:#f9faf6;
+  box-shadow:0 6px 18px rgba(63,156,92,.15)}
+.ds-prod-card-photo{width:100%;aspect-ratio:1/1;background:#f4f5f1;
+  border-radius:10px;display:flex;align-items:center;justify-content:center;
+  overflow:hidden}
+.ds-prod-card-photo img{max-width:88%;max-height:88%;object-fit:contain}
+.ds-prod-card-icon{font-size:2.4rem;opacity:.5}
+.ds-prod-card-name{font-family:Georgia,serif;font-size:.95rem;font-weight:600;
+  color:#1c2722;text-align:center;line-height:1.2}
+@media(max-width:600px){
+  .ds-products-grid{grid-template-columns:repeat(2,1fr);gap:8px}
+  .ds-prod-card{padding:8px}
+  .ds-prod-card-name{font-size:.88rem}
+}
