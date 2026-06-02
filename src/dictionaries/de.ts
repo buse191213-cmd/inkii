@@ -470,7 +470,7 @@ const de: Dictionary = {
     details: [
       { title: "Trinkflaschen & Thermosbecher", text: "Edelstahl, isoliert und individuell graviert oder bedruckt — nachhaltig im Alltag." },
       { title: "Caps & Mützen", text: "Bestickte oder bedruckte Headwear in Premium-Qualität für Events und Teams." },
-      { title: "Stoff- & Lederwaren", text: "Notizbücher, Mappen und Taschen aus echten Materialien — wertig und repräsentativ." },
+      { title: "Stoff- & Lederwaren", text: "Notizbücher, Mappen und Taschen — wertig und repräsentativ." },
       { title: "Premium-Stifte & Sets", text: "Metallkugelschreiber, Schreibsets und Geschenkboxen für besondere Anlässe." },
     ],
     ctaTitle: "Ihr Premium-Werbegeschenk?",

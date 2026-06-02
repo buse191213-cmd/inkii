@@ -470,7 +470,7 @@ const en: Dictionary = {
     details: [
       { title: "Bottles & Thermal Mugs", text: "Stainless steel, insulated and individually engraved or printed — sustainable for daily use." },
       { title: "Caps & Beanies", text: "Embroidered or printed headwear in premium quality for events and teams." },
-      { title: "Fabric & Leather Goods", text: "Notebooks, folders and bags from real materials — valuable and representative." },
+      { title: "Fabric & Leather Goods", text: "Notebooks, folders and bags — valuable and representative." },
       { title: "Premium Pens & Sets", text: "Metal ballpoint pens, writing sets and gift boxes for special occasions." },
     ],
     ctaTitle: "Your premium promotional gift?",
