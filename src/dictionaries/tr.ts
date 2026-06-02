@@ -119,7 +119,7 @@ const tr: Dictionary = {
     fahrzeugSub2: "Yüzeyi göz alıcı kılıyoruz",
   },
   ueberUns: {
-    h1: "Baskı ortağınız.",
+    h1: "Baskı ortağınız",
     intro: "Küçük bir matbaa olarak başlayan yolculuk, bugün tekstil baskı, takım giyimi ve promosyon ürünleri için uyumlu bir ekibe dönüştü.",
     storyKicker: "Hikâyemiz",
     storyTitle: "Detaya olan tutkudan doğdu.",
@@ -152,7 +152,7 @@ const tr: Dictionary = {
     ctaBtn: "İletişime geç →",
   },
   leistungen: {
-    h1: "Fikirden bitmiş ürüne.",
+    h1: "Fikirden bitmiş ürüne",
     intro: "INKII her adımda yanınızda – danışmanlık, tasarım, baskı ve teslimat. Altı hizmet alanı, güvenilir tek bir ortak.",
     servKicker: "Hizmet Yelpazesi",
     servTitle: "Sizin için neler yapabiliriz",
@@ -205,7 +205,7 @@ const tr: Dictionary = {
     sending: "Gönderiliyor …",
   },
   kontakt: {
-    h1: "Bize ne istediğinizi söyleyin.",
+    h1: "Bize ne istediğinizi söyleyin",
     intro: "İster teklif, ister danışmanlık ister geri arama – bize yazın. Genellikle bir iş günü içinde dönüş yaparız.",
     infoTitle: "Bize nasıl ulaşırsınız",
     infoPhone: "Telefon",
@@ -306,7 +306,7 @@ const tr: Dictionary = {
     removeItem: "Ürünü kaldır",
   },
   notFound: {
-    h1: "Bu sayfa mevcut değil.",
+    h1: "Bu sayfa mevcut değil",
     text: "Aradığınız içerik taşınmış, yeniden adlandırılmış ya da artık mevcut değil. Şu yollardan biriyle hızlıca devam edebilirsiniz:",
     btnHome: "Ana sayfaya",
     btnCatalog: "Kataloğa",
@@ -381,7 +381,7 @@ const tr: Dictionary = {
   },
   sportartikel: {
     kicker: "Spor Ürünleri",
-    h1: "Spor Ürünleri.",
+    h1: "Spor Ürünleri",
     intro: "Logo ve markanızla takım ve spor kıyafetleri.",
     ctaTitle: "Takımınız için kıyafetler — talep üzerine.",
     ctaText: "Logonuzu gönderin, kıyafetleri biz hazırlayalım.",
@@ -389,7 +389,7 @@ const tr: Dictionary = {
   },
   veredelung: {
     kicker: "Tekstil İşleme",
-    h1: "Her yöntem. Tek kaynak.",
+    h1: "Her yöntem. Tek kaynak",
     intro: "Serigrafiden patche kadar — tekstilinizi doğru yöntemle işliyoruz.",
     methods: [
       { name: "Serigrafi", sub: "Canlı renkler ve yüksek kapatma — büyük üretimler ve dayanıklı sonuçlar için ideal." },
@@ -404,7 +404,7 @@ const tr: Dictionary = {
   },
   nachhaltigkeit: {
     kicker: "Sürdürülebilirlik",
-    h1: "Özenle üretilmiş.",
+    h1: "Özenle üretilmiş",
     intro: "Malzemeden işlemeye kadar her detayda kaliteye önem veriyoruz.",
     cards: [
       { title: "Adil tekstil", text: "GOTS ve Fair-Wear sertifikalı malzemeler." },
@@ -420,7 +420,7 @@ const tr: Dictionary = {
   },
   bereiche: {
     kicker: "Alanlar",
-    h1: "Dört alan, güçlü bir ekip.",
+    h1: "Dört alan, güçlü bir ekip",
     intro: "Tekstil işleme, tanıtım ürünleri, web tasarım ve pazarlama — hepsi INKII Works'te.",
     textil: {
       title: "Tekstil Baskı & Nakış",
@@ -435,7 +435,7 @@ const tr: Dictionary = {
   },
   textilSub: {
     kicker: "Tekstil İşleme",
-    h1: "Tekstil İşleme.",
+    h1: "Tekstil İşleme",
     intro: "Kurumsal ve iş kıyafetleri ile takım ve spor kıyafetleri için tekstil baskı ve nakış.",
     details: [
       { title: "Serigrafi", text: "Canlı renkler ve yüksek opaklık, büyük adetler ve uzun ömürlü sonuçlar için ideal." },
@@ -450,7 +450,7 @@ const tr: Dictionary = {
   },
   firmenSub: {
     kicker: "Firma & İş Kıyafetleri",
-    h1: "Firma & İş Kıyafetleri.",
+    h1: "Firma & İş Kıyafetleri",
     intro: "Logonuzla profesyonel kıyafet — klasik polodan dayanıklı iş ceketine. Kaliteli, uzun ömürlü ve özel olarak işlenmiş.",
     details: [
       { title: "Polo & T-Shirt", text: "Her iş günü için nefes alabilen klasikler — kolay yıkanır, renkleri sabit." },
@@ -465,7 +465,7 @@ const tr: Dictionary = {
   },
   premiumSub: {
     kicker: "Kaliteli Tanıtım Ürünleri",
-    h1: "Kaliteli Tanıtım Ürünleri.",
+    h1: "Kaliteli Tanıtım Ürünleri",
     intro: "Logonuzla premium tanıtım ürünleri — özenli, uzun ömürlü ve gerçek değeri olan. İz bırakan hediyeler.",
     details: [
       { title: "Termos & Su Şişesi", text: "Paslanmaz çelik, yalıtımlı ve özel kazıma ya da baskı — günlük kullanımda sürdürülebilir." },
@@ -479,7 +479,7 @@ const tr: Dictionary = {
   },
   onlineshopsSub: {
     kicker: "Şirketler için Online Mağazalar",
-    h1: "Şirketler için Online Mağazalar.",
+    h1: "Şirketler için Online Mağazalar",
     intro: "Satışınız için B2B mağazalar ve özel online platformlar — konseptten teslim ve sonrasına.",
     details: [
       { title: "B2B Mağazalar", text: "Müşteri fiyatları, roller ve özel ürün gamlarıyla kapalı platformlar." },
@@ -494,7 +494,7 @@ const tr: Dictionary = {
   },
   fahrzeug: {
     kicker: "Araç Giydirme",
-    h1: "Araç Giydirme & Dış Mekan Reklamcılığı.",
+    h1: "Araç Giydirme & Dış Mekan Reklamcılığı",
     intro: "Aracınız hareketli bir kartvizit olsun. Araç giydirme ve etkili dış mekan reklamcılığı yapıyoruz — küçük yazılardan tam kaplamaya.",
     details: [
       { title: "Folyo Yazı", text: "Her boyutta araç için yazı, logo ve tasarımlar için yüksek kaliteli yapışkan folyolar." },
@@ -549,7 +549,7 @@ const tr: Dictionary = {
   },
   werbeSub: {
     kicker: "Tanıtım Ürünleri",
-    h1: "Tanıtım Ürünleri.",
+    h1: "Tanıtım Ürünleri",
     intro: "Logonuzla yüksek kaliteli tanıtım ürünleri — su şişesi, çanta, ofis malzemesinden tekstile kadar.",
     categories: [
       { title: "Şişeler & Bardaklar", text: "Logo veya slogan ile kişiselleştirilmiş — sürdürülebilir ve günlük kullanıma uygun." },

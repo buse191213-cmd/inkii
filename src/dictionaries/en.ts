@@ -119,7 +119,7 @@ const en: Dictionary = {
     fahrzeugSub2: "We turn surfaces into eye-catchers",
   },
   ueberUns: {
-    h1: "Your finishing partner.",
+    h1: "Your finishing partner",
     intro: "What began as a small print shop is today a well-coordinated team for textile finishing, teamwear and promotional products.",
     storyKicker: "Our Story",
     storyTitle: "Out of a passion for detail.",
@@ -152,7 +152,7 @@ const en: Dictionary = {
     ctaBtn: "Get in touch →",
   },
   leistungen: {
-    h1: "From the idea to the finished product.",
+    h1: "From the idea to the finished product",
     intro: "INKII guides you through every step – consultation, design, finishing and delivery. Six service areas, one reliable partner.",
     servKicker: "Service Range",
     servTitle: "This is what we can do for you",
@@ -205,7 +205,7 @@ const en: Dictionary = {
     sending: "Sending …",
   },
   kontakt: {
-    h1: "Tell us what you need.",
+    h1: "Tell us what you need",
     intro: "Whether a quote, advice or a callback – write to us. We usually respond within one business day.",
     infoTitle: "How to reach us",
     infoPhone: "Phone",
@@ -306,7 +306,7 @@ const en: Dictionary = {
     removeItem: "Remove item",
   },
   notFound: {
-    h1: "This page doesn't exist.",
+    h1: "This page doesn't exist",
     text: "The content you're looking for has been moved, renamed or no longer exists. One of these routes will quickly get you back on track:",
     btnHome: "To the homepage",
     btnCatalog: "To the catalogue",
@@ -381,7 +381,7 @@ const en: Dictionary = {
   },
   sportartikel: {
     kicker: "Sports apparel",
-    h1: "Sports apparel.",
+    h1: "Sports apparel",
     intro: "Team and sportswear with your logo and branding.",
     ctaTitle: "Outfits for your team — on request.",
     ctaText: "Send us your logo, we deliver the outfits.",
@@ -389,7 +389,7 @@ const en: Dictionary = {
   },
   veredelung: {
     kicker: "Textile finishing",
-    h1: "Every method. One source.",
+    h1: "Every method. One source",
     intro: "From screen printing to patches — we finish your textiles with the right method.",
     methods: [
       { name: "Screen printing", sub: "Brilliant colours and high coverage, ideal for large quantities and long-lasting results." },
@@ -404,7 +404,7 @@ const en: Dictionary = {
   },
   nachhaltigkeit: {
     kicker: "Sustainability",
-    h1: "Carefully produced.",
+    h1: "Carefully produced",
     intro: "From materials to processing — we pay attention to quality in every detail.",
     cards: [
       { title: "Fair textiles", text: "GOTS and Fair-Wear certified materials." },
@@ -420,7 +420,7 @@ const en: Dictionary = {
   },
   bereiche: {
     kicker: "Areas",
-    h1: "Four areas, one strong team.",
+    h1: "Four areas, one strong team",
     intro: "Textile finishing, merchandise, web design and marketing — all at INKII Works.",
     textil: {
       title: "Textile printing & embroidery",
@@ -435,7 +435,7 @@ const en: Dictionary = {
   },
   textilSub: {
     kicker: "Textile finishing",
-    h1: "Textile finishing.",
+    h1: "Textile finishing",
     intro: "Textile printing & embroidery for corporate and workwear as well as team and sportswear.",
     details: [
       { title: "Screen Print", text: "Brilliant colors and high opacity, ideal for large quantities and long-lasting results." },
@@ -450,7 +450,7 @@ const en: Dictionary = {
   },
   firmenSub: {
     kicker: "Corporate & Workwear",
-    h1: "Corporate & Workwear.",
+    h1: "Corporate & Workwear",
     intro: "Professional apparel with your logo — from classic polos to durable work jackets. High quality, long-lasting and individually finished.",
     details: [
       { title: "Polos & T-Shirts", text: "Breathable classics for every workday — easy-care and color-fast." },
@@ -465,7 +465,7 @@ const en: Dictionary = {
   },
   premiumSub: {
     kicker: "Premium Promotional Items",
-    h1: "Premium Promotional Items.",
+    h1: "Premium Promotional Items",
     intro: "Premium promotional products with your logo — thoughtful, durable and with real value. Gifts that make an impression.",
     details: [
       { title: "Bottles & Thermal Mugs", text: "Stainless steel, insulated and individually engraved or printed — sustainable for daily use." },
@@ -479,7 +479,7 @@ const en: Dictionary = {
   },
   onlineshopsSub: {
     kicker: "Online Shops for Businesses",
-    h1: "Online Shops for Businesses.",
+    h1: "Online Shops for Businesses",
     intro: "B2B shops and custom online platforms for your distribution — from concept to handover and beyond.",
     details: [
       { title: "B2B Shops", text: "Closed platforms with customer prices, roles and individual product ranges." },
@@ -494,7 +494,7 @@ const en: Dictionary = {
   },
   fahrzeug: {
     kicker: "Vehicle Lettering",
-    h1: "Vehicle Lettering & Outdoor Advertising.",
+    h1: "Vehicle Lettering & Outdoor Advertising",
     intro: "Your vehicle as a rolling business card. We design and install vehicle lettering and effective outdoor advertising — from small lettering to full wraps.",
     details: [
       { title: "Foil Lettering", text: "High-quality adhesive foils for lettering, logos and designs on vehicles of any size." },
@@ -549,7 +549,7 @@ const en: Dictionary = {
   },
   werbeSub: {
     kicker: "Merchandise",
-    h1: "Merchandise.",
+    h1: "Merchandise",
     intro: "Premium promotional items with your logo — from bottles and bags to office supplies.",
     categories: [
       { title: "Bottles & cups", text: "Personalized with logo or slogan — sustainable and practical for daily use." },

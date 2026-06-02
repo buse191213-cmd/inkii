@@ -119,7 +119,7 @@ const de: Dictionary = {
     fahrzeugSub2: "Wir aus Fläche einen Blickfang",
   },
   ueberUns: {
-    h1: "Ihr Partner für Veredelung.",
+    h1: "Ihr Partner für Veredelung",
     intro: "",
     storyKicker: "Unsere Geschichte",
     storyTitle: "Aus Leidenschaft fürs Detail.",
@@ -152,7 +152,7 @@ const de: Dictionary = {
     ctaBtn: "Kontakt aufnehmen →",
   },
   leistungen: {
-    h1: "Von der Idee bis zum fertigen Produkt.",
+    h1: "Von der Idee bis zum fertigen Produkt",
     intro: "INKII begleitet Sie durch jeden Schritt – Beratung, Gestaltung, Veredelung und Lieferung. Sechs Leistungsbereiche, ein verlässlicher Partner.",
     servKicker: "Leistungsspektrum",
     servTitle: "Das können wir für Sie tun",
@@ -205,7 +205,7 @@ const de: Dictionary = {
     sending: "Wird gesendet …",
   },
   kontakt: {
-    h1: "Sagen Sie uns, was Sie brauchen.",
+    h1: "Sagen Sie uns, was Sie brauchen",
     intro: "Ob Angebot, Beratung oder Rückruf – schreiben Sie uns. Wir melden uns in der Regel innerhalb eines Werktags.",
     infoTitle: "So erreichen Sie uns",
     infoPhone: "Telefon",
@@ -306,7 +306,7 @@ const de: Dictionary = {
     removeItem: "Artikel entfernen",
   },
   notFound: {
-    h1: "Diese Seite gibt es nicht.",
+    h1: "Diese Seite gibt es nicht",
     text: "Der gesuchte Inhalt wurde verschoben, umbenannt oder existiert nicht mehr. Über einen dieser Wege finden Sie schnell weiter:",
     btnHome: "Zur Startseite",
     btnCatalog: "Zum Katalog",
@@ -381,7 +381,7 @@ const de: Dictionary = {
   },
   sportartikel: {
     kicker: "Sportartikel",
-    h1: "Sportartikel.",
+    h1: "Sportartikel",
     intro: "Team- und Sportbekleidung mit Logo und Branding.",
     ctaTitle: "Outfits für Ihr Team — auf Anfrage.",
     ctaText: "Schicken Sie uns Ihr Logo, wir liefern die Outfits.",
@@ -389,7 +389,7 @@ const de: Dictionary = {
   },
   veredelung: {
     kicker: "Textilveredelung",
-    h1: "Jedes Verfahren. Eine Quelle.",
+    h1: "Jedes Verfahren. Eine Quelle",
     intro: "Vom Siebdruck bis zum Patch — wir veredeln Ihre Textilien mit der richtigen Methode.",
     methods: [
       { name: "Siebdruck", sub: "Brillante Farben und hohe Deckkraft, ideal für große Stückzahlen und langlebige Ergebnisse." },
@@ -404,7 +404,7 @@ const de: Dictionary = {
   },
   nachhaltigkeit: {
     kicker: "Nachhaltigkeit",
-    h1: "Sorgfältig produziert.",
+    h1: "Sorgfältig produziert",
     intro: "Von den Materialien bis zur Verarbeitung achten wir auf Qualität in jedem Detail.",
     cards: [
       { title: "Faire Textilien", text: "GOTS- und Fair-Wear-zertifizierte Materialien." },
@@ -420,7 +420,7 @@ const de: Dictionary = {
   },
   bereiche: {
     kicker: "Bereiche",
-    h1: "Vier Bereiche, ein starkes Team.",
+    h1: "Vier Bereiche, ein starkes Team",
     intro: "Textilveredelung, Werbemittel, Webdesign und Marketing — alles bei INKII Works.",
     textil: {
       title: "Textildruck & Bestickung",
@@ -435,7 +435,7 @@ const de: Dictionary = {
   },
   textilSub: {
     kicker: "Textilveredelung",
-    h1: "Textilveredelung.",
+    h1: "Textilveredelung",
     intro: "Textildruck & Bestickung für Firmen- und Berufsbekleidung sowie für Team- und Sportbekleidung.",
     details: [
       { title: "Siebdruck", text: "Brillante Farben und hohe Deckkraft, ideal für große Stückzahlen und langlebige Ergebnisse." },
@@ -450,7 +450,7 @@ const de: Dictionary = {
   },
   firmenSub: {
     kicker: "Firmen- & Berufsbekleidung",
-    h1: "Firmen- & Berufsbekleidung.",
+    h1: "Firmen- & Berufsbekleidung",
     intro: "Professionelle Bekleidung mit Ihrem Logo — vom klassischen Polo bis zur robusten Arbeitsjacke. Hochwertig, langlebig und individuell veredelt.",
     details: [
       { title: "Polo & T-Shirts", text: "Atmungsaktive Klassiker für jeden Berufsalltag — pflegeleicht und farbecht." },
@@ -465,7 +465,7 @@ const de: Dictionary = {
   },
   premiumSub: {
     kicker: "Hochwertige Werbemittel",
-    h1: "Hochwertige Werbemittel.",
+    h1: "Hochwertige Werbemittel",
     intro: "Premium-Werbeartikel mit Ihrem Logo — durchdacht, langlebig und mit echtem Mehrwert. Geschenke, die Eindruck hinterlassen.",
     details: [
       { title: "Trinkflaschen & Thermosbecher", text: "Edelstahl, isoliert und individuell graviert oder bedruckt — nachhaltig im Alltag." },
@@ -479,7 +479,7 @@ const de: Dictionary = {
   },
   onlineshopsSub: {
     kicker: "Onlineshops für Unternehmen",
-    h1: "Onlineshops für Unternehmen.",
+    h1: "Onlineshops für Unternehmen",
     intro: "B2B-Shops und maßgeschneiderte Online-Plattformen für Ihren Vertrieb — von der Konzeption bis zur Übergabe und darüber hinaus.",
     details: [
       { title: "B2B-Shops", text: "Geschlossene Plattformen mit Kundenpreisen, Rollen und individuellen Sortimenten." },
@@ -494,7 +494,7 @@ const de: Dictionary = {
   },
   fahrzeug: {
     kicker: "Fahrzeugbeschriftung",
-    h1: "Fahrzeugbeschriftung & Außenwerbung.",
+    h1: "Fahrzeugbeschriftung & Außenwerbung",
     intro: "Ihr Fahrzeug als rollende Visitenkarte. Wir gestalten und montieren Fahrzeugbeschriftungen und effektive Außenwerbung — vom kleinen Schriftzug bis zur Vollverklebung.",
     details: [
       { title: "Folienbeschriftung", text: "Hochwertige Klebefolien für Schriftzüge, Logos und Designs auf Fahrzeugen jeder Größe." },
@@ -549,7 +549,7 @@ const de: Dictionary = {
   },
   werbeSub: {
     kicker: "Werbeartikel",
-    h1: "Werbeartikel.",
+    h1: "Werbeartikel",
     intro: "Hochwertige Werbeartikel mit Ihrem Logo — von Trinkflaschen über Taschen bis zu Büromaterialien.",
     categories: [
       { title: "Trinkflaschen & Becher", text: "Personalisiert mit Logo oder Slogan — nachhaltig und alltagstauglich." },
