@@ -19,6 +19,9 @@ export default function HomeImagesManager({
   const pg = HOME_SLOTS.filter((s) => s.group === "page");
   const dz = HOME_SLOTS.filter((s) => s.group === "designer");
   const tv = HOME_SLOTS.filter((s) => s.group === "textil-method");
+  const fk = HOME_SLOTS.filter((s) => s.group === "firmen-method");
+  const pw = HOME_SLOTS.filter((s) => s.group === "premium-method");
+  const os = HOME_SLOTS.filter((s) => s.group === "onlineshops-method");
 
   return (
     <>
@@ -165,6 +168,60 @@ export default function HomeImagesManager({
           </p>
           <div className="home-img-grid">
             {tv.map((s) => (
+              <Slot key={s.slot} slot={s.slot} label={s.label} meta={s} current={images[s.slot] ?? null} />
+            ))}
+          </div>
+        </div>
+      </div>
+
+      {/* Firmenkleidung */}
+      <div className="panel" style={{ marginBottom: 18 }}>
+        <div className="panel-head">
+          <h3>Firmen- & Berufsbekleidung — Bilder</h3>
+        </div>
+        <div className="panel-body">
+          <p className="hero-vid-state">
+            Die fünf Bilder auf der Seite <b>/bereiche/firmenkleidung</b>.
+            Empfohlen: quadratisches Format (800×800 px).
+          </p>
+          <div className="home-img-grid">
+            {fk.map((s) => (
+              <Slot key={s.slot} slot={s.slot} label={s.label} meta={s} current={images[s.slot] ?? null} />
+            ))}
+          </div>
+        </div>
+      </div>
+
+      {/* Premium Werbemittel */}
+      <div className="panel" style={{ marginBottom: 18 }}>
+        <div className="panel-head">
+          <h3>Hochwertige Werbemittel — Bilder</h3>
+        </div>
+        <div className="panel-body">
+          <p className="hero-vid-state">
+            Die fünf Bilder auf der Seite <b>/bereiche/premium-werbemittel</b>.
+            Empfohlen: quadratisches Format (800×800 px).
+          </p>
+          <div className="home-img-grid">
+            {pw.map((s) => (
+              <Slot key={s.slot} slot={s.slot} label={s.label} meta={s} current={images[s.slot] ?? null} />
+            ))}
+          </div>
+        </div>
+      </div>
+
+      {/* Onlineshops */}
+      <div className="panel" style={{ marginBottom: 18 }}>
+        <div className="panel-head">
+          <h3>Onlineshops für Unternehmen — Bilder</h3>
+        </div>
+        <div className="panel-body">
+          <p className="hero-vid-state">
+            Die fünf Bilder auf der Seite <b>/bereiche/onlineshops</b>.
+            Empfohlen: quadratisches Format (800×800 px).
+          </p>
+          <div className="home-img-grid">
+            {os.map((s) => (
               <Slot key={s.slot} slot={s.slot} label={s.label} meta={s} current={images[s.slot] ?? null} />
             ))}
           </div>

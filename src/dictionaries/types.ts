@@ -318,6 +318,33 @@ export type Dictionary = {
     ctaText: string;
     ctaBtn: string;
   };
+  firmenSub: {
+    kicker: string;
+    h1: string;
+    intro: string;
+    details: { title: string; text: string }[];
+    ctaTitle: string;
+    ctaText: string;
+    ctaBtn: string;
+  };
+  premiumSub: {
+    kicker: string;
+    h1: string;
+    intro: string;
+    details: { title: string; text: string }[];
+    ctaTitle: string;
+    ctaText: string;
+    ctaBtn: string;
+  };
+  onlineshopsSub: {
+    kicker: string;
+    h1: string;
+    intro: string;
+    details: { title: string; text: string }[];
+    ctaTitle: string;
+    ctaText: string;
+    ctaBtn: string;
+  };
   werbeSub: {
     kicker: string;
     h1: string;

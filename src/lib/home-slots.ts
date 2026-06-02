@@ -4,7 +4,7 @@
 export type HomeSlot = {
   slot: string;
   label: string;
-  group: "home-tiles" | "category" | "feature" | "nachhaltigkeit" | "leistungen" | "bereiche" | "page" | "designer" | "textil-method";
+  group: "home-tiles" | "category" | "feature" | "nachhaltigkeit" | "leistungen" | "bereiche" | "page" | "designer" | "textil-method" | "firmen-method" | "premium-method" | "onlineshops-method";
   /** Empfohlene Mindestgröße (px) für das Bild, z. B. "1600×900". */
   size?: string;
   /** Seitenverhältnis als CSS aspect-ratio, z. B. "16/9", "4/3", "1/1". */
@@ -31,6 +31,24 @@ export const HOME_SLOTS: HomeSlot[] = [
   { slot: "tv-method-3", label: "Textilveredelung — DTF-Druck (Foto)", group: "textil-method", size: "800×800", ratio: "1/1" },
   { slot: "tv-method-4", label: "Textilveredelung — Flockdruck (Foto)", group: "textil-method", size: "800×800", ratio: "1/1" },
   { slot: "tv-method-5", label: "Textilveredelung — Patches (Foto)", group: "textil-method", size: "800×800", ratio: "1/1" },
+  // Firmen- & Berufsbekleidung
+  { slot: "fk-1", label: "Firmenkleidung — Polo & T-Shirts (Foto)", group: "firmen-method", size: "800×800", ratio: "1/1" },
+  { slot: "fk-2", label: "Firmenkleidung — Hemden & Blusen (Foto)", group: "firmen-method", size: "800×800", ratio: "1/1" },
+  { slot: "fk-3", label: "Firmenkleidung — Hoodies & Sweater (Foto)", group: "firmen-method", size: "800×800", ratio: "1/1" },
+  { slot: "fk-4", label: "Firmenkleidung — Jacken & Westen (Foto)", group: "firmen-method", size: "800×800", ratio: "1/1" },
+  { slot: "fk-5", label: "Firmenkleidung — Workwear (Foto)", group: "firmen-method", size: "800×800", ratio: "1/1" },
+  // Premium Werbemittel
+  { slot: "pw-1", label: "Premium Werbemittel — Trinkflaschen (Foto)", group: "premium-method", size: "800×800", ratio: "1/1" },
+  { slot: "pw-2", label: "Premium Werbemittel — Caps (Foto)", group: "premium-method", size: "800×800", ratio: "1/1" },
+  { slot: "pw-3", label: "Premium Werbemittel — Power Banks (Foto)", group: "premium-method", size: "800×800", ratio: "1/1" },
+  { slot: "pw-4", label: "Premium Werbemittel — Stoff & Leder (Foto)", group: "premium-method", size: "800×800", ratio: "1/1" },
+  { slot: "pw-5", label: "Premium Werbemittel — Premium-Stifte (Foto)", group: "premium-method", size: "800×800", ratio: "1/1" },
+  // Onlineshops
+  { slot: "os-1", label: "Onlineshops — B2B-Shops (Foto)", group: "onlineshops-method", size: "800×800", ratio: "1/1" },
+  { slot: "os-2", label: "Onlineshops — Konfiguratoren (Foto)", group: "onlineshops-method", size: "800×800", ratio: "1/1" },
+  { slot: "os-3", label: "Onlineshops — ERP/PIM (Foto)", group: "onlineshops-method", size: "800×800", ratio: "1/1" },
+  { slot: "os-4", label: "Onlineshops — Design & UX (Foto)", group: "onlineshops-method", size: "800×800", ratio: "1/1" },
+  { slot: "os-5", label: "Onlineshops — Hosting & Support (Foto)", group: "onlineshops-method", size: "800×800", ratio: "1/1" },
   { slot: "nh-hero", label: "Nachhaltigkeit — Titelbild (großer Hero-Bereich)", group: "nachhaltigkeit", size: "1920×900", ratio: "21/9" },
   { slot: "nh-1", label: "Nachhaltigkeit — Karte 1: Faire Textilien", group: "nachhaltigkeit", size: "800×1000", ratio: "4/5" },
   { slot: "nh-2", label: "Nachhaltigkeit — Karte 2: Wassersparende Verfahren", group: "nachhaltigkeit", size: "800×1000", ratio: "4/5" },

@@ -10,6 +10,9 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const staticRoutes: MetadataRoute.Sitemap = [
     "",
     "/bereiche/textilveredelung",
+    "/bereiche/firmenkleidung",
+    "/bereiche/premium-werbemittel",
+    "/bereiche/onlineshops",
     "/werbemittel",
     "/leistungen",
     "/bereiche",
