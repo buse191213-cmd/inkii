@@ -261,6 +261,22 @@ export default function DesignerClient({ productPhotos, d }: { productPhotos: Pr
                     <div className="ds-mockup-frame">
                       {/* eslint-disable-next-line @next/next/no-img-element */}
                       <img src={photo} alt={productLabel} className="ds-mockup-photo" draggable={false} />
+                      {color.toLowerCase() !== "#ffffff" && (
+                        <div
+                          className="ds-mockup-color"
+                          style={{
+                            backgroundColor: color,
+                            maskImage: `url(${photo})`,
+                            WebkitMaskImage: `url(${photo})`,
+                            maskSize: "80% 80%",
+                            WebkitMaskSize: "80% 80%",
+                            maskPosition: "center",
+                            WebkitMaskPosition: "center",
+                            maskRepeat: "no-repeat",
+                            WebkitMaskRepeat: "no-repeat",
+                          }}
+                        />
+                      )}
                       {activeLogoUrl && (
                         <div
                           className="ds-mockup-logo"

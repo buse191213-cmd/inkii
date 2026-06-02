@@ -3579,10 +3579,12 @@ body:has(.cookie-banner) .wa-fab{bottom:120px}
 .ds-mockup-frame{position:relative;flex:1;display:flex;align-items:center;
   justify-content:center;background:#f4f5f1;overflow:hidden}
 .ds-mockup-frame.empty{flex-direction:column;gap:6px;padding:16px;color:#7a8077}
-.ds-mockup-photo{max-width:80%;max-height:80%;object-fit:contain;display:block}
+.ds-mockup-photo{max-width:80%;max-height:80%;object-fit:contain;display:block;position:relative;z-index:1}
+.ds-mockup-color{position:absolute;inset:0;mix-blend-mode:multiply;
+  opacity:.85;pointer-events:none;z-index:2;transition:background-color .2s ease}
 .ds-mockup-icon{font-size:2.4rem;opacity:.4}
 .ds-mockup-frame.empty small{font-size:.75rem;color:#7a8077;text-align:center}
-.ds-mockup-logo{position:absolute;transform:translate(-50%,-50%);pointer-events:none}
+.ds-mockup-logo{position:absolute;transform:translate(-50%,-50%);pointer-events:none;z-index:3}
 .ds-mockup-logo img{width:100%;height:auto;display:block;
   mix-blend-mode:multiply;opacity:.95;
   filter:drop-shadow(0 1px 2px rgba(0,0,0,.12))}
