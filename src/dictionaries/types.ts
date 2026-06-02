@@ -70,6 +70,14 @@ export type Dictionary = {
     feat: { kicker: string; title: string; text: string; more: string };
     features: { title: string; text: string }[];
     hotline: { kicker: string; title: string; hours: string; cta: string };
+    services: { label: string; sub: string }[];
+    tileLeftL1: string;
+    tileLeftL2: string;
+    tileRightL1: string;
+    tileRightL2: string;
+    fahrzeugLabel: string;
+    fahrzeugSub: string;
+    fahrzeugSub2: string;
   };
   ueberUns: {
     h1: string;
@@ -352,16 +360,6 @@ export type Dictionary = {
     ctaTitle: string;
     ctaText: string;
     ctaBtn: string;
-  };
-  home: {
-    services: { label: string; sub: string }[];
-    tileLeftL1: string;
-    tileLeftL2: string;
-    tileRightL1: string;
-    tileRightL2: string;
-    fahrzeugLabel: string;
-    fahrzeugSub: string;
-    fahrzeugSub2: string;
   };
   legal: {
     impressumTitle: string;

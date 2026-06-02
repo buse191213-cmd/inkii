@@ -104,6 +104,19 @@ const en: Dictionary = {
       hours: "Mon–Fri · 8:30–12:00 & 13:00–17:00",
       cta: "Request a callback →",
     },
+    services: [
+      { label: "TEXTILE FINISHING", sub: "Textile printing & embroidery for corporate and workwear as well as team and sportswear." },
+      { label: "PROMOTIONAL ITEMS", sub: "Textile printing & embroidery for bags and more." },
+      { label: "WEB DESIGN", sub: "Modern websites and online shops from a single source." },
+      { label: "MARKETING", sub: "Holistic marketing solutions — from brand to campaign." },
+    ],
+    tileLeftL1: "CUSTOM",
+    tileLeftL2: "APPAREL",
+    tileRightL1: "CUSTOM",
+    tileRightL2: "PROMOTIONAL ITEMS",
+    fahrzeugLabel: "VEHICLE LETTERING",
+    fahrzeugSub: "Vehicle lettering and effective outdoor advertising",
+    fahrzeugSub2: "We turn surfaces into eye-catchers",
   },
   ueberUns: {
     h1: "Your finishing partner.",
@@ -495,21 +508,7 @@ const en: Dictionary = {
     ctaText: "Send us your vehicle data — we'll create a tailored offer.",
     ctaBtn: "Contact",
   },
-  home: {
-    services: [
-      { label: "TEXTILE FINISHING", sub: "Textile printing & embroidery for corporate and workwear as well as team and sportswear." },
-      { label: "PROMOTIONAL ITEMS", sub: "Textile printing & embroidery for bags and more." },
-      { label: "WEB DESIGN", sub: "Modern websites and online shops from a single source." },
-      { label: "MARKETING", sub: "Holistic marketing solutions — from brand to campaign." },
-    ],
-    tileLeftL1: "CUSTOM",
-    tileLeftL2: "APPAREL",
-    tileRightL1: "CUSTOM",
-    tileRightL2: "PROMOTIONAL ITEMS",
-    fahrzeugLabel: "VEHICLE LETTERING",
-    fahrzeugSub: "Vehicle lettering and effective outdoor advertising",
-    fahrzeugSub2: "We turn surfaces into eye-catchers",
-  },
+
   legal: {
     impressumTitle: "Imprint",
     impressumIntro: "Information according to § 5 TMG (German Telemedia Act).",

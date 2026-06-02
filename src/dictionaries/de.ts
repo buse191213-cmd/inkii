@@ -104,6 +104,19 @@ const de: Dictionary = {
       hours: "Mo–Fr · 08:30–12:00 & 13:00–17:00 Uhr",
       cta: "Rückruf vereinbaren →",
     },
+    services: [
+      { label: "TEXTILVEREDELUNG", sub: "Textildruck & Bestickung für Firmen- und Berufsbekleidung sowie für Team- und Sportbekleidung." },
+      { label: "WERBEARTIKEL", sub: "Textildruck & Bestickung für Taschen und mehr." },
+      { label: "WEBDESIGN", sub: "Moderne Websites und Online-Shops aus einer Hand." },
+      { label: "MARKETING", sub: "Ganzheitliche Marketinglösungen — von der Marke bis zur Kampagne." },
+    ],
+    tileLeftL1: "INDIVIDUELLE",
+    tileLeftL2: "BEKLEIDUNG",
+    tileRightL1: "INDIVIDUELLE",
+    tileRightL2: "WERBEARTIKEL",
+    fahrzeugLabel: "FAHRZEUGBESCHRIFTUNG",
+    fahrzeugSub: "Fahrzeugbeschriftung und effektive Außenwerbung",
+    fahrzeugSub2: "Wir aus Fläche einen Blickfang",
   },
   ueberUns: {
     h1: "Ihr Partner für Veredelung.",
@@ -495,21 +508,7 @@ const de: Dictionary = {
     ctaText: "Schicken Sie uns Ihre Fahrzeugdaten — wir erstellen ein passendes Angebot.",
     ctaBtn: "Kontakt",
   },
-  home: {
-    services: [
-      { label: "TEXTILVEREDELUNG", sub: "Textildruck & Bestickung für Firmen- und Berufsbekleidung sowie für Team- und Sportbekleidung." },
-      { label: "WERBEARTIKEL", sub: "Textildruck & Bestickung für Taschen und mehr." },
-      { label: "WEBDESIGN", sub: "Moderne Websites und Online-Shops aus einer Hand." },
-      { label: "MARKETING", sub: "Ganzheitliche Marketinglösungen — von der Marke bis zur Kampagne." },
-    ],
-    tileLeftL1: "INDIVIDUELLE",
-    tileLeftL2: "BEKLEIDUNG",
-    tileRightL1: "INDIVIDUELLE",
-    tileRightL2: "WERBEARTIKEL",
-    fahrzeugLabel: "FAHRZEUGBESCHRIFTUNG",
-    fahrzeugSub: "Fahrzeugbeschriftung und effektive Außenwerbung",
-    fahrzeugSub2: "Wir aus Fläche einen Blickfang",
-  },
+
   legal: {
     impressumTitle: "Impressum",
     impressumIntro: "Angaben gemäß § 5 TMG.",

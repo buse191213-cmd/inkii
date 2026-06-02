@@ -104,6 +104,19 @@ const tr: Dictionary = {
       hours: "Pzt–Cum · 08:30–12:00 & 13:00–17:00",
       cta: "Geri arama talep et →",
     },
+    services: [
+      { label: "TEKSTİL İŞLEME", sub: "Kurumsal ve iş kıyafetleri ile takım ve spor kıyafetleri için tekstil baskı ve nakış." },
+      { label: "TANITIM ÜRÜNLERİ", sub: "Çantalar ve daha fazlası için tekstil baskı ve nakış." },
+      { label: "WEB TASARIM", sub: "Tek elden modern web siteleri ve online mağazalar." },
+      { label: "PAZARLAMA", sub: "Bütünsel pazarlama çözümleri — markadan kampanyaya kadar." },
+    ],
+    tileLeftL1: "ÖZEL",
+    tileLeftL2: "GİYİM",
+    tileRightL1: "ÖZEL",
+    tileRightL2: "TANITIM ÜRÜNLERİ",
+    fahrzeugLabel: "ARAÇ GİYDİRME",
+    fahrzeugSub: "Araç giydirme ve etkili dış mekan reklamcılığı",
+    fahrzeugSub2: "Yüzeyi göz alıcı kılıyoruz",
   },
   ueberUns: {
     h1: "Baskı ortağınız.",
@@ -495,21 +508,7 @@ const tr: Dictionary = {
     ctaText: "Araç bilgilerinizi gönderin — size uygun bir teklif hazırlayalım.",
     ctaBtn: "İletişim",
   },
-  home: {
-    services: [
-      { label: "TEKSTİL İŞLEME", sub: "Kurumsal ve iş kıyafetleri ile takım ve spor kıyafetleri için tekstil baskı ve nakış." },
-      { label: "TANITIM ÜRÜNLERİ", sub: "Çantalar ve daha fazlası için tekstil baskı ve nakış." },
-      { label: "WEB TASARIM", sub: "Tek elden modern web siteleri ve online mağazalar." },
-      { label: "PAZARLAMA", sub: "Bütünsel pazarlama çözümleri — markadan kampanyaya kadar." },
-    ],
-    tileLeftL1: "ÖZEL",
-    tileLeftL2: "GİYİM",
-    tileRightL1: "ÖZEL",
-    tileRightL2: "TANITIM ÜRÜNLERİ",
-    fahrzeugLabel: "ARAÇ GİYDİRME",
-    fahrzeugSub: "Araç giydirme ve etkili dış mekan reklamcılığı",
-    fahrzeugSub2: "Yüzeyi göz alıcı kılıyoruz",
-  },
+
   legal: {
     impressumTitle: "Yasal Bilgi (Impressum)",
     impressumIntro: "§ 5 TMG (Alman Telemedya Yasası) uyarınca bilgiler.",
