@@ -3561,3 +3561,33 @@ body:has(.cookie-banner) .wa-fab{bottom:120px}
 .ds-no-photo-icon{font-size:4rem;opacity:.35;margin-bottom:12px}
 .ds-no-photo p{font-family:Georgia,serif;font-size:1.4rem;color:#1c2722;margin:0 0 8px 0;font-weight:600}
 .ds-no-photo small{font-size:.85rem;color:#7a8077}
+
+/* === Designer: Sol stage — 4 ürün 2x2 mockup grid === */
+.ds-mockup-grid{display:grid;grid-template-columns:repeat(2,1fr);
+  grid-template-rows:repeat(2,1fr);gap:14px;width:100%;height:100%;padding:14px}
+.ds-mockup-cell{position:relative;display:flex;flex-direction:column;
+  background:#fff;border:2px solid #e3e6df;border-radius:14px;
+  overflow:hidden;cursor:pointer;transition:.2s}
+.ds-mockup-cell:hover{transform:translateY(-2px);box-shadow:0 8px 20px rgba(28,39,34,.08);
+  border-color:#cdd6c9}
+.ds-mockup-cell.active{border-color:#3f9c5c;
+  box-shadow:0 8px 22px rgba(63,156,92,.18)}
+.ds-mockup-label{padding:8px 12px;font-family:Georgia,serif;font-size:.9rem;
+  font-weight:600;color:#1c2722;text-align:center;background:#f9faf6;
+  border-bottom:1px solid #e8eae3;letter-spacing:.01em}
+.ds-mockup-cell.active .ds-mockup-label{background:#3f9c5c;color:#fff}
+.ds-mockup-frame{position:relative;flex:1;display:flex;align-items:center;
+  justify-content:center;background:#f4f5f1;overflow:hidden}
+.ds-mockup-frame.empty{flex-direction:column;gap:6px;padding:16px;color:#7a8077}
+.ds-mockup-photo{max-width:80%;max-height:80%;object-fit:contain;display:block}
+.ds-mockup-icon{font-size:2.4rem;opacity:.4}
+.ds-mockup-frame.empty small{font-size:.75rem;color:#7a8077;text-align:center}
+.ds-mockup-logo{position:absolute;transform:translate(-50%,-50%);pointer-events:none}
+.ds-mockup-logo img{width:100%;height:auto;display:block;
+  mix-blend-mode:multiply;opacity:.95;
+  filter:drop-shadow(0 1px 2px rgba(0,0,0,.12))}
+
+@media(max-width:780px){
+  .ds-mockup-grid{gap:8px;padding:8px}
+  .ds-mockup-label{font-size:.78rem;padding:6px 8px}
+}
