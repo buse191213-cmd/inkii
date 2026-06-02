@@ -101,6 +101,24 @@ export default function HomeImagesManager({
         </div>
       </div>
 
+      {/* Über Uns Bilder */}
+      <div className="panel" style={{ marginBottom: 18 }}>
+        <div className="panel-head">
+          <h3>Über Uns — Bilder</h3>
+        </div>
+        <div className="panel-body">
+          <p className="hero-vid-state">
+            Titelbild (Hero) und drei Werte-Bilder auf der Seite <b>/ueber-uns</b>.
+            Hero: 1920×900 (Querformat). Werte: 800×1000 (Hochformat).
+          </p>
+          <div className="home-img-grid">
+            {pg.map((s) => (
+              <Slot key={s.slot} slot={s.slot} label={s.label} meta={s} current={images[s.slot] ?? null} />
+            ))}
+          </div>
+        </div>
+      </div>
+
       <div className="panel" style={{ marginTop: 18 }}>
         <div className="panel-head">
           <h3>3D-Designer — Produktfotos</h3>
