@@ -3,7 +3,7 @@ import { Montserrat } from "next/font/google";
 import { SITE_URL } from "@/lib/site";
 import { getLocale } from "@/lib/i18n-server";
 import { getDictionary } from "@/dictionaries";
-import { organizationSchema } from "@/lib/schema";
+import { organizationSchema, localBusinessSchema } from "@/lib/schema";
 import JsonLd from "@/components/JsonLd";
 import CookieBanner from "@/components/CookieBanner";
 import WhatsAppButton from "@/components/WhatsAppButton";
@@ -104,6 +104,7 @@ export default async function RootLayout({
         <CookieBanner dict={d.cookie} />
         <WhatsAppButton phone={COMPANY.phone} message={waMsg} label={waLabel} />
         <JsonLd data={organizationSchema()} />
+        <JsonLd data={localBusinessSchema()} />
       </body>
     </html>
   );

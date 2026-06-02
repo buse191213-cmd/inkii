@@ -118,3 +118,77 @@ export function breadcrumbSchema(items: { name: string; url: string }[]): Json {
     })),
   };
 }
+
+/**
+ * LocalBusiness-Schema (PrintShop) — für Google Maps, Local SEO und
+ * "Knowledge Panel". Wichtig für lokale Suchanfragen in Essen/Umgebung.
+ */
+export function localBusinessSchema(): Json {
+  const a = COMPANY.address;
+  const schema: Json = {
+    "@context": "https://schema.org",
+    "@type": ["LocalBusiness", "PrintShop"],
+    "@id": `${SITE_URL}/#localbusiness`,
+    name: COMPANY.name,
+    url: COMPANY.url,
+    description: COMPANY.description,
+    image: COMPANY.logo ? abs(COMPANY.logo) : undefined,
+    logo: COMPANY.logo ? abs(COMPANY.logo) : undefined,
+    telephone: COMPANY.phone,
+    email: COMPANY.email,
+    priceRange: "€€",
+    address: {
+      "@type": "PostalAddress",
+      streetAddress: a.street,
+      postalCode: a.postalCode,
+      addressLocality: a.city,
+      addressRegion: a.region || "NRW",
+      addressCountry: a.country,
+    },
+    // Ungefähre Koordinaten Essen-Borbeck (Westuferstr.)
+    geo: {
+      "@type": "GeoCoordinates",
+      latitude: 51.4823,
+      longitude: 6.9408,
+    },
+    openingHoursSpecification: [
+      {
+        "@type": "OpeningHoursSpecification",
+        dayOfWeek: ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"],
+        opens: "09:00",
+        closes: "18:00",
+      },
+    ],
+    areaServed: [
+      { "@type": "City", name: "Essen" },
+      { "@type": "City", name: "Bottrop" },
+      { "@type": "City", name: "Gelsenkirchen" },
+      { "@type": "City", name: "Mülheim an der Ruhr" },
+      { "@type": "City", name: "Oberhausen" },
+      { "@type": "City", name: "Duisburg" },
+      { "@type": "AdministrativeArea", name: "Nordrhein-Westfalen" },
+      { "@type": "Country", name: "Deutschland" },
+    ],
+    knowsAbout: [
+      "Textilveredelung",
+      "DTF-Druck",
+      "Stickerei",
+      "Siebdruck",
+      "Werbeartikel",
+      "Werbemittel",
+      "Firmenkleidung",
+      "Berufsbekleidung",
+      "Fahrzeugbeschriftung",
+      "Folienbeschriftung",
+      "Onlineshop-Entwicklung",
+    ],
+    paymentAccepted: "Cash, Invoice, Bank Transfer",
+  };
+
+  const sameAs = Object.values(COMPANY.social).filter(Boolean);
+  if (sameAs.length > 0) schema.sameAs = sameAs;
+
+  // undefined Werte entfernen
+  Object.keys(schema).forEach((k) => schema[k] === undefined && delete schema[k]);
+  return schema;
+}
