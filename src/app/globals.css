@@ -3477,4 +3477,6 @@ body:has(.cookie-banner) .wa-fab{bottom:120px}
 .bereich-grid .mm-page-tile{aspect-ratio:unset;min-height:340px}
 /* Title font küçültüldü → uzun başlıklar (Workwear) 2 satıra sığar; içerik kart altında */
 .bereich-grid .mm-page-tile-title{font-size:1.3rem;min-height:2.4em;align-items:flex-end}
+/* Numara (01,02,03...) title'a yakın çekildi — boşluk küçüldü */
+.bereich-grid .mm-page-tile-label{position:relative;top:1.3em;margin-bottom:0}
 @media(max-width:600px){.bereich-grid .mm-page-tile{min-height:280px}.bereich-grid .mm-page-tile-title{font-size:1.15rem}}
