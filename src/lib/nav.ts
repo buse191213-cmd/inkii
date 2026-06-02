@@ -21,9 +21,9 @@ export type NavKey = (typeof NAV_KEYS)[number];
 /** Pfad zu jedem Schlüssel. */
 export const NAV_HREF: Record<NavKey, string> = {
   home: "/",
-  kleidung: "/werbemittel?cat=kleidung",
+  kleidung: "/bereiche/textilveredelung",
   taschen: "/werbemittel?cat=taschen",
-  werbemittel: "/werbemittel?cat=werbeartikel",
+  werbemittel: "/bereiche/werbeartikel",
   webdesign: "/webdesign",
   marketing: "/marketing",
   bereiche: "/bereiche",

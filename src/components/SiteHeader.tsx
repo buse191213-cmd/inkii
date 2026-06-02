@@ -11,9 +11,9 @@ import type { Dictionary } from "@/dictionaries/types";
 type NavItem = { href: string; key: keyof Dictionary["nav"] };
 
 const FALLBACK_NAV: NavItem[] = [
-  { href: "/werbemittel?cat=kleidung", key: "kleidung" },
+  { href: "/bereiche/textilveredelung", key: "kleidung" },
   { href: "/werbemittel?cat=taschen", key: "taschen" },
-  { href: "/werbemittel?cat=werbeartikel", key: "werbemittel" },
+  { href: "/bereiche/werbeartikel", key: "werbemittel" },
   { href: "/webdesign", key: "webdesign" },
   { href: "/marketing", key: "marketing" },
 ];
