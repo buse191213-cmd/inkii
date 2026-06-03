@@ -391,6 +391,8 @@ const en: Dictionary = {
       text: "Textile printing & embroidery for bags, bottles, office items and more.",
       cta: "02 Merchandise",
     },
+    ctaTitle: "Let us bring your project to life",
+    ctaText: "We deliver a free quote within 24 hours.",
   },
   textilSub: {
     kicker: "Textile finishing",

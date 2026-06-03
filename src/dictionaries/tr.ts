@@ -391,6 +391,8 @@ const tr: Dictionary = {
       text: "Çantalar, su şişeleri, ofis malzemeleri ve daha fazlası için tekstil baskı ve nakış.",
       cta: "02 Tanıtım Ürünleri",
     },
+    ctaTitle: "Projenizi birlikte hayata geçirelim",
+    ctaText: "Size 24 saat içinde ücretsiz teklif sunuyoruz.",
   },
   textilSub: {
     kicker: "Tekstil İşleme",

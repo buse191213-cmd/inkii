@@ -391,6 +391,8 @@ const de: Dictionary = {
       text: "Textildruck & Bestickung für Taschen, Trinkflaschen, Büroartikel und mehr.",
       cta: "02 Werbeartikel",
     },
+    ctaTitle: "Lassen Sie uns Ihr Projekt umsetzen",
+    ctaText: "Wir liefern Ihnen ein kostenloses Angebot innerhalb 24 Stunden.",
   },
   textilSub: {
     kicker: "Textilveredelung",
