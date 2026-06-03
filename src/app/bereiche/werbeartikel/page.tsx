@@ -1,5 +1,4 @@
 import Link from "next/link";
-import Image from "next/image";
 import SiteShell from "@/components/SiteShell";
 import type { Metadata } from "next";
 import { getHomeImage } from "@/lib/home-images";
@@ -28,10 +27,10 @@ export default async function WerbeartikelDetailPage() {
 
   return (
     <SiteShell>
-      <section className="mm-page-hero">
-        {heroImg && (
-          <Image src={heroImg} alt={t.h1} fill sizes="100vw" style={{ objectFit: "cover" }} priority />
-        )}
+      <section
+        className="mm-page-hero"
+        style={heroImg ? { backgroundImage: `url(${heroImg})` } : undefined}
+      >
         <div className="mm-page-hero-inner">
           <div className="mm-page-crumb">
             <Link href="/">{d.nav.home}</Link>
@@ -45,30 +44,34 @@ export default async function WerbeartikelDetailPage() {
         </div>
       </section>
 
-      {/* Showroom — 4 Kategorien als Karten */}
-      <section className="showroom">
-        <div className="showroom-grid">
-          {t.categories.slice(0, 4).map((c, i) => {
-            const img = imgs[i];
-            return (
-              <article key={c.title} className="showroom-card">
-                <div className="showroom-media">
-                  {img ? (
-                    <Image src={img} alt={c.title} fill sizes="(max-width: 900px) 100vw, 50vw" style={{ objectFit: "cover" }} />
-                  ) : (
-                    <div className="showroom-placeholder">
-                      <span>{c.title}</span>
-                    </div>
-                  )}
-                  <div className="showroom-num">0{i + 1}</div>
-                </div>
-                <div className="showroom-body">
-                  <h2 className="showroom-title">{c.title}</h2>
-                  <p className="showroom-text">{c.text}</p>
-                </div>
-              </article>
-            );
-          })}
+      <section className="mm-page-section bereich-grid">
+        <div className="wrap">
+          <div className="mm-page-tiles cols-2" style={{ marginBottom: 14 }}>
+            {t.categories.slice(0, 2).map((c, i) => (
+              <div
+                key={c.title}
+                className="mm-page-tile"
+                style={imgs[i] ? { backgroundImage: `url(${imgs[i]})` } : undefined}
+              >
+                <div className="mm-page-tile-label">0{i + 1}</div>
+                <h3 className="mm-page-tile-title">{c.title}</h3>
+                <p className="mm-page-tile-desc">{c.text}</p>
+              </div>
+            ))}
+          </div>
+          <div className="mm-page-tiles cols-2">
+            {t.categories.slice(2, 4).map((c, i) => (
+              <div
+                key={c.title}
+                className="mm-page-tile"
+                style={imgs[i + 2] ? { backgroundImage: `url(${imgs[i + 2]})` } : undefined}
+              >
+                <div className="mm-page-tile-label">0{i + 3}</div>
+                <h3 className="mm-page-tile-title">{c.title}</h3>
+                <p className="mm-page-tile-desc">{c.text}</p>
+              </div>
+            ))}
+          </div>
         </div>
       </section>
 

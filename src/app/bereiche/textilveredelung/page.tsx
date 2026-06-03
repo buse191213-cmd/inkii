@@ -1,5 +1,4 @@
 import Link from "next/link";
-import Image from "next/image";
 import SiteShell from "@/components/SiteShell";
 import type { Metadata } from "next";
 import { getHomeImage } from "@/lib/home-images";
@@ -29,11 +28,10 @@ export default async function TextilveredelungDetailPage() {
 
   return (
     <SiteShell>
-      {/* Hero */}
-      <section className="mm-page-hero">
-        {heroImg && (
-          <Image src={heroImg} alt={t.h1} fill sizes="100vw" style={{ objectFit: "cover" }} priority />
-        )}
+      <section
+        className="mm-page-hero"
+        style={heroImg ? { backgroundImage: `url(${heroImg})` } : undefined}
+      >
         <div className="mm-page-hero-inner">
           <div className="mm-page-crumb">
             <Link href="/">{d.nav.home}</Link>
@@ -47,53 +45,37 @@ export default async function TextilveredelungDetailPage() {
         </div>
       </section>
 
-      {/* Showroom — 5 yöntem, 2+3 grid */}
-      <section className="showroom">
-        <div className="showroom-grid">
-          {t.details.slice(0, 2).map((m, i) => {
-            const img = imgs[i];
-            return (
-              <article key={m.title} className="showroom-card">
-                <div className="showroom-media">
-                  {img ? (
-                    <Image src={img} alt={m.title} fill sizes="(max-width: 900px) 100vw, 50vw" style={{ objectFit: "cover" }} />
-                  ) : (
-                    <div className="showroom-placeholder"><span>{m.title}</span></div>
-                  )}
-                  <div className="showroom-num">0{i + 1}</div>
-                </div>
-                <div className="showroom-body">
-                  <h2 className="showroom-title">{m.title}</h2>
-                  <p className="showroom-text">{m.text}</p>
-                </div>
-              </article>
-            );
-          })}
-        </div>
-        <div className="showroom-grid showroom-grid-3" style={{ marginTop: 28 }}>
-          {t.details.slice(2, 5).map((m, i) => {
-            const img = imgs[i + 2];
-            return (
-              <article key={m.title} className="showroom-card">
-                <div className="showroom-media">
-                  {img ? (
-                    <Image src={img} alt={m.title} fill sizes="(max-width: 900px) 100vw, 33vw" style={{ objectFit: "cover" }} />
-                  ) : (
-                    <div className="showroom-placeholder"><span>{m.title}</span></div>
-                  )}
-                  <div className="showroom-num">0{i + 3}</div>
-                </div>
-                <div className="showroom-body">
-                  <h2 className="showroom-title">{m.title}</h2>
-                  <p className="showroom-text">{m.text}</p>
-                </div>
-              </article>
-            );
-          })}
+      <section className="mm-page-section bereich-grid">
+        <div className="wrap">
+          <div className="mm-page-tiles cols-2" style={{ marginBottom: 14 }}>
+            {t.details.slice(0, 2).map((m, i) => (
+              <div
+                key={m.title}
+                className="mm-page-tile"
+                style={imgs[i] ? { backgroundImage: `url(${imgs[i]})` } : undefined}
+              >
+                <div className="mm-page-tile-label">0{i + 1}</div>
+                <h3 className="mm-page-tile-title">{m.title}</h3>
+                <p className="mm-page-tile-desc">{m.text}</p>
+              </div>
+            ))}
+          </div>
+          <div className="mm-page-tiles cols-3">
+            {t.details.slice(2, 5).map((m, i) => (
+              <div
+                key={m.title}
+                className="mm-page-tile"
+                style={imgs[i + 2] ? { backgroundImage: `url(${imgs[i + 2]})` } : undefined}
+              >
+                <div className="mm-page-tile-label">0{i + 3}</div>
+                <h3 className="mm-page-tile-title">{m.title}</h3>
+                <p className="mm-page-tile-desc">{m.text}</p>
+              </div>
+            ))}
+          </div>
         </div>
       </section>
 
-      {/* CTA */}
       <section className="mm-page-cta">
         <h2 className="mm-page-cta-h">{t.ctaTitle}</h2>
         <p className="mm-page-cta-p">{t.ctaText}</p>
