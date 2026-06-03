@@ -23,7 +23,7 @@ export default function RichEditor({ name, initial = "", minHeight = 320 }: Prop
 
   const editor = useEditor({
     extensions: [
-      StarterKit,
+      StarterKit.configure({ link: false }),
       Link.configure({ openOnClick: false, autolink: true }),
     ],
     content: initial,

@@ -8,7 +8,7 @@ const nextConfig = {
   reactStrictMode: true,
   outputFileTracingRoot: __dirname,
   experimental: {
-    serverActions: { bodySizeLimit: "6mb" },
+    serverActions: { bodySizeLimit: "20mb" },
   },
   // next/image için Vercel Blob domain'i izin ver
   images: {
