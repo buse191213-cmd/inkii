@@ -508,12 +508,12 @@ const tr: Dictionary = {
   werbeSub: {
     kicker: "Tanıtım Ürünleri",
     h1: "Tanıtım Ürünleri",
-    intro: "Logonuzla yüksek kaliteli tanıtım ürünleri — su şişesi, çanta, ofis malzemesinden tekstile kadar.",
+    intro: "Dört kategori, tek bir misyon: markanızı görünür kılmak. Yüksek kaliteli promosyon ürünlerinden oluşan showroom'umuzu keşfedin.",
     categories: [
-      { title: "Şişeler & Bardaklar", text: "Logo veya slogan ile kişiselleştirilmiş — sürdürülebilir ve günlük kullanıma uygun." },
-      { title: "Çantalar & Sırt Çantaları", text: "Etkinlikler, fuarlar ve günlük kullanım için pratik yardımcılar." },
-      { title: "Tanıtım Ürünleri", text: "Kalem, defter, mouse pad ve daha fazlası — küçük ama büyük etki." },
-      { title: "Tekstil & Moda", text: "T-shirt, şapka, hoodie — markanızı giyilebilir kılar." },
+      { title: "Çantalar", text: "Pratik torbalar, sırt çantaları ve tote çantalar — logonuzla baskılı veya nakışlı. Etkinlikler, fuarlar ve günlük kullanım için." },
+      { title: "Ofis Malzemeleri", text: "Kalemler, defterler, takvimler, mousepad'ler — büyük etki yaratan küçük hediyeler. Promosyon için ideal." },
+      { title: "Termoslar & Bardaklar", text: "Paslanmaz çelik termoslar, kupalar ve bardaklar — günlük kullanımda sürdürülebilir, markanızla sürekli görünür." },
+      { title: "Tanıtım Hediyeleri", text: "Müşteriler, ortaklar ve çalışanlar için özel hediyeler ve premium setler — hediye kutularından deri kılıflara." },
     ],
     ctaTitle: "Tanıtım ürünü için hazır mısınız?",
     ctaText: "Fikrinizi bize iletin — size en uygun ürünü bulalım.",

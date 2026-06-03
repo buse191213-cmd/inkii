@@ -47,8 +47,10 @@ export const HOME_SLOTS: HomeSlot[] = [
   { slot: "fb-3", label: "Fahrzeug — Magnetschilder (Foto)", group: "fahrzeug-method", size: "800×800", ratio: "1/1" },
   { slot: "fb-4", label: "Fahrzeug — Schaufenster (Foto)", group: "fahrzeug-method", size: "800×800", ratio: "1/1" },
   { slot: "fb-5", label: "Fahrzeug — Design & Montage (Foto)", group: "fahrzeug-method", size: "800×800", ratio: "1/1" },
-  { slot: "wa-1", label: "Werbeartikel — Bild 1 (Trinkflaschen/Taschen)", group: "werbeartikel-img", size: "800×1000", ratio: "4/5" },
-  { slot: "wa-2", label: "Werbeartikel — Bild 2 (Werbeartikel-Kategorie)", group: "werbeartikel-img", size: "800×1000", ratio: "4/5" },
+  { slot: "wa-1", label: "Werbeartikel — 01 Taschen", group: "werbeartikel-img", size: "800×1000", ratio: "4/5" },
+  { slot: "wa-2", label: "Werbeartikel — 02 Büromaterial", group: "werbeartikel-img", size: "800×1000", ratio: "4/5" },
+  { slot: "wa-3", label: "Werbeartikel — 03 Trinkflaschen & Becher", group: "werbeartikel-img", size: "800×1000", ratio: "4/5" },
+  { slot: "wa-4", label: "Werbeartikel — 04 Werbegeschenke", group: "werbeartikel-img", size: "800×1000", ratio: "4/5" },
 
   { slot: "nh-hero", label: "Nachhaltigkeit — Titelbild (großer Hero-Bereich)", group: "nachhaltigkeit", size: "1920×900", ratio: "21/9" },
   { slot: "nh-1", label: "Nachhaltigkeit — Karte 1: Faire Textilien", group: "nachhaltigkeit", size: "800×1000", ratio: "4/5" },

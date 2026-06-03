@@ -3593,3 +3593,37 @@ body:has(.cookie-banner) .wa-fab{bottom:120px}
   .ds-mockup-grid{gap:8px;padding:8px}
   .ds-mockup-label{font-size:.78rem;padding:6px 8px}
 }
+
+/* === Werbeartikel Showroom — 4 kategori kart === */
+.showroom{padding:60px 24px 40px;max-width:1280px;margin:0 auto}
+.showroom-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:28px}
+.showroom-card{position:relative;display:flex;flex-direction:column;
+  background:#fff;border-radius:18px;overflow:hidden;
+  box-shadow:0 4px 20px rgba(28,39,34,.06);
+  transition:.35s cubic-bezier(.4,0,.2,1);border:1px solid #ebeae5}
+.showroom-card:hover{transform:translateY(-6px);
+  box-shadow:0 16px 40px rgba(28,39,34,.14)}
+.showroom-media{position:relative;width:100%;aspect-ratio:5/4;
+  background:#f4f5f1;overflow:hidden}
+.showroom-media img{transition:transform .8s cubic-bezier(.2,.7,.2,1)}
+.showroom-card:hover .showroom-media img{transform:scale(1.06)}
+.showroom-placeholder{position:absolute;inset:0;display:flex;
+  align-items:center;justify-content:center;background:linear-gradient(135deg,#f4f5f1,#e8ebe6);
+  color:#7a8077;font-family:var(--display);font-size:1.4rem;letter-spacing:.02em}
+.showroom-num{position:absolute;top:18px;left:18px;
+  background:rgba(255,255,255,.95);backdrop-filter:blur(8px);
+  padding:6px 12px;border-radius:30px;font-family:Georgia,serif;
+  font-size:.85rem;font-weight:700;color:#1c2722;letter-spacing:.04em;
+  box-shadow:0 2px 8px rgba(0,0,0,.08)}
+.showroom-body{padding:26px 28px 30px;display:flex;flex-direction:column;gap:10px}
+.showroom-title{font-family:var(--display);font-size:1.55rem;font-weight:800;
+  color:#1c2722;margin:0;line-height:1.2;letter-spacing:-.01em}
+.showroom-text{font-size:.97rem;line-height:1.6;color:#4a5048;margin:0}
+
+@media(max-width:780px){
+  .showroom{padding:36px 16px 30px}
+  .showroom-grid{grid-template-columns:1fr;gap:18px}
+  .showroom-title{font-size:1.3rem}
+  .showroom-body{padding:20px 22px 24px}
+  .showroom-num{top:12px;left:12px;font-size:.75rem;padding:4px 10px}
+}

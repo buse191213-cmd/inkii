@@ -508,12 +508,12 @@ const en: Dictionary = {
   werbeSub: {
     kicker: "Merchandise",
     h1: "Merchandise",
-    intro: "Premium promotional items with your logo — from bottles and bags to office supplies.",
+    intro: "Four categories, one mission: make your brand visible. Discover our showroom of high-quality promotional products.",
     categories: [
-      { title: "Bottles & cups", text: "Personalized with logo or slogan — sustainable and practical for daily use." },
-      { title: "Bags & backpacks", text: "Practical companions for events, trade fairs and daily use." },
-      { title: "Promotional items", text: "Pens, notebooks, mouse pads and more — small things with big impact." },
-      { title: "Apparel & fashion", text: "T-shirts, caps, hoodies — your brand to wear." },
+      { title: "Bags", text: "Practical bags, backpacks and totes — printed or embroidered with your logo. For events, trade shows and everyday use." },
+      { title: "Office Supplies", text: "Pens, notebooks, calendars, mousepads — small gifts with great impact. Perfect for handouts and giveaways." },
+      { title: "Bottles & Cups", text: "Stainless steel thermos bottles, mugs and cups — sustainable for daily use and always visible with your branding." },
+      { title: "Promo Gifts", text: "Exclusive gifts and premium sets for clients, partners and employees — from gift boxes to leather cases." },
     ],
     ctaTitle: "Ready for your merchandise?",
     ctaText: "Send us your idea — we'll find the right product.",

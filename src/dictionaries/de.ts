@@ -508,12 +508,12 @@ const de: Dictionary = {
   werbeSub: {
     kicker: "Werbeartikel",
     h1: "Werbeartikel",
-    intro: "Hochwertige Werbeartikel mit Ihrem Logo — von Trinkflaschen über Taschen bis zu Büromaterialien.",
+    intro: "Vier Kategorien, eine Mission: Ihre Marke sichtbar machen. Entdecken Sie unser Showroom an hochwertigen Werbeartikeln.",
     categories: [
-      { title: "Trinkflaschen & Becher", text: "Personalisiert mit Logo oder Slogan — nachhaltig und alltagstauglich." },
-      { title: "Taschen & Rucksäcke", text: "Praktische Begleiter für Events, Messen und den täglichen Gebrauch." },
-      { title: "Werbeartikel", text: "Stifte, Notizbücher, Mousepads und u.v.m — kleine Dinge mit großer Wirkung." },
-      { title: "Textilien & Mode", text: "T-Shirts, Caps, Hoodies — Ihre Marke zum Anziehen." },
+      { title: "Taschen", text: "Praktische Beutel, Rucksäcke und Tragetaschen — bedruckt oder bestickt mit Ihrem Logo. Für Events, Messen und den Alltag." },
+      { title: "Büromaterial", text: "Stifte, Notizbücher, Kalender, Mousepads — kleine Aufmerksamkeiten mit großer Wirkung. Ideal als Streuartikel." },
+      { title: "Trinkflaschen & Becher", text: "Edelstahl-Thermosflaschen, Tassen und Becher — nachhaltig im Alltag und stets sichtbar mit Ihrem Branding." },
+      { title: "Werbegeschenke", text: "Exklusive Geschenke und Premium-Sets für Kunden, Partner und Mitarbeiter — von der Geschenkbox bis zum Lederetui." },
     ],
     ctaTitle: "Bereit für Ihren Werbeartikel?",
     ctaText: "Schicken Sie uns Ihre Idee — wir finden das passende Produkt.",

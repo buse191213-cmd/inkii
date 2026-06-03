@@ -1,4 +1,5 @@
 import Link from "next/link";
+import Image from "next/image";
 import SiteShell from "@/components/SiteShell";
 import type { Metadata } from "next";
 import { getHomeImage } from "@/lib/home-images";
@@ -9,7 +10,7 @@ export const revalidate = 60;
 
 export const metadata: Metadata = {
   title: "Werbeartikel | INKII Works",
-  description: "Hochwertige Werbeartikel mit Ihrem Logo — Trinkflaschen, Taschen, Büromaterialien und mehr.",
+  description: "Showroom für Werbeartikel: Taschen, Büromaterial, Trinkflaschen & Becher, Werbegeschenke — alles mit Ihrem Logo.",
   alternates: { canonical: "/bereiche/werbeartikel" },
 };
 
@@ -18,15 +19,19 @@ export default async function WerbeartikelDetailPage() {
   const d = getDictionary(locale);
   const t = d.werbeSub;
   const heroImg = await getHomeImage("area-2");
-  const img1 = await getHomeImage("wa-1");
-  const img2 = await getHomeImage("wa-2");
+  const imgs = [
+    await getHomeImage("wa-1"),
+    await getHomeImage("wa-2"),
+    await getHomeImage("wa-3"),
+    await getHomeImage("wa-4"),
+  ];
 
   return (
     <SiteShell>
-      <section
-        className="mm-page-hero"
-        style={heroImg ? { backgroundImage: `url(${heroImg})` } : undefined}
-      >
+      <section className="mm-page-hero">
+        {heroImg && (
+          <Image src={heroImg} alt={t.h1} fill sizes="100vw" style={{ objectFit: "cover" }} priority />
+        )}
         <div className="mm-page-hero-inner">
           <div className="mm-page-crumb">
             <Link href="/">{d.nav.home}</Link>
@@ -40,22 +45,27 @@ export default async function WerbeartikelDetailPage() {
         </div>
       </section>
 
-      <section className="mm-split">
-        <div className="mm-split-img" style={img1 ? { backgroundImage: `url(${img1})` } : undefined} />
-        <div className="mm-split-body">
-          <span className="mm-page-kicker">{t.categories[0].title}</span>
-          <h2 className="mm-page-h2">{t.categories[0].title}</h2>
-          <p>{t.categories[0].text}</p>
-          <p>{t.categories[1].text}</p>
-        </div>
-      </section>
-
-      <section className="mm-split mm-split-reverse">
-        <div className="mm-split-img" style={img2 ? { backgroundImage: `url(${img2})` } : undefined} />
-        <div className="mm-split-body">
-          <span className="mm-page-kicker">{t.categories[2].title}</span>
-          <h2 className="mm-page-h2">{t.categories[2].title}</h2>
-          <p>{t.categories[2].text}</p>
+      {/* Showroom — 4 Kategorien als Karten */}
+      <section className="showroom">
+        <div className="showroom-grid">
+          {t.categories.slice(0, 4).map((c, i) => (
+            <article key={c.title} className="showroom-card">
+              <div className="showroom-media">
+                {imgs[i] ? (
+                  <Image src={imgs[i]} alt={c.title} fill sizes="(max-width: 900px) 100vw, 50vw" style={{ objectFit: "cover" }} />
+                ) : (
+                  <div className="showroom-placeholder">
+                    <span>{c.title}</span>
+                  </div>
+                )}
+                <div className="showroom-num">0{i + 1}</div>
+              </div>
+              <div className="showroom-body">
+                <h2 className="showroom-title">{c.title}</h2>
+                <p className="showroom-text">{c.text}</p>
+              </div>
+            </article>
+          ))}
         </div>
       </section>
 
