@@ -116,7 +116,7 @@ const en: Dictionary = {
     tileRightL2: "PROMOTIONAL ITEMS",
     fahrzeugLabel: "VEHICLE LETTERING",
     fahrzeugSub: "Vehicle lettering and effective outdoor advertising",
-    fahrzeugSub2: "We turn surfaces into eye-catchers",
+    fahrzeugSub2: "Turn a surface into an eye-catcher",
   },
   ueberUns: {
     h1: "Your finishing partner",

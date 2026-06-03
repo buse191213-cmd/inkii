@@ -116,7 +116,7 @@ const tr: Dictionary = {
     tileRightL2: "TANITIM ÜRÜNLERİ",
     fahrzeugLabel: "ARAÇ GİYDİRME",
     fahrzeugSub: "Araç giydirme ve etkili dış mekan reklamcılığı",
-    fahrzeugSub2: "Yüzeyi göz alıcı kılıyoruz",
+    fahrzeugSub2: "Yüzeyi göz alıcı hale getirin",
   },
   ueberUns: {
     h1: "Baskı ortağınız",

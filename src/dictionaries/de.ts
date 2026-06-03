@@ -116,7 +116,7 @@ const de: Dictionary = {
     tileRightL2: "WERBEARTIKEL",
     fahrzeugLabel: "FAHRZEUGBESCHRIFTUNG",
     fahrzeugSub: "Fahrzeugbeschriftung und effektive Außenwerbung",
-    fahrzeugSub2: "Wir aus Fläche einen Blickfang",
+    fahrzeugSub2: "Machen Sie aus Fläche einen Blickfang",
   },
   ueberUns: {
     h1: "Ihr Partner für Veredelung",
