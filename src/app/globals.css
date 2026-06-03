@@ -3627,3 +3627,12 @@ body:has(.cookie-banner) .wa-fab{bottom:120px}
   .showroom-body{padding:20px 22px 24px}
   .showroom-num{top:12px;left:12px;font-size:.75rem;padding:4px 10px}
 }
+
+/* Showroom 3 kolonlu (5 öğeli sayfalar için alt sıra) */
+.showroom-grid-3{grid-template-columns:repeat(3,1fr);gap:22px}
+.showroom-grid-3 .showroom-title{font-size:1.3rem}
+.showroom-grid-3 .showroom-body{padding:20px 22px 26px;gap:8px}
+.showroom-grid-3 .showroom-text{font-size:.92rem}
+@media(max-width:780px){
+  .showroom-grid-3{grid-template-columns:1fr;gap:18px}
+}
