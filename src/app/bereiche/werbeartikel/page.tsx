@@ -48,24 +48,27 @@ export default async function WerbeartikelDetailPage() {
       {/* Showroom — 4 Kategorien als Karten */}
       <section className="showroom">
         <div className="showroom-grid">
-          {t.categories.slice(0, 4).map((c, i) => (
-            <article key={c.title} className="showroom-card">
-              <div className="showroom-media">
-                {imgs[i] ? (
-                  <Image src={imgs[i]} alt={c.title} fill sizes="(max-width: 900px) 100vw, 50vw" style={{ objectFit: "cover" }} />
-                ) : (
-                  <div className="showroom-placeholder">
-                    <span>{c.title}</span>
-                  </div>
-                )}
-                <div className="showroom-num">0{i + 1}</div>
-              </div>
-              <div className="showroom-body">
-                <h2 className="showroom-title">{c.title}</h2>
-                <p className="showroom-text">{c.text}</p>
-              </div>
-            </article>
-          ))}
+          {t.categories.slice(0, 4).map((c, i) => {
+            const img = imgs[i];
+            return (
+              <article key={c.title} className="showroom-card">
+                <div className="showroom-media">
+                  {img ? (
+                    <Image src={img} alt={c.title} fill sizes="(max-width: 900px) 100vw, 50vw" style={{ objectFit: "cover" }} />
+                  ) : (
+                    <div className="showroom-placeholder">
+                      <span>{c.title}</span>
+                    </div>
+                  )}
+                  <div className="showroom-num">0{i + 1}</div>
+                </div>
+                <div className="showroom-body">
+                  <h2 className="showroom-title">{c.title}</h2>
+                  <p className="showroom-text">{c.text}</p>
+                </div>
+              </article>
+            );
+          })}
         </div>
       </section>
 
