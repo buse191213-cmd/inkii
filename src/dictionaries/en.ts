@@ -1,6 +1,7 @@
 import type { Dictionary } from "./types";
 
 const en: Dictionary = {
+  utility: { star: "Premium Promotional Services", center: "Free designs & non-binding quote within 24 hours" },
   nav: {
     home: "Home",
     werbemittel: "Promotional Items",

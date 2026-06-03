@@ -23,6 +23,7 @@ type HeaderProps = {
   locale: Locale;
   nav: Dictionary["nav"];
   t: Dictionary["header"];
+  utility: Dictionary["utility"];
   navItems?: NavItem[];
 };
 
@@ -38,6 +39,7 @@ function SiteHeaderInner({
   locale,
   nav,
   t,
+  utility,
   navItems,
 }: HeaderProps) {
   const NAV = navItems && navItems.length > 0 ? navItems : FALLBACK_NAV;
@@ -68,16 +70,16 @@ function SiteHeaderInner({
       <div className="utility">
         <div className="utility-inner">
           <span className="u-left">
-            <span className="u-star">★</span> Premium Werbemittel-Service
+            <span className="u-star">★</span> {utility.star}
           </span>
           <span className="u-center">
-            Kostenlose Designs &amp; unverbindliches Angebot innerhalb 24 Stunden
+            {utility.center}
           </span>
           <div className="u-right">
-            <Link href="/ueber-uns">Über Uns</Link>
-            <Link href="/nachhaltigkeit">Nachhaltigkeit</Link>
-            <Link href="/bereiche">Bereiche</Link>
-            <Link href="/kontakt">Kontakt</Link>
+            <Link href="/ueber-uns">{nav.ueberUns}</Link>
+            <Link href="/nachhaltigkeit">{nav.nachhaltigkeit}</Link>
+            <Link href="/bereiche">{nav.bereiche}</Link>
+            <Link href="/kontakt">{nav.kontakt}</Link>
             <LangSwitcher current={locale} />
           </div>
         </div>

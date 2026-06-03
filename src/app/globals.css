@@ -3648,3 +3648,33 @@ body:has(.cookie-banner) .wa-fab{bottom:120px}
 @media(max-width:780px){
   .showroom-grid-3{grid-template-columns:1fr;gap:18px}
 }
+
+/* === LangSwitcher Dropdown (bayraklarla) === */
+.lang-dd{position:relative;display:inline-block}
+.lang-dd-trigger{display:flex;align-items:center;gap:6px;padding:5px 9px;
+  background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.18);
+  border-radius:6px;color:rgba(255,255,255,.92);cursor:pointer;
+  font-family:inherit;font-size:.74rem;font-weight:500;
+  transition:.18s;line-height:1}
+.lang-dd-trigger:hover{background:rgba(255,255,255,.12);border-color:rgba(255,255,255,.28)}
+.lang-dd-trigger:disabled{opacity:.55;cursor:wait}
+.lang-dd-flag{font-size:1rem;line-height:1}
+.lang-dd-code{letter-spacing:.04em;font-weight:600}
+.lang-dd-arrow{transition:transform .2s ease;opacity:.7}
+.lang-dd-arrow.open{transform:rotate(180deg)}
+
+.lang-dd-menu{position:absolute;top:calc(100% + 6px);right:0;
+  min-width:140px;background:#0b0d0c;border:1px solid rgba(255,255,255,.14);
+  border-radius:8px;box-shadow:0 8px 24px rgba(0,0,0,.4);
+  padding:4px;list-style:none;margin:0;z-index:200;
+  animation:lang-dd-in .15s ease}
+@keyframes lang-dd-in{from{opacity:0;transform:translateY(-4px)}to{opacity:1;transform:translateY(0)}}
+.lang-dd-menu li{margin:0;padding:0}
+.lang-dd-item{display:flex;align-items:center;gap:10px;width:100%;
+  padding:8px 12px;background:transparent;border:none;border-radius:5px;
+  color:rgba(255,255,255,.85);cursor:pointer;font-family:inherit;
+  font-size:.82rem;text-align:left;transition:.12s}
+.lang-dd-item:hover{background:rgba(255,255,255,.08);color:#fff}
+.lang-dd-item.active{background:rgba(232,176,74,.16);color:#e8b04a}
+.lang-dd-item.active .lang-dd-label{font-weight:600}
+.lang-dd-label{flex:1}

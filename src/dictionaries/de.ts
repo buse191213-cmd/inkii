@@ -1,6 +1,7 @@
 import type { Dictionary } from "./types";
 
 const de: Dictionary = {
+  utility: { star: "Premium Werbemittel-Service", center: "Kostenlose Designs & unverbindliches Angebot innerhalb 24 Stunden" },
   nav: {
     home: "Home",
     werbemittel: "Werbeartikel",

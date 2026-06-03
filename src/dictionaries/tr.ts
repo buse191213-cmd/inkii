@@ -1,6 +1,7 @@
 import type { Dictionary } from "./types";
 
 const tr: Dictionary = {
+  utility: { star: "Premium Promosyon Hizmeti", center: "Ücretsiz tasarım ve 24 saat içinde bağlayıcı olmayan teklif" },
   nav: {
     home: "Ana Sayfa",
     werbemittel: "Tanıtım Ürünleri",

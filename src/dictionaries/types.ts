@@ -2,6 +2,7 @@
 // so meldet TypeScript fehlende Übersetzungen.
 
 export type Dictionary = {
+  utility: { star: string; center: string };
   nav: {
     home: string;
     werbemittel: string;
@@ -290,6 +291,8 @@ export type Dictionary = {
     intro: string;
     textil: { title: string; text: string; cta: string };
     werbe: { title: string; text: string; cta: string };
+    ctaTitle: string;
+    ctaText: string;
   };
   textilSub: {
     kicker: string;

@@ -63,8 +63,8 @@ export default async function BereichePage() {
       </section>
 
       <section className="mm-page-cta">
-        <h2 className="mm-page-cta-h">Lassen Sie uns Ihr Projekt umsetzen.</h2>
-        <p className="mm-page-cta-p">Wir liefern Ihnen ein kostenloses Angebot innerhalb 24 Stunden.</p>
+        <h2 className="mm-page-cta-h">{d.bereiche.ctaTitle}</h2>
+        <p className="mm-page-cta-p">{d.bereiche.ctaText}</p>
         <Link href="/kontakt" className="mm-page-cta-btn">{d.nav.kontakt}</Link>
       </section>
     </SiteShell>

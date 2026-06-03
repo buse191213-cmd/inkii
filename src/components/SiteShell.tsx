@@ -22,6 +22,7 @@ export default async function SiteShell({
         locale={locale}
         nav={dict.nav}
         t={dict.header}
+        utility={dict.utility}
         navItems={navItems.map((n) => ({ href: n.href, key: n.key }))}
       />
       <main>{children}</main>
