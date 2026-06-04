@@ -69,9 +69,6 @@ function SiteHeaderInner({
     <>
       <div className="utility">
         <div className="utility-inner">
-          <span className="u-left">
-            <span className="u-star">★</span> {utility.star}
-          </span>
           <span className="u-center">
             {utility.center}
           </span>
