@@ -21,8 +21,8 @@ export default async function InkiiMarketingPage() {
   const d = getDictionary(locale);
   const t = d.inkiiMarketing;
   const videoSrc = await getMarketingVideoSrc();
-  const tileWeb = await getHomeImage("im-s1");      // Web Design tile
-  const tileMkt = await getHomeImage("im-s2");      // Marketing tile
+  const tileWeb = await getHomeImage("area-3");      // Web Design (önceki servis kutusu görseli)
+  const tileMkt = await getHomeImage("area-4");      // Marketing (önceki servis kutusu görseli)
 
   return (
     <SiteShell>
