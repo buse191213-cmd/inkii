@@ -3,6 +3,8 @@
 
 export type Dictionary = {
   inkiiMarketing: {
+    tileWebL1: string; tileWebL2: string;
+    tileMktL1: string; tileMktL2: string;
     tagline: string; h1: string; intro: string;
     services: { title: string; sub?: string; desc: string }[];
     ctaH: string; ctaP: string; ctaBtn: string;

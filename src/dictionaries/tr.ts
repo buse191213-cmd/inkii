@@ -3,6 +3,10 @@ import type { Dictionary } from "./types";
 const tr: Dictionary = {
   inkiiMarketing: {
     tagline: "Stratejiyle dijital büyüyün",
+    tileWebL1: "YARATICI",
+    tileWebL2: "WEB TASARIM",
+    tileMktL1: "STRATEJİK",
+    tileMktL2: "PAZARLAMA",
     h1: "Markaları görünür kılıyoruz",
     intro: "Web tasarım, online pazarlama ve dijital çözümler — sadece web sitesinden fazlasını isteyen işletmeler için.",
     services: [

@@ -3,6 +3,10 @@ import type { Dictionary } from "./types";
 const de: Dictionary = {
   inkiiMarketing: {
     tagline: "Digital wachsen mit Strategie",
+    tileWebL1: "KREATIVES",
+    tileWebL2: "WEBDESIGN",
+    tileMktL1: "STRATEGISCHES",
+    tileMktL2: "MARKETING",
     h1: "Wir machen Marken sichtbar",
     intro: "Webdesign, Online-Marketing und digitale Lösungen für Unternehmen, die mehr wollen als nur eine Website.",
     services: [

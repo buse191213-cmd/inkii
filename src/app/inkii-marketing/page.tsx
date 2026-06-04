@@ -76,23 +76,25 @@ export default async function InkiiMarketingPage() {
         <Link href="/webdesign" className="home-tile">
           <div className="home-tile-img">
             {tileWeb && (
-              <Image src={tileWeb} alt={t.services[0].title} fill sizes="(max-width: 768px) 100vw, 50vw" style={{ objectFit: "cover" }} />
+              <Image src={tileWeb} alt={t.tileWebL2} fill sizes="(max-width: 768px) 100vw, 50vw" style={{ objectFit: "cover" }} />
             )}
           </div>
           <div className="home-tile-label">
-            {t.services[0].title}
-            {t.services[0].sub && <><br />{t.services[0].sub}</>}
+            {t.tileWebL1}
+            <br />
+            {t.tileWebL2}
           </div>
         </Link>
         <Link href="/marketing" className="home-tile">
           <div className="home-tile-img">
             {tileMkt && (
-              <Image src={tileMkt} alt={t.services[1].title} fill sizes="(max-width: 768px) 100vw, 50vw" style={{ objectFit: "cover" }} />
+              <Image src={tileMkt} alt={t.tileMktL2} fill sizes="(max-width: 768px) 100vw, 50vw" style={{ objectFit: "cover" }} />
             )}
           </div>
           <div className="home-tile-label">
-            {t.services[1].title}
-            {t.services[1].sub && <><br />{t.services[1].sub}</>}
+            {t.tileMktL1}
+            <br />
+            {t.tileMktL2}
           </div>
         </Link>
       </section>
