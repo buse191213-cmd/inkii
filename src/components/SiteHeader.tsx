@@ -42,8 +42,17 @@ function SiteHeaderInner({
   utility,
   navItems,
 }: HeaderProps) {
-  const NAV = navItems && navItems.length > 0 ? navItems : FALLBACK_NAV;
   const pathname = usePathname();
+  // INKII MARKETING sayfasında farklı nav linkleri göster
+  const isMarketing = pathname?.startsWith("/inkii-marketing") ||
+    pathname === "/webdesign" || pathname === "/marketing";
+  const MARKETING_NAV: NavItem[] = [
+    { href: "/webdesign", key: "webdesign" },
+    { href: "/marketing", key: "marketing" },
+  ];
+  const NAV = isMarketing
+    ? MARKETING_NAV
+    : (navItems && navItems.length > 0 ? navItems : FALLBACK_NAV);
   const [open, setOpen] = useState(false);
   const { count } = useMerkliste();
   const searchParams = useSearchParams();

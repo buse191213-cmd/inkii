@@ -1,8 +1,10 @@
 import Link from "next/link";
 import Image from "next/image";
 import SiteShell from "@/components/SiteShell";
+import BodyClass from "@/components/BodyClass";
 import type { Metadata } from "next";
 import { getHomeImage } from "@/lib/home-images";
+import { getMarketingVideoSrc } from "@/lib/hero-video";
 import { getLocale } from "@/lib/i18n-server";
 import { getDictionary } from "@/dictionaries";
 
@@ -18,60 +20,83 @@ export default async function InkiiMarketingPage() {
   const locale = await getLocale();
   const d = getDictionary(locale);
   const t = d.inkiiMarketing;
-  const heroImg = await getHomeImage("im-hero");
-  const sImgs = [
-    await getHomeImage("im-s1"),
-    await getHomeImage("im-s2"),
-    await getHomeImage("im-s3"),
-    await getHomeImage("im-s4"),
-  ];
+  const videoSrc = await getMarketingVideoSrc();
+  const tileWeb = await getHomeImage("im-s1");      // Web Design tile
+  const tileMkt = await getHomeImage("im-s2");      // Marketing tile
 
   return (
     <SiteShell>
-      {/* Hero */}
-      <section className="im-hero">
-        {heroImg && (
-          <Image src={heroImg} alt={t.h1} fill sizes="100vw" style={{ objectFit: "cover" }} priority />
+      <BodyClass name="is-marketing" />
+
+      {/* === HERO — Video === */}
+      <section className="hero-full">
+        {videoSrc ? (
+          <video
+            className="hero-bg-video"
+            autoPlay
+            loop
+            muted
+            playsInline
+            poster=""
+          >
+            <source src={videoSrc} />
+          </video>
+        ) : (
+          <div className="hero-bg-fallback" />
         )}
-        <div className="im-hero-overlay" />
-        <div className="im-hero-inner">
+        <div className="hero-overlay" />
+        <div className="hero-content">
           <div className="im-tagline">{t.tagline}</div>
-          <h1 className="im-h1">{t.h1}</h1>
-          <p className="im-intro">{t.intro}</p>
+          <h1 className="hero-title">{t.h1}</h1>
+          <p className="hero-sub">{t.intro}</p>
+          <div className="hero-cta-row">
+            <Link href="#services" className="btn-hero-light">{t.ctaBtn}</Link>
+            <Link href="/" className="btn-hero-outline">{t.worksLink}</Link>
+          </div>
+        </div>
+
+        {/* Marquee */}
+        <div className="hero-marquee" aria-hidden="true">
+          <div className="hero-marquee-track">
+            <span>{t.tagline}</span>
+            <span>•</span>
+            <span>{t.tagline}</span>
+            <span>•</span>
+            <span>{t.tagline}</span>
+            <span>•</span>
+          </div>
         </div>
       </section>
 
-      {/* 4 Service Karten */}
-      <section className="im-services">
-        <div className="im-services-grid">
-          {t.services.map((s, i) => {
-            const img = sImgs[i];
-            return (
-              <article key={s.title} className="im-card">
-                <div className="im-card-media">
-                  {img ? (
-                    <Image src={img} alt={s.title} fill sizes="(max-width:900px) 100vw, 50vw" style={{ objectFit: "cover" }} />
-                  ) : (
-                    <div className="im-card-placeholder">0{i + 1}</div>
-                  )}
-                  <div className="im-card-num">0{i + 1}</div>
-                </div>
-                <div className="im-card-body">
-                  <h2 className="im-card-title">{s.title}</h2>
-                  <p className="im-card-desc">{s.desc}</p>
-                </div>
-              </article>
-            );
-          })}
-        </div>
+      {/* === 2 büyük kart: Web Design + Marketing === */}
+      <section className="home-tiles" id="services">
+        <Link href="/webdesign" className="home-tile">
+          <div className="home-tile-img">
+            {tileWeb && (
+              <Image src={tileWeb} alt={t.services[0].title} fill sizes="(max-width: 768px) 100vw, 50vw" style={{ objectFit: "cover" }} />
+            )}
+          </div>
+          <div className="home-tile-label">
+            {t.services[0].title}
+          </div>
+        </Link>
+        <Link href="/marketing" className="home-tile">
+          <div className="home-tile-img">
+            {tileMkt && (
+              <Image src={tileMkt} alt={t.services[1].title} fill sizes="(max-width: 768px) 100vw, 50vw" style={{ objectFit: "cover" }} />
+            )}
+          </div>
+          <div className="home-tile-label">
+            {t.services[1].title}
+          </div>
+        </Link>
       </section>
 
-      {/* CTA */}
+      {/* === CTA === */}
       <section className="im-cta">
         <h2>{t.ctaH}</h2>
         <p>{t.ctaP}</p>
         <Link href="/kontakt" className="im-cta-btn">{t.ctaBtn}</Link>
-        <Link href="/" className="im-works-back">{t.worksLink}</Link>
       </section>
     </SiteShell>
   );

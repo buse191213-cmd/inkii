@@ -3,19 +3,33 @@
 import { useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import { upload } from "@vercel/blob/client";
-import { saveHeroVideoUrl, removeHeroVideo } from "@/app/admin/actions";
+import {
+  saveHeroVideoUrl,
+  removeHeroVideo,
+  saveMarketingVideoUrl,
+  removeMarketingVideo,
+} from "@/app/admin/actions";
 
-export default function HeroVideoManager({
-  currentVideo,
-}: {
+type Props = {
   currentVideo: string | null;
-}) {
+  /** "hero" = Ana sayfa, "marketing" = INKII MARKETING sayfası */
+  kind?: "hero" | "marketing";
+};
+
+export default function HeroVideoManager({ currentVideo, kind = "hero" }: Props) {
   const router = useRouter();
   const fileRef = useRef<HTMLInputElement>(null);
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState("");
   const [ok, setOk] = useState("");
   const [fileName, setFileName] = useState("");
+
+  const saveAction = kind === "marketing" ? saveMarketingVideoUrl : saveHeroVideoUrl;
+  const removeAction = kind === "marketing" ? removeMarketingVideo : removeHeroVideo;
+  const folderName = kind === "marketing" ? "marketing" : "hero";
+  const successText = kind === "marketing"
+    ? "Video gespeichert – läuft jetzt im Hero der INKII MARKETING-Seite."
+    : "Video gespeichert – es läuft jetzt im Hero-Bereich der Startseite.";
 
   async function doUpload() {
     const file = fileRef.current?.files?.[0];
@@ -33,13 +47,13 @@ export default function HeroVideoManager({
     try {
       const ext = file.type === "video/webm" ? "webm" : "mp4";
       // Direkter Upload Browser → Vercel Blob (umgeht das Server-Größenlimit).
-      const blob = await upload(`hero/hero-${Date.now()}.${ext}`, file, {
+      const blob = await upload(`${folderName}/${folderName}-${Date.now()}.${ext}`, file, {
         access: "public",
         handleUploadUrl: "/api/upload",
       });
-      const res = await saveHeroVideoUrl(blob.url);
+      const res = await saveAction(blob.url);
       if (res.ok) {
-        setOk("Video gespeichert – es läuft jetzt im Hero-Bereich der Startseite.");
+        setOk(successText);
         setFileName("");
         if (fileRef.current) fileRef.current.value = "";
         router.refresh();
@@ -61,7 +75,7 @@ export default function HeroVideoManager({
     setError("");
     setOk("");
     try {
-      const res = await removeHeroVideo();
+      const res = await removeAction();
       if (res.ok) {
         setOk("Video entfernt – im Hero läuft wieder die Standard-Animation.");
         router.refresh();
@@ -78,7 +92,7 @@ export default function HeroVideoManager({
   return (
     <div className="panel" style={{ marginBottom: 18 }}>
       <div className="panel-head">
-        <h3>Startseiten-Video (Hero-Hintergrund)</h3>
+        <h3>{kind === "marketing" ? "INKII MARKETING — Hero-Video" : "Startseiten-Video (Hero-Hintergrund)"}</h3>
       </div>
       <div className="panel-body">
         {error && <div className="form-err">{error}</div>}

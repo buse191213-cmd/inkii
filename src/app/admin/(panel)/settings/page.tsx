@@ -1,4 +1,4 @@
-import { getHeroVideoSrc } from "@/lib/hero-video";
+import { getHeroVideoSrc, getMarketingVideoSrc } from "@/lib/hero-video";
 import HeroVideoManager from "./HeroVideoManager";
 import MailTestPanel from "./MailTestPanel";
 
@@ -6,13 +6,15 @@ export const dynamic = "force-dynamic";
 
 export default async function SettingsPage() {
   const heroVideo = await getHeroVideoSrc();
+  const marketingVideo = await getMarketingVideoSrc();
   return (
     <>
       <p className="crumb">
         Admin <b>/ Einstellungen</b>
       </p>
 
-      <HeroVideoManager currentVideo={heroVideo} />
+      <HeroVideoManager currentVideo={heroVideo} kind="hero" />
+      <HeroVideoManager currentVideo={marketingVideo} kind="marketing" />
 
       <MailTestPanel defaultEmail="admin@inkii.de" />
 

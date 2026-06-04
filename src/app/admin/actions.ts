@@ -323,6 +323,45 @@ export async function removeHeroVideo(): Promise<ActionResult> {
   }
 }
 
+/** INKII MARKETING Hero-Video URL speichern (Vercel Blob). */
+export async function saveMarketingVideoUrl(url: string): Promise<ActionResult> {
+  if (!/^https?:\/\//.test(url)) {
+    return { ok: false, error: "Ungültige Video-URL." };
+  }
+  try {
+    const prev = await db.siteImage.findUnique({ where: { key: "marketing-video" } });
+    await db.siteImage.upsert({
+      where: { key: "marketing-video" },
+      create: { key: "marketing-video", url },
+      update: { url },
+    });
+    if (prev?.url && prev.url !== url) {
+      try { await del(prev.url); } catch { /* ignorieren */ }
+    }
+    revalidatePath("/inkii-marketing");
+    revalidatePath("/admin/settings");
+    return { ok: true };
+  } catch {
+    return { ok: false, error: "Video konnte nicht gespeichert werden." };
+  }
+}
+
+/** INKII MARKETING Hero-Video entfernen. */
+export async function removeMarketingVideo(): Promise<ActionResult> {
+  try {
+    const prev = await db.siteImage.findUnique({ where: { key: "marketing-video" } });
+    await db.siteImage.deleteMany({ where: { key: "marketing-video" } });
+    if (prev?.url) {
+      try { await del(prev.url); } catch { /* ignorieren */ }
+    }
+    revalidatePath("/inkii-marketing");
+    revalidatePath("/admin/settings");
+    return { ok: true };
+  } catch {
+    return { ok: false, error: "Entfernen fehlgeschlagen." };
+  }
+}
+
 /** Bild für einen Startseiten-/Bereiche-Slot hochladen. */
 export async function uploadHomeImage(formData: FormData): Promise<ActionResult> {
   const slot = String(formData.get("slot") ?? "");

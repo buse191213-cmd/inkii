@@ -13,3 +13,13 @@ export async function getHeroVideoSrc(): Promise<string | null> {
     return null;
   }
 }
+
+/** Hero-Video für die INKII MARKETING Seite. */
+export async function getMarketingVideoSrc(): Promise<string | null> {
+  try {
+    const row = await db.siteImage.findUnique({ where: { key: "marketing-video" } });
+    return row?.url ?? null;
+  } catch {
+    return null;
+  }
+}
