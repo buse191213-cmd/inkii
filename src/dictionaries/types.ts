@@ -2,6 +2,12 @@
 // so meldet TypeScript fehlende Übersetzungen.
 
 export type Dictionary = {
+  inkiiMarketing: {
+    tagline: string; h1: string; intro: string;
+    services: { title: string; desc: string }[];
+    ctaH: string; ctaP: string; ctaBtn: string;
+    worksLink: string;
+  };
   utility: { star: string; center: string };
   nav: {
     home: string;

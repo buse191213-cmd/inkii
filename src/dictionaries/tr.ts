@@ -1,6 +1,21 @@
 import type { Dictionary } from "./types";
 
 const tr: Dictionary = {
+  inkiiMarketing: {
+    tagline: "Stratejiyle dijital büyüyün",
+    h1: "Markaları görünür kılıyoruz",
+    intro: "Web tasarım, online pazarlama ve dijital çözümler — sadece web sitesinden fazlasını isteyen işletmeler için.",
+    services: [
+      { title: "Web Tasarım & Geliştirme", desc: "Modern, hızlı ve SEO uyumlu web siteleri — landing page'den karmaşık e-ticarete kadar." },
+      { title: "Sosyal Medya Pazarlama", desc: "Instagram, Facebook ve LinkedIn için strateji, içerik ve kampanyalar — markanızı büyütür." },
+      { title: "SEO & Google Reklamları", desc: "Google'da daha fazla görünürlük — temiz optimizasyon ve hedefli reklam kampanyaları ile." },
+      { title: "Markalaştırma & Tasarım", desc: "Logo, kurumsal kimlik, kartvizit — marka kimliğinizi sıfırdan inşa ediyoruz." },
+    ],
+    ctaH: "Bir sonraki adıma hazır mısınız?",
+    ctaP: "Dijital projenizi konuşalım — ücretsiz ve bağlayıcı olmadan.",
+    ctaBtn: "Hemen iletişime geç",
+    worksLink: "← INKII WORKS'e geri dön",
+  },
   utility: { star: "Premium Promosyon Hizmeti", center: "Ücretsiz tasarım ve 24 saat içinde bağlayıcı olmayan teklif" },
   nav: {
     home: "Ana Sayfa",

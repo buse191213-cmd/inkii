@@ -20,6 +20,7 @@ export default function HomeImagesManager({
   const pw = HOME_SLOTS.filter((s) => s.group === "premium-method");
   const os = HOME_SLOTS.filter((s) => s.group === "onlineshops-method");
   const fb = HOME_SLOTS.filter((s) => s.group === "fahrzeug-method");
+  const im = HOME_SLOTS.filter((s) => s.group === "im");
   const wa = HOME_SLOTS.filter((s) => s.group === "werbeartikel-img");
 
   return (
@@ -222,6 +223,24 @@ export default function HomeImagesManager({
           </p>
           <div className="home-img-grid">
             {fb.map((s) => (
+              <Slot key={s.slot} slot={s.slot} label={s.label} meta={s} current={images[s.slot] ?? null} />
+            ))}
+          </div>
+        </div>
+      </div>
+
+      {/* INKII MARKETING */}
+      <div className="panel" style={{ marginBottom: 18 }}>
+        <div className="panel-head">
+          <h3>INKII MARKETING — Bilder</h3>
+        </div>
+        <div className="panel-body">
+          <p className="hero-vid-state">
+            Hero und 4 Servicebilder auf der Seite <b>/inkii-marketing</b>.
+            Hero: 1920×900. Service-Karten: 800×640.
+          </p>
+          <div className="home-img-grid">
+            {im.map((s) => (
               <Slot key={s.slot} slot={s.slot} label={s.label} meta={s} current={images[s.slot] ?? null} />
             ))}
           </div>

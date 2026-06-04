@@ -1,6 +1,21 @@
 import type { Dictionary } from "./types";
 
 const de: Dictionary = {
+  inkiiMarketing: {
+    tagline: "Digital wachsen mit Strategie",
+    h1: "Wir machen Marken sichtbar",
+    intro: "Webdesign, Online-Marketing und digitale Lösungen für Unternehmen, die mehr wollen als nur eine Website.",
+    services: [
+      { title: "Webdesign & Entwicklung", desc: "Moderne, schnelle und SEO-optimierte Websites — von der Landingpage bis zum komplexen Onlineshop." },
+      { title: "Social Media Marketing", desc: "Strategie, Content und Kampagnen für Instagram, Facebook und LinkedIn — die Ihre Marke wachsen lassen." },
+      { title: "SEO & Google Ads", desc: "Mehr Sichtbarkeit bei Google — durch saubere Optimierung und gezielte Werbekampagnen." },
+      { title: "Branding & Design", desc: "Logo, Corporate Design, Visitenkarten — wir bauen Ihre Markenidentität von Grund auf." },
+    ],
+    ctaH: "Bereit für den nächsten Schritt?",
+    ctaP: "Lassen Sie uns Ihr digitales Projekt besprechen — unverbindlich und kostenlos.",
+    ctaBtn: "Jetzt Kontakt aufnehmen",
+    worksLink: "← Zurück zu INKII WORKS",
+  },
   utility: { star: "Premium Werbemittel-Service", center: "Kostenlose Designs & unverbindliches Angebot innerhalb 24 Stunden" },
   nav: {
     home: "Home",

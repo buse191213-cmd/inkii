@@ -44,13 +44,11 @@ export type NavItemResolved = {
   sortOrder: number;
 };
 
-/** Standard-aktive Einträge (die übrigen sind zwar verfügbar, aber per Default nicht in der Hauptnavbar sichtbar). */
+/** Standard-aktive Einträge — webdesign & marketing entfernt (jetzt unter INKII MARKETING). */
 const DEFAULT_ACTIVE: ReadonlySet<NavKey> = new Set([
   "kleidung",
   "taschen",
   "werbemittel",
-  "webdesign",
-  "marketing",
 ]);
 
 /**

@@ -14,6 +14,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     "/bereiche/premium-werbemittel",
     "/bereiche/onlineshops",
     "/fahrzeugbeschriftung",
+    "/inkii-marketing",
     "/werbemittel",
     "/bereiche",
     "/nachhaltigkeit",

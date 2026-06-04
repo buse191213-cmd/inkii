@@ -4,7 +4,7 @@
 export type HomeSlot = {
   slot: string;
   label: string;
-  group: "home-tiles" | "category" | "nachhaltigkeit" | "bereiche" | "page" | "textil-method" | "firmen-method" | "premium-method" | "onlineshops-method" | "fahrzeug-method" | "werbeartikel-img";
+  group: "home-tiles" | "category" | "nachhaltigkeit" | "bereiche" | "page" | "textil-method" | "firmen-method" | "premium-method" | "onlineshops-method" | "im" | "fahrzeug-method" | "werbeartikel-img";
   /** Empfohlene Mindestgröße (px) für das Bild, z. B. "1600×900". */
   size?: string;
   /** Seitenverhältnis als CSS aspect-ratio, z. B. "16/9", "4/3", "1/1". */
@@ -77,6 +77,11 @@ export const HOME_SLOTS: HomeSlot[] = [
   { slot: "sport-6", label: "Sportartikel — Bild 6 (Mood-Bild)", group: "page", size: "900×1200", ratio: "3/4" },
   { slot: "sport-7", label: "Sportartikel — Bild 7 (Mood-Bild)", group: "page", size: "900×1200", ratio: "3/4" },
   { slot: "sport-8", label: "Sportartikel — Bild 8 (Mood-Bild)", group: "page", size: "900×1200", ratio: "3/4" },
+  { slot: "im-hero", label: "INKII MARKETING — Hero (Titelbild)", group: "im", size: "1920×900", ratio: "21/9" },
+  { slot: "im-s1", label: "INKII MARKETING — 01 Webdesign", group: "im", size: "800×640", ratio: "5/4" },
+  { slot: "im-s2", label: "INKII MARKETING — 02 Social Media", group: "im", size: "800×640", ratio: "5/4" },
+  { slot: "im-s3", label: "INKII MARKETING — 03 SEO & Ads", group: "im", size: "800×640", ratio: "5/4" },
+  { slot: "im-s4", label: "INKII MARKETING — 04 Branding", group: "im", size: "800×640", ratio: "5/4" },
 ];
 
 export const HOME_SLOT_IDS: string[] = HOME_SLOTS.map((s) => s.slot);

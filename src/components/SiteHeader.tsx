@@ -124,11 +124,16 @@ function SiteHeaderInner({
             ))}
           </nav>
 
-          {/* SAĞ: İkonlar + kalp (flex: 1) */}
+          {/* SAĞ: INKII MARKETING brand + ikonlar + kalp (flex: 1) */}
           <div
             className="head-actions"
             style={{ flex: "1 1 0", display: "flex", justifyContent: "flex-end", alignItems: "center", gap: 12, minWidth: 0 }}
           >
+            <Link href="/inkii-marketing" className="brand-marketing" aria-label="INKII MARKETING">
+              <Image src="/inkii-logo.png" alt="" width={70} height={22} />
+              <span className="brand-sep" aria-hidden>|</span>
+              <span className="brand-label">MARKETING</span>
+            </Link>
             <div className="icon-btn" title={t.search}>⌕</div>
             <div className="icon-btn" title={t.account}>☻</div>
             <Link
@@ -155,6 +160,9 @@ function SiteHeaderInner({
         <button className="close" aria-label="×" onClick={() => setOpen(false)}>
           ✕
         </button>
+        <Link href="/inkii-marketing" onClick={() => setOpen(false)} style={{ fontWeight: 700, color: "#3f9c5c" }}>
+          ★ INKII MARKETING
+        </Link>
         {NAV.map((n) => (
           <Link key={n.href} href={n.href} onClick={() => setOpen(false)}>
             {nav[n.key]}
