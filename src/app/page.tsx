@@ -65,6 +65,18 @@ export default async function HomePage() {
             </Link>
           </div>
         </div>
+
+        {/* Sağ alt — kayan reklam metni */}
+        <div className="hero-marquee" aria-hidden="true">
+          <div className="hero-marquee-track">
+            <span>{d.utility.center}</span>
+            <span>•</span>
+            <span>{d.utility.center}</span>
+            <span>•</span>
+            <span>{d.utility.center}</span>
+            <span>•</span>
+          </div>
+        </div>
       </section>
 
       {/* === 2 große Bildkacheln === */}

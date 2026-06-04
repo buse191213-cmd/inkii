@@ -69,9 +69,6 @@ function SiteHeaderInner({
     <>
       <div className="utility">
         <div className="utility-inner">
-          <span className="u-center">
-            {utility.center}
-          </span>
           <div className="u-right">
             <Link href="/ueber-uns">{nav.ueberUns}</Link>
             <Link href="/nachhaltigkeit">{nav.nachhaltigkeit}</Link>
