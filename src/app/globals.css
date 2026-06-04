@@ -1314,7 +1314,7 @@ body:has(.home-services) footer.site{margin-top:0}
   z-index:1;pointer-events:none}
 
 /* 4 Service-Boxen — direkt unter den Kacheln */
-.home-services{display:grid;grid-template-columns:repeat(4,1fr);gap:5px;
+.home-services{display:grid;grid-template-columns:repeat(2,1fr);gap:5px;
   width:100%;background:#fff}
 .svc-box{position:relative;aspect-ratio:1/1;overflow:hidden;
   display:block;text-decoration:none;cursor:pointer}

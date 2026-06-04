@@ -18,15 +18,11 @@ export default async function HomePage() {
   const tile2 = await getHomeImage("home-tile-2");
   const svcDruck = await getHomeImage("area-1");
   const svcWerbe = await getHomeImage("area-2");
-  const svcWeb = await getHomeImage("area-3");
-  const svcMkt = await getHomeImage("area-4");
   const svcFahrzeug = await getHomeImage("fb-banner");
 
   const services = [
     { label: t.services[0].label, sub: t.services[0].sub, href: "/bereiche/textilveredelung", img: svcDruck },
     { label: t.services[1].label, sub: t.services[1].sub, href: "/bereiche/werbeartikel", img: svcWerbe },
-    { label: t.services[2].label, sub: t.services[2].sub, href: "/webdesign", img: svcWeb },
-    { label: t.services[3].label, sub: t.services[3].sub, href: "/marketing", img: svcMkt },
   ];
 
   return (
