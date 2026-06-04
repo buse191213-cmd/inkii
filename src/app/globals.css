@@ -1972,10 +1972,10 @@ body:has(.home-services) footer.site{margin-top:0}
   color:#1c2722;margin:0}
 
 /* Cards */
-.wd-cards{display:grid;grid-template-columns:repeat(3,1fr);gap:0;
-  border-top:1px solid #1c2722;border-left:1px solid #1c2722}
+.wd-cards{display:grid;grid-template-columns:repeat(3,1fr);gap:24px;
+  border-top:none;border-left:none}
 .wd-card{background:#fff;border-radius:0;overflow:hidden;
-  border-right:1px solid #1c2722;border-bottom:1px solid #1c2722;
+  border:1px solid #1c2722;
   transition:all .3s ease;display:flex;flex-direction:column;position:relative}
 .wd-card:hover{background:#fafaf8}
 .wd-card-img{aspect-ratio:5/4;background:#f3f3f1;
@@ -3767,3 +3767,16 @@ body:has(.hero-full) .brand-marketing:hover{background:rgba(255,255,255,.08);bor
 .im-tagline{font-family:Georgia,serif;font-size:1rem;font-weight:600;
   letter-spacing:.22em;text-transform:uppercase;color:#e8b04a;
   margin-bottom:18px;text-shadow:0 2px 12px rgba(0,0,0,.5)}
+
+/* === Merkzettel — Toplam adet özeti === */
+.merk-total{background:#f9faf6;border:1px solid #e3e6df;
+  padding:18px 22px;margin:14px 0 6px;display:flex;flex-direction:column;gap:8px}
+.merk-total-row{display:flex;justify-content:space-between;align-items:baseline;
+  font-size:.95rem;color:#5a6259}
+.merk-total-row.merk-total-main{padding-top:8px;border-top:1px solid #e3e6df;
+  font-size:1.1rem;color:#1c2722}
+.merk-total-label{font-family:Georgia,serif;letter-spacing:.02em}
+.merk-total-value{font-family:var(--display);font-weight:800;color:#1c2722;
+  font-size:1.05rem}
+.merk-total-main .merk-total-value{font-size:1.45rem;color:#3f9c5c;
+  letter-spacing:-.01em}

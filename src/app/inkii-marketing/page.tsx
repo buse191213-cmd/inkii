@@ -46,9 +46,12 @@ export default async function InkiiMarketingPage() {
         )}
         <div className="hero-overlay" />
         <div className="hero-content">
-          <div className="im-tagline">{t.tagline}</div>
-          <h1 className="hero-title">{t.h1}</h1>
-          <p className="hero-sub">{t.intro}</p>
+          <h1 className="hero-title">
+            RUNDUM<span className="hero-dash">-</span>DIGITAL<span className="hero-dash">-</span>SERVICE
+          </h1>
+          <p className="hero-sub">
+            Kreatives Webdesign und strategisches Marketing aus einer Hand.
+          </p>
           <div className="hero-cta-row">
             <Link href="#services" className="btn-hero-light">{t.ctaBtn}</Link>
             <Link href="/" className="btn-hero-outline">{t.worksLink}</Link>

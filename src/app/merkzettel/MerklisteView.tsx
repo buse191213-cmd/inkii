@@ -121,6 +121,25 @@ export default function MerklisteView({
                 <button type="button" className="merk-remove" onClick={() => remove(it.uniqueKey)} aria-label={t.removeItem}>✕</button>
               </div>
             ))}
+            {/* Toplam adet özeti */}
+            {items.length > 0 && (() => {
+              const totalQty = items.reduce((sum, it) =>
+                sum + (it.sizes && it.sizes.length > 0
+                  ? it.sizes.reduce((s, sz) => s + sz.qty, 0)
+                  : it.qty), 0);
+              return (
+                <div className="merk-total">
+                  <div className="merk-total-row">
+                    <span className="merk-total-label">Artikel im Merkzettel</span>
+                    <span className="merk-total-value">{items.length}</span>
+                  </div>
+                  <div className="merk-total-row merk-total-main">
+                    <span className="merk-total-label">Gesamtmenge</span>
+                    <span className="merk-total-value">{totalQty} Stück</span>
+                  </div>
+                </div>
+              );
+            })()}
             <button type="button" className="btn btn-ghost btn-sm merk-clear" onClick={clear}>{t.clear}</button>
           </div>
 
