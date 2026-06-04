@@ -6,8 +6,8 @@ const en: Dictionary = {
     h1: "We make brands visible",
     intro: "Web design, online marketing and digital solutions for businesses that want more than just a website.",
     services: [
-      { title: "Web Design & Development", desc: "Modern, fast and SEO-optimised websites — from landing pages to complex online shops." },
-      { title: "Social Media Marketing", desc: "Strategy, content and campaigns for Instagram, Facebook and LinkedIn — to grow your brand." },
+      { title: "Web Design & Development", sub: "for modern brands", desc: "Modern, fast and SEO-optimised websites — from landing pages to complex online shops." },
+      { title: "Social Media Marketing", sub: "for digital growth", desc: "Strategy, content and campaigns for Instagram, Facebook and LinkedIn — to grow your brand." },
       { title: "SEO & Google Ads", desc: "More visibility on Google — through clean optimisation and targeted ad campaigns." },
       { title: "Branding & Design", desc: "Logo, corporate design, business cards — we build your brand identity from the ground up." },
     ],

@@ -6,8 +6,8 @@ const de: Dictionary = {
     h1: "Wir machen Marken sichtbar",
     intro: "Webdesign, Online-Marketing und digitale Lösungen für Unternehmen, die mehr wollen als nur eine Website.",
     services: [
-      { title: "Webdesign & Entwicklung", desc: "Moderne, schnelle und SEO-optimierte Websites — von der Landingpage bis zum komplexen Onlineshop." },
-      { title: "Social Media Marketing", desc: "Strategie, Content und Kampagnen für Instagram, Facebook und LinkedIn — die Ihre Marke wachsen lassen." },
+      { title: "Webdesign & Entwicklung", sub: "für moderne Marken", desc: "Moderne, schnelle und SEO-optimierte Websites — von der Landingpage bis zum komplexen Onlineshop." },
+      { title: "Social Media Marketing", sub: "für digitale Wachstum", desc: "Strategie, Content und Kampagnen für Instagram, Facebook und LinkedIn — die Ihre Marke wachsen lassen." },
       { title: "SEO & Google Ads", desc: "Mehr Sichtbarkeit bei Google — durch saubere Optimierung und gezielte Werbekampagnen." },
       { title: "Branding & Design", desc: "Logo, Corporate Design, Visitenkarten — wir bauen Ihre Markenidentität von Grund auf." },
     ],

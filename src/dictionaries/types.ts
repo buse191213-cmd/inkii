@@ -4,7 +4,7 @@
 export type Dictionary = {
   inkiiMarketing: {
     tagline: string; h1: string; intro: string;
-    services: { title: string; desc: string }[];
+    services: { title: string; sub?: string; desc: string }[];
     ctaH: string; ctaP: string; ctaBtn: string;
     worksLink: string;
   };

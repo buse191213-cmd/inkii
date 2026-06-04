@@ -78,6 +78,7 @@ export default async function InkiiMarketingPage() {
           </div>
           <div className="home-tile-label">
             {t.services[0].title}
+            {t.services[0].sub && <><br />{t.services[0].sub}</>}
           </div>
         </Link>
         <Link href="/marketing" className="home-tile">
@@ -88,6 +89,7 @@ export default async function InkiiMarketingPage() {
           </div>
           <div className="home-tile-label">
             {t.services[1].title}
+            {t.services[1].sub && <><br />{t.services[1].sub}</>}
           </div>
         </Link>
       </section>
