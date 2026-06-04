@@ -3760,3 +3760,13 @@ body:has(.hero-full) .brand-marketing:hover{background:rgba(255,255,255,.08);bor
   .im-cta{padding:50px 16px 70px}
   .im-cta h2{font-size:1.7rem}
 }
+
+/* === Utility bar — Merkzettel kalbi (dil yanında) === */
+.utility .u-heart{display:inline-flex;align-items:center;gap:4px;
+  color:rgba(255,255,255,.82);text-decoration:none;font-size:.95rem;
+  padding:2px 6px;border-radius:4px;transition:.18s;line-height:1}
+.utility .u-heart:hover{color:#fff;background:rgba(255,255,255,.08)}
+.utility .u-heart.has-items{color:#e8b04a}
+.utility .u-heart-count{font-size:.7rem;font-weight:700;
+  background:#e8b04a;color:#0b0d0c;padding:1px 5px;border-radius:8px;
+  min-width:14px;text-align:center;line-height:1.2}

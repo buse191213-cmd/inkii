@@ -80,6 +80,9 @@ function SiteHeaderInner({
             <Link href="/nachhaltigkeit">{nav.nachhaltigkeit}</Link>
             <Link href="/bereiche">{nav.bereiche}</Link>
             <Link href="/kontakt">{nav.kontakt}</Link>
+            <Link href="/merkzettel" className={`u-heart${count > 0 ? " has-items" : ""}`} title={t.merkzettel} aria-label={t.merkzettel}>
+              <span aria-hidden>♥</span>{count > 0 && <span className="u-heart-count">{count}</span>}
+            </Link>
             <LangSwitcher current={locale} />
           </div>
         </div>
@@ -124,7 +127,7 @@ function SiteHeaderInner({
             ))}
           </nav>
 
-          {/* SAĞ: INKII MARKETING brand + ikonlar + kalp (flex: 1) */}
+          {/* SAĞ: INKII MARKETING + burger (flex: 1) */}
           <div
             className="head-actions"
             style={{ flex: "1 1 0", display: "flex", justifyContent: "flex-end", alignItems: "center", gap: 12, minWidth: 0 }}
@@ -133,15 +136,6 @@ function SiteHeaderInner({
               <Image src="/inkii-logo.png" alt="" width={70} height={22} />
               <span className="brand-sep" aria-hidden>|</span>
               <span className="brand-label">MARKETING</span>
-            </Link>
-            <div className="icon-btn" title={t.search}>⌕</div>
-            <div className="icon-btn" title={t.account}>☻</div>
-            <Link
-              href="/merkzettel"
-              className={`cart-pill${count > 0 ? " has-items" : ""}`}
-              title={t.merkzettel}
-            >
-              <span aria-hidden>♥</span> {count}
             </Link>
             <button
               className="burger"
