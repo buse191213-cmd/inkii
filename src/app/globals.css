@@ -1280,11 +1280,11 @@ body:has(.home-services) footer.site{margin-top:0}
   to bottom,rgba(8,12,10,.25) 0%,rgba(8,12,10,.45) 60%,rgba(8,12,10,.70) 100%);z-index:1}
 .hero-content{position:relative;z-index:2;text-align:left;max-width:780px;width:100%}
 .hero-title{font-family:var(--display);font-weight:800;
-  font-size:clamp(1.9rem,4.6vw,4rem);
+  font-size:clamp(1.9rem,4.6vw,6rem);
   line-height:1.05;letter-spacing:-.01em;margin:0;color:#fff}
 .hero-dash{display:inline-block;margin:0 .05em;color:#fff;opacity:.85}
-.hero-sub{font-family:var(--body);font-size:clamp(.95rem,1.4vw,1.18rem);
-  margin:18px 0 0;max-width:540px;color:rgba(255,255,255,.85);
+.hero-sub{font-family:var(--body);font-size:clamp(.95rem,1.4vw,1.5rem);
+  margin:18px 0 0;max-width:680px;color:rgba(255,255,255,.85);
   font-weight:400;line-height:1.5}
 .hero-cta-row{display:flex;gap:14px;justify-content:flex-start;flex-wrap:wrap;margin-top:34px}
 .btn-hero-light,.btn-hero-outline{padding:15px 36px;font-family:var(--display);
@@ -1306,7 +1306,7 @@ body:has(.home-services) footer.site{margin-top:0}
   background-color:#f0ede5;transition:transform .55s ease}
 .home-tile:hover .home-tile-img{transform:scale(1.04)}
 .home-tile-label{position:absolute;bottom:38px;left:38px;
-  font-family:var(--display);font-weight:700;font-size:clamp(1.4rem,2.6vw,2.3rem);
+  font-family:var(--display);font-weight:700;font-size:clamp(1.4rem,2.6vw,3.2rem);
   line-height:1;color:#fff;letter-spacing:.02em;
   text-shadow:0 2px 16px rgba(0,0,0,.4);max-width:80%;z-index:2}
 .home-tile::after{content:"";position:absolute;inset:0;
@@ -1327,7 +1327,7 @@ body:has(.home-services) footer.site{margin-top:0}
 .svc-text{position:absolute;left:32px;right:32px;bottom:32px;color:#fff;z-index:1;
   display:flex;flex-direction:column;justify-content:flex-end}
 .svc-label{font-family:var(--display);font-weight:700;
-  font-size:clamp(1.1rem,1.7vw,1.5rem);letter-spacing:.06em;
+  font-size:clamp(1.1rem,1.7vw,2.1rem);letter-spacing:.06em;
   color:#fff;line-height:1.1;margin-bottom:10px;
   min-height:calc(1.1em * 1)} /* Label immer einzeilig */
 .svc-sub{font-size:.82rem;line-height:1.4;color:rgba(255,255,255,.85);
@@ -3665,7 +3665,9 @@ body:has(.cookie-banner) .wa-fab{bottom:120px}
   transition:.18s;line-height:1}
 .lang-dd-trigger:hover{background:rgba(255,255,255,.12);border-color:rgba(255,255,255,.28)}
 .lang-dd-trigger:disabled{opacity:.55;cursor:wait}
-.lang-dd-flag{font-size:1rem;line-height:1}
+.lang-dd-flag{width:20px;height:14px;display:inline-block;flex-shrink:0;
+  border-radius:2px;overflow:hidden;border:1px solid rgba(255,255,255,.15);
+  background:#1c2722}
 .lang-dd-code{letter-spacing:.04em;font-weight:600}
 .lang-dd-arrow{transition:transform .2s ease;opacity:.7}
 .lang-dd-arrow.open{transform:rotate(180deg)}

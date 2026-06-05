@@ -184,6 +184,7 @@ const en: Dictionary = {
   },
   kontakt: {
     h1: "Tell us what you need",
+    projectTypes: ["Textile printing & finishing", "Embroidery", "Promotional items", "Print (flyers, posters, etc.)", "Signage & vehicle wrapping", "Web design", "Marketing", "Complete solution", "Other"],
     intro: "Whether a quote, advice or a callback – write to us. We usually respond within one business day.",
     infoTitle: "How to reach us",
     infoPhone: "Phone",

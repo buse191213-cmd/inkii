@@ -184,6 +184,7 @@ const tr: Dictionary = {
   },
   kontakt: {
     h1: "Bize ne istediğinizi söyleyin",
+    projectTypes: ["Tekstil baskı & işleme", "Nakış", "Promosyon ürünleri", "Baskı (broşür, afiş vb.)", "Tabela & araç giydirme", "Web tasarım", "Pazarlama", "Tüm çözüm", "Diğer"],
     intro: "İster teklif, ister danışmanlık ister geri arama – bize yazın. Genellikle bir iş günü içinde dönüş yaparız.",
     infoTitle: "Bize nasıl ulaşırsınız",
     infoPhone: "Telefon",

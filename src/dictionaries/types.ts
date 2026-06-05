@@ -119,6 +119,7 @@ export type Dictionary = {
     sending: string;
   };
   kontakt: {
+    projectTypes: string[];
     h1: string;
     intro: string;
     infoTitle: string;

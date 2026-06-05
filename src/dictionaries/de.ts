@@ -184,6 +184,7 @@ const de: Dictionary = {
   },
   kontakt: {
     h1: "Sagen Sie uns, was Sie brauchen",
+    projectTypes: ["Textildruck & Veredelung", "Stickerei", "Werbemittel & Werbeartikel", "Druck (Flyer, Plakate, etc.)", "Werbetechnik", "Webdesign", "Marketing", "Komplettlösung", "Sonstiges"],
     intro: "Ob Angebot, Beratung oder Rückruf – schreiben Sie uns. Wir melden uns in der Regel innerhalb eines Werktags.",
     infoTitle: "So erreichen Sie uns",
     infoPhone: "Telefon",
