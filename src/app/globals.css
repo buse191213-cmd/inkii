@@ -3688,22 +3688,23 @@ body:has(.cookie-banner) .wa-fab{bottom:120px}
 
 /* === INKII MARKETING brand link (sağ üst) === */
 .brand-marketing{display:inline-flex;align-items:center;gap:8px;
-  text-decoration:none;color:#1c2722;padding:8px 16px;border-radius:8px;
-  background:#fff;border:1px solid rgba(28,39,34,.08);
-  box-shadow:0 2px 8px rgba(28,39,34,.06);
-  transition:.2s;line-height:1}
-.brand-marketing:hover{background:#fff;border-color:rgba(28,39,34,.18);
-  box-shadow:0 4px 14px rgba(28,39,34,.12);transform:translateY(-1px)}
+  text-decoration:none;color:#1c2722;padding:6px 14px;border-radius:6px;
+  background:transparent;border:none;box-shadow:none;
+  transition:.25s;line-height:1}
+.brand-marketing:hover{background:rgba(28,39,34,.04)}
 .brand-marketing img{height:60px;width:auto;display:block}
 .brand-marketing .brand-sep{color:rgba(28,39,34,.25);font-weight:300;font-size:1.1rem;line-height:1}
 .brand-marketing .brand-label{font-family:Georgia,serif;font-size:.78rem;font-weight:700;
   letter-spacing:.18em;color:#1c2722;text-transform:uppercase}
-/* Hero üzerinde: beyaz kutu kalsın, logo siyah kalsın */
-body:has(.hero-full) .brand-marketing{background:#fff;color:#1c2722;border-color:rgba(0,0,0,.1)}
+/* Hero üzerinde: arka plan blurlu beyaz (logo siyah okunabilsin diye) */
+body:has(.hero-full) .brand-marketing{
+  background:rgba(255,255,255,.92);
+  backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);
+  color:#1c2722}
 body:has(.hero-full) .brand-marketing img{filter:none}
 body:has(.hero-full) .brand-marketing .brand-sep,
 body:has(.hero-full) .brand-marketing .brand-label{color:#1c2722}
-body:has(.hero-full) .brand-marketing:hover{background:#fff}
+body:has(.hero-full) .brand-marketing:hover{background:rgba(255,255,255,1)}
 /* Mobilde gizle (drawer içine girer) */
 @media(max-width:900px){
   .brand-marketing{display:none}
