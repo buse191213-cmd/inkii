@@ -3688,23 +3688,30 @@ body:has(.cookie-banner) .wa-fab{bottom:120px}
 
 /* === INKII MARKETING brand link (sağ üst) === */
 .brand-marketing{display:inline-flex;align-items:center;gap:8px;
-  text-decoration:none;color:#1c2722;padding:6px 12px;border-radius:8px;
-  border:1px solid transparent;transition:.2s;line-height:1}
-.brand-marketing:hover{background:rgba(28,39,34,.04);border-color:rgba(28,39,34,.12)}
-.brand-marketing img{height:22px;width:auto;display:block;opacity:.92}
+  text-decoration:none;color:#1c2722;padding:8px 16px;border-radius:8px;
+  background:#fff;border:1px solid rgba(28,39,34,.08);
+  box-shadow:0 2px 8px rgba(28,39,34,.06);
+  transition:.2s;line-height:1}
+.brand-marketing:hover{background:#fff;border-color:rgba(28,39,34,.18);
+  box-shadow:0 4px 14px rgba(28,39,34,.12);transform:translateY(-1px)}
+.brand-marketing img{height:60px;width:auto;display:block}
 .brand-marketing .brand-sep{color:rgba(28,39,34,.25);font-weight:300;font-size:1.1rem;line-height:1}
 .brand-marketing .brand-label{font-family:Georgia,serif;font-size:.78rem;font-weight:700;
   letter-spacing:.18em;color:#1c2722;text-transform:uppercase}
-/* Hero üzerinde (transparent header) görünürlük */
-body:has(.hero-full) .brand-marketing{color:#fff}
-body:has(.hero-full) .brand-marketing img{filter:brightness(0) invert(1)}
+/* Hero üzerinde: beyaz kutu kalsın, logo siyah kalsın */
+body:has(.hero-full) .brand-marketing{background:#fff;color:#1c2722;border-color:rgba(0,0,0,.1)}
+body:has(.hero-full) .brand-marketing img{filter:none}
 body:has(.hero-full) .brand-marketing .brand-sep,
-body:has(.hero-full) .brand-marketing .brand-label{color:#fff}
-body:has(.hero-full) .brand-marketing:hover{background:rgba(255,255,255,.08);border-color:rgba(255,255,255,.2)}
+body:has(.hero-full) .brand-marketing .brand-label{color:#1c2722}
+body:has(.hero-full) .brand-marketing:hover{background:#fff}
 /* Mobilde gizle (drawer içine girer) */
 @media(max-width:900px){
   .brand-marketing{display:none}
 }
+
+/* Admin'den yüklenen custom INKII MARKETING logosu */
+.brand-marketing-img{height:60px;width:auto;display:block;
+  max-width:260px;object-fit:contain}
 
 /* === INKII MARKETING — CTA === */
 .im-cta{text-align:center;padding:80px 24px 100px;max-width:780px;margin:0 auto}
@@ -3783,7 +3790,3 @@ body:has(.hero-full) .brand-marketing:hover{background:rgba(255,255,255,.08);bor
 .merk-total-main .merk-total-value{font-size:1.45rem;color:#3f9c5c;
   letter-spacing:-.01em}
 
-/* Admin'den yüklenen custom INKII MARKETING logosu */
-.brand-marketing-img{height:32px;width:auto;display:block;
-  max-width:180px;object-fit:contain}
-body:has(.hero-full) .brand-marketing-img{filter:brightness(0) invert(1)}
