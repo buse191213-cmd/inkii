@@ -3686,33 +3686,27 @@ body:has(.cookie-banner) .wa-fab{bottom:120px}
 .lang-dd-item.active .lang-dd-label{font-weight:600}
 .lang-dd-label{flex:1}
 
-/* === INKII MARKETING brand link (sağ üst) === */
-.brand-marketing{display:inline-flex;align-items:center;gap:8px;
-  text-decoration:none;color:#1c2722;padding:6px 14px;border-radius:6px;
+/* === INKII MARKETING brand link (sağ üst) — minimal === */
+.brand-marketing{display:inline-flex;align-items:center;gap:6px;
+  text-decoration:none;color:#1c2722;padding:2px 4px;
   background:transparent;border:none;box-shadow:none;
-  transition:.25s;line-height:1}
-.brand-marketing:hover{background:rgba(28,39,34,.04)}
-.brand-marketing img{height:60px;width:auto;display:block}
-.brand-marketing .brand-sep{color:rgba(28,39,34,.25);font-weight:300;font-size:1.1rem;line-height:1}
-.brand-marketing .brand-label{font-family:Georgia,serif;font-size:.78rem;font-weight:700;
-  letter-spacing:.18em;color:#1c2722;text-transform:uppercase}
-/* Hero üzerinde: arka plan blurlu beyaz (logo siyah okunabilsin diye) */
-body:has(.hero-full) .brand-marketing{
-  background:rgba(255,255,255,.92);
-  backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);
-  color:#1c2722}
-body:has(.hero-full) .brand-marketing img{filter:none}
-body:has(.hero-full) .brand-marketing .brand-sep,
-body:has(.hero-full) .brand-marketing .brand-label{color:#1c2722}
-body:has(.hero-full) .brand-marketing:hover{background:rgba(255,255,255,1)}
+  transition:opacity .2s;line-height:1}
+.brand-marketing:hover{opacity:.75}
+.brand-marketing img{height:42px;width:auto;display:block}
+.brand-marketing .brand-sep{color:rgba(28,39,34,.25);font-weight:300;font-size:1rem;line-height:1}
+.brand-marketing .brand-label{font-family:Georgia,serif;font-size:.72rem;font-weight:700;
+  letter-spacing:.16em;color:#1c2722;text-transform:uppercase}
+/* Hero üzerinde: koyu video için logo'ya drop-shadow ile okunaklılık */
+body:has(.hero-full) .brand-marketing img{
+  filter:drop-shadow(0 1px 3px rgba(0,0,0,.4)) drop-shadow(0 0 1px rgba(255,255,255,.6))}
 /* Mobilde gizle (drawer içine girer) */
 @media(max-width:900px){
   .brand-marketing{display:none}
 }
 
 /* Admin'den yüklenen custom INKII MARKETING logosu */
-.brand-marketing-img{height:60px;width:auto;display:block;
-  max-width:260px;object-fit:contain}
+.brand-marketing-img{height:42px;width:auto;display:block;
+  max-width:200px;object-fit:contain}
 
 /* === INKII MARKETING — CTA === */
 .im-cta{text-align:center;padding:80px 24px 100px;max-width:780px;margin:0 auto}
