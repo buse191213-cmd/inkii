@@ -3696,12 +3696,15 @@ body:has(.cookie-banner) .wa-fab{bottom:120px}
 .brand-marketing .brand-sep{color:rgba(28,39,34,.25);font-weight:300;font-size:1rem;line-height:1}
 .brand-marketing .brand-label{font-family:Georgia,serif;font-size:.72rem;font-weight:700;
   letter-spacing:.16em;color:#1c2722;text-transform:uppercase}
-/* Hero üzerinde: siyah logo'yu beyaza çevir (video üstünde net görünmesi için) */
+/* Hero üzerinde: logo SİYAH kalır, etrafında BEYAZ glow halo (siyah video üstünde belirgin) */
 body:has(.hero-full) .brand-marketing img{
-  filter:invert(1) brightness(1.1) drop-shadow(0 2px 6px rgba(0,0,0,.5))}
+  filter:
+    drop-shadow(0 0 3px rgba(255,255,255,1))
+    drop-shadow(0 0 8px rgba(255,255,255,.9))
+    drop-shadow(0 0 14px rgba(255,255,255,.7))}
 body:has(.hero-full) .brand-marketing .brand-sep,
 body:has(.hero-full) .brand-marketing .brand-label{
-  color:#fff;text-shadow:0 1px 4px rgba(0,0,0,.5)}
+  color:#1c2722;text-shadow:0 0 6px rgba(255,255,255,.9),0 0 12px rgba(255,255,255,.7)}
 /* Mobilde gizle (drawer içine girer) */
 @media(max-width:900px){
   .brand-marketing{display:none}
