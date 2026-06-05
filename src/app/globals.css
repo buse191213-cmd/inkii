@@ -3696,16 +3696,17 @@ body:has(.cookie-banner) .wa-fab{bottom:120px}
 .brand-marketing .brand-sep{color:rgba(28,39,34,.25);font-weight:300;font-size:1rem;line-height:1}
 .brand-marketing .brand-label{font-family:Georgia,serif;font-size:.72rem;font-weight:700;
   letter-spacing:.16em;color:#1c2722;text-transform:uppercase}
-/* Hero üzerinde: logo SİYAH kalır, etrafında BEYAZ glow halo (siyah video üstünde belirgin) */
-body:has(.hero-full) .brand-marketing img{
-  filter:
-    drop-shadow(0 0 4px rgba(255,255,255,1))
-    drop-shadow(0 0 8px rgba(255,255,255,1))
-    drop-shadow(0 0 16px rgba(255,255,255,.95))
-    drop-shadow(0 0 24px rgba(255,255,255,.7))}
+/* Hero üzerinde: logo SİYAH kalır, etrafında DİKDÖRTGEN beyaz glow */
+body:has(.hero-full) .brand-marketing{
+  background:rgba(255,255,255,.85);
+  border-radius:4px;
+  box-shadow:0 0 12px 6px rgba(255,255,255,.85),
+             0 0 28px 14px rgba(255,255,255,.55),
+             0 0 50px 20px rgba(255,255,255,.25)}
+body:has(.hero-full) .brand-marketing img{filter:none}
 body:has(.hero-full) .brand-marketing .brand-sep,
 body:has(.hero-full) .brand-marketing .brand-label{
-  color:#1c2722;text-shadow:0 0 8px rgba(255,255,255,1),0 0 16px rgba(255,255,255,.9),0 0 24px rgba(255,255,255,.7)}
+  color:#1c2722;text-shadow:none}
 /* Mobilde gizle (drawer içine girer) */
 @media(max-width:900px){
   .brand-marketing{display:none}
