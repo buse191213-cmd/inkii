@@ -5,6 +5,7 @@ import { MerklisteProvider } from "./MerklisteProvider";
 import { getLocale } from "@/lib/i18n-server";
 import { getDictionary } from "@/dictionaries";
 import { getActiveNavItems } from "@/lib/nav";
+import { getHomeImage } from "@/lib/home-images";
 
 /** Rahmen für alle öffentlichen Seiten: Header, Inhalt, Footer. */
 export default async function SiteShell({
@@ -15,6 +16,7 @@ export default async function SiteShell({
   const locale = await getLocale();
   const dict = getDictionary(locale);
   const navItems = await getActiveNavItems();
+  const marketingLogo = await getHomeImage("marketing-logo");
 
   return (
     <MerklisteProvider>
@@ -23,6 +25,7 @@ export default async function SiteShell({
         nav={dict.nav}
         t={dict.header}
         utility={dict.utility}
+        marketingLogo={marketingLogo}
         navItems={navItems.map((n) => ({ href: n.href, key: n.key }))}
       />
       <main>{children}</main>

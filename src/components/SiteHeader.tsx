@@ -24,6 +24,7 @@ type HeaderProps = {
   nav: Dictionary["nav"];
   t: Dictionary["header"];
   utility: Dictionary["utility"];
+  marketingLogo?: string | null;
   navItems?: NavItem[];
 };
 
@@ -40,6 +41,7 @@ function SiteHeaderInner({
   nav,
   t,
   utility,
+  marketingLogo,
   navItems,
 }: HeaderProps) {
   const pathname = usePathname();
@@ -136,9 +138,16 @@ function SiteHeaderInner({
             style={{ flex: "1 1 0", display: "flex", justifyContent: "flex-end", alignItems: "center", gap: 12, minWidth: 0 }}
           >
             <Link href="/inkii-marketing" className="brand-marketing" aria-label="INKII MARKETING">
-              <Image src="/inkii-logo.png" alt="" width={70} height={22} />
-              <span className="brand-sep" aria-hidden>|</span>
-              <span className="brand-label">MARKETING</span>
+              {marketingLogo ? (
+                // eslint-disable-next-line @next/next/no-img-element
+                <img src={marketingLogo} alt="INKII MARKETING" className="brand-marketing-img" />
+              ) : (
+                <>
+                  <Image src="/inkii-logo.png" alt="" width={70} height={22} />
+                  <span className="brand-sep" aria-hidden>|</span>
+                  <span className="brand-label">MARKETING</span>
+                </>
+              )}
             </Link>
             <button
               className="burger"
