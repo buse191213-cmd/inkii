@@ -3696,13 +3696,13 @@ body:has(.cookie-banner) .wa-fab{bottom:120px}
 .brand-marketing .brand-sep{color:rgba(28,39,34,.25);font-weight:300;font-size:1rem;line-height:1}
 .brand-marketing .brand-label{font-family:Georgia,serif;font-size:.72rem;font-weight:700;
   letter-spacing:.16em;color:#1c2722;text-transform:uppercase}
-/* Hero üzerinde: logo SİYAH kalır, etrafında DİKDÖRTGEN beyaz glow */
+/* Hero üzerinde: logo SİYAH kalır, etrafında DİKDÖRTGEN soft beyaz glow */
 body:has(.hero-full) .brand-marketing{
-  background:rgba(255,255,255,.85);
+  background:rgba(255,255,255,.6);
   border-radius:4px;
-  box-shadow:0 0 12px 6px rgba(255,255,255,.85),
-             0 0 28px 14px rgba(255,255,255,.55),
-             0 0 50px 20px rgba(255,255,255,.25)}
+  box-shadow:0 0 10px 4px rgba(255,255,255,.5),
+             0 0 24px 10px rgba(255,255,255,.3),
+             0 0 44px 16px rgba(255,255,255,.12)}
 body:has(.hero-full) .brand-marketing img{filter:none}
 body:has(.hero-full) .brand-marketing .brand-sep,
 body:has(.hero-full) .brand-marketing .brand-label{
