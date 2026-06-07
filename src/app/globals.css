@@ -3714,9 +3714,9 @@ body:has(.hero-full) .brand-marketing .brand-label{
   .brand-marketing{display:none}
 }
 
-/* Admin'den yüklenen custom INKII MARKETING logosu */
-.brand-marketing-img{height:42px;width:auto;display:block;
-  max-width:200px;object-fit:contain}
+/* Admin'den yüklenen custom INKII MARKETING logosu — INKII WORKS ile aynı boyut */
+.brand-marketing-img{height:60px;width:auto;display:block;
+  max-width:280px;object-fit:contain}
 
 /* === INKII MARKETING — CTA === */
 .im-cta{text-align:center;padding:80px 24px 100px;max-width:780px;margin:0 auto}
