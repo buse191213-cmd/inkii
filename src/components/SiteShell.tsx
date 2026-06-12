@@ -1,6 +1,7 @@
 import SiteHeader from "./SiteHeader";
 import SiteFooter from "./SiteFooter";
 import RevealInit from "./RevealInit";
+import MobileBrandSwitcher from "./MobileBrandSwitcher";
 import { MerklisteProvider } from "./MerklisteProvider";
 import { getLocale } from "@/lib/i18n-server";
 import { getDictionary } from "@/dictionaries";
@@ -30,6 +31,7 @@ export default async function SiteShell({
       />
       <main>{children}</main>
       <SiteFooter t={dict.footer} cookieLabel={locale === "tr" ? "Çerez ayarları" : locale === "en" ? "Cookie settings" : "Cookie-Einstellungen"} />
+      <MobileBrandSwitcher marketingLogo={marketingLogo} />
       <RevealInit />
     </MerklisteProvider>
   );

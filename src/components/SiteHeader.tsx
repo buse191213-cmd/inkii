@@ -106,20 +106,24 @@ function SiteHeaderInner({
             boxSizing: "border-box",
           }}
         >
-          {/* SOL: Logo (flex: 1) */}
+          {/* SOL: Logo — hangi markadaysak onun logosu */}
           <div style={{ flex: "1 1 0", display: "flex", justifyContent: "flex-start", minWidth: 0 }}>
             <Link
-              href="/"
+              href={isMarketing ? "/inkii-marketing" : "/"}
               className="logo"
               translate="no"
-              aria-label="INKII WORKS – Startseite"
+              aria-label={isMarketing ? "INKII MARKETING – Startseite" : "INKII WORKS – Startseite"}
             >
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              <Image src="/inkii-logo.png" alt="INKII WORKS" width={200} height={60} priority />
+              {isMarketing && marketingLogo ? (
+                // eslint-disable-next-line @next/next/no-img-element
+                <img src={marketingLogo} alt="INKII MARKETING" />
+              ) : (
+                <Image src="/inkii-logo.png" alt={isMarketing ? "INKII MARKETING" : "INKII WORKS"} width={200} height={60} priority />
+              )}
             </Link>
           </div>
 
-          {/* ORTA: Nav linkler (flex: 0, kendi genişliğinde) */}
+          {/* ORTA: Nav linkler */}
           <nav className="main" style={{ flex: "0 0 auto", display: "flex", justifyContent: "center" }}>
             {NAV.map((n) => (
               <Link
@@ -132,23 +136,11 @@ function SiteHeaderInner({
             ))}
           </nav>
 
-          {/* SAĞ: INKII MARKETING + burger (flex: 1) */}
+          {/* SAĞ: Sadece burger (mobil) — diğer marka mobile switcher'da */}
           <div
             className="head-actions"
             style={{ flex: "1 1 0", display: "flex", justifyContent: "flex-end", alignItems: "center", gap: 12, minWidth: 0 }}
           >
-            <Link href="/inkii-marketing" className="brand-marketing" aria-label="INKII MARKETING">
-              {marketingLogo ? (
-                // eslint-disable-next-line @next/next/no-img-element
-                <img src={marketingLogo} alt="INKII MARKETING" className="brand-marketing-img" />
-              ) : (
-                <>
-                  <Image src="/inkii-logo.png" alt="" width={70} height={22} />
-                  <span className="brand-sep" aria-hidden>|</span>
-                  <span className="brand-label">MARKETING</span>
-                </>
-              )}
-            </Link>
             <button
               className="burger"
               aria-label={t.search}
@@ -166,9 +158,6 @@ function SiteHeaderInner({
         <button className="close" aria-label="×" onClick={() => setOpen(false)}>
           ✕
         </button>
-        <Link href="/inkii-marketing" onClick={() => setOpen(false)} style={{ fontWeight: 700, color: "#3f9c5c" }}>
-          ★ INKII MARKETING
-        </Link>
         {NAV.map((n) => (
           <Link key={n.href} href={n.href} onClick={() => setOpen(false)}>
             {nav[n.key]}

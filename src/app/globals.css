@@ -3795,3 +3795,29 @@ body:has(.hero-full) .brand-marketing .brand-label{
 .merk-total-main .merk-total-value{font-size:1.45rem;color:#3f9c5c;
   letter-spacing:-.01em}
 
+
+/* === Mobile Brand Switcher — WhatsApp butonu üzerinde sabit === */
+.mobile-brand-switcher{display:none}
+@media(max-width:900px){
+  .mobile-brand-switcher{
+    position:fixed;
+    bottom:90px;          /* WhatsApp üstünde: 22 + 56 + 12 = 90 */
+    right:22px;
+    z-index:999;
+    background:rgba(255,255,255,.96);
+    border-radius:10px;
+    padding:6px 10px;
+    box-shadow:0 6px 22px rgba(0,0,0,.18),0 2px 6px rgba(0,0,0,.1);
+    text-decoration:none;
+    display:flex;align-items:center;justify-content:center;
+    min-height:46px;
+    backdrop-filter:blur(8px);
+    -webkit-backdrop-filter:blur(8px);
+    transition:transform .2s, box-shadow .2s}
+  .mobile-brand-switcher:hover,
+  .mobile-brand-switcher:active{
+    transform:scale(1.05);
+    box-shadow:0 8px 26px rgba(0,0,0,.22),0 3px 8px rgba(0,0,0,.12)}
+  .mobile-brand-switcher .mbs-img{
+    height:32px;width:auto;display:block;max-width:140px;object-fit:contain}
+}
