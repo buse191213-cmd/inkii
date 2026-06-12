@@ -48,6 +48,8 @@ function SiteHeaderInner({
   // INKII MARKETING sayfasında farklı nav linkleri göster
   const isMarketing = pathname?.startsWith("/inkii-marketing") ||
     pathname === "/webdesign" || pathname === "/marketing";
+  // Sadece ana sayfalarda (her iki marka) iki logo göster
+  const isHomePage = pathname === "/" || pathname === "/inkii-marketing";
   const MARKETING_NAV: NavItem[] = [
     { href: "/webdesign", key: "webdesign" },
     { href: "/marketing", key: "marketing" },
@@ -136,11 +138,29 @@ function SiteHeaderInner({
             ))}
           </nav>
 
-          {/* SAĞ: Sadece burger (mobil) — diğer marka mobile switcher'da */}
+          {/* SAĞ: Ana sayfalarda diğer marka logosu + burger */}
           <div
             className="head-actions"
             style={{ flex: "1 1 0", display: "flex", justifyContent: "flex-end", alignItems: "center", gap: 12, minWidth: 0 }}
           >
+            {isHomePage && (
+              <Link
+                href={isMarketing ? "/" : "/inkii-marketing"}
+                className="brand-other"
+                aria-label={isMarketing ? "INKII WORKS" : "INKII MARKETING"}
+              >
+                {isMarketing ? (
+                  // INKII MARKETING'teyiz → sağda WORKS logosu
+                  <Image src="/inkii-logo.png" alt="INKII WORKS" width={200} height={60} />
+                ) : marketingLogo ? (
+                  // INKII WORKS'teyiz → sağda custom MARKETING logosu
+                  // eslint-disable-next-line @next/next/no-img-element
+                  <img src={marketingLogo} alt="INKII MARKETING" />
+                ) : (
+                  <Image src="/inkii-logo.png" alt="INKII MARKETING" width={200} height={60} />
+                )}
+              </Link>
+            )}
             <button
               className="burger"
               aria-label={t.search}

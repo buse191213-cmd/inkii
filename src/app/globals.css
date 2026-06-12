@@ -3821,3 +3821,15 @@ body:has(.hero-full) .brand-marketing .brand-label{
   .mobile-brand-switcher .mbs-img{
     height:32px;width:auto;display:block;max-width:140px;object-fit:contain}
 }
+
+/* === Diğer marka logosu (sadece ana sayfalarda sağda) === */
+.brand-other{display:inline-flex;align-items:center;text-decoration:none;
+  cursor:pointer;transition:opacity .2s}
+.brand-other:hover{opacity:.75}
+.brand-other img{height:50px;width:auto;display:block;max-width:240px;object-fit:contain}
+/* Hero üzerinde: aynı .logo img gibi siyahsa beyaza döner */
+body:has(.hero-full) header.site .brand-other img{filter:brightness(0) invert(1);height:44px}
+/* Mobil */
+@media(max-width:900px){
+  .brand-other{display:none}  /* Mobilde sticky switcher görevi yapıyor */
+}
