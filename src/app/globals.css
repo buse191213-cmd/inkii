@@ -3824,17 +3824,17 @@ body:has(.hero-full) .brand-marketing .brand-label{
 
 /* === Diğer marka logosu (sadece ana sayfalarda sağda) === */
 .brand-other{display:inline-flex;align-items:center;text-decoration:none;
-  cursor:pointer;transition:opacity .2s;padding:4px 8px;border-radius:4px}
+  cursor:pointer;transition:opacity .2s;padding:3px 6px;border-radius:3px}
 .brand-other:hover{opacity:.85}
-.brand-other img{height:50px;width:auto;display:block;max-width:240px;object-fit:contain}
-/* Hero üzerinde: logo SİYAH kalır, etrafında DİKDÖRTGEN beyaz glow */
+.brand-other img{height:50px;width:auto;display:block;max-width:220px;object-fit:contain}
+/* Hero üzerinde: kibar, premium beyaz glow — solid kutu yok */
 body:has(.hero-full) header.site .brand-other{
-  background:rgba(255,255,255,.6);
-  border-radius:4px;
-  box-shadow:0 0 10px 4px rgba(255,255,255,.5),
-             0 0 24px 10px rgba(255,255,255,.3),
-             0 0 44px 16px rgba(255,255,255,.12)}
-body:has(.hero-full) header.site .brand-other img{filter:none;height:50px}
+  background:transparent;
+  border-radius:3px;
+  box-shadow:0 0 6px 2px rgba(255,255,255,.35),
+             0 0 18px 6px rgba(255,255,255,.18),
+             0 0 34px 10px rgba(255,255,255,.08)}
+body:has(.hero-full) header.site .brand-other img{filter:none;height:44px}
 /* Mobil */
 @media(max-width:900px){
   .brand-other{display:none}
