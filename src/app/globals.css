@@ -3824,12 +3824,18 @@ body:has(.hero-full) .brand-marketing .brand-label{
 
 /* === Diğer marka logosu (sadece ana sayfalarda sağda) === */
 .brand-other{display:inline-flex;align-items:center;text-decoration:none;
-  cursor:pointer;transition:opacity .2s}
-.brand-other:hover{opacity:.75}
+  cursor:pointer;transition:opacity .2s;padding:4px 8px;border-radius:4px}
+.brand-other:hover{opacity:.85}
 .brand-other img{height:50px;width:auto;display:block;max-width:240px;object-fit:contain}
-/* Hero üzerinde: aynı .logo img gibi siyahsa beyaza döner */
-body:has(.hero-full) header.site .brand-other img{filter:brightness(0) invert(1);height:44px}
+/* Hero üzerinde: logo SİYAH kalır, etrafında DİKDÖRTGEN beyaz glow */
+body:has(.hero-full) header.site .brand-other{
+  background:rgba(255,255,255,.6);
+  border-radius:4px;
+  box-shadow:0 0 10px 4px rgba(255,255,255,.5),
+             0 0 24px 10px rgba(255,255,255,.3),
+             0 0 44px 16px rgba(255,255,255,.12)}
+body:has(.hero-full) header.site .brand-other img{filter:none;height:50px}
 /* Mobil */
 @media(max-width:900px){
-  .brand-other{display:none}  /* Mobilde sticky switcher görevi yapıyor */
+  .brand-other{display:none}
 }
