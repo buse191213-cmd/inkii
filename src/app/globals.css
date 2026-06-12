@@ -3827,13 +3827,12 @@ body:has(.hero-full) .brand-marketing .brand-label{
   cursor:pointer;transition:opacity .2s;padding:3px 6px;border-radius:3px}
 .brand-other:hover{opacity:.85}
 .brand-other img{height:50px;width:auto;display:block;max-width:220px;object-fit:contain}
-/* Hero üzerinde: kibar, premium beyaz glow — solid kutu yok */
+/* Hero üzerinde: açık gri-beyaz arka plan, siyah logo net görünsün */
 body:has(.hero-full) header.site .brand-other{
-  background:transparent;
-  border-radius:3px;
-  box-shadow:0 0 6px 2px rgba(255,255,255,.35),
-             0 0 18px 6px rgba(255,255,255,.18),
-             0 0 34px 10px rgba(255,255,255,.08)}
+  background:rgba(245,245,245,.92);
+  border-radius:4px;
+  box-shadow:0 2px 12px rgba(0,0,0,.15),
+             0 0 16px 4px rgba(255,255,255,.2)}
 body:has(.hero-full) header.site .brand-other img{filter:none;height:44px}
 /* Mobil */
 @media(max-width:900px){
