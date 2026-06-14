@@ -182,9 +182,10 @@ export function localBusinessSchema(): Json {
 
 /**
  * FAQPage Schema - fuer KI-Assistenten und Google rich snippets.
+ * Akzeptiert optional ein eigenes FAQs-Array (z. B. aus dem dictionary).
  */
-export function faqSchema(): Json {
-  const qa: Array<[string, string]> = [
+export function faqSchema(items?: Array<{ q: string; a: string }>): Json {
+  const defaults: Array<[string, string]> = [
     [
       "Was macht INKII WORKS?",
       "INKII WORKS veredelt Textilien wie T-Shirts, Hoodies und Workwear mit Druck und Stickerei und liefert Werbeartikel mit individuellem Branding. Ausserdem Fahrzeugbeschriftung und B2B-Onlineshops in Essen.",
@@ -219,10 +220,15 @@ export function faqSchema(): Json {
     ],
   ];
 
+  const pairs: Array<[string, string]> =
+    items && items.length > 0
+      ? items.map((it) => [it.q, it.a] as [string, string])
+      : defaults;
+
   return {
     "@context": "https://schema.org",
     "@type": "FAQPage",
-    mainEntity: qa.map((pair) => ({
+    mainEntity: pairs.map((pair) => ({
       "@type": "Question",
       name: pair[0],
       acceptedAnswer: {
