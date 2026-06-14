@@ -2,6 +2,8 @@ import Link from "next/link";
 import Image from "next/image";
 import SiteShell from "@/components/SiteShell";
 import BodyClass from "@/components/BodyClass";
+import JsonLd from "@/components/JsonLd";
+import { faqSchema } from "@/lib/schema";
 import { getHeroVideoSrc } from "@/lib/hero-video";
 import { getHomeImage } from "@/lib/home-images";
 import { getLocale } from "@/lib/i18n-server";
@@ -28,6 +30,7 @@ export default async function HomePage() {
   return (
     <SiteShell>
       <BodyClass name="is-home" />
+      <JsonLd data={faqSchema()} />
       {/* === HERO — Vollbild-Video mit Titel === */}
       <section className="hero-full">
         {heroVideoSrc ? (

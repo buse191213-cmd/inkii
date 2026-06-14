@@ -3796,44 +3796,52 @@ body:has(.hero-full) .brand-marketing .brand-label{
   letter-spacing:-.01em}
 
 
-/* === Mobile Brand Switcher — WhatsApp butonu üzerinde sabit === */
-.mobile-brand-switcher{display:none}
-@media(max-width:900px){
-  .mobile-brand-switcher{
-    position:fixed;
-    bottom:90px;          /* WhatsApp üstünde: 22 + 56 + 12 = 90 */
-    right:22px;
-    z-index:999;
-    background:rgba(255,255,255,.96);
-    border-radius:10px;
-    padding:6px 10px;
-    box-shadow:0 6px 22px rgba(0,0,0,.18),0 2px 6px rgba(0,0,0,.1);
-    text-decoration:none;
-    display:flex;align-items:center;justify-content:center;
-    min-height:46px;
-    backdrop-filter:blur(8px);
-    -webkit-backdrop-filter:blur(8px);
-    transition:transform .2s, box-shadow .2s}
-  .mobile-brand-switcher:hover,
-  .mobile-brand-switcher:active{
-    transform:scale(1.05);
-    box-shadow:0 8px 26px rgba(0,0,0,.22),0 3px 8px rgba(0,0,0,.12)}
-  .mobile-brand-switcher .mbs-img{
-    height:32px;width:auto;display:block;max-width:140px;object-fit:contain}
+/* === Home brand switcher — ana sayfa, sol alt, WhatsApp karşısı === */
+.home-brand-switcher{
+  position:fixed;
+  bottom:22px;          /* WhatsApp ile aynı seviye */
+  left:22px;            /* Sol kenar */
+  z-index:999;
+  background:transparent;  /* Çerçeve YOK */
+  border:none;
+  text-decoration:none;
+  display:inline-flex;align-items:center;
+  padding:6px 10px;
+  transition:transform .2s,opacity .2s;
+  pointer-events:auto;
+}
+.home-brand-switcher:hover,
+.home-brand-switcher:active{
+  transform:scale(1.05);
+  opacity:.92;
+}
+.home-brand-switcher .mbs-img{
+  height:46px;width:auto;display:block;max-width:200px;object-fit:contain;
+  /* BEYAZ logo — siyah logoyu beyaza çevir + okunsun diye gölge */
+  filter:brightness(0) invert(1) drop-shadow(0 2px 6px rgba(0,0,0,.5));
+}
+/* Mobilde biraz daha küçük */
+@media(max-width:768px){
+  .home-brand-switcher{bottom:20px;left:16px;padding:4px 8px}
+  .home-brand-switcher .mbs-img{height:38px;max-width:160px}
+}
+/* Çok dar telefonlarda — WhatsApp ile çakışmasın */
+@media(max-width:380px){
+  .home-brand-switcher .mbs-img{height:32px;max-width:130px}
 }
 
 /* === Diğer marka logosu (sadece ana sayfalarda sağda) === */
 .brand-other{display:inline-flex;align-items:center;text-decoration:none;
   cursor:pointer;transition:opacity .2s;padding:3px 6px;border-radius:3px}
 .brand-other:hover{opacity:.85}
-.brand-other img{height:50px;width:auto;display:block;max-width:220px;object-fit:contain}
+.brand-other img{height:60px;width:auto;display:block;max-width:240px;object-fit:contain}
 /* Hero üzerinde: açık gri-beyaz arka plan, siyah logo net görünsün */
 body:has(.hero-full) header.site .brand-other{
   background:rgba(245,245,245,.92);
   border-radius:4px;
   box-shadow:0 2px 12px rgba(0,0,0,.15),
              0 0 16px 4px rgba(255,255,255,.2)}
-body:has(.hero-full) header.site .brand-other img{filter:none;height:44px}
+body:has(.hero-full) header.site .brand-other img{filter:none;height:52px}
 /* Mobil */
 @media(max-width:900px){
   .brand-other{display:none}
