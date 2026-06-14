@@ -3798,17 +3798,20 @@ body:has(.hero-full) .brand-marketing .brand-label{
 
 /* === Home brand switcher — ana sayfa, sol alt, sol-logo ile aynı hizada === */
 .home-brand-switcher{
-  position:fixed;
-  bottom:22px;
-  left:28px;            /* .wrap padding ile aynı = sol logo ile aynı hiza */
-  z-index:999;
-  background:transparent;
-  border:none;
-  text-decoration:none;
-  display:inline-flex;align-items:center;
-  padding:0;            /* Hizayı bozmasın */
+  position:fixed !important;
+  bottom:22px !important;
+  left:28px !important;            /* .wrap padding ile aynı = sol logo ile aynı hiza */
+  top:auto !important;
+  right:auto !important;
+  z-index:999 !important;
+  background:transparent !important;
+  border:none !important;
+  text-decoration:none !important;
+  display:inline-flex !important;
+  align-items:center !important;
+  padding:0 !important;
   transition:transform .2s,opacity .2s;
-  pointer-events:auto;
+  pointer-events:auto !important;
 }
 .home-brand-switcher:hover,
 .home-brand-switcher:active{
@@ -3816,17 +3819,21 @@ body:has(.hero-full) .brand-marketing .brand-label{
   opacity:.92;
 }
 .home-brand-switcher .mbs-img{
-  /* Sol logo ile birebir aynı: 50px desktop, 40px mobil */
-  height:50px;width:auto;display:block;max-width:240px;object-fit:contain;
-  filter:brightness(0) invert(1) drop-shadow(0 2px 6px rgba(0,0,0,.45));
+  /* Sol logo ile birebir aynı */
+  height:50px !important;
+  width:auto !important;
+  display:block !important;
+  max-width:240px !important;
+  object-fit:contain;
+  filter:brightness(0) invert(1) drop-shadow(0 2px 6px rgba(0,0,0,.45)) !important;
 }
 @media(max-width:768px){
-  .home-brand-switcher{bottom:20px;left:16px}
-  .home-brand-switcher .mbs-img{height:40px;max-width:180px}
+  .home-brand-switcher{bottom:20px !important;left:16px !important}
+  .home-brand-switcher .mbs-img{height:40px !important;max-width:180px !important}
 }
 @media(max-width:380px){
-  .home-brand-switcher{left:14px}
-  .home-brand-switcher .mbs-img{height:36px;max-width:140px}
+  .home-brand-switcher{left:14px !important}
+  .home-brand-switcher .mbs-img{height:36px !important;max-width:140px !important}
 }
 
 /* === Diğer marka logosu (sadece ana sayfalarda sağda) === */
