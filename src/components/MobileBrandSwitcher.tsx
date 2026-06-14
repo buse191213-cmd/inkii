@@ -1,27 +1,18 @@
-"use client";
-
 import Link from "next/link";
 import Image from "next/image";
-import { usePathname } from "next/navigation";
 
 /**
- * Sadece ANA SAYFALARDA (/ ve /inkii-marketing) görünür.
- * Sol alt köşede sabit (fixed) — WhatsApp butonunun KARŞISINDA.
- * Karşı markaya geçiş linki — BEYAZ logo, çerçevesiz.
+ * Hero video'nun SOL ALT köşesinde absolute konumda.
+ * Scroll yapıldığında video ile birlikte yukarı çıkar (kaybolur).
+ * INKII WORKS sayfası → MARKETING linki, INKII MARKETING → WORKS linki.
  */
-export default function MobileBrandSwitcher({
+export default function HeroBrandSwitcher({
   marketingLogo,
+  isMarketing = false,
 }: {
   marketingLogo?: string | null;
+  isMarketing?: boolean;
 }) {
-  const pathname = usePathname() || "/";
-  // Sadece ana sayfalarda göster
-  const isHomePage = pathname === "/" || pathname === "/inkii-marketing";
-  if (!isHomePage) return null;
-
-  const isMarketing = pathname === "/inkii-marketing";
-
-  // Karşı markaya yönlendirme
   const targetHref = isMarketing ? "/" : "/inkii-marketing";
   const targetLabel = isMarketing ? "INKII WORKS" : "INKII MARKETING";
 

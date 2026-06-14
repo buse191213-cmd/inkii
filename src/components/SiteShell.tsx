@@ -31,7 +31,6 @@ export default async function SiteShell({
       />
       <main>{children}</main>
       <SiteFooter t={dict.footer} cookieLabel={locale === "tr" ? "Çerez ayarları" : locale === "en" ? "Cookie settings" : "Cookie-Einstellungen"} />
-      <MobileBrandSwitcher marketingLogo={marketingLogo} />
       <RevealInit />
     </MerklisteProvider>
   );

@@ -3796,14 +3796,14 @@ body:has(.hero-full) .brand-marketing .brand-label{
   letter-spacing:-.01em}
 
 
-/* === Home brand switcher — ana sayfa, sol alt, sol-logo ile aynı hizada === */
+/* === Hero brand switcher — hero video İÇİNDE sol alt, scroll'la kaybolur === */
 .home-brand-switcher{
-  position:fixed !important;
+  position:absolute !important;
   bottom:22px !important;
-  left:28px !important;            /* .wrap padding ile aynı = sol logo ile aynı hiza */
+  left:28px !important;
   top:auto !important;
   right:auto !important;
-  z-index:999 !important;
+  z-index:5 !important;
   background:transparent !important;
   border:none !important;
   text-decoration:none !important;
@@ -3819,7 +3819,6 @@ body:has(.hero-full) .brand-marketing .brand-label{
   opacity:.92;
 }
 .home-brand-switcher .mbs-img{
-  /* Sol logo ile birebir aynı */
   height:50px !important;
   width:auto !important;
   display:block !important;

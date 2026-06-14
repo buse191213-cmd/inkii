@@ -2,6 +2,7 @@ import Link from "next/link";
 import Image from "next/image";
 import SiteShell from "@/components/SiteShell";
 import BodyClass from "@/components/BodyClass";
+import HeroBrandSwitcher from "@/components/MobileBrandSwitcher";
 import type { Metadata } from "next";
 import { getHomeImage } from "@/lib/home-images";
 import { getMarketingVideoSrc } from "@/lib/hero-video";
@@ -23,6 +24,7 @@ export default async function InkiiMarketingPage() {
   const videoSrc = await getMarketingVideoSrc();
   const tileWeb = await getHomeImage("area-3");      // Web Design (önceki servis kutusu görseli)
   const tileMkt = await getHomeImage("area-4");      // Marketing (önceki servis kutusu görseli)
+  const marketingLogo = await getHomeImage("marketing-logo");
 
   return (
     <SiteShell>
@@ -69,6 +71,9 @@ export default async function InkiiMarketingPage() {
             <span>•</span>
           </div>
         </div>
+
+        {/* Sol alt — INKII WORKS'e geçiş */}
+        <HeroBrandSwitcher marketingLogo={marketingLogo} isMarketing={true} />
       </section>
 
       {/* === 2 büyük kart: Web Design + Marketing === */}

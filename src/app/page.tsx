@@ -3,6 +3,7 @@ import Image from "next/image";
 import SiteShell from "@/components/SiteShell";
 import BodyClass from "@/components/BodyClass";
 import JsonLd from "@/components/JsonLd";
+import HeroBrandSwitcher from "@/components/MobileBrandSwitcher";
 import { faqSchema } from "@/lib/schema";
 import { getHeroVideoSrc } from "@/lib/hero-video";
 import { getHomeImage } from "@/lib/home-images";
@@ -18,6 +19,7 @@ export default async function HomePage() {
   const heroVideoSrc = await getHeroVideoSrc();
   const tile1 = await getHomeImage("home-tile-1");
   const tile2 = await getHomeImage("home-tile-2");
+  const marketingLogo = await getHomeImage("marketing-logo");
   const svcDruck = await getHomeImage("area-1");
   const svcWerbe = await getHomeImage("area-2");
   const svcFahrzeug = await getHomeImage("fb-banner");
@@ -76,6 +78,9 @@ export default async function HomePage() {
             <span>•</span>
           </div>
         </div>
+
+        {/* Sol alt — diğer marka switcher (videoda kalır, scroll'da kaybolur) */}
+        <HeroBrandSwitcher marketingLogo={marketingLogo} isMarketing={false} />
       </section>
 
       {/* === 2 große Bildkacheln === */}
