@@ -3825,6 +3825,9 @@ body:has(.hero-full) .brand-marketing .brand-label{
   max-width:118px !important;
   display:block !important;
   object-fit:contain;
+  object-position:left center;
+  /* Custom logo PNG'nin sol kenarındaki transparant boşluğu telafi */
+  margin-left:-10px !important;
   filter:brightness(0) invert(1) drop-shadow(0 2px 6px rgba(0,0,0,.45)) !important;
 }
 @media(max-width:768px){
