@@ -3796,17 +3796,17 @@ body:has(.hero-full) .brand-marketing .brand-label{
   letter-spacing:-.01em}
 
 
-/* === Home brand switcher — ana sayfa, sol alt, WhatsApp karşısı === */
+/* === Home brand switcher — ana sayfa, sol alt, sol-logo ile aynı hizada === */
 .home-brand-switcher{
   position:fixed;
-  bottom:22px;          /* WhatsApp ile aynı seviye */
-  left:22px;            /* Sol kenar */
+  bottom:22px;
+  left:28px;            /* .wrap padding ile aynı = sol logo ile aynı hiza */
   z-index:999;
-  background:transparent;  /* Çerçeve YOK */
+  background:transparent;
   border:none;
   text-decoration:none;
   display:inline-flex;align-items:center;
-  padding:6px 10px;
+  padding:0;            /* Hizayı bozmasın */
   transition:transform .2s,opacity .2s;
   pointer-events:auto;
 }
@@ -3816,18 +3816,17 @@ body:has(.hero-full) .brand-marketing .brand-label{
   opacity:.92;
 }
 .home-brand-switcher .mbs-img{
-  height:46px;width:auto;display:block;max-width:200px;object-fit:contain;
-  /* BEYAZ logo — siyah logoyu beyaza çevir + okunsun diye gölge */
-  filter:brightness(0) invert(1) drop-shadow(0 2px 6px rgba(0,0,0,.5));
+  /* Sol logo ile birebir aynı: 50px desktop, 40px mobil */
+  height:50px;width:auto;display:block;max-width:240px;object-fit:contain;
+  filter:brightness(0) invert(1) drop-shadow(0 2px 6px rgba(0,0,0,.45));
 }
-/* Mobilde biraz daha küçük */
 @media(max-width:768px){
-  .home-brand-switcher{bottom:20px;left:16px;padding:4px 8px}
-  .home-brand-switcher .mbs-img{height:38px;max-width:160px}
+  .home-brand-switcher{bottom:20px;left:16px}
+  .home-brand-switcher .mbs-img{height:40px;max-width:180px}
 }
-/* Çok dar telefonlarda — WhatsApp ile çakışmasın */
 @media(max-width:380px){
-  .home-brand-switcher .mbs-img{height:32px;max-width:130px}
+  .home-brand-switcher{left:14px}
+  .home-brand-switcher .mbs-img{height:36px;max-width:140px}
 }
 
 /* === Diğer marka logosu (sadece ana sayfalarda sağda) === */
