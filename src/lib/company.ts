@@ -1,28 +1,30 @@
 import { SITE_URL } from "./site";
 
 /**
- * Zentrale Firmendaten für SEO und strukturierte Daten (Schema.org).
- *
- * WICHTIG: Felder mit leerem Wert ("") werden NICHT an Google gesendet –
- * so werden keine falschen Angaben veröffentlicht. Sobald echte Daten
- * vorliegen, hier eintragen; die strukturierten Daten aktualisieren sich
- * dann automatisch. Alle mit "TODO" markierten Felder bitte ersetzen.
+ * Zentrale Firmendaten fuer SEO und strukturierte Daten (Schema.org).
+ * Leere Werte werden NICHT an Google gesendet.
  */
 export const COMPANY = {
   // Anzeigename der Marke
   name: "INKII",
 
-  // Vollständiger rechtlicher Name inkl. Rechtsform.
-  legalName: "INKII Works",
+  // Vollstaendiger rechtlicher Name
+  legalName: "INKII Works - Inh. Sener Kirli",
 
-  // Kurzbeschreibung des Unternehmens
+  // Kurzbeschreibung
   description:
-    "Textilveredelung, Teamwear und Werbemittel aus einer Hand – von der Gestaltung bis zur Lieferung.",
+    "Textilveredelung, Werbeartikel, Fahrzeugbeschriftung, Webdesign und Marketing aus einer Hand in Essen.",
 
   url: SITE_URL,
 
   // Pfad zum Logo in /public
   logo: "/inkii-logo.png",
+
+  // Foto vom Geschaeft (optional)
+  image: "/inkii-logo.png",
+
+  // Preisrahmen (Google nutzt das fuer Local Listings)
+  priceRange: "EUR EUR",
 
   // --- Kontakt ---
   email: "info@inkiiworks.de",
@@ -35,17 +37,61 @@ export const COMPANY = {
     city: "Essen",
     region: "Nordrhein-Westfalen",
     country: "DE",
+  } as {
+    street: string;
+    postalCode: string;
+    city: string;
+    region: string;
+    country: string;
   },
 
-  // --- Öffnungszeiten ---
-  // Beispiel: [{ days: ["Mo","Tu","We","Th","Fr"], opens: "08:30", closes: "17:00" }]
-  // Tageskürzel: Mo, Tu, We, Th, Fr, Sa, Su
-  openingHours: [] as { days: string[]; opens: string; closes: string }[],
+  // --- Geokoordinaten (Essen) ---
+  geo: {
+    latitude: 51.4823,
+    longitude: 6.9408,
+  } as { latitude: number; longitude: number },
 
-  // --- Social-Media-Profile (vollständige URLs) ---
-  // Leere Einträge werden ignoriert.
+  // --- Oeffnungszeiten ---
+  openingHours: [
+    { days: ["Mo", "Tu", "We", "Th", "Fr"], opens: "09:00", closes: "18:00" },
+  ] as { days: string[]; opens: string; closes: string }[],
+
+  // --- Bedientes Gebiet ---
+  areaServed: [
+    "Essen",
+    "Bottrop",
+    "Gelsenkirchen",
+    "Muelheim an der Ruhr",
+    "Oberhausen",
+    "Duisburg",
+    "Nordrhein-Westfalen",
+    "Deutschland",
+  ] as string[],
+
+  // --- Themen, mit denen wir uns auskennen ---
+  knowsAbout: [
+    "Textilveredelung",
+    "DTF-Druck",
+    "Siebdruck",
+    "Stickerei",
+    "Werbemittel",
+    "Werbeartikel",
+    "Fahrzeugbeschriftung",
+    "Folienbeschriftung",
+    "Berufsbekleidung",
+    "Workwear",
+    "Webdesign",
+    "Online-Marketing",
+    "SEO",
+    "Social Media Marketing",
+  ] as string[],
+
+  // --- Social Media / sameAs (vollstaendige URLs) ---
+  sameAs: [] as string[],
+
+  // --- Social Media (einzeln) ---
   social: {
-    instagram: "", // TODO: z. B. "https://www.instagram.com/..."
+    instagram: "",
     facebook: "",
     linkedin: "",
   },
