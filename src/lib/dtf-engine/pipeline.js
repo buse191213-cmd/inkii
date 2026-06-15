@@ -3,6 +3,7 @@
  * Orijinal Express server.js'ten port edildi.
  */
 import sharp from "sharp";
+import { put } from "@vercel/blob";
 import { removeBackground } from "./background.js";
 import { upscaleImage } from "./upscale.js";
 import { sharpenEdges } from "./sharpen.js";
@@ -156,6 +157,41 @@ export async function runPipeline(buffer, onStep = () => {}) {
 
   log("Pipeline TAMAMLANDI");
 
+  // ── Blob upload (mail ile paylaşılabilir kalıcı URL'ler) ──
+  let resultBlobUrl = null;
+  let vectorBlobUrl = null;
+  let reportBlobUrl = null;
+  if (process.env.BLOB_READ_WRITE_TOKEN) {
+    try {
+      log("Blob upload başladı");
+      const pngUp = await put(`dtf/${id}/transfer.png`, working, {
+        access: "public",
+        contentType: "image/png",
+        addRandomSuffix: true,
+      });
+      resultBlobUrl = pngUp.url;
+      if (vectorSvg) {
+        const svgUp = await put(`dtf/${id}/vector.svg`, vectorSvg, {
+          access: "public",
+          contentType: "image/svg+xml",
+          addRandomSuffix: true,
+        });
+        vectorBlobUrl = svgUp.url;
+      }
+      if (reportPdfBase64) {
+        const pdfUp = await put(`dtf/${id}/report.pdf`, Buffer.from(reportPdfBase64, "base64"), {
+          access: "public",
+          contentType: "application/pdf",
+          addRandomSuffix: true,
+        });
+        reportBlobUrl = pdfUp.url;
+      }
+      log(`Blob upload bitti: ${resultBlobUrl}`);
+    } catch (e) {
+      console.error("Blob upload hatası:", e.message);
+    }
+  }
+
   const finalMeta = await sharp(working).metadata();
   // Veriler data URL olarak dönsün — orijinal HTML URL'leri olduğu gibi kullanır
   const resultDataUrl = `data:image/png;base64,${working.toString("base64")}`;
@@ -175,6 +211,10 @@ export async function runPipeline(buffer, onStep = () => {}) {
     vectorUrl: vectorDataUrl,
     reportPdfBase64,
     reportUrl: reportDataUrl,
+    // Kalıcı blob URL'leri (mail/sepet için)
+    resultBlobUrl,
+    vectorBlobUrl,
+    reportBlobUrl,
     zipUrl: null,
     width: finalMeta.width,
     height: finalMeta.height,

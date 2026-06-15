@@ -3901,3 +3901,15 @@ body:has(.hero-full) header.site .brand-other img{filter:none;height:52px}
   .dtf-modal{height:100vh;max-width:none}
   .dtf-launcher-badge{display:none}
 }
+
+/* Kontakt formunda DTF tasarım önizleme kartı */
+.kf-design-preview{display:flex;align-items:center;gap:14px;
+  background:linear-gradient(135deg,#f0fdfa 0%,#ccfbf1 100%);
+  border:1px solid #5eead4;border-radius:10px;padding:14px;margin-bottom:18px}
+.kf-design-thumb{width:72px;height:72px;background:#fff;border-radius:8px;
+  display:flex;align-items:center;justify-content:center;overflow:hidden;
+  flex-shrink:0;box-shadow:0 1px 3px rgba(0,0,0,.08)}
+.kf-design-thumb img{max-width:100%;max-height:100%;object-fit:contain}
+.kf-design-info{flex:1;min-width:0}
+.kf-design-info strong{display:block;font-size:.95rem;color:#0f766e;margin-bottom:3px}
+.kf-design-info p{margin:0;font-size:.82rem;color:#0d544c;line-height:1.4}

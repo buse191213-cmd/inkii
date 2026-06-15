@@ -290,6 +290,7 @@
         <div class="actions">
           <button id="processBtn" class="btn primary">Design optimieren</button>
           <a id="downloadBtn" class="btn primary" style="display:none;" download="dtf-transfer.png">Herunterladen</a>
+          <button id="anfrageBtn" class="btn primary" style="display:none;background:#1c2722">📨 Anfrage senden</button>
           <button id="resetBtn" class="btn ghost">Neues Motiv</button>
         </div>
       </div>
@@ -739,6 +740,27 @@ function showResult(data) {
   dimW.textContent = data.printSizeCm.width.toString().replace(".", ",") + " cm";
   downloadBtn.href = API + data.resultUrl;
   downloadBtn.style.display = "inline-grid";
+  // Anfrage senden butonu (sadece blob URL'ler hazırsa - mail için gerekli)
+  const anfBtn = document.getElementById("anfrageBtn");
+  if (anfBtn && data.resultBlobUrl) {
+    anfBtn.style.display = "inline-grid";
+    anfBtn.onclick = () => {
+      // Parent window'a tasarım verilerini gönder (modal kapanır, kontakta yönlendirilir)
+      const params = new URLSearchParams(window.location.search);
+      const productName = params.get("product") || "";
+      const productCode = params.get("code") || "";
+      window.parent.postMessage({
+        type: "dtf-anfrage",
+        designUrl: data.resultBlobUrl,
+        vectorUrl: data.vectorBlobUrl || "",
+        reportUrl: data.reportBlobUrl || "",
+        productName,
+        productCode,
+        printSizeCm: data.printSizeCm,
+        quality: data.quality?.score || null,
+      }, "*");
+    };
+  }
   processBtn.style.display = "none";
   window._compareReady = true;
 

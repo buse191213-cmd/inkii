@@ -1,6 +1,7 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { useSearchParams } from "next/navigation";
 import { submitInquiry } from "./actions";
 
 export default function KontaktForm({
@@ -8,6 +9,16 @@ export default function KontaktForm({
 }: {
   projectTypes?: string[];
 } = {}) {
+  const searchParams = useSearchParams();
+  const designNote = searchParams.get("note") || "";
+  const designUrl = searchParams.get("design") || "";
+  const [message, setMessage] = useState("");
+
+  // URL'den gelen DTF designer notunu otomatik doldur
+  useEffect(() => {
+    if (designNote) setMessage(designNote);
+  }, [designNote]);
+
   const PROJEKT_TYPEN = projectTypes && projectTypes.length > 0
     ? projectTypes
     : ["Textildruck & Veredelung", "Stickerei", "Werbemittel & Werbeartikel", "Druck (Flyer, Plakate, etc.)", "Werbetechnik", "Webdesign", "Marketing", "Komplettlösung", "Sonstiges"];
@@ -124,6 +135,19 @@ export default function KontaktForm({
         </div>
       </div>
 
+      {designUrl && (
+        <div className="kf-design-preview">
+          <div className="kf-design-thumb">
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img src={designUrl} alt="Ihr Design" />
+          </div>
+          <div className="kf-design-info">
+            <strong>📨 Ihr optimiertes Design ist hinzugefügt</strong>
+            <p>Die Datei wird automatisch mit Ihrer Anfrage mitgeschickt.</p>
+          </div>
+        </div>
+      )}
+
       <div className="kf-field">
         <label htmlFor="message">Wobei können wir Ihnen helfen?</label>
         <textarea
@@ -131,6 +155,8 @@ export default function KontaktForm({
           name="message"
           rows={5}
           placeholder="Lass uns wissen, was wir für dich tun können."
+          value={message}
+          onChange={(e) => setMessage(e.target.value)}
         />
       </div>
 

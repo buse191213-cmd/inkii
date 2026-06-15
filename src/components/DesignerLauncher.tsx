@@ -5,6 +5,7 @@ import DtfEngine from "./DtfEngine";
 
 export default function DesignerLauncher({
   productName,
+  productCode,
 }: {
   productName: string;
   productCode?: string | null;
@@ -27,7 +28,13 @@ export default function DesignerLauncher({
         <span>Eigenes Design hochladen</span>
       </button>
 
-      {open && <DtfEngine onClose={() => setOpen(false)} />}
+      {open && (
+        <DtfEngine
+          onClose={() => setOpen(false)}
+          productName={productName}
+          productCode={productCode}
+        />
+      )}
     </>
   );
 }
