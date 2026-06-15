@@ -14,6 +14,8 @@ import { cleanEdges } from "./edgecleanup.js";
 /**
  * Pipeline'ı çalıştır. onStep ile her adım bildirilir.
  * Sonuçlar Buffer olarak döner (Vercel'de /tmp ephemeral, blob storage gerekmez).
+ * @param {Buffer} buffer
+ * @param {(step: any) => void} [onStep]
  */
 export async function runPipeline(buffer, onStep = () => {}) {
   const id = Date.now().toString(36);
