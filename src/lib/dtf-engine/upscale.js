@@ -141,14 +141,15 @@ async function viaReplicate(buffer, scale) {
 }
 
 async function pollByUrl(url, token) {
-  for (let i = 0; i < 60; i++) {
+  // Vercel 60s limit — Replicate polling max 35s, sonra lanczos'a düş
+  for (let i = 0; i < 24; i++) {
     await new Promise((r) => setTimeout(r, 1500));
     const res = await fetch(url, { headers: { Authorization: `Bearer ${token}` } });
     const p = await res.json();
     if (p.status === "succeeded") return await fetchOutput(p.output);
     if (p.status === "failed" || p.status === "canceled") throw new Error("Replicate işlemi başarısız");
   }
-  throw new Error("Replicate zaman aşımı");
+  throw new Error("Replicate zaman aşımı (35s)");
 }
 
 async function pollById(id, token) {
