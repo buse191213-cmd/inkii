@@ -730,7 +730,7 @@ processBtn.onclick = async () => {
 
 function showResult(data) {
   window._lastData = data; // vektör penceresi için sakla
-  resultSrc = API + data.resultUrl + "?t=" + Date.now();
+  resultSrc = data.resultUrl;
   previewImg.src = resultSrc;
   renderProducts();
   const dh = document.getElementById("dragHint");
@@ -770,7 +770,7 @@ function showResult(data) {
     const vimg = document.getElementById("vectorImg");
     const vdl = document.getElementById("vectorDownload");
     if (vc && vimg) {
-      const vsrc = data.vectorUrl ? API + data.vectorUrl + "?t=" + Date.now() : resultSrc;
+      const vsrc = data.vectorUrl ? data.vectorUrl : resultSrc;
       vimg.src = vsrc;
       if (vdl) vdl.href = data.vectorUrl ? API + data.vectorUrl : resultSrc;
       vc.style.display = "block";
@@ -793,7 +793,7 @@ function openVectorModal() {
   const d = window._lastData;
   if (!d) return;
   const vektorSide = d.vectorUrl
-    ? `<img src="${API + d.vectorUrl}?t=${Date.now()}" alt="Vektor">`
+    ? `<img src="${d.vectorUrl}" alt="Vektor">`
     : `<img src="${resultSrc}" style="filter:saturate(1.2) contrast(1.1)" alt="Vektor (önizleme)">`;
   getModalContent().innerHTML = `
     <button class="modal-close" onclick="closeModal()">✕</button>

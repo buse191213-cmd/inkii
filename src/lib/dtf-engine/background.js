@@ -44,7 +44,9 @@ async function viaReplicateRMBG(buffer) {
   if (!token || token.includes("BURAYA") || token.includes("ANAHTAR")) {
     throw new Error("Replicate token .env'de ayarli degil");
   }
-  const base64 = `data:image/png;base64,${buffer.toString("base64")}`;
+  // Buffer JPG ise PNG'ye çevir (Replicate data URL MIME type'a göre okur)
+  const pngBuffer = await sharp(buffer).png().toBuffer();
+  const base64 = `data:image/png;base64,${pngBuffer.toString("base64")}`;
   // Resmi model: versiyon hash'i yerine model adıyla çağrılır
   const start = await fetch("https://api.replicate.com/v1/models/bria/remove-background/predictions", {
     method: "POST",
