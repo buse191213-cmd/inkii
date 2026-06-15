@@ -19,10 +19,15 @@ import { cleanEdges } from "./edgecleanup.js";
  */
 export async function runPipeline(buffer, onStep = () => {}) {
   const id = Date.now().toString(36);
+  const t0 = Date.now();
+  const elapsed = () => `${((Date.now() - t0) / 1000).toFixed(1)}s`;
+  const log = (msg) => console.log(`[DTF ${elapsed()}] ${msg}`);
+  log(`Pipeline başladı (${buffer.length} bytes)`);
 
   // Adım 1: Analiz
   onStep({ key: "analyze", label: "Datei analysieren", status: "running" });
   const meta = await sharp(buffer).metadata();
+  log(`Analiz bitti: ${meta.format} ${meta.width}x${meta.height}`);
   const dpiAtWidth = (cmWidth) => Math.round((meta.width / (cmWidth / 2.54)));
   onStep({
     key: "analyze",
@@ -39,7 +44,9 @@ export async function runPipeline(buffer, onStep = () => {}) {
 
   // Adım 2: Arka plan kaldırma
   onStep({ key: "background", label: "Hintergrund entfernen", status: "running" });
+  log("BG removal başladı");
   const bgResult = await removeBackground(buffer);
+  log(`BG removal bitti: ok=${bgResult.ok} msg=${bgResult.message || "-"}`);
   let working = bgResult.buffer;
   let bgRemoved = bgResult.ok;
   onStep({
@@ -51,7 +58,9 @@ export async function runPipeline(buffer, onStep = () => {}) {
   // Adım 2.2: Kenar temizleme
   if (bgRemoved) {
     onStep({ key: "edge", label: "Kanten reinigen", status: "running" });
+    log("Edge cleanup başladı");
     const edgeRes = await cleanEdges(working);
+    log(`Edge cleanup bitti: applied=${edgeRes.applied}`);
     working = edgeRes.buffer;
     onStep({
       key: "edge",
@@ -61,17 +70,21 @@ export async function runPipeline(buffer, onStep = () => {}) {
   }
 
   // Adım 2.5: AUTO-CROP
+  log("Auto-crop başladı");
   try {
     const cropped = await sharp(working).trim({ threshold: 10 }).toBuffer();
     const cm = await sharp(cropped).metadata();
     if (cm.width > 10 && cm.height > 10) working = cropped;
   } catch {}
+  log("Auto-crop bitti");
 
   // Adım 3: Upscale
   onStep({ key: "upscale", label: "Auflösung erhöhen", status: "running" });
   const beforeW = (await sharp(working).metadata()).width;
+  log(`Upscale başladı (width=${beforeW})`);
   working = await upscaleImage(working);
   const afterW = (await sharp(working).metadata()).width;
+  log(`Upscale bitti (width=${afterW})`);
   const factor = (afterW / beforeW).toFixed(1);
   onStep({
     key: "upscale",
@@ -81,7 +94,9 @@ export async function runPipeline(buffer, onStep = () => {}) {
 
   // Adım 3.5: Renk optimizasyonu
   onStep({ key: "color", label: "Farben optimieren", status: "running" });
+  log("Color optimize başladı");
   const colorRes = await optimizeColor(working, { force: false });
+  log(`Color optimize bitti: applied=${colorRes.applied}`);
   working = colorRes.buffer;
   onStep({
     key: "color",
@@ -91,15 +106,21 @@ export async function runPipeline(buffer, onStep = () => {}) {
 
   // Adım 4: Keskinleştirme
   onStep({ key: "sharpen", label: "Kanten schärfen", status: "running" });
+  log("Sharpen başladı");
   working = await sharpenEdges(working);
+  log("Sharpen bitti");
   onStep({ key: "sharpen", label: "Kanten geschärft", status: "done" });
 
   // Adım 5: Vektör
   onStep({ key: "vector", label: "Vektorisierbarkeit prüfen", status: "running" });
+  log("Vector check başladı");
   const vector = await checkVectorizable(working);
+  log(`Vector check bitti: vectorizable=${vector.vectorizable}`);
   let vectorSvg = null;
   if (vector.vectorizable) {
+    log("Vector trace başladı");
     const vec = await makeVector(working);
+    log(`Vector trace bitti: svg=${!!vec?.svg}`);
     if (vec && vec.svg) vectorSvg = vec.svg;
   }
   onStep({
@@ -111,13 +132,18 @@ export async function runPipeline(buffer, onStep = () => {}) {
 
   // Adım 6: Kalite
   onStep({ key: "quality", label: "Druckqualität prüfen", status: "running" });
+  log("Quality başladı");
   const quality = await analyzeQuality(working);
+  log("Quality analiz bitti");
   const whiteInk = await analyzeWhiteInk(working);
+  log("White ink bitti");
   const report = buildReport(quality, whiteInk, vector);
   let reportPdfBase64 = null;
   try {
+    log("PDF rapor başladı");
     const pdfBuffer = await buildReportPDF(report, quality, whiteInk, working);
     reportPdfBase64 = pdfBuffer.toString("base64");
+    log("PDF rapor bitti");
   } catch (e) {
     console.error("PDF rapor hatası:", e.message);
   }
@@ -127,6 +153,8 @@ export async function runPipeline(buffer, onStep = () => {}) {
     status: "done",
     info: { score: quality.score, status: quality.status },
   });
+
+  log("Pipeline TAMAMLANDI");
 
   const finalMeta = await sharp(working).metadata();
   // Veriler data URL olarak dönsün — orijinal HTML URL'leri olduğu gibi kullanır

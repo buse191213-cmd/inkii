@@ -11,9 +11,12 @@ import os from "os";
 import path from "path";
 
 const run = promisify(execFile);
-const PROVIDER = (process.env.UPSCALE_PROVIDER || "demo").toLowerCase();
-const TARGET_LONG_EDGE = 4000;
-const MAX_LONG_EDGE = 6000;
+// GÜVENLİ MOD: Vercel timeout + ücret riski yüzünden Replicate ZORUNLU disable.
+// Sharp lanczos3 baskı için yeterli kalite + anında.
+const PROVIDER = "demo";
+// Vercel 60s limit: 4000px → 2400px (300dpi @ 20cm baskıya yeterli, çok daha hızlı)
+const TARGET_LONG_EDGE = 2400;
+const MAX_LONG_EDGE = 3200;
 
 async function decideScale(buffer) {
   const meta = await sharp(buffer).metadata();
