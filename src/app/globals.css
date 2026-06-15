@@ -3857,142 +3857,184 @@ body:has(.hero-full) header.site .brand-other img{filter:none;height:52px}
 }
 
 
-/* === DTF-Engine Modal === */
+
+/* === DTF-Engine Modal — Full UI (mockups + colors + prices + vectors) === */
+
+/* Launcher button — INKII teması */
 .dtf-launcher-btn{
   display:flex;align-items:center;gap:10px;width:100%;justify-content:center;
   padding:14px 22px;margin-bottom:16px;position:relative;
-  background:linear-gradient(135deg,#1c2722 0%,#2d3d35 100%);color:#fff;
-  border:none;border-radius:10px;font-weight:600;font-size:.98rem;
+  background:linear-gradient(135deg,#0f766e 0%,#14b8a6 100%);color:#fff;
+  border:none;border-radius:11px;font-weight:600;font-size:.98rem;
   cursor:pointer;transition:all .25s;letter-spacing:.01em;
-  box-shadow:0 2px 14px rgba(28,39,34,.22)}
+  box-shadow:0 4px 18px rgba(20,184,166,.25)}
 .dtf-launcher-btn:hover{transform:translateY(-2px);
-  box-shadow:0 10px 28px rgba(28,39,34,.32);
-  background:linear-gradient(135deg,#2d3d35 0%,#3a4e44 100%)}
+  box-shadow:0 12px 32px rgba(20,184,166,.36);
+  background:linear-gradient(135deg,#14b8a6 0%,#2dd4bf 100%)}
 .dtf-launcher-btn svg{flex-shrink:0}
-.dtf-launcher-badge{background:rgba(255,255,255,.16);padding:3px 8px;
-  border-radius:4px;font-size:.7rem;letter-spacing:.06em;font-weight:700;
+.dtf-launcher-badge{background:rgba(255,255,255,.2);padding:3px 8px;
+  border-radius:5px;font-size:.7rem;letter-spacing:.06em;font-weight:700;
   margin-left:auto}
 
 /* Overlay */
 .dtf-overlay{position:fixed;inset:0;z-index:9999;
-  background:rgba(15,20,17,.82);backdrop-filter:blur(6px);
-  display:flex;align-items:center;justify-content:center;padding:16px;
-  animation:dtfFadeIn .25s ease}
+  background:rgba(15,23,42,.78);backdrop-filter:blur(6px);
+  display:flex;align-items:flex-start;justify-content:center;padding:24px 16px;
+  overflow-y:auto;animation:dtfFadeIn .25s ease}
 @keyframes dtfFadeIn{from{opacity:0}to{opacity:1}}
 
 /* Modal */
-.dtf-modal{background:#fff;border-radius:16px;
-  max-width:1080px;width:100%;max-height:94vh;overflow:hidden;
+.dtf-modal{background:#f8fafc;border-radius:18px;
+  max-width:1240px;width:100%;max-height:none;
   display:flex;flex-direction:column;
-  box-shadow:0 30px 90px rgba(0,0,0,.45);
-  animation:dtfSlideUp .35s cubic-bezier(.34,1.3,.5,1)}
+  box-shadow:0 32px 100px rgba(0,0,0,.5);
+  animation:dtfSlideUp .35s cubic-bezier(.34,1.3,.5,1);
+  color:#0f172a;font-family:-apple-system,system-ui,"Segoe UI",sans-serif}
 @keyframes dtfSlideUp{from{transform:translateY(24px);opacity:0}to{transform:translateY(0);opacity:1}}
 
+/* Head */
 .dtf-head{display:flex;justify-content:space-between;align-items:center;
-  padding:18px 24px;border-bottom:1px solid #ebeae5;flex-shrink:0;
-  background:linear-gradient(180deg,#f9f9f6 0%,#fff 100%)}
-.dtf-head h3{margin:0;font-size:1.15rem;font-weight:700;color:#1c2722;
-  font-family:var(--display);letter-spacing:.01em}
-.dtf-sub{margin:2px 0 0;font-size:.82rem;color:#7a847b}
+  padding:20px 28px;background:#fff;border-radius:18px 18px 0 0;
+  border-bottom:1px solid #e2e8f0;flex-shrink:0}
+.dtf-head-left{display:flex;align-items:center;gap:14px}
+.dtf-logo{width:50px;height:50px;border-radius:14px;background:#14b8a6;
+  color:#fff;display:grid;place-items:center;font-weight:800;font-size:20px;
+  letter-spacing:-1px;font-family:inherit}
+.dtf-head h3{margin:0;font-size:18px;font-weight:700;color:#0f172a}
+.dtf-sub{margin:2px 0 0;font-size:12px;color:#64748b}
 .dtf-close{background:transparent;border:none;width:36px;height:36px;
-  border-radius:50%;cursor:pointer;font-size:1.2rem;color:#5a6259;
+  border-radius:50%;cursor:pointer;font-size:1.1rem;color:#64748b;
   display:flex;align-items:center;justify-content:center;transition:.2s}
-.dtf-close:hover:not(:disabled){background:#f0f0eb;color:#1c2722}
+.dtf-close:hover:not(:disabled){background:#f1f5f9;color:#0f172a}
 .dtf-close:disabled{opacity:.3;cursor:not-allowed}
 
-.dtf-body{flex:1;overflow:auto;padding:24px;min-height:0}
+/* Body */
+.dtf-body{padding:24px 28px 28px}
 
-/* Dropzone */
-.dtf-dropzone{border:2px dashed #d4d4cd;border-radius:14px;
-  padding:60px 28px;text-align:center;cursor:pointer;
-  transition:all .2s;background:#fafaf6;color:#5a6259}
-.dtf-dropzone:hover,.dtf-dropzone.dragging{
-  border-color:#1c2722;background:#f0f0eb;color:#1c2722;
-  transform:scale(1.005)}
-.dtf-dz-icon{display:inline-flex;color:#9aa098;margin-bottom:14px}
-.dtf-dz-title{font-size:1.05rem;font-weight:600;margin:0 0 4px;color:#1c2722}
-.dtf-dz-sub{font-size:.85rem;margin:0;color:#7a847b}
+/* Dropzone (orjinal stil) */
+.dtf-dropzone{border:2px dashed #cbd5e1;border-radius:18px;
+  padding:64px 24px;text-align:center;cursor:pointer;transition:.2s;
+  background:#fff;max-width:560px;margin:40px auto}
+.dtf-dropzone:hover,.dtf-dropzone.dragging{border-color:#14b8a6;background:#f0fdfa}
+.dtf-dz-icon{width:60px;height:60px;margin:0 auto 16px;border-radius:50%;
+  background:#14b8a6;color:#fff;display:grid;place-items:center;font-size:28px;font-weight:700}
+.dtf-dz-title{font-weight:600;font-size:17px;margin:0 0 6px;color:#0f172a}
+.dtf-dz-sub{color:#94a3b8;font-size:13px;margin:0}
 
-/* Work area */
-.dtf-work{display:grid;grid-template-columns:1fr 360px;gap:24px;align-items:start}
-.dtf-preview-col{display:flex;flex-direction:column;gap:8px}
-.dtf-preview{aspect-ratio:1/1;border-radius:12px;overflow:hidden;
-  display:flex;align-items:center;justify-content:center;
-  background:#fff;box-shadow:inset 0 0 0 1px rgba(0,0,0,.06)}
-.dtf-preview.checker{
+/* Renk seçici */
+.dtf-colors{display:flex;align-items:center;gap:10px;margin-bottom:18px;flex-wrap:wrap}
+.dtf-colors-lbl{font-weight:600;font-size:14px;margin-right:4px;color:#0f172a}
+.dtf-swatch{width:30px;height:30px;border-radius:50%;cursor:pointer;
+  border:2px solid transparent;transition:.15s;padding:0}
+.dtf-swatch.white{box-shadow:inset 0 0 0 1px #cbd5e1}
+.dtf-swatch:hover{transform:scale(1.05)}
+.dtf-swatch.active{border-color:#0f172a;transform:scale(1.1)}
+
+/* Ana grid: sol mockup'lar | sağ önizleme+fiyat+engine */
+.dtf-layout{display:grid;grid-template-columns:1.1fr 1.3fr;gap:28px;align-items:start}
+@media(max-width:900px){.dtf-layout{grid-template-columns:1fr}}
+
+/* Ürün mockup'ları */
+.dtf-products{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+@media(max-width:560px){.dtf-products{grid-template-columns:repeat(2,1fr)}}
+.dtf-product{text-align:center}
+.dtf-product-frame{position:relative;background:#f1f5f9;border-radius:14px;
+  aspect-ratio:1;display:grid;place-items:center;overflow:hidden;transition:background .25s}
+.dtf-garment{width:100%;height:100%;object-fit:contain}
+.dtf-overlay-img{position:absolute;max-width:38%;max-height:38%;object-fit:contain;
+  pointer-events:none;top:50%;left:50%;transform:translate(-50%,-46%)}
+.dtf-product-name{font-weight:700;font-size:15px;margin-top:8px;color:#0f172a}
+.dtf-product-w{font-size:12px;color:#64748b}
+
+/* Sağ panel */
+.dtf-right{display:flex;flex-direction:column}
+.dtf-dim-w{text-align:center;font-size:13px;color:#14b8a6;
+  font-weight:600;margin-bottom:6px}
+.dtf-preview-box{position:relative;border-radius:18px;padding:20px;
+  min-height:300px;display:grid;place-items:center;border:1px solid #e2e8f0;
   background-image:
-    linear-gradient(45deg,#eee 25%,transparent 25%),
-    linear-gradient(-45deg,#eee 25%,transparent 25%),
-    linear-gradient(45deg,transparent 75%,#eee 75%),
-    linear-gradient(-45deg,transparent 75%,#eee 75%);
-  background-size:16px 16px;
-  background-position:0 0,0 8px,8px -8px,-8px 0}
-.dtf-preview img{max-width:100%;max-height:100%;object-fit:contain}
-.dtf-size{font-size:.85rem;color:#5a6259;margin:0;font-weight:500;text-align:center}
-.dtf-size span{color:#9aa098;font-weight:400}
+    linear-gradient(45deg,#e5e7eb 25%,transparent 25%),
+    linear-gradient(-45deg,#e5e7eb 25%,transparent 25%),
+    linear-gradient(45deg,transparent 75%,#e5e7eb 75%),
+    linear-gradient(-45deg,transparent 75%,#e5e7eb 75%);
+  background-size:24px 24px;background-position:0 0,0 12px,12px -12px,-12px 0;
+  background-color:#fff}
+.dtf-preview-box img{max-width:100%;max-height:340px;object-fit:contain}
+.dtf-dim-cap{text-align:center;font-size:12px;color:#94a3b8;margin-top:8px}
 
-/* Steps */
-.dtf-steps-col{display:flex;flex-direction:column;gap:14px}
-.dtf-steps{list-style:none;padding:0;margin:0;display:flex;flex-direction:column;gap:4px}
-.dtf-step{display:flex;align-items:center;gap:12px;padding:8px 12px;
-  border-radius:7px;font-size:.88rem;color:#7a847b;transition:.2s}
-.dtf-step.running{background:#f5f5f0;color:#1c2722;font-weight:600}
-.dtf-step.done{color:#1c2722}
-.dtf-step.error{color:#b8312d}
-.dtf-step.skipped{color:#9aa098;opacity:.7}
-.dtf-dot{width:8px;height:8px;border-radius:50%;background:#d4d4cd;flex-shrink:0;transition:.2s}
-.dtf-step.running .dtf-dot{background:#1c2722;box-shadow:0 0 0 3px rgba(28,39,34,.18)}
-.dtf-step.done .dtf-dot{background:#3f9c5c}
-.dtf-step.error .dtf-dot{background:#b8312d}
-.dtf-step-label{flex:1}
-.dtf-step-status{font-weight:700;font-size:.95rem;color:#3f9c5c}
-.dtf-step.error .dtf-step-status{color:#b8312d}
+/* Fiyat kartı */
+.dtf-price-card{background:#fff;border:1px solid #e2e8f0;border-radius:16px;
+  padding:18px 20px;margin-top:18px}
+.dtf-price-card h4{font-size:16px;margin:0 0 14px;font-weight:700;color:#0f172a}
+.dtf-price-table{width:100%;border-collapse:collapse;font-size:14px}
+.dtf-price-table th{text-align:left;color:#94a3b8;font-weight:600;font-size:12px;
+  padding-bottom:8px;text-transform:uppercase;letter-spacing:.04em}
+.dtf-price-table td{padding:9px 0;border-top:1px solid #f1f5f9;color:#0f172a}
+.dtf-price-table tr.active td{background:#f0fdfa;font-weight:700;color:#0f766e}
+.dtf-price-table td:last-child,.dtf-price-table th:last-child{text-align:right}
+.dtf-price-hint{color:#14b8a6;font-size:12px;margin-top:10px;font-weight:500}
 
-/* Spinner */
-.dtf-spin{display:inline-block;width:12px;height:12px;
-  border:2px solid #d4d4cd;border-top-color:#1c2722;
-  border-radius:50%;animation:dtfSpin .7s linear infinite}
+/* DTF-Engine adımları */
+.dtf-engine{background:#fff;border:1px solid #e2e8f0;border-radius:16px;
+  margin-top:18px;overflow:hidden}
+.dtf-engine-head{background:#f0fdfa;padding:12px 18px;font-size:13px;color:#0f766e}
+.dtf-engine-head b{color:#0f766e;font-weight:700}
+.dtf-engine-rows{}
+.dtf-erow{display:flex;align-items:center;gap:12px;padding:14px 18px;
+  border-top:1px solid #f1f5f9}
+.dtf-erow:first-child{border-top:none}
+.dtf-erow-dot{width:24px;height:24px;border-radius:6px;background:#f1f5f9;
+  color:#fff;display:grid;place-items:center;font-size:13px;flex-shrink:0;
+  font-weight:700}
+.dtf-erow.running .dtf-erow-dot{background:#14b8a6}
+.dtf-erow.done .dtf-erow-dot{background:#16a34a}
+.dtf-erow.skipped .dtf-erow-dot{background:#cbd5e1}
+.dtf-erow.error .dtf-erow-dot{background:#dc2626}
+.dtf-erow-lbl{font-size:14px;font-weight:500;flex:1;color:#0f172a}
+.dtf-erow.idle .dtf-erow-lbl,.dtf-erow.pending .dtf-erow-lbl{color:#94a3b8}
+.dtf-erow-right{font-size:12px;color:#14b8a6;font-weight:600;cursor:pointer}
+.dtf-spin-inline{display:inline-block;width:11px;height:11px;
+  border:2px solid #fff;border-top-color:transparent;border-radius:50%;
+  animation:dtfSpin .7s linear infinite}
 @keyframes dtfSpin{to{transform:rotate(360deg)}}
 
-/* Badges */
-.dtf-badges{display:flex;flex-wrap:wrap;gap:6px;margin-top:4px}
-.dtf-badge{display:inline-flex;align-items:center;gap:5px;
-  padding:5px 10px;background:#f5f5f0;border-radius:5px;
-  font-size:.78rem;font-weight:600;color:#1c2722}
-.dtf-badge.dtf-vec{background:#fff5d6;color:#8a6500}
-.dtf-q-excellent,.dtf-q-good{background:#e8f5ec;color:#1f6b3a}
-.dtf-q-fair{background:#fff5d6;color:#8a6500}
-.dtf-q-poor{background:#fce4e3;color:#9b251f}
+/* Vektör küçük resim satırı */
+.dtf-vector-row{background:#f0fdfa}
+.dtf-vector-thumbs{display:flex;gap:2px}
+.dtf-vector-thumbs img{width:26px;height:40px;object-fit:cover;border-radius:4px;
+  background:#fff;box-shadow:0 0 0 1px #e2e8f0}
 
-/* Recommendations */
-.dtf-recommendations{background:#f5f5f0;border-radius:8px;padding:12px 14px;
-  font-size:.83rem;color:#1c2722;line-height:1.45}
-.dtf-recommendations strong{display:block;margin-bottom:6px;font-size:.78rem;
-  letter-spacing:.04em;text-transform:uppercase}
-.dtf-recommendations ul{margin:0;padding-left:18px}
+/* Kalite satırı */
+.dtf-quality-row.dtf-q-excellent .dtf-erow-dot,
+.dtf-quality-row.dtf-q-good .dtf-erow-dot{background:#16a34a}
+.dtf-quality-row.dtf-q-fair .dtf-erow-dot{background:#f59e0b}
+.dtf-quality-row.dtf-q-poor .dtf-erow-dot{background:#dc2626}
 
-.dtf-error{color:#b8312d;font-size:.88rem;margin:0;padding:10px 12px;
-  background:#fce4e3;border-radius:6px;font-weight:500}
+/* Hata kutusu */
+.dtf-errbox{color:#dc2626;font-size:13px;margin-top:14px;padding:10px 14px;
+  background:#fef2f2;border-radius:8px;border-left:3px solid #dc2626}
 
-/* Actions */
-.dtf-actions{display:flex;flex-direction:column;gap:8px;margin-top:auto}
-.dtf-btn{padding:11px 16px;border-radius:7px;font-weight:600;cursor:pointer;
-  transition:.2s;font-size:.9rem;width:100%;text-align:center;
-  text-decoration:none;display:inline-flex;align-items:center;justify-content:center;gap:6px;
-  border:1px solid #ebeae5;background:#fff;color:#1c2722}
-.dtf-btn:hover:not(:disabled){border-color:#1c2722;transform:translateY(-1px)}
-.dtf-btn-primary{background:#1c2722;color:#fff;border-color:#1c2722}
-.dtf-btn-primary:hover:not(:disabled){background:#2d3d35;color:#fff}
-.dtf-btn-ghost{background:#fff;color:#1c2722}
-.dtf-btn:disabled{opacity:.55;cursor:not-allowed;transform:none}
+/* Aksiyon butonları */
+.dtf-actions-row{display:flex;gap:10px;margin-top:18px;flex-wrap:wrap}
+.dtf-btn-action{padding:13px 22px;border-radius:11px;font-size:14px;font-weight:600;
+  cursor:pointer;border:none;text-decoration:none;
+  display:inline-grid;place-items:center;transition:.2s;
+  font-family:inherit}
+.dtf-btn-action.primary{background:#14b8a6;color:#fff}
+.dtf-btn-action.primary:hover:not(:disabled){background:#0f766e;transform:translateY(-1px)}
+.dtf-btn-action.primary:disabled{opacity:.55;cursor:default;transform:none}
+.dtf-btn-action.ghost{background:#f1f5f9;color:#475569}
+.dtf-btn-action.ghost:hover:not(:disabled){background:#e2e8f0;color:#0f172a}
+.dtf-btn-action:disabled{opacity:.55;cursor:not-allowed}
 
 /* Mobile */
 @media(max-width:860px){
-  .dtf-modal{max-height:96vh;border-radius:14px}
+  .dtf-modal{border-radius:14px}
+  .dtf-overlay{padding:12px}
+  .dtf-head{padding:16px 18px;border-radius:14px 14px 0 0}
+  .dtf-head h3{font-size:15px}
+  .dtf-logo{width:42px;height:42px;font-size:17px;border-radius:11px}
   .dtf-body{padding:16px}
-  .dtf-work{grid-template-columns:1fr;gap:16px}
-  .dtf-preview{aspect-ratio:1.1/1;max-height:42vh}
-  .dtf-dropzone{padding:40px 16px}
   .dtf-launcher-badge{display:none}
-  .dtf-head h3{font-size:1rem}
+  .dtf-products{grid-template-columns:repeat(2,1fr)}
 }
