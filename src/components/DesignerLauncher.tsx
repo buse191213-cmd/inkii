@@ -25,7 +25,6 @@ export default function DesignerLauncher({
           <path d="M12 3v12"/>
         </svg>
         <span>Eigenes Design hochladen</span>
-        <span className="dtf-launcher-badge">DTF V2.2</span>
       </button>
 
       {open && <DtfEngine onClose={() => setOpen(false)} />}
