@@ -129,11 +129,25 @@ export async function runPipeline(buffer, onStep = () => {}) {
   });
 
   const finalMeta = await sharp(working).metadata();
+  // Veriler data URL olarak dönsün — orijinal HTML URL'leri olduğu gibi kullanır
+  const resultDataUrl = `data:image/png;base64,${working.toString("base64")}`;
+  const vectorDataUrl = vectorSvg
+    ? `data:image/svg+xml;base64,${Buffer.from(vectorSvg).toString("base64")}`
+    : null;
+  const reportDataUrl = reportPdfBase64
+    ? `data:application/pdf;base64,${reportPdfBase64}`
+    : null;
+
   return {
     id,
+    // Hem base64 hem data URL — eski UI ve yeni UI ile uyumlu
     resultBase64: working.toString("base64"),
+    resultUrl: resultDataUrl,
     vectorSvg,
+    vectorUrl: vectorDataUrl,
     reportPdfBase64,
+    reportUrl: reportDataUrl,
+    zipUrl: null,
     width: finalMeta.width,
     height: finalMeta.height,
     printSizeCm: {
