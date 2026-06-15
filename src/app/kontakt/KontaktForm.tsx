@@ -11,18 +11,7 @@ export default function KontaktForm({
   const PROJEKT_TYPEN = projectTypes && projectTypes.length > 0
     ? projectTypes
     : ["Textildruck & Veredelung", "Stickerei", "Werbemittel & Werbeartikel", "Druck (Flyer, Plakate, etc.)", "Werbetechnik", "Webdesign", "Marketing", "Komplettlösung", "Sonstiges"];
-
-  const BUDGET_OPTIONEN = [
-    "Unter 500 €",
-    "500 – 2.000 €",
-    "2.000 – 5.000 €",
-    "5.000 – 10.000 €",
-    "10.000 – 25.000 €",
-    "Über 25.000 €",
-    "Noch unklar",
-  ];
-
-  const [pending, setPending] = useState(false);
+const [pending, setPending] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState(false);
 

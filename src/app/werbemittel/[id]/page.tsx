@@ -13,6 +13,7 @@ import { SHOW_TIERS } from "@/lib/feature-flags";
 import { getLocale } from "@/lib/i18n-server";
 import { getDictionary } from "@/dictionaries";
 import DetailOrderForm from "@/components/DetailOrderForm";
+import DesignerLauncher from "@/components/DesignerLauncher";
 
 export const dynamic = "force-dynamic";
 
@@ -198,6 +199,9 @@ export default async function ProductDetailPage({
                   </div>
                 </div>
               )}
+
+              {/* Eigenes Design hochladen — Tasarımcı modali açar */}
+              <DesignerLauncher productName={product.name} productCode={product.code} />
 
               {/* Farbe + Größen + Mengen + Merkzettel-Submit */}
               <DetailOrderForm

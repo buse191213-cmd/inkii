@@ -20,12 +20,17 @@
     "@tiptap/react": "^3.23.5",
     "@tiptap/starter-kit": "^3.23.5",
     "@vercel/blob": "^2.4.0",
+    "archiver": "^6.0.2",
+    "imagetracerjs": "^1.2.6",
     "isomorphic-dompurify": "^3.14.0",
     "next": "^15.5.18",
     "nodemailer": "^6.10.0",
     "onnxruntime-web": "1.20.1",
+    "pdfkit": "^0.19.1",
+    "potrace": "^2.1.8",
     "react": "19.0.0",
-    "react-dom": "19.0.0"
+    "react-dom": "19.0.0",
+    "sharp": "^0.33.5"
   },
   "devDependencies": {
     "@types/node": "22.10.7",
