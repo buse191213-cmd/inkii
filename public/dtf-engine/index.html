@@ -789,22 +789,9 @@ function showResult(data) {
   const anfBtn = document.getElementById("anfrageBtn");
   if (anfBtn && data.resultBlobUrl) {
     anfBtn.style.display = "inline-grid";
-    anfBtn.onclick = () => {
-      // Parent window'a tasarım verilerini gönder (modal kapanır, kontakta yönlendirilir)
-      const params = new URLSearchParams(window.location.search);
-      const productName = params.get("product") || "";
-      const productCode = params.get("code") || "";
-      window.parent.postMessage({
-        type: "dtf-anfrage",
-        designUrl: data.resultBlobUrl,
-        vectorUrl: data.vectorBlobUrl || "",
-        reportUrl: data.reportBlobUrl || "",
-        productName,
-        productCode,
-        printSizeCm: data.printSizeCm,
-        quality: data.quality?.score || null,
-      }, "*");
-    };
+    // Tasarım verilerini global olarak sakla (order modal kullanacak)
+    window._lastResult = data;
+    anfBtn.onclick = () => openOrderModal();
   }
   processBtn.style.display = "none";
   window._compareReady = true;
@@ -1087,6 +1074,169 @@ resetBtn.onclick = () => {
 <div class="modal-bg" id="modalBg">
   <div class="modal" id="modalContent"></div>
 </div>
+
+
+<!-- Sipariş Detay Modal'ı (Anfrage senden basılınca açılır) -->
+<div id="orderModal" style="display:none;position:fixed;inset:0;z-index:99999;background:rgba(15,23,42,.7);backdrop-filter:blur(4px);align-items:center;justify-content:center;padding:16px">
+  <div style="background:#fff;border-radius:12px;max-width:560px;width:100%;max-height:92vh;overflow:auto;box-shadow:0 30px 80px rgba(0,0,0,.5)">
+    <div style="padding:18px 22px;border-bottom:1px solid #e2e8f0;display:flex;justify-content:space-between;align-items:center;background:#f8fafc">
+      <div>
+        <h3 style="margin:0;font-size:17px;font-weight:700;color:#0f172a">📨 Bestelldetails</h3>
+        <p style="margin:3px 0 0;font-size:12px;color:#64748b">Welche Produkte sollen veredelt werden?</p>
+      </div>
+      <button onclick="closeOrderModal()" style="background:#f1f5f9;border:none;width:32px;height:32px;border-radius:50%;cursor:pointer;font-size:14px">✕</button>
+    </div>
+
+    <div style="padding:20px 22px;display:flex;flex-direction:column;gap:16px">
+      <!-- Ürün seçimi -->
+      <div>
+        <label style="font-weight:600;font-size:13px;color:#0f172a;display:block;margin-bottom:8px">Produkte auswählen *</label>
+        <div id="productCheckboxes" style="display:grid;grid-template-columns:repeat(2,1fr);gap:6px">
+          <!-- Dolacak: T-Shirt, Hoodie, Cap, Polo, Tasche, Jacke -->
+        </div>
+      </div>
+
+      <!-- Pozisyon -->
+      <div>
+        <label style="font-weight:600;font-size:13px;color:#0f172a;display:block;margin-bottom:6px">Position *</label>
+        <select id="orderPosition" style="width:100%;padding:10px 12px;border:1px solid #d1d5db;border-radius:8px;font-size:14px">
+          <option value="">— bitte wählen —</option>
+          <option>Vorderseite (Brust mittig)</option>
+          <option>Vorderseite (linke Brust, klein)</option>
+          <option>Rückseite (großflächig)</option>
+          <option>Rückseite (Nacken, klein)</option>
+          <option>Ärmel links</option>
+          <option>Ärmel rechts</option>
+          <option>Vorder- UND Rückseite</option>
+          <option>Anderer Bereich</option>
+        </select>
+      </div>
+
+      <!-- Boyut -->
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
+        <div>
+          <label style="font-weight:600;font-size:13px;color:#0f172a;display:block;margin-bottom:6px">Druckbreite (cm) *</label>
+          <input type="number" id="orderWidth" min="2" max="50" step="0.5" placeholder="z.B. 25" style="width:100%;padding:10px 12px;border:1px solid #d1d5db;border-radius:8px;font-size:14px;box-sizing:border-box">
+        </div>
+        <div>
+          <label style="font-weight:600;font-size:13px;color:#0f172a;display:block;margin-bottom:6px">Höhe (cm)</label>
+          <input type="number" id="orderHeight" min="2" max="50" step="0.5" placeholder="auto" style="width:100%;padding:10px 12px;border:1px solid #d1d5db;border-radius:8px;font-size:14px;box-sizing:border-box">
+        </div>
+      </div>
+
+      <!-- Renk -->
+      <div>
+        <label style="font-weight:600;font-size:13px;color:#0f172a;display:block;margin-bottom:6px">Textilfarbe (Wunsch)</label>
+        <input type="text" id="orderTextileColor" placeholder="z.B. Schwarz, Weiß, Navy …" style="width:100%;padding:10px 12px;border:1px solid #d1d5db;border-radius:8px;font-size:14px;box-sizing:border-box">
+      </div>
+
+      <!-- Termin -->
+      <div>
+        <label style="font-weight:600;font-size:13px;color:#0f172a;display:block;margin-bottom:6px">Liefertermin (optional)</label>
+        <input type="date" id="orderDeadline" style="width:100%;padding:10px 12px;border:1px solid #d1d5db;border-radius:8px;font-size:14px;box-sizing:border-box">
+      </div>
+
+      <!-- Not -->
+      <div>
+        <label style="font-weight:600;font-size:13px;color:#0f172a;display:block;margin-bottom:6px">Bemerkung (optional)</label>
+        <textarea id="orderNote" rows="3" placeholder="z.B. Größenverteilung, spezielle Wünsche…" style="width:100%;padding:10px 12px;border:1px solid #d1d5db;border-radius:8px;font-size:14px;box-sizing:border-box;font-family:inherit;resize:vertical"></textarea>
+      </div>
+    </div>
+
+    <div style="padding:14px 22px;background:#f8fafc;border-top:1px solid #e2e8f0;display:flex;gap:10px;justify-content:flex-end">
+      <button onclick="closeOrderModal()" style="padding:10px 18px;border:1px solid #d1d5db;background:#fff;border-radius:8px;cursor:pointer;font-weight:600;font-size:13px;color:#475569">Abbrechen</button>
+      <button onclick="submitOrder()" style="padding:10px 22px;background:#14b8a6;color:#fff;border:none;border-radius:8px;cursor:pointer;font-weight:600;font-size:13px">Anfrage senden →</button>
+    </div>
+  </div>
+</div>
+
+<script>
+const ORDER_PRODUCTS = [
+  { id: "tshirt",  name: "T-Shirt",  maxW: 25 },
+  { id: "hoodie",  name: "Hoodie",   maxW: 25 },
+  { id: "cap",     name: "Cap",      maxW: 7  },
+  { id: "polo",    name: "Polo",     maxW: 8  },
+  { id: "tasche",  name: "Tasche",   maxW: 30 },
+  { id: "jacke",   name: "Jacke",    maxW: 28 },
+];
+
+// Checkbox + adet input
+function renderOrderProducts() {
+  const box = document.getElementById("productCheckboxes");
+  if (!box) return;
+  box.innerHTML = ORDER_PRODUCTS.map(p => `
+    <label style="display:flex;align-items:center;gap:8px;padding:10px;border:1px solid #e2e8f0;border-radius:8px;cursor:pointer;background:#fafafa;transition:.2s" onmouseover="this.style.background='#f0fdfa'" onmouseout="this.style.background='#fafafa'">
+      <input type="checkbox" name="product" value="${p.name}" data-id="${p.id}" onchange="document.getElementById('qty_${p.id}').disabled=!this.checked;if(this.checked)document.getElementById('qty_${p.id}').focus()" style="margin:0;cursor:pointer">
+      <span style="flex:1;font-size:13px;font-weight:600">${p.name}</span>
+      <input type="number" id="qty_${p.id}" min="1" max="9999" placeholder="Stk" disabled style="width:60px;padding:5px 8px;border:1px solid #d1d5db;border-radius:5px;font-size:12px;text-align:center" onclick="event.stopPropagation();event.preventDefault()">
+    </label>
+  `).join("");
+}
+
+function openOrderModal() {
+  renderOrderProducts();
+  document.getElementById("orderModal").style.display = "flex";
+}
+
+function closeOrderModal() {
+  document.getElementById("orderModal").style.display = "none";
+}
+
+function submitOrder() {
+  // Seçili ürünleri topla
+  const selected = [];
+  for (const p of ORDER_PRODUCTS) {
+    const cb = document.querySelector(`input[name="product"][data-id="${p.id}"]`);
+    const qty = document.getElementById(`qty_${p.id}`);
+    if (cb && cb.checked) {
+      const q = parseInt(qty.value) || 0;
+      if (q < 1) { alert(`Bitte Menge für ${p.name} eingeben.`); qty.focus(); return; }
+      selected.push({ name: p.name, qty: q });
+    }
+  }
+  if (!selected.length) { alert("Bitte mindestens ein Produkt auswählen."); return; }
+
+  const position = document.getElementById("orderPosition").value;
+  if (!position) { alert("Bitte Position auswählen."); return; }
+
+  const width = document.getElementById("orderWidth").value;
+  if (!width) { alert("Bitte Druckbreite angeben."); return; }
+
+  const height = document.getElementById("orderHeight").value || "auto";
+  const textileColor = document.getElementById("orderTextileColor").value || "—";
+  const deadline = document.getElementById("orderDeadline").value || "—";
+  const note = document.getElementById("orderNote").value || "—";
+
+  // Toplam adet
+  const totalQty = selected.reduce((s, x) => s + x.qty, 0);
+
+  // Parent'a tasarım + sipariş detayları gönder
+  const params = new URLSearchParams(window.location.search);
+  const productName = params.get("product") || "";
+  const productCode = params.get("code") || "";
+
+  window.parent.postMessage({
+    type: "dtf-anfrage",
+    designUrl: window._lastResult?.resultBlobUrl || "",
+    vectorUrl: window._lastResult?.vectorBlobUrl || "",
+    reportUrl: window._lastResult?.reportBlobUrl || "",
+    productName,
+    productCode,
+    order: {
+      products: selected,
+      totalQty,
+      position,
+      width: width + " cm",
+      height: height === "auto" ? "auto" : height + " cm",
+      textileColor,
+      deadline,
+      note,
+    },
+    printSizeCm: window._lastResult?.printSizeCm,
+    quality: window._lastResult?.quality?.score || null,
+  }, "*");
+}
+</script>
 
 </body>
 </html>

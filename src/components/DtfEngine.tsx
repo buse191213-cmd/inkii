@@ -3,12 +3,27 @@
 import { useEffect } from "react";
 import { useRouter } from "next/navigation";
 
-/**
- * DTF-Engine Modal — Orijinal HTML iframe ile.
- * Sadece ✕ butonu ile kapanır.
- * "Anfrage senden" butonu basıldığında iframe postMessage ile bilgi yollar,
- * burada yakalanır ve kontakt sayfasına tasarım verisi ile yönlendirilir.
- */
+type OrderData = {
+  type: string;
+  designUrl?: string;
+  vectorUrl?: string;
+  reportUrl?: string;
+  productName?: string;
+  productCode?: string;
+  order?: {
+    products: { name: string; qty: number }[];
+    totalQty: number;
+    position: string;
+    width: string;
+    height: string;
+    textileColor: string;
+    deadline: string;
+    note: string;
+  };
+  printSizeCm?: { width: number; height: number };
+  quality?: number | null;
+};
+
 export default function DtfEngine({
   onClose,
   productName,
@@ -25,21 +40,46 @@ export default function DtfEngine({
     return () => { document.body.style.overflow = ""; };
   }, []);
 
-  // postMessage dinleyici: iframe'den "Anfrage senden" geldiğinde
   useEffect(() => {
     function onMessage(e: MessageEvent) {
-      const d = e.data;
+      const d = e.data as OrderData;
       if (!d || d.type !== "dtf-anfrage") return;
-      // Kontakt sayfasına tasarım verisi ile yönlendir
-      const note = [
-        `Eigenes DTF-Design${productName ? ` für: ${productName}` : ""}${productCode ? ` (${productCode})` : ""}`,
-        d.designUrl ? `Design (PNG): ${d.designUrl}` : "",
-        d.vectorUrl ? `Vektor (SVG): ${d.vectorUrl}` : "",
-        d.reportUrl ? `Qualitätsbericht (PDF): ${d.reportUrl}` : "",
-        d.printSizeCm ? `Druckgröße: ${d.printSizeCm.width} x ${d.printSizeCm.height} cm` : "",
-        d.quality ? `Druckqualität: ${d.quality}/100` : "",
-      ].filter(Boolean).join("\n");
 
+      // Kontakt mesajını oluştur
+      const lines: string[] = [];
+      lines.push(`📨 EIGENES DTF-DESIGN ANGEFORDERT`);
+      if (productName) lines.push(`Ausgangsprodukt: ${productName}${productCode ? ` (${productCode})` : ""}`);
+
+      if (d.order) {
+        lines.push("");
+        lines.push("── PRODUKTE ──");
+        for (const p of d.order.products) {
+          lines.push(`• ${p.name}: ${p.qty} Stück`);
+        }
+        lines.push(`GESAMT: ${d.order.totalQty} Stück`);
+        lines.push("");
+        lines.push("── DRUCKDETAILS ──");
+        lines.push(`Position: ${d.order.position}`);
+        lines.push(`Druckbreite: ${d.order.width}`);
+        if (d.order.height !== "auto") lines.push(`Druckhöhe: ${d.order.height}`);
+        if (d.order.textileColor && d.order.textileColor !== "—") lines.push(`Textilfarbe: ${d.order.textileColor}`);
+        if (d.order.deadline && d.order.deadline !== "—") lines.push(`Liefertermin: ${d.order.deadline}`);
+        if (d.order.note && d.order.note !== "—") {
+          lines.push("");
+          lines.push("Bemerkung:");
+          lines.push(d.order.note);
+        }
+      }
+
+      lines.push("");
+      lines.push("── DATEIEN ──");
+      if (d.designUrl) lines.push(`Design (PNG): ${d.designUrl}`);
+      if (d.vectorUrl) lines.push(`Vektor (SVG): ${d.vectorUrl}`);
+      if (d.reportUrl) lines.push(`Qualitätsbericht (PDF): ${d.reportUrl}`);
+      if (d.printSizeCm) lines.push(`Original-Druckgröße: ${d.printSizeCm.width} × ${d.printSizeCm.height} cm`);
+      if (d.quality) lines.push(`KI-Qualität: ${d.quality}/100`);
+
+      const note = lines.join("\n");
       const params = new URLSearchParams({ note });
       if (productName) params.set("product", productName);
       if (productCode) params.set("code", productCode);
@@ -52,7 +92,6 @@ export default function DtfEngine({
     return () => window.removeEventListener("message", onMessage);
   }, [productName, productCode, onClose, router]);
 
-  // iframe src'e product params iletelim — buton içinde okuyacak
   const params = new URLSearchParams();
   if (productName) params.set("product", productName);
   if (productCode) params.set("code", productCode);
