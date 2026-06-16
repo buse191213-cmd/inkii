@@ -57,18 +57,9 @@ export async function runPipeline(buffer, onStep = () => {}) {
     status: bgResult.ok ? "done" : "error",
   });
 
-  // Adım 2.2: Kenar temizleme
+  // Adım 2.2: Kenar temizleme - Replicate BG zaten temiz, ATLANIR
   if (bgRemoved) {
-    onStep({ key: "edge", label: "Kanten reinigen", status: "running" });
-    log("Edge cleanup başladı");
-    const edgeRes = await cleanEdges(working, { aggressive: false });
-    log(`Edge cleanup bitti: applied=${edgeRes.applied}`);
-    working = edgeRes.buffer;
-    onStep({
-      key: "edge",
-      label: edgeRes.applied ? "Kanten gereinigt" : "Kanten sauber",
-      status: edgeRes.applied ? "done" : "skipped",
-    });
+    onStep({ key: "edge", label: "Kanten sauber (Replicate)", status: "skipped" });
   }
 
   // Adım 2.5: AUTO-CROP
@@ -94,30 +85,14 @@ export async function runPipeline(buffer, onStep = () => {}) {
     status: afterW > beforeW ? "done" : "skipped",
   });
 
-  // Adım 3.5: Renk optimizasyonu
-  onStep({ key: "color", label: "Farben optimieren", status: "running" });
-  log("Color optimize başladı");
-  const colorRes = await optimizeColor(working, { force: false });
-  log(`Color optimize bitti: applied=${colorRes.applied}`);
-  working = colorRes.buffer;
-  onStep({
-    key: "color",
-    label: colorRes.applied ? "Farben optimiert" : "Farben bereits optimal",
-    status: colorRes.applied ? "done" : "skipped",
-  });
+  // Adım 3.5: Renk - Replicate çıktısının renklerine dokunmuyoruz
+  onStep({ key: "color", label: "Farben original belassen", status: "skipped" });
 
-  // Adım 3.7: Kenar yumuşatma (anti-alias) - tırtıklı kenarları yumuşat
-  log("Smooth edges başladı");
-  const smoothRes = await smoothEdges(working, { sigma: 0.3 });
-  working = smoothRes.buffer;
-  log(`Smooth edges bitti: applied=${smoothRes.applied}`);
+  // Adım 3.7: Kenar yumuşatma - Replicate BG zaten anti-aliased, ATLANIR
+  log("Smooth edges atlandı (Replicate çıktısı zaten temiz)");
 
-  // Adım 4: Keskinleştirme
-  onStep({ key: "sharpen", label: "Kanten schärfen", status: "running" });
-  log("Sharpen başladı");
-  working = await sharpenEdges(working);
-  log("Sharpen bitti");
-  onStep({ key: "sharpen", label: "Kanten geschärft", status: "done" });
+  // Adım 4: Keskinleştirme - Replicate çıktısı zaten net, ATLANIR
+  onStep({ key: "sharpen", label: "Original-Schärfe behalten", status: "skipped" });
 
   // Adım 5: Vektör
   onStep({ key: "vector", label: "Vektorisierbarkeit prüfen", status: "running" });
