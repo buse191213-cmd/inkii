@@ -62,14 +62,10 @@ export async function runPipeline(buffer, onStep = () => {}) {
     onStep({ key: "edge", label: "Kanten sauber (Replicate)", status: "skipped" });
   }
 
-  // Adım 2.5: AUTO-CROP
-  log("Auto-crop başladı");
-  try {
-    const cropped = await sharp(working).trim({ threshold: 10 }).toBuffer();
-    const cm = await sharp(cropped).metadata();
-    if (cm.width > 10 && cm.height > 10) working = cropped;
-  } catch {}
-  log("Auto-crop bitti");
+  // Adım 2.5: AUTO-CROP - DEVRE DIŞI
+  // İnce yapılı görsellerde (kollar, eller, saç) figürü kesebilir.
+  // Replicate çıktısı zaten temiz, kırpma gereksiz.
+  log("Auto-crop atlandı (görselin bütünlüğü korunur)");
 
   // Adım 3: Upscale
   onStep({ key: "upscale", label: "Auflösung erhöhen", status: "running" });
