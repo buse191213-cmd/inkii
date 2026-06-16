@@ -188,6 +188,51 @@
   .big-preview .mock-big img.garment { width: 100%; }
   .big-preview .mock-big img.design { position: absolute; }
   .big-preview h3 { margin-top: 16px; font-size: 18px; }
+
+/* Mobile fix - mockup'lar sığsın, indirme butonu doğru yerde */
+@media (max-width: 700px) {
+  .wrap { padding: 12px !important; }
+  .grid-mockups { grid-template-columns: repeat(2, 1fr) !important; gap: 10px !important; }
+  .mock-big { padding: 8px !important; }
+  .mock-name { font-size: 11px !important; }
+  .mock-width { font-size: 10px !important; }
+  /* Hover bar (alt indirme butonu) mobilde her zaman görünür */
+  .hover-bar, .ctrl-bar, .mock-actions {
+    opacity: 1 !important;
+    transform: none !important;
+    position: relative !important;
+    background: #f8fafc !important;
+    border-top: 1px solid #e2e8f0 !important;
+    padding: 6px 8px !important;
+    margin-top: 6px !important;
+    display: flex !important;
+    justify-content: center !important;
+    gap: 6px !important;
+    flex-wrap: wrap;
+  }
+  .hover-bar a, .hover-bar button, .btn-mini {
+    font-size: 11px !important;
+    padding: 4px 8px !important;
+    white-space: nowrap;
+  }
+  /* Layout grid'i tek kolon */
+  .layout, .main-grid { grid-template-columns: 1fr !important; gap: 16px !important; }
+  /* Aksiyon butonları stack */
+  .actions { flex-direction: column !important; gap: 8px !important; }
+  .actions .btn, .actions a, .actions button { width: 100% !important; box-sizing: border-box; }
+  /* Engine satırları küçült */
+  .erow { padding: 8px 12px !important; font-size: 13px !important; }
+  .erow .lbl { font-size: 12px !important; }
+  /* Önizleme alanı yüksekliğini sınırla */
+  .preview-box, #previewBox { max-height: 50vh !important; }
+  /* Renk paleti */
+  .colors, .color-row { gap: 4px !important; flex-wrap: wrap !important; }
+  .color-swatch, .swatch { width: 26px !important; height: 26px !important; }
+  /* Fiyat tablosu küçük */
+  .price-card, .pricing { font-size: 12px !important; padding: 12px !important; }
+  /* Quality rapor başlığı */
+  .quality-report { padding: 12px !important; }
+}
 </style>
 </head>
 <body>
