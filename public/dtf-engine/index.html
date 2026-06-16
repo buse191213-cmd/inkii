@@ -233,6 +233,104 @@
   /* Quality rapor başlığı */
   .quality-report { padding: 12px !important; }
 }
+
+/* Sipariş modal - görsel ürün kartları */
+.prod-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 10px;
+}
+@media (max-width: 520px) {
+  .prod-grid { grid-template-columns: repeat(2, 1fr); }
+}
+.prod-card {
+  position: relative;
+  border: 2px solid #e2e8f0;
+  border-radius: 10px;
+  padding: 8px;
+  cursor: pointer;
+  background: #ffffff;
+  transition: all 0.2s;
+  user-select: none;
+  text-align: center;
+}
+.prod-card:hover {
+  border-color: #14b8a6;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(20,184,166,0.15);
+}
+.prod-card.active {
+  border-color: #14b8a6;
+  background: #f0fdfa;
+  box-shadow: 0 4px 16px rgba(20,184,166,0.25);
+}
+.prod-check {
+  position: absolute;
+  top: 6px;
+  right: 6px;
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  background: #14b8a6;
+  color: #fff;
+  display: grid;
+  place-items: center;
+  font-size: 13px;
+  font-weight: 700;
+  opacity: 0;
+  transform: scale(0.7);
+  transition: 0.2s;
+}
+.prod-card.active .prod-check {
+  opacity: 1;
+  transform: scale(1);
+}
+.prod-img-wrap {
+  aspect-ratio: 1;
+  background: #f8fafc;
+  border-radius: 7px;
+  overflow: hidden;
+  display: grid;
+  place-items: center;
+  margin-bottom: 6px;
+}
+.prod-img-wrap img {
+  width: 80%;
+  height: 80%;
+  object-fit: contain;
+}
+.prod-name {
+  font-size: 12px;
+  font-weight: 700;
+  color: #0f172a;
+  margin-bottom: 4px;
+}
+.prod-qty-row {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  font-size: 11px;
+  color: #64748b;
+}
+.prod-qty-row input {
+  width: 48px;
+  padding: 3px 5px;
+  border: 1px solid #d1d5db;
+  border-radius: 4px;
+  font-size: 12px;
+  text-align: center;
+  font-weight: 600;
+}
+.prod-qty-row input:disabled {
+  background: #f1f5f9;
+  color: #94a3b8;
+}
+.prod-qty-row input:not(:disabled) {
+  background: #fff;
+  color: #0f766e;
+  border-color: #14b8a6;
+}
 </style>
 </head>
 <body>
@@ -1091,9 +1189,7 @@ resetBtn.onclick = () => {
       <!-- Ürün seçimi -->
       <div>
         <label style="font-weight:600;font-size:13px;color:#0f172a;display:block;margin-bottom:8px">Produkte auswählen *</label>
-        <div id="productCheckboxes" style="display:grid;grid-template-columns:repeat(2,1fr);gap:6px">
-          <!-- Dolacak: T-Shirt, Hoodie, Cap, Polo, Tasche, Jacke -->
-        </div>
+        <div id="productCheckboxes" class="prod-grid"></div>
       </div>
 
       <!-- Pozisyon -->
@@ -1152,24 +1248,51 @@ resetBtn.onclick = () => {
 
 <script>
 const ORDER_PRODUCTS = [
-  { id: "tshirt",  name: "T-Shirt",  maxW: 25 },
-  { id: "hoodie",  name: "Hoodie",   maxW: 25 },
-  { id: "cap",     name: "Cap",      maxW: 7  },
-  { id: "polo",    name: "Polo",     maxW: 8  },
-  { id: "tasche",  name: "Tasche",   maxW: 30 },
-  { id: "jacke",   name: "Jacke",    maxW: 28 },
+  { id: "tshirt",  name: "T-Shirt",  img: "/dtf-engine/mockups/tshirt.png", maxW: 25 },
+  { id: "hoodie",  name: "Hoodie",   img: "/dtf-engine/mockups/hoodie.png", maxW: 25 },
+  { id: "cap",     name: "Cap",      img: "/dtf-engine/mockups/cap.png",    maxW: 7  },
+  { id: "polo",    name: "Polo",     img: "/dtf-engine/mockups/polo.png",   maxW: 8  },
+  { id: "tasche",  name: "Tasche",   img: "/dtf-engine/mockups/bag.png",    maxW: 30 },
+  { id: "jacke",   name: "Jacke",    img: "/dtf-engine/mockups/jacket.png", maxW: 28 },
 ];
 
-// Checkbox + adet input
+// Görsel kart seçim
+window._orderSelected = {};
+
+function toggleProductCard(id) {
+  const card = document.getElementById("card_" + id);
+  const qty = document.getElementById("qty_" + id);
+  if (!card || !qty) return;
+  const isActive = card.classList.contains("active");
+  if (isActive) {
+    card.classList.remove("active");
+    qty.disabled = true;
+    qty.value = "";
+    delete window._orderSelected[id];
+  } else {
+    card.classList.add("active");
+    qty.disabled = false;
+    qty.focus();
+    qty.value = qty.value || "1";
+    window._orderSelected[id] = true;
+  }
+}
+
 function renderOrderProducts() {
   const box = document.getElementById("productCheckboxes");
   if (!box) return;
   box.innerHTML = ORDER_PRODUCTS.map(p => `
-    <label style="display:flex;align-items:center;gap:8px;padding:10px;border:1px solid #e2e8f0;border-radius:8px;cursor:pointer;background:#fafafa;transition:.2s" onmouseover="this.style.background='#f0fdfa'" onmouseout="this.style.background='#fafafa'">
-      <input type="checkbox" name="product" value="${p.name}" data-id="${p.id}" onchange="document.getElementById('qty_${p.id}').disabled=!this.checked;if(this.checked)document.getElementById('qty_${p.id}').focus()" style="margin:0;cursor:pointer">
-      <span style="flex:1;font-size:13px;font-weight:600">${p.name}</span>
-      <input type="number" id="qty_${p.id}" min="1" max="9999" placeholder="Stk" disabled style="width:60px;padding:5px 8px;border:1px solid #d1d5db;border-radius:5px;font-size:12px;text-align:center" onclick="event.stopPropagation();event.preventDefault()">
-    </label>
+    <div id="card_${p.id}" class="prod-card" onclick="toggleProductCard('${p.id}')" data-id="${p.id}" data-name="${p.name}">
+      <div class="prod-check">✓</div>
+      <div class="prod-img-wrap">
+        <img src="${p.img}" alt="${p.name}" onerror="this.style.display='none'" />
+      </div>
+      <div class="prod-name">${p.name}</div>
+      <div class="prod-qty-row" onclick="event.stopPropagation()">
+        <span>Stk:</span>
+        <input type="number" id="qty_${p.id}" min="1" max="9999" placeholder="0" disabled />
+      </div>
+    </div>
   `).join("");
 }
 
@@ -1183,12 +1306,12 @@ function closeOrderModal() {
 }
 
 function submitOrder() {
-  // Seçili ürünleri topla
+  // Seçili ürünleri topla (kart bazlı)
   const selected = [];
   for (const p of ORDER_PRODUCTS) {
-    const cb = document.querySelector(`input[name="product"][data-id="${p.id}"]`);
-    const qty = document.getElementById(`qty_${p.id}`);
-    if (cb && cb.checked) {
+    const card = document.getElementById("card_" + p.id);
+    const qty = document.getElementById("qty_" + p.id);
+    if (card && card.classList.contains("active")) {
       const q = parseInt(qty.value) || 0;
       if (q < 1) { alert(`Bitte Menge für ${p.name} eingeben.`); qty.focus(); return; }
       selected.push({ name: p.name, qty: q });
