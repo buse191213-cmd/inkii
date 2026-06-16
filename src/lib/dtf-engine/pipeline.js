@@ -11,6 +11,7 @@ import { checkVectorizable, makeVector } from "./vectorize.js";
 import { analyzeQuality, analyzeWhiteInk, buildReport, buildReportPDF } from "./quality.js";
 import { optimizeColor } from "./coloroptimize.js";
 import { cleanEdges } from "./edgecleanup.js";
+import { smoothEdges } from "./smoothedges.js";
 
 /**
  * Pipeline'ı çalıştır. onStep ile her adım bildirilir.
@@ -60,7 +61,7 @@ export async function runPipeline(buffer, onStep = () => {}) {
   if (bgRemoved) {
     onStep({ key: "edge", label: "Kanten reinigen", status: "running" });
     log("Edge cleanup başladı");
-    const edgeRes = await cleanEdges(working);
+    const edgeRes = await cleanEdges(working, { aggressive: false });
     log(`Edge cleanup bitti: applied=${edgeRes.applied}`);
     working = edgeRes.buffer;
     onStep({
@@ -104,6 +105,12 @@ export async function runPipeline(buffer, onStep = () => {}) {
     label: colorRes.applied ? "Farben optimiert" : "Farben bereits optimal",
     status: colorRes.applied ? "done" : "skipped",
   });
+
+  // Adım 3.7: Kenar yumuşatma (anti-alias) - tırtıklı kenarları yumuşat
+  log("Smooth edges başladı");
+  const smoothRes = await smoothEdges(working, { sigma: 0.3 });
+  working = smoothRes.buffer;
+  log(`Smooth edges bitti: applied=${smoothRes.applied}`);
 
   // Adım 4: Keskinleştirme
   onStep({ key: "sharpen", label: "Kanten schärfen", status: "running" });

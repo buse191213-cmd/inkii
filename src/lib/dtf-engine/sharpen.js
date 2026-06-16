@@ -34,7 +34,7 @@ export async function sharpenEdges(buffer) {
 
   // 3) Keskinleştirme
   return sharp(padded)
-    .sharpen({ sigma: 1.2, m1: 0.8, m2: 2.0 })
+    .sharpen({ sigma: 0.6, m1: 0.5, m2: 1.0 })
     .png({ compressionLevel: 9 })
     .toBuffer();
 }

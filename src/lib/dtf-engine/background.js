@@ -16,9 +16,8 @@ import os from "os";
 import path from "path";
 
 const run = promisify(execFile);
-// BG_PROVIDER: removebg | photoroom | local | demo (replicate ZORUNLU disable - ücret + yavaşlık)
-const _raw = (process.env.BG_PROVIDER || "demo").toLowerCase();
-const PROVIDER = _raw === "replicate" ? "demo" : _raw;
+// BG_PROVIDER: replicate (BRIA RMBG-2.0, en temiz) | removebg | photoroom | local | demo
+const PROVIDER = (process.env.BG_PROVIDER || "demo").toLowerCase();
 
 // Sonuç + bilgi döndürür: { buffer, ok, message }
 export async function removeBackground(buffer) {

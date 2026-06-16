@@ -27,14 +27,16 @@ export async function cleanEdges(buffer, { aggressive = true } = {}) {
     };
 
     // agresif modda eşik daha yüksek (daha çok yarı saydam temizlenir)
-    const aThresh = aggressive ? 230 : 180;
+    // Anti-aliasing kayboluyordu (tırtıklı kenar). Eşikler düşürüldü:
+    // - 230→110: sadece çok şeffaf fringe silinir, yarı saydam anti-alias korunur
+    const aThresh = aggressive ? 110 : 90;
     let cleaned = 0;
     for (let y = 0; y < H; y++) {
       for (let x = 0; x < W; x++) {
         const i = idx(x, y);
         const a = data[i + 3];
         if (a === 0 || a === 255) continue;
-        if (a >= 240) continue;
+        if (a >= 200) continue;
         const r = data[i], g = data[i + 1], b = data[i + 2];
         const max = Math.max(r, g, b), min = Math.min(r, g, b);
         const lum = (r * 0.299 + g * 0.587 + b * 0.114);
