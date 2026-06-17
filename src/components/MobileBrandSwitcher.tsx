@@ -5,8 +5,10 @@ import Link from "next/link";
 
 /**
  * Hero video'nun SOL ALT köşesinde — site navbarındaki sol logo ile hizalı.
- * Canvas pixel analizi: PNG'lerin sol transparant kenarlarını ölçer,
- * görsel olarak gerçek opak içeriği navbar logo'sunun başlangıcına eşitler.
+ * Yeni hazırlanmış trim edilmiş logo dosyaları kullanılır:
+ *   /public/inkii-works-logo.png
+ *   /public/inkii-marketing-logo.png
+ * Bu dosyalar mevcut değilse fallback /inkii-logo.png kullanılır.
  */
 export default function HeroBrandSwitcher({
   marketingLogo,
@@ -19,17 +21,16 @@ export default function HeroBrandSwitcher({
   const targetLabel = isMarketing ? "INKII WORKS" : "INKII MARKETING";
 
   // WORKS sayfasında switcher MARKETING logosunu, MARKETING sayfasında WORKS logosunu gösterir
-  const switcherSrc = isMarketing
-    ? "/inkii-logo.png"
-    : marketingLogo || "/inkii-logo.png";
-
+  // Önce yeni trim edilmiş statik dosyaları dener, sonra eski custom upload, son fallback genel logo
+  const [switcherSrc, setSwitcherSrc] = useState(
+    isMarketing ? "/inkii-works-logo.png" : "/inkii-marketing-logo.png"
+  );
   const imgRef = useRef<HTMLImageElement | null>(null);
   const [offsetPx, setOffsetPx] = useState(0);
 
   useEffect(() => {
     let cancelled = false;
 
-    // Canvas ile bir image'in sol transparant kenar oranını ölç (0-1)
     function measureLeftPadding(img: HTMLImageElement): Promise<number> {
       return new Promise((resolve) => {
         if (!img.complete || !img.naturalWidth) {
@@ -44,7 +45,6 @@ export default function HeroBrandSwitcher({
           if (!ctx) return resolve(0);
           ctx.drawImage(img, 0, 0);
           const data = ctx.getImageData(0, 0, canvas.width, canvas.height).data;
-          // Sol kenardan tara, ilk opak piksel
           for (let x = 0; x < canvas.width; x++) {
             for (let y = 0; y < canvas.height; y++) {
               const i = (y * canvas.width + x) * 4;
@@ -69,18 +69,14 @@ export default function HeroBrandSwitcher({
       ]);
       if (cancelled) return;
 
-      // Switcher'ın render edilmiş genişliği (CSS ile zaten 118px civarı)
       const swDisplayW = swImg.getBoundingClientRect().width;
       const navDisplayW = navLogoImg.getBoundingClientRect().width;
-      // Her birinin görsel başlangıç ofseti (pixel)
       const navLeftPx = navRatio * navDisplayW;
       const swLeftPx = swRatio * swDisplayW;
-      // Switcher'a uygulanacak margin: nav logo'nun ofsetine eşitle
       const diff = Math.round(navLeftPx - swLeftPx);
       setOffsetPx(diff);
     }
 
-    // Image yüklensin ve DOM oturssun diye bir tick bekle
     const t = setTimeout(align, 200);
     window.addEventListener("resize", align);
     return () => {
@@ -89,6 +85,16 @@ export default function HeroBrandSwitcher({
       window.removeEventListener("resize", align);
     };
   }, [switcherSrc]);
+
+  // Yeni trim edilmiş dosya yoksa fallback'e geç
+  function handleError() {
+    if (!isMarketing && marketingLogo) {
+      // Marketing logosu admin'den yüklenmiş custom URL
+      setSwitcherSrc(marketingLogo);
+    } else {
+      setSwitcherSrc("/inkii-logo.png");
+    }
+  }
 
   return (
     <Link
@@ -105,6 +111,7 @@ export default function HeroBrandSwitcher({
         crossOrigin="anonymous"
         className="mbs-img"
         style={{ marginLeft: `${offsetPx}px` }}
+        onError={handleError}
       />
     </Link>
   );
