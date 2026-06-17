@@ -2,6 +2,7 @@
 
 import { useEffect } from "react";
 import { useRouter } from "next/navigation";
+import { useMerkliste } from "./MerklisteProvider";
 
 type OrderData = {
   type: string;
@@ -39,6 +40,7 @@ export default function DtfEngine({
   productCode?: string | null;
 }) {
   const router = useRouter();
+  const { addOrUpdate } = useMerkliste();
 
   useEffect(() => {
     document.body.style.overflow = "hidden";
@@ -48,60 +50,48 @@ export default function DtfEngine({
   useEffect(() => {
     function onMessage(e: MessageEvent) {
       const d = e.data as OrderData;
-      if (!d || d.type !== "dtf-anfrage") return;
+      if (!d || d.type !== "dtf-anfrage" || !d.order) return;
 
-      // Kontakt mesajını oluştur
-      const lines: string[] = [];
-      lines.push(`📨 EIGENES DTF-DESIGN ANGEFORDERT`);
-      if (productName) lines.push(`Ausgangsprodukt: ${productName}${productCode ? ` (${productCode})` : ""}`);
+      // Her seçilen ürün için Merkliste'ye ayrı item ekle
+      const ts = Date.now();
+      for (const p of d.order.products) {
+        // Tasarım + sipariş detayları item note'una yazılır
+        const noteLines: string[] = [];
+        noteLines.push(`📨 EIGENES DTF-DESIGN`);
+        if (p.logoCm) noteLines.push(`Breite (im Designer): ${p.logoCm} cm`);
+        if (p.placement) {
+          noteLines.push(`Position im Designer: ${p.placement.leftPct}% von links, ${p.placement.topPct}% von oben`);
+        }
+        noteLines.push(`Druckposition: ${d.order!.position}`);
+        noteLines.push(`Druckbreite (Wunsch): ${d.order!.width}`);
+        if (d.order!.height !== "auto") noteLines.push(`Druckhöhe: ${d.order!.height}`);
+        if (d.order!.deadline && d.order!.deadline !== "—") noteLines.push(`Liefertermin: ${d.order!.deadline}`);
+        if (d.order!.note && d.order!.note !== "—") noteLines.push(`Bemerkung: ${d.order!.note}`);
+        noteLines.push("");
+        noteLines.push("── DATEIEN ──");
+        if (d.designUrl) noteLines.push(`Design (PNG): ${d.designUrl}`);
+        if (d.vectorUrl) noteLines.push(`Vektor (SVG): ${d.vectorUrl}`);
+        if (d.reportUrl) noteLines.push(`Bericht (PDF): ${d.reportUrl}`);
+        if (d.quality) noteLines.push(`KI-Qualität: ${d.quality}/100`);
 
-      if (d.order) {
-        lines.push("");
-        lines.push("── PRODUKTE & PLATZIERUNG ──");
-        for (const p of d.order.products) {
-          lines.push(`• ${p.name}: ${p.qty} Stück`);
-          if (p.logoCm) {
-            lines.push(`   Breite (im Designer): ${p.logoCm} cm`);
-          }
-          if (p.placement) {
-            lines.push(`   Position: ${p.placement.leftPct}% von links, ${p.placement.topPct}% von oben`);
-          }
-        }
-        lines.push(`GESAMT: ${d.order.totalQty} Stück`);
-        lines.push("");
-        lines.push("── DRUCKDETAILS (Wunsch) ──");
-        lines.push(`Position: ${d.order.position}`);
-        lines.push(`Breite: ${d.order.width}`);
-        if (d.order.height !== "auto") lines.push(`Höhe: ${d.order.height}`);
-        if (d.order.textileColor && d.order.textileColor !== "—") lines.push(`Textilfarbe: ${d.order.textileColor}`);
-        if (d.order.deadline && d.order.deadline !== "—") lines.push(`Liefertermin: ${d.order.deadline}`);
-        if (d.order.note && d.order.note !== "—") {
-          lines.push("");
-          lines.push("Bemerkung:");
-          lines.push(d.order.note);
-        }
+        addOrUpdate({
+          id: `dtf-${ts}-${p.name.toLowerCase().replace(/[^a-z]/g, "")}`,
+          code: `DTF-${ts}`,
+          name: `Eigenes DTF-Design — ${p.name}`,
+          image: d.designUrl || null,
+          qty: p.qty,
+          note: noteLines.join("\n"),
+          color: null,
+          colorLabel: d.order!.textileColor && d.order!.textileColor !== "—" ? d.order!.textileColor : null,
+        });
       }
 
-      lines.push("");
-      lines.push("── DATEIEN ──");
-      if (d.designUrl) lines.push(`Design (PNG): ${d.designUrl}`);
-      if (d.vectorUrl) lines.push(`Vektor (SVG): ${d.vectorUrl}`);
-      if (d.reportUrl) lines.push(`Qualitätsbericht (PDF): ${d.reportUrl}`);
-      if (d.printSizeCm) lines.push(`Original-Druckgröße: ${d.printSizeCm.width} × ${d.printSizeCm.height} cm`);
-      if (d.quality) lines.push(`KI-Qualität: ${d.quality}/100`);
-
-      const note = lines.join("\n");
-      const params = new URLSearchParams({ note });
-      if (productName) params.set("product", productName);
-      if (productCode) params.set("code", productCode);
-      if (d.designUrl) params.set("design", d.designUrl);
-
       onClose();
-      router.push(`/kontakt?${params.toString()}`);
+      router.push("/merkzettel");
     }
     window.addEventListener("message", onMessage);
     return () => window.removeEventListener("message", onMessage);
-  }, [productName, productCode, onClose, router]);
+  }, [productName, productCode, onClose, router, addOrUpdate]);
 
   const params = new URLSearchParams();
   if (productName) params.set("product", productName);

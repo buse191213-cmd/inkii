@@ -80,16 +80,17 @@ async function viaReplicateRMBG(buffer) {
   return Buffer.from(await img.arrayBuffer());
 }
 
-// ── BiRefNet (Replicate) - RMBG 2.0 ile karşılaştırma için ──
+// ── BiRefNet (Replicate) - ince yapı korur (eller, parmaklar, saç) ──
 async function viaBiRefNet(buffer) {
   const token = process.env.REPLICATE_API_TOKEN;
   if (!token || token.includes("BURAYA") || token.includes("ANAHTAR")) {
     throw new Error("Replicate token .env'de ayarli degil");
   }
-  // 851-labs/background-remover modeli (BRIA + ek post-processing - eller, parmaklar korunur)
+  // PNG'ye çevir (MIME uyumlu data URL)
   const pngBuffer = await sharp(buffer).png().toBuffer();
   const base64 = `data:image/png;base64,${pngBuffer.toString("base64")}`;
-  const start = await fetch("https://api.replicate.com/v1/models/851-labs/background-remover/predictions", {
+  // BiRefNet community model - version hash ile (resmi endpoint formatı 404 verir)
+  const start = await fetch("https://api.replicate.com/v1/predictions", {
     method: "POST",
     headers: {
       Authorization: `Bearer ${token}`,
@@ -97,13 +98,8 @@ async function viaBiRefNet(buffer) {
       Prefer: "wait",
     },
     body: JSON.stringify({
-      input: {
-        image: base64,
-        format: "png",
-        reverse: false,
-        threshold: 0,           // 0 = anti-alias korunur (tırtık olmaz)
-        background_type: "rgba", // şeffaf arka plan
-      },
+      version: "f74986db0355b58403ed20963af156525e2891ea3c2d499bfbfb2a28cd87c5d7",
+      input: { image: base64 },
     }),
   });
   let pred;
@@ -118,9 +114,9 @@ async function viaBiRefNet(buffer) {
     const poll = await fetch(pollUrl, { headers: { Authorization: `Bearer ${token}` } });
     final = await poll.json();
   }
-  if (final.status === "failed") throw new Error("Replicate 851-labs basarisiz");
+  if (final.status === "failed") throw new Error("Replicate BiRefNet basarisiz");
   const outUrl = Array.isArray(final.output) ? final.output[0] : final.output;
-  if (!outUrl) throw new Error("Replicate 851-labs ciktisi bos");
+  if (!outUrl) throw new Error("Replicate BiRefNet ciktisi bos");
   const img = await fetch(outUrl);
   return Buffer.from(await img.arrayBuffer());
 }
