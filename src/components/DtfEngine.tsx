@@ -15,7 +15,10 @@ type OrderData = {
     products: {
       name: string;
       qty: number;
-      logoCm?: string;
+      printPosition?: string;
+      printSizeCm?: number;
+      recommendedRange?: string;
+      designerLogoCm?: string;
       placement?: { topPct: number; leftPct: number; widthPct: number };
     }[];
     totalQty: number;
@@ -55,16 +58,16 @@ export default function DtfEngine({
       // Her seçilen ürün için Merkliste'ye ayrı item ekle
       const ts = Date.now();
       for (const p of d.order.products) {
-        // Tasarım + sipariş detayları item note'una yazılır
         const noteLines: string[] = [];
         noteLines.push(`📨 EIGENES DTF-DESIGN`);
-        if (p.logoCm) noteLines.push(`Breite (im Designer): ${p.logoCm} cm`);
-        if (p.placement) {
-          noteLines.push(`Position im Designer: ${p.placement.leftPct}% von links, ${p.placement.topPct}% von oben`);
+        if (p.printPosition) noteLines.push(`Druckposition: ${p.printPosition}`);
+        if (p.printSizeCm) {
+          noteLines.push(`Druckbreite: ${p.printSizeCm} cm${p.recommendedRange ? ` (Empfohlen: ${p.recommendedRange})` : ""}`);
         }
-        noteLines.push(`Druckposition: ${d.order!.position}`);
-        noteLines.push(`Druckbreite (Wunsch): ${d.order!.width}`);
-        if (d.order!.height !== "auto") noteLines.push(`Druckhöhe: ${d.order!.height}`);
+        if (p.designerLogoCm) noteLines.push(`Designer-Größe: ${p.designerLogoCm} cm`);
+        if (p.placement) {
+          noteLines.push(`Designer-Position: ${p.placement.leftPct}% von links, ${p.placement.topPct}% von oben`);
+        }
         if (d.order!.deadline && d.order!.deadline !== "—") noteLines.push(`Liefertermin: ${d.order!.deadline}`);
         if (d.order!.note && d.order!.note !== "—") noteLines.push(`Bemerkung: ${d.order!.note}`);
         noteLines.push("");

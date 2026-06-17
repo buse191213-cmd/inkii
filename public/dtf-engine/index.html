@@ -337,6 +337,52 @@
   color: #0f766e;
   border-color: #14b8a6;
 }
+
+/* Sipariş modal - ürün kartı detay alanları */
+.prod-details {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  margin-top: 4px;
+}
+.prod-row {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 11px;
+}
+.prod-row label {
+  width: 30px;
+  color: #64748b;
+  font-weight: 600;
+  flex-shrink: 0;
+  text-align: left;
+}
+.prod-row input,
+.prod-row select {
+  flex: 1;
+  padding: 3px 6px;
+  border: 1px solid #d1d5db;
+  border-radius: 4px;
+  font-size: 11px;
+  font-family: inherit;
+  background: #fff;
+  min-width: 0;
+}
+.prod-row input:disabled,
+.prod-row select:disabled {
+  background: #f1f5f9;
+  color: #94a3b8;
+  cursor: not-allowed;
+}
+.prod-row input:not(:disabled),
+.prod-row select:not(:disabled) {
+  border-color: #14b8a6;
+  color: #0f766e;
+}
+.prod-row select {
+  font-size: 10px;
+}
 </style>
 </head>
 <body>
@@ -1201,33 +1247,10 @@ resetBtn.onclick = () => {
         <div id="productCheckboxes" class="prod-grid"></div>
       </div>
 
-      <!-- Pozisyon -->
-      <div>
-        <label style="font-weight:600;font-size:13px;color:#0f172a;display:block;margin-bottom:6px">Position *</label>
-        <select id="orderPosition" style="width:100%;padding:10px 12px;border:1px solid #d1d5db;border-radius:8px;font-size:14px">
-          <option value="">— bitte wählen —</option>
-          <option>Vorderseite (Brust mittig)</option>
-          <option>Vorderseite (linke Brust, klein)</option>
-          <option>Rückseite (großflächig)</option>
-          <option>Rückseite (Nacken, klein)</option>
-          <option>Ärmel links</option>
-          <option>Ärmel rechts</option>
-          <option>Vorder- UND Rückseite</option>
-          <option>Anderer Bereich</option>
-        </select>
-      </div>
-
-      <!-- Boyut -->
-      <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
-        <div>
-          <label style="font-weight:600;font-size:13px;color:#0f172a;display:block;margin-bottom:6px">Druckbreite (cm) *</label>
-          <input type="number" id="orderWidth" min="2" max="50" step="0.5" placeholder="z.B. 25" style="width:100%;padding:10px 12px;border:1px solid #d1d5db;border-radius:8px;font-size:14px;box-sizing:border-box">
-        </div>
-        <div>
-          <label style="font-weight:600;font-size:13px;color:#0f172a;display:block;margin-bottom:6px">Höhe (cm)</label>
-          <input type="number" id="orderHeight" min="2" max="50" step="0.5" placeholder="auto" style="width:100%;padding:10px 12px;border:1px solid #d1d5db;border-radius:8px;font-size:14px;box-sizing:border-box">
-        </div>
-      </div>
+      <!-- Position ve Boyut artık ürün başına (kart içinde) -->
+      <input type="hidden" id="orderPosition" value="(per Produkt)">
+      <input type="hidden" id="orderWidth" value="(per Produkt)">
+      <input type="hidden" id="orderHeight" value="auto">
 
       <!-- Renk -->
       <div>
@@ -1258,12 +1281,52 @@ resetBtn.onclick = () => {
 <script>
 const ORDER_PRODUCTS = [
   // area: logo yerleşimi (%) — top, left, width (yükseklik orantılı)
-  { id: "tshirt",  name: "T-Shirt",  img: "/dtf-engine/mockups/tshirt.png", maxW: 25, area: { top: 36, left: 35, width: 30 } },
-  { id: "hoodie",  name: "Hoodie",   img: "/dtf-engine/mockups/hoodie.png", maxW: 25, area: { top: 40, left: 36, width: 28 } },
-  { id: "cap",     name: "Cap",      img: "/dtf-engine/mockups/cap.png",    maxW: 7,  area: { top: 42, left: 41, width: 18 } },
-  { id: "polo",    name: "Polo",     img: "/dtf-engine/mockups/polo.png",   maxW: 8,  area: { top: 42, left: 43, width: 14 } },
-  { id: "tasche",  name: "Tasche",   img: "/dtf-engine/mockups/bag.png",    maxW: 30, area: { top: 45, left: 33, width: 34 } },
-  { id: "jacke",   name: "Jacke",    img: "/dtf-engine/mockups/jacket.png", maxW: 28, area: { top: 40, left: 36, width: 28 } },
+  // positions: ürün başına Baskı Konumu + Önerilen Ölçü aralığı (cm)
+  { id: "tshirt",  name: "T-Shirt",  img: "/dtf-engine/mockups/tshirt.png", maxW: 45, area: { top: 36, left: 35, width: 30 },
+    positions: [
+      { name: "Sol Göğüs Logo",       min: 8,  max: 10 },
+      { name: "Orta Göğüs Küçük",     min: 18, max: 22 },
+      { name: "Orta Göğüs Standart",  min: 25, max: 30 },
+      { name: "Büyük Ön Baskı",       min: 30, max: 35 },
+      { name: "Sırt Üstü Logo",       min: 25, max: 30 },
+      { name: "Büyük Sırt Tasarımı",  min: 30, max: 40 },
+      { name: "Boydan Büyük Tasarım", min: 35, max: 45 },
+    ]
+  },
+  { id: "hoodie",  name: "Hoodie",   img: "/dtf-engine/mockups/hoodie.png", maxW: 40, area: { top: 40, left: 36, width: 28 },
+    positions: [
+      { name: "Sol Göğüs",     min: 8,  max: 10 },
+      { name: "Ön Orta",       min: 25, max: 30 },
+      { name: "Büyük Sırt",    min: 30, max: 40 },
+      { name: "Kapuze Hinten", min: 10, max: 15 },
+    ]
+  },
+  { id: "cap",     name: "Cap",      img: "/dtf-engine/mockups/cap.png",    maxW: 7,  area: { top: 42, left: 41, width: 18 },
+    positions: [
+      { name: "Ön Merkez", min: 5, max: 7 },
+      { name: "Yan Taraf", min: 4, max: 6 },
+    ]
+  },
+  { id: "polo",    name: "Polo",     img: "/dtf-engine/mockups/polo.png",   maxW: 25, area: { top: 42, left: 43, width: 14 },
+    positions: [
+      { name: "Sol Göğüs Logo", min: 8,  max: 10 },
+      { name: "Sırt Logo",      min: 20, max: 25 },
+    ]
+  },
+  { id: "tasche",  name: "Tasche",   img: "/dtf-engine/mockups/bag.png",    maxW: 35, area: { top: 45, left: 33, width: 34 },
+    positions: [
+      { name: "Küçük Logo",  min: 10, max: 15 },
+      { name: "Orta Baskı",  min: 20, max: 25 },
+      { name: "Büyük Baskı", min: 30, max: 35 },
+    ]
+  },
+  { id: "jacke",   name: "Jacke",    img: "/dtf-engine/mockups/jacket.png", maxW: 35, area: { top: 40, left: 36, width: 28 },
+    positions: [
+      { name: "Sol Göğüs",     min: 8,  max: 10 },
+      { name: "Sırt Üstü",     min: 25, max: 30 },
+      { name: "Büyük Sırt",    min: 30, max: 35 },
+    ]
+  },
 ];
 
 // Görsel kart seçim
@@ -1272,18 +1335,22 @@ window._orderSelected = {};
 function toggleProductCard(id) {
   const card = document.getElementById("card_" + id);
   const qty = document.getElementById("qty_" + id);
+  const pos = document.getElementById("pos_" + id);
+  const size = document.getElementById("size_" + id);
   if (!card || !qty) return;
   const isActive = card.classList.contains("active");
   if (isActive) {
     card.classList.remove("active");
-    qty.disabled = true;
-    qty.value = "";
+    qty.disabled = true; qty.value = "";
+    if (pos) pos.disabled = true;
+    if (size) { size.disabled = true; size.value = ""; }
     delete window._orderSelected[id];
   } else {
     card.classList.add("active");
-    qty.disabled = false;
+    qty.disabled = false; qty.value = qty.value || "1";
+    if (pos) pos.disabled = false;
+    if (size) size.disabled = false;
     qty.focus();
-    qty.value = qty.value || "1";
     window._orderSelected[id] = true;
   }
 }
@@ -1306,30 +1373,61 @@ function renderOrderProducts() {
   if (!box) return;
   const logoUrl = window._lastResult?.resultUrl || window._lastResult?.resultBlobUrl || "";
   box.innerHTML = ORDER_PRODUCTS.map(p => {
-    // Önce kullanıcının ana ekranda taşıdığı pozisyon, yoksa default
     const liveArea = getGarmentArea(p.id);
     const a = liveArea || p.area;
-    // Logo'nun cm cinsinden boyutu: width% * maxW
     const logoCm = ((a.width / 100) * p.maxW).toFixed(1);
     const logoStyle = logoUrl
       ? `position:absolute;top:${a.top}%;left:${a.left}%;width:${a.width}%;height:auto;object-fit:contain;pointer-events:none;filter:drop-shadow(0 1px 2px rgba(0,0,0,.2))`
       : "display:none";
+    const posOptions = p.positions.map((pos, i) =>
+      `<option value="${i}" data-min="${pos.min}" data-max="${pos.max}">${pos.name} (${pos.min}-${pos.max} cm)</option>`
+    ).join("");
+    const defaultPos = p.positions[0];
     return `
-    <div id="card_${p.id}" class="prod-card" onclick="toggleProductCard('${p.id}')" data-id="${p.id}" data-name="${p.name}">
+    <div id="card_${p.id}" class="prod-card" data-id="${p.id}" data-name="${p.name}">
       <div class="prod-check">✓</div>
-      <div class="prod-img-wrap" style="position:relative">
+      <div class="prod-img-wrap" style="position:relative;cursor:pointer" onclick="toggleProductCard('${p.id}')">
         <img src="${p.img}" alt="${p.name}" style="position:relative;z-index:1" onerror="this.style.display='none'" />
         ${logoUrl ? `<img src="${logoUrl}" alt="Ihr Logo" style="${logoStyle};z-index:2" />` : ""}
       </div>
-      <div class="prod-name">${p.name}</div>
-      <div class="prod-max">Breite: ${logoCm} cm</div>
-      <div class="prod-qty-row" onclick="event.stopPropagation()">
-        <span>Stk:</span>
-        <input type="number" id="qty_${p.id}" min="1" max="9999" placeholder="0" disabled />
+      <div class="prod-name" onclick="toggleProductCard('${p.id}')" style="cursor:pointer">${p.name}</div>
+      <div class="prod-details" onclick="event.stopPropagation()">
+        <div class="prod-row">
+          <label>Stk:</label>
+          <input type="number" id="qty_${p.id}" min="1" max="9999" placeholder="0" disabled />
+        </div>
+        <div class="prod-row">
+          <label>Pos:</label>
+          <select id="pos_${p.id}" disabled onchange="updateSizeRange('${p.id}')">
+            ${posOptions}
+          </select>
+        </div>
+        <div class="prod-row">
+          <label>cm:</label>
+          <input type="number" id="size_${p.id}" min="${defaultPos.min}" max="${defaultPos.max}" step="0.5" placeholder="${defaultPos.min}-${defaultPos.max}" disabled />
+        </div>
       </div>
     </div>
   `;
   }).join("");
+}
+
+// Pozisyon seçildiğinde boyut input'un min/max'ini güncelle
+function updateSizeRange(productId) {
+  const p = ORDER_PRODUCTS.find(x => x.id === productId);
+  const posSel = document.getElementById("pos_" + productId);
+  const sizeInp = document.getElementById("size_" + productId);
+  if (!p || !posSel || !sizeInp) return;
+  const idx = parseInt(posSel.value) || 0;
+  const pos = p.positions[idx];
+  sizeInp.min = pos.min;
+  sizeInp.max = pos.max;
+  sizeInp.placeholder = pos.min + "-" + pos.max;
+  // Mevcut değer aralık dışındaysa sıfırla
+  const cur = parseFloat(sizeInp.value);
+  if (cur && (cur < pos.min || cur > pos.max)) {
+    sizeInp.value = "";
+  }
 }
 
 function openOrderModal() {
@@ -1342,21 +1440,34 @@ function closeOrderModal() {
 }
 
 function submitOrder() {
-  // Seçili ürünleri topla (kart bazlı) + her ürün için kullanıcının yerleştirme bilgisi
   const selected = [];
   for (const p of ORDER_PRODUCTS) {
     const card = document.getElementById("card_" + p.id);
     const qty = document.getElementById("qty_" + p.id);
+    const posSel = document.getElementById("pos_" + p.id);
+    const sizeInp = document.getElementById("size_" + p.id);
     if (card && card.classList.contains("active")) {
       const q = parseInt(qty.value) || 0;
       if (q < 1) { alert(`Bitte Menge für ${p.name} eingeben.`); qty.focus(); return; }
+      const posIdx = parseInt(posSel?.value) || 0;
+      const pos = p.positions[posIdx];
+      const sizeVal = parseFloat(sizeInp?.value);
+      if (!sizeVal) { alert(`Bitte Druckbreite für ${p.name} eingeben (${pos.min}-${pos.max} cm).`); sizeInp.focus(); return; }
+      if (sizeVal < pos.min || sizeVal > pos.max) {
+        alert(`${p.name} - "${pos.name}": Druckbreite muss zwischen ${pos.min} und ${pos.max} cm liegen. Sie haben ${sizeVal} cm eingegeben.`);
+        sizeInp.focus();
+        return;
+      }
       const liveArea = getGarmentArea(p.id) || p.area;
       const logoCm = ((liveArea.width / 100) * p.maxW).toFixed(1);
       selected.push({
         name: p.name,
         qty: q,
-        // Müşterinin tasarımda yerleştirdiği boyut (cm cinsinden)
-        logoCm: logoCm,
+        printPosition: pos.name,
+        printSizeCm: sizeVal,
+        recommendedRange: `${pos.min}-${pos.max} cm`,
+        // Müşterinin tasarımda yerleştirdiği konum
+        designerLogoCm: logoCm,
         placement: {
           topPct: Math.round(liveArea.top),
           leftPct: Math.round(liveArea.left),
@@ -1367,16 +1478,12 @@ function submitOrder() {
   }
   if (!selected.length) { alert("Bitte mindestens ein Produkt auswählen."); return; }
 
-  const position = document.getElementById("orderPosition").value;
-  if (!position) { alert("Bitte Position auswählen."); return; }
-
-  const width = document.getElementById("orderWidth").value;
-  if (!width) { alert("Bitte Druckbreite angeben."); return; }
-
-  const height = document.getElementById("orderHeight").value || "auto";
   const textileColor = document.getElementById("orderTextileColor").value || "—";
   const deadline = document.getElementById("orderDeadline").value || "—";
   const note = document.getElementById("orderNote").value || "—";
+  const position = "(per Produkt)";
+  const width = "(per Produkt)";
+  const height = "auto";
 
   // Toplam adet
   const totalQty = selected.reduce((s, x) => s + x.qty, 0);

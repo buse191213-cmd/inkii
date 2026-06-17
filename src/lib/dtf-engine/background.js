@@ -129,6 +129,9 @@ async function viaRemoveBg(buffer) {
   const form = new FormData();
   form.append("image_file", new Blob([buffer]), "input.png");
   form.append("size", "auto");
+  form.append("type", "auto");           // AI otomatik tespit (insan figürü dahil)
+  form.append("crop", "false");          // kırpma yok - elleri korumak için
+  form.append("format", "png");
   const res = await fetch("https://api.remove.bg/v1.0/removebg", {
     method: "POST",
     headers: { "X-Api-Key": key },
