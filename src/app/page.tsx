@@ -52,17 +52,27 @@ export default async function HomePage() {
         <div className="hero-overlay" />
         <div className="hero-content">
           <h1 className="hero-title">
-            RUNDUM<span className="hero-dash">-</span>MERCH<span className="hero-dash">-</span>SERVICE
+            {locale === "tr" ? (
+              <>KOMPLE<span className="hero-dash">-</span>BASKI<span className="hero-dash">-</span>HİZMETİ</>
+            ) : locale === "en" ? (
+              <>COMPLETE<span className="hero-dash">-</span>MERCH<span className="hero-dash">-</span>SERVICE</>
+            ) : (
+              <>RUNDUM<span className="hero-dash">-</span>MERCH<span className="hero-dash">-</span>SERVICE</>
+            )}
           </h1>
           <p className="hero-sub">
-            Hochwertige Textilveredelung und Werbeartikel aus einer Hand.
+            {locale === "tr"
+              ? "Tek elden yüksek kaliteli tekstil baskı ve promosyon ürünleri."
+              : locale === "en"
+              ? "High-quality textile printing and promotional products from a single source."
+              : "Hochwertige Textilveredelung und Werbeartikel aus einer Hand."}
           </p>
           <div className="hero-cta-row">
             <Link href="/werbemittel" className="btn-hero-light">
-              Alle Produkte
+              {locale === "tr" ? "Tüm Ürünler" : locale === "en" ? "All Products" : "Alle Produkte"}
             </Link>
             <Link href="/kontakt" className="btn-hero-outline">
-              Kontakt
+              {locale === "tr" ? "İletişim" : locale === "en" ? "Contact" : "Kontakt"}
             </Link>
           </div>
         </div>

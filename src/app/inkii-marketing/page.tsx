@@ -49,10 +49,20 @@ export default async function InkiiMarketingPage() {
         <div className="hero-overlay" />
         <div className="hero-content">
           <h1 className="hero-title">
-            RUNDUM<span className="hero-dash">-</span>DIGITAL<span className="hero-dash">-</span>SERVICE
+            {locale === "tr" ? (
+              <>KOMPLE<span className="hero-dash">-</span>DİJİTAL<span className="hero-dash">-</span>HİZMET</>
+            ) : locale === "en" ? (
+              <>COMPLETE<span className="hero-dash">-</span>DIGITAL<span className="hero-dash">-</span>SERVICE</>
+            ) : (
+              <>RUNDUM<span className="hero-dash">-</span>DIGITAL<span className="hero-dash">-</span>SERVICE</>
+            )}
           </h1>
           <p className="hero-sub">
-            Kreatives Webdesign und strategisches Marketing aus einer Hand.
+            {locale === "tr"
+              ? "Tek elden yaratıcı web tasarım ve stratejik pazarlama."
+              : locale === "en"
+              ? "Creative web design and strategic marketing from a single source."
+              : "Kreatives Webdesign und strategisches Marketing aus einer Hand."}
           </p>
           <div className="hero-cta-row">
             <Link href="#services" className="btn-hero-light">{t.ctaBtn}</Link>
