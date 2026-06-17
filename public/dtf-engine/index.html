@@ -1189,6 +1189,9 @@ resetBtn.onclick = () => {
       <!-- Ürün seçimi -->
       <div>
         <label style="font-weight:600;font-size:13px;color:#0f172a;display:block;margin-bottom:8px">Produkte auswählen *</label>
+        <div id="logoHint" style="font-size:11px;color:#0f766e;background:#f0fdfa;padding:6px 10px;border-radius:6px;margin-bottom:8px;display:flex;align-items:center;gap:6px">
+          <span>✨</span><span>Ihr Design wird als Beispiel auf den Produkten angezeigt</span>
+        </div>
         <div id="productCheckboxes" class="prod-grid"></div>
       </div>
 
@@ -1248,12 +1251,13 @@ resetBtn.onclick = () => {
 
 <script>
 const ORDER_PRODUCTS = [
-  { id: "tshirt",  name: "T-Shirt",  img: "/dtf-engine/mockups/tshirt.png", maxW: 25 },
-  { id: "hoodie",  name: "Hoodie",   img: "/dtf-engine/mockups/hoodie.png", maxW: 25 },
-  { id: "cap",     name: "Cap",      img: "/dtf-engine/mockups/cap.png",    maxW: 7  },
-  { id: "polo",    name: "Polo",     img: "/dtf-engine/mockups/polo.png",   maxW: 8  },
-  { id: "tasche",  name: "Tasche",   img: "/dtf-engine/mockups/bag.png",    maxW: 30 },
-  { id: "jacke",   name: "Jacke",    img: "/dtf-engine/mockups/jacket.png", maxW: 28 },
+  // area: logo yerleşimi (%) — top, left, width (yükseklik orantılı)
+  { id: "tshirt",  name: "T-Shirt",  img: "/dtf-engine/mockups/tshirt.png", maxW: 25, area: { top: 36, left: 35, width: 30 } },
+  { id: "hoodie",  name: "Hoodie",   img: "/dtf-engine/mockups/hoodie.png", maxW: 25, area: { top: 40, left: 36, width: 28 } },
+  { id: "cap",     name: "Cap",      img: "/dtf-engine/mockups/cap.png",    maxW: 7,  area: { top: 42, left: 41, width: 18 } },
+  { id: "polo",    name: "Polo",     img: "/dtf-engine/mockups/polo.png",   maxW: 8,  area: { top: 42, left: 43, width: 14 } },
+  { id: "tasche",  name: "Tasche",   img: "/dtf-engine/mockups/bag.png",    maxW: 30, area: { top: 45, left: 33, width: 34 } },
+  { id: "jacke",   name: "Jacke",    img: "/dtf-engine/mockups/jacket.png", maxW: 28, area: { top: 40, left: 36, width: 28 } },
 ];
 
 // Görsel kart seçim
@@ -1281,11 +1285,19 @@ function toggleProductCard(id) {
 function renderOrderProducts() {
   const box = document.getElementById("productCheckboxes");
   if (!box) return;
-  box.innerHTML = ORDER_PRODUCTS.map(p => `
+  // Müşterinin işlediği logo (varsa)
+  const logoUrl = window._lastResult?.resultUrl || window._lastResult?.resultBlobUrl || "";
+  box.innerHTML = ORDER_PRODUCTS.map(p => {
+    const a = p.area;
+    const logoStyle = logoUrl
+      ? `position:absolute;top:${a.top}%;left:${a.left}%;width:${a.width}%;height:auto;object-fit:contain;pointer-events:none;filter:drop-shadow(0 1px 2px rgba(0,0,0,.2))`
+      : "display:none";
+    return `
     <div id="card_${p.id}" class="prod-card" onclick="toggleProductCard('${p.id}')" data-id="${p.id}" data-name="${p.name}">
       <div class="prod-check">✓</div>
-      <div class="prod-img-wrap">
-        <img src="${p.img}" alt="${p.name}" onerror="this.style.display='none'" />
+      <div class="prod-img-wrap" style="position:relative">
+        <img src="${p.img}" alt="${p.name}" style="position:relative;z-index:1" onerror="this.style.display='none'" />
+        ${logoUrl ? `<img src="${logoUrl}" alt="Ihr Logo" style="${logoStyle};z-index:2" />` : ""}
       </div>
       <div class="prod-name">${p.name}</div>
       <div class="prod-qty-row" onclick="event.stopPropagation()">
@@ -1293,7 +1305,8 @@ function renderOrderProducts() {
         <input type="number" id="qty_${p.id}" min="1" max="9999" placeholder="0" disabled />
       </div>
     </div>
-  `).join("");
+  `;
+  }).join("");
 }
 
 function openOrderModal() {
