@@ -11,7 +11,12 @@ type OrderData = {
   productName?: string;
   productCode?: string;
   order?: {
-    products: { name: string; qty: number }[];
+    products: {
+      name: string;
+      qty: number;
+      logoCm?: string;
+      placement?: { topPct: number; leftPct: number; widthPct: number };
+    }[];
     totalQty: number;
     position: string;
     width: string;
@@ -52,16 +57,22 @@ export default function DtfEngine({
 
       if (d.order) {
         lines.push("");
-        lines.push("── PRODUKTE ──");
+        lines.push("── PRODUKTE & PLATZIERUNG ──");
         for (const p of d.order.products) {
           lines.push(`• ${p.name}: ${p.qty} Stück`);
+          if (p.logoCm) {
+            lines.push(`   Breite (im Designer): ${p.logoCm} cm`);
+          }
+          if (p.placement) {
+            lines.push(`   Position: ${p.placement.leftPct}% von links, ${p.placement.topPct}% von oben`);
+          }
         }
         lines.push(`GESAMT: ${d.order.totalQty} Stück`);
         lines.push("");
-        lines.push("── DRUCKDETAILS ──");
+        lines.push("── DRUCKDETAILS (Wunsch) ──");
         lines.push(`Position: ${d.order.position}`);
-        lines.push(`Druckbreite: ${d.order.width}`);
-        if (d.order.height !== "auto") lines.push(`Druckhöhe: ${d.order.height}`);
+        lines.push(`Breite: ${d.order.width}`);
+        if (d.order.height !== "auto") lines.push(`Höhe: ${d.order.height}`);
         if (d.order.textileColor && d.order.textileColor !== "—") lines.push(`Textilfarbe: ${d.order.textileColor}`);
         if (d.order.deadline && d.order.deadline !== "—") lines.push(`Liefertermin: ${d.order.deadline}`);
         if (d.order.note && d.order.note !== "—") {

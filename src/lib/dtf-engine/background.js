@@ -86,8 +86,10 @@ async function viaBiRefNet(buffer) {
   if (!token || token.includes("BURAYA") || token.includes("ANAHTAR")) {
     throw new Error("Replicate token .env'de ayarli degil");
   }
-  const base64 = `data:image/png;base64,${buffer.toString("base64")}`;
-  const start = await fetch("https://api.replicate.com/v1/predictions", {
+  // 851-labs/background-remover modeli (BRIA + ek post-processing - eller, parmaklar korunur)
+  const pngBuffer = await sharp(buffer).png().toBuffer();
+  const base64 = `data:image/png;base64,${pngBuffer.toString("base64")}`;
+  const start = await fetch("https://api.replicate.com/v1/models/851-labs/background-remover/predictions", {
     method: "POST",
     headers: {
       Authorization: `Bearer ${token}`,
@@ -95,8 +97,13 @@ async function viaBiRefNet(buffer) {
       Prefer: "wait",
     },
     body: JSON.stringify({
-      version: "f74986db0355b58403ed20963af156525e2891ea3c2d499bfbfb2a28cd87c5d7",
-      input: { image: base64 },
+      input: {
+        image: base64,
+        format: "png",
+        reverse: false,
+        threshold: 0,           // 0 = anti-alias korunur (tırtık olmaz)
+        background_type: "rgba", // şeffaf arka plan
+      },
     }),
   });
   let pred;
@@ -111,9 +118,9 @@ async function viaBiRefNet(buffer) {
     const poll = await fetch(pollUrl, { headers: { Authorization: `Bearer ${token}` } });
     final = await poll.json();
   }
-  if (final.status === "failed") throw new Error("Replicate BiRefNet basarisiz");
+  if (final.status === "failed") throw new Error("Replicate 851-labs basarisiz");
   const outUrl = Array.isArray(final.output) ? final.output[0] : final.output;
-  if (!outUrl) throw new Error("Replicate BiRefNet ciktisi bos");
+  if (!outUrl) throw new Error("Replicate 851-labs ciktisi bos");
   const img = await fetch(outUrl);
   return Buffer.from(await img.arrayBuffer());
 }

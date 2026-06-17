@@ -1288,13 +1288,29 @@ function toggleProductCard(id) {
   }
 }
 
+// Ana ekrandaki GARMENTS area'sından (kullanıcının drag/drop ettiği konum) al
+function getGarmentArea(productId) {
+  if (typeof GARMENTS === "undefined" || !GARMENTS) return null;
+  const nameMap = {
+    tshirt: "T-Shirt", hoodie: "Hoodie", cap: "Cap",
+    polo: "Polo", tasche: "Tasche", jacke: "Jacke",
+  };
+  const name = nameMap[productId];
+  if (!name) return null;
+  const g = GARMENTS.find(x => x.name === name);
+  return g?.area || null;
+}
+
 function renderOrderProducts() {
   const box = document.getElementById("productCheckboxes");
   if (!box) return;
-  // Müşterinin işlediği logo (varsa)
   const logoUrl = window._lastResult?.resultUrl || window._lastResult?.resultBlobUrl || "";
   box.innerHTML = ORDER_PRODUCTS.map(p => {
-    const a = p.area;
+    // Önce kullanıcının ana ekranda taşıdığı pozisyon, yoksa default
+    const liveArea = getGarmentArea(p.id);
+    const a = liveArea || p.area;
+    // Logo'nun cm cinsinden boyutu: width% * maxW
+    const logoCm = ((a.width / 100) * p.maxW).toFixed(1);
     const logoStyle = logoUrl
       ? `position:absolute;top:${a.top}%;left:${a.left}%;width:${a.width}%;height:auto;object-fit:contain;pointer-events:none;filter:drop-shadow(0 1px 2px rgba(0,0,0,.2))`
       : "display:none";
@@ -1306,7 +1322,7 @@ function renderOrderProducts() {
         ${logoUrl ? `<img src="${logoUrl}" alt="Ihr Logo" style="${logoStyle};z-index:2" />` : ""}
       </div>
       <div class="prod-name">${p.name}</div>
-      <div class="prod-max">Max. Breite: ${p.maxW} cm</div>
+      <div class="prod-max">Breite: ${logoCm} cm</div>
       <div class="prod-qty-row" onclick="event.stopPropagation()">
         <span>Stk:</span>
         <input type="number" id="qty_${p.id}" min="1" max="9999" placeholder="0" disabled />
@@ -1326,7 +1342,7 @@ function closeOrderModal() {
 }
 
 function submitOrder() {
-  // Seçili ürünleri topla (kart bazlı)
+  // Seçili ürünleri topla (kart bazlı) + her ürün için kullanıcının yerleştirme bilgisi
   const selected = [];
   for (const p of ORDER_PRODUCTS) {
     const card = document.getElementById("card_" + p.id);
@@ -1334,7 +1350,19 @@ function submitOrder() {
     if (card && card.classList.contains("active")) {
       const q = parseInt(qty.value) || 0;
       if (q < 1) { alert(`Bitte Menge für ${p.name} eingeben.`); qty.focus(); return; }
-      selected.push({ name: p.name, qty: q });
+      const liveArea = getGarmentArea(p.id) || p.area;
+      const logoCm = ((liveArea.width / 100) * p.maxW).toFixed(1);
+      selected.push({
+        name: p.name,
+        qty: q,
+        // Müşterinin tasarımda yerleştirdiği boyut (cm cinsinden)
+        logoCm: logoCm,
+        placement: {
+          topPct: Math.round(liveArea.top),
+          leftPct: Math.round(liveArea.left),
+          widthPct: Math.round(liveArea.width),
+        },
+      });
     }
   }
   if (!selected.length) { alert("Bitte mindestens ein Produkt auswählen."); return; }
