@@ -499,6 +499,44 @@
     font-size: 13px !important;
   }
 }
+
+/* Mockup sağ üstündeki kapatma X butonu (sadece aktif kartta görünür) */
+.prod-deselect {
+  position: absolute;
+  top: 4px;
+  right: 4px;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  background: rgba(100, 116, 139, 0.85);
+  color: #fff;
+  border: none;
+  cursor: pointer;
+  font-size: 13px;
+  font-weight: 600;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  z-index: 5;
+  transition: 0.15s;
+  padding: 0;
+  line-height: 1;
+}
+.prod-card.active .prod-deselect {
+  display: flex;
+}
+.prod-deselect:hover {
+  background: rgba(15, 23, 42, 0.95);
+  transform: scale(1.08);
+}
+/* Aktifken sağ üstteki ✓ (prod-check) X ile çakışmasın — solda göster */
+.prod-card.active .prod-check {
+  right: auto;
+  left: 4px;
+}
+@media (max-width: 768px) {
+  .prod-deselect { width: 22px; height: 22px; font-size: 11px; }
+}
 </style>
 </head>
 <body>
@@ -1448,27 +1486,36 @@ const ORDER_PRODUCTS = [
 // Visuelle Kartenauswahl
 window._orderSelected = {};
 
+// Kart tıklanınca sadece SEÇER (idempotent). Veriyi silmez.
 function toggleProductCard(id) {
   const card = document.getElementById("card_" + id);
   const qty = document.getElementById("qty_" + id);
   const pos = document.getElementById("pos_" + id);
   const size = document.getElementById("size_" + id);
   if (!card || !qty) return;
-  const isActive = card.classList.contains("active");
-  if (isActive) {
-    card.classList.remove("active");
-    qty.disabled = true; qty.value = "";
-    if (pos) pos.disabled = true;
-    if (size) { size.disabled = true; size.value = ""; }
-    delete window._orderSelected[id];
-  } else {
-    card.classList.add("active");
-    qty.disabled = false; qty.value = qty.value || "1";
-    if (pos) pos.disabled = false;
-    if (size) size.disabled = false;
-    qty.focus();
-    window._orderSelected[id] = true;
-  }
+  // Zaten aktifse hiçbir şey yapma (veri kaybı yok)
+  if (card.classList.contains("active")) return;
+  card.classList.add("active");
+  qty.disabled = false; qty.value = qty.value || "1";
+  if (pos) pos.disabled = false;
+  if (size) size.disabled = false;
+  qty.focus();
+  window._orderSelected[id] = true;
+}
+
+// X butonu ile DEAKTİF — veri sıfırlanır
+function deselectProductCard(e, id) {
+  if (e) e.stopPropagation();
+  const card = document.getElementById("card_" + id);
+  const qty = document.getElementById("qty_" + id);
+  const pos = document.getElementById("pos_" + id);
+  const size = document.getElementById("size_" + id);
+  if (!card) return;
+  card.classList.remove("active");
+  if (qty) { qty.disabled = true; qty.value = ""; }
+  if (pos) pos.disabled = true;
+  if (size) { size.disabled = true; size.value = ""; }
+  delete window._orderSelected[id];
 }
 
 // Position aus GARMENTS (was der User per Drag&Drop verschoben hat)
@@ -1505,6 +1552,7 @@ function renderOrderProducts() {
       <div class="prod-img-wrap" style="position:relative;cursor:pointer" onclick="toggleProductCard('${p.id}')">
         <img src="${p.img}" alt="${p.name}" style="position:relative;z-index:1" onerror="this.style.display='none'" />
         ${logoUrl ? `<img src="${logoUrl}" alt="Ihr Logo" style="${logoStyle};z-index:2" />` : ""}
+        <button type="button" class="prod-deselect" onclick="deselectProductCard(event, '${p.id}')" title="Auswahl entfernen" aria-label="Auswahl entfernen">✕</button>
       </div>
       <div class="prod-name" onclick="toggleProductCard('${p.id}')" style="cursor:pointer">${p.name}</div>
       <div class="prod-details" onclick="event.stopPropagation()">
