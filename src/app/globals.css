@@ -3797,45 +3797,56 @@ body:has(.hero-full) .brand-marketing .brand-label{
 
 
 /* === Hero brand switcher — hero video İÇİNDE sol alt, scroll'la kaybolur === */
+/* Markalar arası geçiş - sağ alt köşede, WhatsApp butonunun ÜSTÜNDE */
 .home-brand-switcher{
-  position:absolute !important;
-  bottom:22px !important;
-  left:28px !important;
+  position:fixed !important;
+  bottom:90px !important;   /* WhatsApp(56)+22 alt boşluk + 12 ara */
+  right:22px !important;
+  left:auto !important;
   top:auto !important;
-  right:auto !important;
-  z-index:5 !important;
-  background:transparent !important;
-  border:none !important;
+  z-index:997 !important;
+  background:#ffffff !important;
+  border:1px solid rgba(15,23,42,.08) !important;
+  border-radius:14px !important;
+  padding:8px 14px !important;
   text-decoration:none !important;
   display:inline-flex !important;
   align-items:center !important;
-  padding:0 !important;
-  transition:transform .2s,opacity .2s;
+  box-shadow:0 8px 24px rgba(0,0,0,.18), 0 2px 6px rgba(0,0,0,.08) !important;
+  transition:transform .2s, box-shadow .2s, opacity .2s;
   pointer-events:auto !important;
 }
 .home-brand-switcher:hover,
 .home-brand-switcher:active{
-  transform:scale(1.05);
-  opacity:.92;
+  transform:translateY(-2px) scale(1.04);
+  box-shadow:0 12px 32px rgba(0,0,0,.22), 0 4px 10px rgba(0,0,0,.1) !important;
 }
 .home-brand-switcher .mbs-img{
-  /* Width sabit, height oranlı: iki marka logo görsel olarak aynı genişlikte */
-  width:118px !important;
+  width:90px !important;
   height:auto !important;
-  max-width:118px !important;
+  max-width:90px !important;
   display:block !important;
   object-fit:contain;
   object-position:left center;
   /* margin-left JS ile dinamik ayarlanıyor (canvas pixel analizi) */
-  filter:brightness(0) invert(1) drop-shadow(0 2px 6px rgba(0,0,0,.45)) !important;
+  filter:none !important;   /* Beyaz kart üzerinde logo orijinal renk göstersin */
 }
 @media(max-width:768px){
-  .home-brand-switcher{bottom:60px !important;left:28px !important;padding-left:0 !important}
-  .home-brand-switcher .mbs-img{width:100px !important;max-width:100px !important}
+  .home-brand-switcher{
+    bottom:78px !important;    /* Mobil WhatsApp(52)+16+10 */
+    right:16px !important;
+    padding:6px 11px !important;
+  }
+  .home-brand-switcher .mbs-img{width:78px !important;max-width:78px !important}
 }
 @media(max-width:380px){
-  .home-brand-switcher{bottom:56px !important;left:20px !important}
-  .home-brand-switcher .mbs-img{width:88px !important;max-width:88px !important}
+  .home-brand-switcher{bottom:76px !important;right:12px !important;padding:5px 9px !important}
+  .home-brand-switcher .mbs-img{width:70px !important;max-width:70px !important}
+}
+/* Cookie banner açıkken WhatsApp daha yukarı çıkıyor → switcher da onunla taşınsın */
+body:has(.cookie-banner) .home-brand-switcher{bottom:188px !important}
+@media(max-width:768px){
+  body:has(.cookie-banner) .home-brand-switcher{bottom:172px !important}
 }
 
 /* === Diğer marka logosu (sadece ana sayfalarda sağda) === */
