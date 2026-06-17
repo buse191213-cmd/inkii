@@ -116,13 +116,12 @@ function SiteHeaderInner({
               translate="no"
               aria-label={isMarketing ? "INKII MARKETING – Startseite" : "INKII WORKS – Startseite"}
             >
-              {/* Yeni trim edilmiş statik logo dosyaları, fallback /inkii-logo.png */}
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img
-                src={isMarketing ? "/inkii-marketing-logo.png" : "/inkii-works-logo.png"}
-                alt={isMarketing ? "INKII MARKETING" : "INKII WORKS"}
-                onError={(e) => { (e.currentTarget as HTMLImageElement).src = "/inkii-logo.png"; }}
-              />
+              {isMarketing && marketingLogo ? (
+                // eslint-disable-next-line @next/next/no-img-element
+                <img src={marketingLogo} alt="INKII MARKETING" />
+              ) : (
+                <Image src="/inkii-logo.png" alt={isMarketing ? "INKII MARKETING" : "INKII WORKS"} width={200} height={60} priority />
+              )}
             </Link>
           </div>
 
