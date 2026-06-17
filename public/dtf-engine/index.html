@@ -299,6 +299,12 @@
   height: 80%;
   object-fit: contain;
 }
+.prod-max {
+  font-size: 10px;
+  color: #14b8a6;
+  font-weight: 600;
+  margin-bottom: 4px;
+}
 .prod-name {
   font-size: 12px;
   font-weight: 700;
@@ -1300,6 +1306,7 @@ function renderOrderProducts() {
         ${logoUrl ? `<img src="${logoUrl}" alt="Ihr Logo" style="${logoStyle};z-index:2" />` : ""}
       </div>
       <div class="prod-name">${p.name}</div>
+      <div class="prod-max">Max. Breite: ${p.maxW} cm</div>
       <div class="prod-qty-row" onclick="event.stopPropagation()">
         <span>Stk:</span>
         <input type="number" id="qty_${p.id}" min="1" max="9999" placeholder="0" disabled />

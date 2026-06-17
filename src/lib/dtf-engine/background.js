@@ -16,7 +16,7 @@ import os from "os";
 import path from "path";
 
 const run = promisify(execFile);
-// BG_PROVIDER: replicate (BRIA RMBG-2.0, en temiz) | removebg | photoroom | local | demo
+// BG_PROVIDER: replicate (BiRefNet - ince yapı ✓) | replicate-bria (RMBG-2.0) | removebg | photoroom | local | demo
 const PROVIDER = (process.env.BG_PROVIDER || "demo").toLowerCase();
 
 // Sonuç + bilgi döndürür: { buffer, ok, message }
@@ -24,7 +24,8 @@ export async function removeBackground(buffer) {
   try {
     let out;
     switch (PROVIDER) {
-      case "replicate": out = await viaReplicateRMBG(buffer); break;
+      case "replicate": out = await viaBiRefNet(buffer); break;       // BiRefNet: eller/ince yapı korunur
+      case "replicate-bria": out = await viaReplicateRMBG(buffer); break; // BRIA RMBG-2.0 (eski default)
       case "birefnet":  out = await viaBiRefNet(buffer); break;
       case "removebg":  out = await viaRemoveBg(buffer); break;
       case "photoroom": out = await viaPhotoroom(buffer); break;
