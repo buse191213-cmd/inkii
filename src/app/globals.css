@@ -3797,17 +3797,17 @@ body:has(.hero-full) .brand-marketing .brand-label{
 
 
 /* === Hero brand switcher — hero video İÇİNDE sol alt, scroll'la kaybolur === */
-/* Markalar arası geçiş - PC: navbar sağ köşede, Mobile: WhatsApp altında */
+/* Markalar arası geçiş - HER EKRANDA WhatsApp butonunun ALTINDA, sağ köşede */
 .home-brand-switcher{
   position:fixed !important;
-  top:14px !important;        /* PC: navbar seviyesinde sağ köşe */
-  right:88px !important;       /* burger/menu butonundan solda */
-  bottom:auto !important;
+  bottom:22px !important;       /* En altta */
+  right:22px !important;
+  top:auto !important;
   left:auto !important;
   z-index:999 !important;
   background:#ffffff !important;
   border:1px solid rgba(15,23,42,.12) !important;
-  border-radius:0 !important;  /* Köşesiz */
+  border-radius:0 !important;   /* Köşesiz */
   padding:6px 12px !important;
   text-decoration:none !important;
   display:inline-flex !important;
@@ -3830,17 +3830,15 @@ body:has(.hero-full) .brand-marketing .brand-label{
   object-position:left center;
   filter:brightness(0) !important;   /* Logo SİYAH */
 }
-/* MOBILE: WhatsApp ile yer değiştir - brand switcher AŞAĞIDA */
+/* WhatsApp butonunu BRAND SWITCHER'IN ÜSTÜNDE konumlandır */
+.wa-fab{bottom:90px !important;right:22px !important}
 @media(max-width:768px){
   .home-brand-switcher{
-    top:auto !important;
-    bottom:16px !important;     /* WhatsApp altında - dipte */
+    bottom:16px !important;
     right:16px !important;
     padding:5px 10px !important;
-    border-radius:0 !important;
   }
   .home-brand-switcher .mbs-img{width:74px !important;max-width:74px !important}
-  /* WhatsApp butonunu YUKARI taşı - brand switcher'ın üzerine */
   .wa-fab{bottom:80px !important;right:16px !important}
 }
 @media(max-width:380px){
@@ -3848,7 +3846,8 @@ body:has(.hero-full) .brand-marketing .brand-label{
   .home-brand-switcher .mbs-img{width:66px !important;max-width:66px !important}
 }
 /* Cookie banner açıkken ikisi de yukarı taşınır */
-body:has(.cookie-banner) .home-brand-switcher{top:auto !important;bottom:120px !important}
+body:has(.cookie-banner) .home-brand-switcher{bottom:120px !important}
+body:has(.cookie-banner) .wa-fab{bottom:188px !important}
 @media(max-width:768px){
   body:has(.cookie-banner) .home-brand-switcher{bottom:120px !important}
   body:has(.cookie-banner) .wa-fab{bottom:184px !important}
