@@ -538,6 +538,106 @@
   .prod-deselect { width: 22px; height: 22px; font-size: 11px; }
 }
 </style>
+
+<script>
+// === DTF Engine i18n ===
+const DTF_I18N = {
+  de: {
+    "Bestelldetails": "Bestelldetails",
+    "Welche Produkte sollen veredelt werden?": "Welche Produkte sollen veredelt werden?",
+    "Produkte auswählen *": "Produkte auswählen *",
+    "Ihr Design wird als Beispiel auf den Produkten angezeigt": "Ihr Design wird als Beispiel auf den Produkten angezeigt",
+    "Textilfarbe (Wunsch)": "Textilfarbe (Wunsch)",
+    "Liefertermin (optional)": "Liefertermin (optional)",
+    "Bemerkung (optional)": "Bemerkung (optional)",
+    "Abbrechen": "Abbrechen",
+    "Zum Merkzettel hinzufügen →": "Zum Merkzettel hinzufügen →",
+    "Design optimieren": "Design optimieren",
+    "Herunterladen": "Herunterladen",
+    "🛒 Zum Merkzettel": "🛒 Zum Merkzettel",
+    "Neues Motiv": "Neues Motiv",
+    "Schließen": "Schließen",
+    "Breite": "Breite",
+    "Vektor-Version": "Vektor-Version",
+    "(gestochen scharf bei jeder Größe)": "(gestochen scharf bei jeder Größe)",
+  },
+  en: {
+    "Bestelldetails": "Order Details",
+    "Welche Produkte sollen veredelt werden?": "Which products would you like printed?",
+    "Produkte auswählen *": "Select products *",
+    "Ihr Design wird als Beispiel auf den Produkten angezeigt": "Your design is shown as preview on each product",
+    "Textilfarbe (Wunsch)": "Textile color (preferred)",
+    "Liefertermin (optional)": "Delivery date (optional)",
+    "Bemerkung (optional)": "Note (optional)",
+    "Abbrechen": "Cancel",
+    "Zum Merkzettel hinzufügen →": "Add to List →",
+    "Design optimieren": "Optimize Design",
+    "Herunterladen": "Download",
+    "🛒 Zum Merkzettel": "🛒 To List",
+    "Neues Motiv": "New Image",
+    "Schließen": "Close",
+    "Breite": "Width",
+    "Vektor-Version": "Vector Version",
+    "(gestochen scharf bei jeder Größe)": "(crisp at any size)",
+  },
+  tr: {
+    "Bestelldetails": "Sipariş Detayları",
+    "Welche Produkte sollen veredelt werden?": "Hangi ürünlere baskı yapılsın?",
+    "Produkte auswählen *": "Ürünleri seçin *",
+    "Ihr Design wird als Beispiel auf den Produkten angezeigt": "Tasarımınız her ürünün üzerinde önizleme olarak gösterilir",
+    "Textilfarbe (Wunsch)": "Tekstil rengi (tercih)",
+    "Liefertermin (optional)": "Teslim tarihi (opsiyonel)",
+    "Bemerkung (optional)": "Not (opsiyonel)",
+    "Abbrechen": "İptal",
+    "Zum Merkzettel hinzufügen →": "Sepete Ekle →",
+    "Design optimieren": "Tasarımı Optimize Et",
+    "Herunterladen": "İndir",
+    "🛒 Zum Merkzettel": "🛒 Sepete Ekle",
+    "Neues Motiv": "Yeni Görsel",
+    "Schließen": "Kapat",
+    "Breite": "Genişlik",
+    "Vektor-Version": "Vektör Versiyonu",
+    "(gestochen scharf bei jeder Größe)": "(her boyutta net)",
+  }
+};
+
+const DTF_LANG = (function() {
+  const m = window.location.search.match(/[?&]lang=(de|en|tr)/);
+  return m ? m[1] : "de";
+})();
+
+function dtfT(deText) {
+  const dict = DTF_I18N[DTF_LANG] || DTF_I18N.de;
+  return dict[deText] || deText;
+}
+
+// DOMContentLoaded'da tüm visible metinleri lookup ile değiştir
+document.addEventListener("DOMContentLoaded", function() {
+  if (DTF_LANG === "de") return; // Almanca default, değişikliğe gerek yok
+  // Elementlerin metnini değiştir (sadece tek-text-node olan ya da basit text)
+  const selectors = [
+    "button", "a", "label", "h1", "h2", "h3", "h4", "h5", "h6",
+    "option", "input[placeholder]", "[data-i18n]"
+  ];
+  // textContent değiştirme (sadece doğrudan text node varsa)
+  document.querySelectorAll("button, label, h3, span, p, option, .btn, .btn-mini").forEach(function(el) {
+    if (el.children.length === 0) {
+      const t = el.textContent.trim();
+      if (t && DTF_I18N[DTF_LANG][t]) el.textContent = DTF_I18N[DTF_LANG][t];
+    }
+  });
+  // Placeholder
+  document.querySelectorAll("input[placeholder], textarea[placeholder]").forEach(function(el) {
+    const t = el.getAttribute("placeholder");
+    if (t && DTF_I18N[DTF_LANG][t]) el.setAttribute("placeholder", DTF_I18N[DTF_LANG][t]);
+  });
+  // Title attribute
+  document.querySelectorAll("[title]").forEach(function(el) {
+    const t = el.getAttribute("title");
+    if (t && DTF_I18N[DTF_LANG][t]) el.setAttribute("title", DTF_I18N[DTF_LANG][t]);
+  });
+});
+</script>
 </head>
 <body>
 <div class="wrap">
