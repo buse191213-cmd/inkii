@@ -129,7 +129,7 @@ export default async function ProductDetailPage({
                 {product.stock > 0 && <span className="mm-tag tag-stock">AB LAGER</span>}
                 {product.isEco && <span className="mm-tag tag-eco">✦ NACHHALTIG</span>}
               </div>
-              <ProductGallery images={images} colorImages={colorImages} name={product.name} iconName={product.icon} />
+              <ProductGallery images={images} colorImages={colorImages} colors={colors} name={product.name} iconName={product.icon} />
             </div>
 
             {/* Info */}

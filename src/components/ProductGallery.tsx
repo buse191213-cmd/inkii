@@ -2,17 +2,11 @@
 
 import { useEffect, useState, useMemo } from "react";
 import { ProductIcon } from "@/lib/icons";
+import { colorHex, colorLabel } from "@/lib/catalog-options";
 
-/**
- * Dosya adından full URL'e çözer. "BY102_Black.jpg" → tüm görseller listesinde
- * URL'i bu ismi içerenle eşleştir, bulunamazsa string olduğu gibi kal.
- */
 function resolveUrl(rel: string, allImages: string[]): string {
   if (!rel) return rel;
-  if (rel.startsWith("http://") || rel.startsWith("https://") || rel.startsWith("/")) {
-    return rel; // Zaten absolute
-  }
-  // Dosya adıyla eşleşen full URL'i bul
+  if (rel.startsWith("http://") || rel.startsWith("https://") || rel.startsWith("/")) return rel;
   const match = allImages.find((url) => url.toLowerCase().includes(rel.toLowerCase()));
   return match || rel;
 }
@@ -20,53 +14,39 @@ function resolveUrl(rel: string, allImages: string[]): string {
 export default function ProductGallery({
   images,
   colorImages,
+  colors,
   name,
   iconName,
 }: {
   images: string[];
   colorImages?: Record<string, string[]>;
+  colors?: string[];
   name: string;
   iconName: string;
 }) {
-  const [activeColor, setActiveColor] = useState<string | null>(null);
+  const [activeColor, setActiveColor] = useState<string | null>(colors?.[0] ?? null);
   const [active, setActive] = useState(0);
 
-  // Aktif renge göre gösterilecek görseller (relative path'leri çöz)
   const currentImages = useMemo(() => {
     if (activeColor && colorImages) {
-      // Renk anahtarını esnek eşleştir (büyük/küçük + Türkçe/Almanca karakter)
       const norm = (s: string) => s.toLowerCase().trim()
         .replace(/ß/g, "ss").replace(/ü/g, "u").replace(/ö/g, "o").replace(/ä/g, "a")
         .replace(/[^a-z0-9]/g, "");
       const target = norm(activeColor);
       const matchedKey = Object.keys(colorImages).find((k) => norm(k) === target);
-      // Debug: console'a yazalım — sorun olursa görelim
-      if (typeof window !== "undefined") {
-        console.log("[Gallery] color:", activeColor, "→ norm:", target,
-          "| matched:", matchedKey,
-          "| count:", matchedKey ? colorImages[matchedKey].length : 0);
-        if (matchedKey && colorImages[matchedKey]) {
-          console.log("[Gallery] URLs:", colorImages[matchedKey]);
-        }
-      }
       const rels = matchedKey ? colorImages[matchedKey] : null;
       if (rels && rels.length > 0) {
         const resolved = rels.map((r) => resolveUrl(r, images));
-        // Sadece geçerli URL'leri tut (http:// veya /static/path)
         const usable = resolved.filter((u) =>
           u.startsWith("http://") || u.startsWith("https://") || u.startsWith("/")
         );
-        if (typeof window !== "undefined") {
-          console.log("[Gallery] Usable URLs:", usable.length, "of", resolved.length);
-        }
-        // Geçerli URL varsa onları, yoksa default images'i göster
         if (usable.length > 0) return usable;
       }
     }
     return images;
   }, [activeColor, colorImages, images]);
 
-  // Renk değişimi dinleyici
+  // Dış event dinle (DetailOrderForm'dan renk değişikliği)
   useEffect(() => {
     function onColor(e: Event) {
       const ce = e as CustomEvent<{ color: string | null }>;
@@ -77,7 +57,16 @@ export default function ProductGallery({
     return () => window.removeEventListener("product-color-change", onColor as EventListener);
   }, []);
 
-  if (currentImages.length === 0) {
+  // Galeri butonundan tıklayınca DetailOrderForm'a bildir
+  function selectColor(c: string) {
+    setActiveColor(c);
+    setActive(0);
+    if (typeof window !== "undefined") {
+      window.dispatchEvent(new CustomEvent("external-color-select", { detail: { color: c } }));
+    }
+  }
+
+  if (currentImages.length === 0 && (!colors || colors.length === 0)) {
     return (
       <div className="gallery">
         <div className="gallery-main gallery-empty">
@@ -90,8 +79,12 @@ export default function ProductGallery({
   return (
     <div className="gallery">
       <div className="gallery-main">
-        {/* eslint-disable-next-line @next/next/no-img-element */}
-        <img src={currentImages[active]} alt={name} key={currentImages[active]} />
+        {currentImages.length > 0 ? (
+          /* eslint-disable-next-line @next/next/no-img-element */
+          <img src={currentImages[active]} alt={name} key={currentImages[active]} />
+        ) : (
+          <div className="gallery-empty"><ProductIcon name={iconName} /></div>
+        )}
       </div>
       {currentImages.length > 1 && (
         <div className="gallery-thumbs">
@@ -106,6 +99,31 @@ export default function ProductGallery({
               <img src={url} alt="" />
             </button>
           ))}
+        </div>
+      )}
+      {/* Galerinin hemen altında renk butonları */}
+      {colors && colors.length > 0 && (
+        <div className="gallery-colors">
+          <div className="gallery-colors-row">
+            {colors.map((c) => {
+              const hex = colorHex(c) || c;
+              const isActive = activeColor === c;
+              return (
+                <button
+                  key={c}
+                  type="button"
+                  className={`gallery-color-dot${isActive ? " active" : ""}`}
+                  onClick={() => selectColor(c)}
+                  aria-label={colorLabel(c)}
+                  title={colorLabel(c)}
+                  style={{ background: hex }}
+                />
+              );
+            })}
+          </div>
+          {activeColor && (
+            <div className="gallery-colors-label">{colorLabel(activeColor)}</div>
+          )}
         </div>
       )}
     </div>

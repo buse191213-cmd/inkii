@@ -191,9 +191,13 @@ export default function ProductManager({
       if (obj && typeof obj === "object") {
         for (const [k, v] of Object.entries(obj)) {
           if (Array.isArray(v)) {
-            state[k] = (v as string[])
+            // Sadece GEÇERLİ URL'leri yükle - eski dosya-adı-only kayıtlarını otomatik filtrele
+            const validUrls = (v as string[])
               .filter((u) => typeof u === "string" && u.length > 0)
-              .map((url, i) => ({ key: `ec-${k}-${i}-${url}`, url, preview: url }));
+              .filter((u) => u.startsWith("http://") || u.startsWith("https://") || u.startsWith("/"));
+            if (validUrls.length > 0) {
+              state[k] = validUrls.map((url, i) => ({ key: `ec-${k}-${i}-${url}`, url, preview: url }));
+            }
           }
         }
       }

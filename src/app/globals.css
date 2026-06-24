@@ -3950,3 +3950,47 @@ body:has(.hero-full) header.site .brand-other img{filter:none;height:52px}
 .product-description-html h1 { font-size: 1.25rem; }
 .product-description-html h2 { font-size: 1.1rem; }
 .product-description-html h3 { font-size: 1rem; }
+
+/* Galery altındaki kompakt renk butonları */
+.gallery-colors {
+  margin-top: 14px;
+  padding-top: 14px;
+  border-top: 1px solid #eef0ef;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+}
+.gallery-colors-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  justify-content: center;
+}
+.gallery-color-dot {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  border: 2px solid transparent;
+  cursor: pointer;
+  padding: 0;
+  box-shadow: 0 0 0 1px rgba(0,0,0,0.18) inset, 0 1px 2px rgba(0,0,0,0.08);
+  transition: transform 0.15s, border-color 0.15s;
+}
+.gallery-color-dot:hover {
+  transform: scale(1.12);
+}
+.gallery-color-dot.active {
+  border-color: #14b8a6;
+  transform: scale(1.18);
+  box-shadow: 0 0 0 1px rgba(0,0,0,0.18) inset, 0 3px 10px rgba(20,184,166,0.35);
+}
+.gallery-colors-label {
+  font-size: 12px;
+  color: #64748b;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+}
+@media (max-width: 768px) {
+  .gallery-color-dot { width: 26px; height: 26px; }
+}

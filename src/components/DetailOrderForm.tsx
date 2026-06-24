@@ -56,6 +56,16 @@ export default function DetailOrderForm({
   const [added, setAdded] = useState(false);
   const [err, setErr] = useState("");
 
+  // Galery'deki renk butonlarından gelen event'i dinle - state'i güncelle
+  useEffect(() => {
+    function onExternalColor(e: Event) {
+      const ce = e as CustomEvent<{ color: string | null }>;
+      if (ce.detail?.color) setSelectedColor(ce.detail.color);
+    }
+    window.addEventListener("external-color-select", onExternalColor as EventListener);
+    return () => window.removeEventListener("external-color-select", onExternalColor as EventListener);
+  }, []);
+
   // Wenn die Farbe wechselt, soll die Erfolgsmeldung verschwinden — Nutzer
   // beginnt eine neue Auswahl für die andere Farbvariante.
   const firstColorRender = useRef(true);
