@@ -141,22 +141,7 @@ export default async function ProductDetailPage({
                 Produktionszeit: <strong>Auf Anfrage</strong> · exkl. Versand
               </p>
 
-              {/* Sipariş formu — Galery'e yakın olsun diye en üste alındı */}
-              <DetailOrderForm
-                productId={product.id}
-                productCode={product.code}
-                productName={product.name}
-                productImage={images[0] ?? null}
-                colors={colors}
-                sizes={sizesList}
-                tiers={tiers}
-                basePriceCents={product.priceCents}
-              />
-
-              {/* Eigenes Design hochladen — Tasarımcı modali açar */}
-              <DesignerLauncher productName={product.name} productCode={product.code} />
-
-              {/* ÜBERSICHT + DETAILS tabs yan yana */}
+              {/* ÜBERSICHT + DETAILS tabs yan yana — ÖNCE gelsin */}
               {(() => {
                 const tabs: DetailTab[] = [];
                 if (product.description) {
@@ -173,6 +158,21 @@ export default async function ProductDetailPage({
                 tabs.push({ key: "details", label: "DETAILS", rows });
                 return <ProductDetailTabs tabs={tabs} />;
               })()}
+
+              {/* Sipariş formu — SONRA gelsin */}
+              <DetailOrderForm
+                productId={product.id}
+                productCode={product.code}
+                productName={product.name}
+                productImage={images[0] ?? null}
+                colors={colors}
+                sizes={sizesList}
+                tiers={tiers}
+                basePriceCents={product.priceCents}
+              />
+
+              {/* Eigenes Design hochladen — Tasarımcı modali açar */}
+              <DesignerLauncher productName={product.name} productCode={product.code} />
 
               {/* Mengenstaffel-Tabelle (eski yeri: Material altında) */}
               {SHOW_TIERS && tiers.length > 0 && (

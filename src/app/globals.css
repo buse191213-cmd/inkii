@@ -4004,7 +4004,7 @@ body:has(.hero-full) header.site .brand-other img{filter:none;height:52px}
     position: sticky;
     top: 100px;
     align-self: flex-start;
-    max-height: calc(100vh - 120px);
+    /* max-height YOK — scroll çubuğu çıkmaz, image kendi boyutunda kalır */
   }
 }
 
