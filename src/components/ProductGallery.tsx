@@ -40,6 +40,13 @@ export default function ProductGallery({
         .replace(/[^a-z0-9]/g, "");
       const target = norm(activeColor);
       const matchedKey = Object.keys(colorImages).find((k) => norm(k) === target);
+      // Debug: console'a yazalım — sorun olursa görelim
+      if (typeof window !== "undefined") {
+        console.log("[Gallery] color:", activeColor, "→ norm:", target,
+          "| keys:", Object.keys(colorImages),
+          "| matched:", matchedKey,
+          "| count:", matchedKey ? colorImages[matchedKey].length : 0);
+      }
       const rels = matchedKey ? colorImages[matchedKey] : null;
       if (rels && rels.length > 0) {
         return rels.map((r) => resolveUrl(r, images));
