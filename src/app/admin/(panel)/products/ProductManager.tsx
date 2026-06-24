@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useMemo, useRef } from "react";
+import { useState, useMemo, useRef, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { ProductIcon } from "@/lib/icons";
 import { formatPrice, centsToInput, formatNumber } from "@/lib/format";
@@ -175,10 +175,73 @@ export default function ProductManager({
     });
   }
 
+  // === TASLAK (Draft) Sistemi - localStorage ===
+  const DRAFT_KEY = "inkii_product_draft_v1";
+
+  // Modal değiştiğinde her seferinde taslağı kaydet (sadece yeni ürün için)
+  useEffect(() => {
+    if (!modal || modal.id) return; // Sadece yeni ürün için draft
+    if (typeof window === "undefined") return;
+    try {
+      const draft = {
+        modal,
+        selColors,
+        selMaterials,
+        tiers,
+        sizes,
+        // Sadece URL'li görseller (file'lar localStorage'a sığmaz)
+        imageUrls: images.filter((i) => i.url).map((i) => i.url),
+        savedAt: Date.now(),
+      };
+      localStorage.setItem(DRAFT_KEY, JSON.stringify(draft));
+    } catch { /* localStorage dolu veya disabled */ }
+  }, [modal, selColors, selMaterials, tiers, sizes, images]);
+
+  function hasDraft(): boolean {
+    if (typeof window === "undefined") return false;
+    try {
+      const raw = localStorage.getItem(DRAFT_KEY);
+      return !!(raw && JSON.parse(raw).modal);
+    } catch { return false; }
+  }
+
+  function loadDraft(): boolean {
+    if (typeof window === "undefined") return false;
+    try {
+      const raw = localStorage.getItem(DRAFT_KEY);
+      if (!raw) return false;
+      const draft = JSON.parse(raw);
+      if (!draft.modal) return false;
+      setModal(draft.modal);
+      setSelColors(draft.selColors || []);
+      setSelMaterials(draft.selMaterials || []);
+      setTiers(draft.tiers || []);
+      setSizes(draft.sizes || []);
+      // Görseller: URL'leri restore et (file'lar yeniden seçilmeli)
+      if (Array.isArray(draft.imageUrls)) {
+        setImages(draft.imageUrls.map((url: string, i: number) => ({
+          key: `restored-${i}-${url}`, url, preview: url,
+        })));
+      }
+      return true;
+    } catch { return false; }
+  }
+
+  function clearDraft() {
+    if (typeof window === "undefined") return;
+    try { localStorage.removeItem(DRAFT_KEY); } catch { /* ok */ }
+  }
+
   function openNew() {
     setError("");
     revokeAll(images);
     Object.values(colorImages).forEach(revokeAll);
+    // Taslak varsa kullanıcıya sor
+    if (hasDraft() && confirm("Es gibt einen gespeicherten Entwurf. Möchten Sie ihn fortsetzen?\n\n(OK = Entwurf laden, Abbrechen = Neues Produkt)")) {
+      if (loadDraft()) return;
+    } else {
+      clearDraft();
+    }
     setImages([]);
     setColorImagesState({});
     setSelColors([]);
@@ -328,6 +391,7 @@ export default function ProductManager({
     const res = await saveProduct(fd);
     setBusy(false);
     if (res.ok) {
+      clearDraft(); // Başarılı kayıt → taslak temizle
       closeModal();
       router.refresh();
     } else {
@@ -1009,6 +1073,22 @@ export default function ProductManager({
                 <button type="button" className="btn-ghost" onClick={closeModal}>
                   Abbrechen
                 </button>
+                {!modal.id && (
+                  <button
+                    type="button"
+                    className="btn-ghost"
+                    onClick={() => {
+                      if (confirm("Den Entwurf wirklich löschen? Alle Eingaben gehen verloren.")) {
+                        clearDraft();
+                        closeModal();
+                      }
+                    }}
+                    title="Entwurf löschen"
+                    style={{ color: "#dc2626" }}
+                  >
+                    Entwurf löschen
+                  </button>
+                )}
                 <button type="submit" className="btn-primary" disabled={busy}>
                   {busy ? "Speichern …" : "Speichern"}
                 </button>
