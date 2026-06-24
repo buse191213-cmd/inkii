@@ -42,7 +42,7 @@ type ImgItem = { key: string; url?: string; file?: File; preview: string };
 const MAX_IMAGES = 15;
 
 const EMPTY: AdminProduct = {
-  id: "", code: "VS-", name: "", subtitle: "", description: "", icon: "box",
+  id: "", code: "INKI-", name: "", subtitle: "", description: "", icon: "box",
   priceCents: null, priceTiers: "[]", sizes: "[]", stock: 0, status: "active",
   isNew: false, isEco: false,
   colors: "", material: "", images: "", colorImages: "{}", visiblePages: [], categoryId: "", categoryName: "",
