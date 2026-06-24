@@ -159,7 +159,10 @@ export default async function ProductDetailPage({
                 return <ProductDetailTabs tabs={tabs} />;
               })()}
 
-              {/* Sipariş formu — SONRA gelsin */}
+              {/* Eigenes Design hochladen — Variante öncesi */}
+              <DesignerLauncher productName={product.name} productCode={product.code} />
+
+              {/* Sipariş formu */}
               <DetailOrderForm
                 productId={product.id}
                 productCode={product.code}
@@ -170,9 +173,6 @@ export default async function ProductDetailPage({
                 tiers={tiers}
                 basePriceCents={product.priceCents}
               />
-
-              {/* Eigenes Design hochladen — Tasarımcı modali açar */}
-              <DesignerLauncher productName={product.name} productCode={product.code} />
 
               {/* Mengenstaffel-Tabelle (eski yeri: Material altında) */}
               {SHOW_TIERS && tiers.length > 0 && (
