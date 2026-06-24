@@ -4314,3 +4314,33 @@ body:has(.hero-full) header.site .brand-other img{filter:none;height:52px}
   height: 64px !important;
   border-width: 1px !important;
 }
+
+/* === Final düzeltmeler 3 === */
+
+/* 1) Tab nav üst+alt çizgilerini kaldır - sadece aktif underline kalsın */
+.mm-tabs {
+  border-top: 0 !important;
+  padding-top: 16px !important;
+}
+.mm-tabs-nav {
+  border-bottom: 0 !important;
+}
+/* Aktif sayfa belirteci (yeşil underline) zaten ::after ile var */
+
+/* 2) Details tab içeriği site font'u kullansın */
+.mm-tab-prose,
+.mm-tab-rows,
+.mm-tab-row,
+.mm-tab-row dt,
+.mm-tab-row dd {
+  font-family: inherit !important;
+}
+
+/* 3) "Auf den Merkzettel" buton — sticky, ekranda sabit kalsın */
+.det-order-submit {
+  position: sticky !important;
+  bottom: 16px !important;
+  z-index: 50 !important;
+  margin-top: 16px !important;
+  box-shadow: 0 6px 24px rgba(0,0,0,.12) !important;
+}

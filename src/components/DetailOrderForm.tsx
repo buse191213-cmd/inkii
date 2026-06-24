@@ -68,22 +68,13 @@ export default function DetailOrderForm({
 
   // Wenn die Farbe wechselt, soll die Erfolgsmeldung verschwinden — Nutzer
   // beginnt eine neue Auswahl für die andere Farbvariante.
-  const firstColorRender = useRef(true);
   useEffect(() => {
     setAdded(false);
-    // ProductGallery'a renk değişikliğini bildir
+    // ProductGallery'a renk değişikliğini bildir (scroll YAPMA - sticky galery yeterli)
     if (typeof window !== "undefined") {
       window.dispatchEvent(
         new CustomEvent("product-color-change", { detail: { color: selectedColor } })
       );
-      // İlk render değil ise galeri'ye scroll (kullanıcı yukarı gidip görseli görsün)
-      if (!firstColorRender.current) {
-        const gallery = document.querySelector(".mm-detail-gallery");
-        if (gallery) {
-          gallery.scrollIntoView({ behavior: "smooth", block: "start" });
-        }
-      }
-      firstColorRender.current = false;
     }
   }, [selectedColor]);
 
