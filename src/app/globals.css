@@ -4646,3 +4646,18 @@ body:has(.hero-full) header.site .brand-other img{filter:none;height:52px}
   color: #3b4540 !important;
   margin: 0 !important;
 }
+
+/* === DETAILS son satırından sonra boşluğu azalt === */
+.mm-tab-panel {
+  padding: 4px 0 4px !important;
+  min-height: auto !important;
+}
+.mm-tabs {
+  margin-bottom: 8px !important;
+}
+.mm-tab-rows {
+  margin-bottom: 0 !important;
+}
+.mm-tab-row:last-child {
+  padding-bottom: 0 !important;
+}
