@@ -72,10 +72,11 @@ async function removeImageFiles(urls: string[]) {
  * das erste Bild ist das Hauptbild ("Vitrine").
  */
 export async function saveProduct(formData: FormData): Promise<ActionResult> {
-  const id = String(formData.get("id") ?? "").trim();
-  const code = String(formData.get("code") ?? "").trim();
-  const name = String(formData.get("name") ?? "").trim();
-  const categoryId = String(formData.get("categoryId") ?? "").trim();
+  try {
+    const id = String(formData.get("id") ?? "").trim();
+    const code = String(formData.get("code") ?? "").trim();
+    const name = String(formData.get("name") ?? "").trim();
+    const categoryId = String(formData.get("categoryId") ?? "").trim();
 
   if (!code || !name || !categoryId) {
     return { ok: false, error: "Artikelnummer, Name und Kategorie sind Pflichtfelder." };
@@ -247,6 +248,12 @@ export async function saveProduct(formData: FormData): Promise<ActionResult> {
         ? "Diese Artikelnummer existiert bereits."
         : "Speichern fehlgeschlagen.";
     return { ok: false, error: msg };
+  }
+  } catch (outerErr) {
+    // Beklenmedik hata (network/Prisma/etc.) — detayı kullanıcıya göster
+    console.error("[saveProduct] outer error:", outerErr);
+    const detail = outerErr instanceof Error ? outerErr.message : String(outerErr);
+    return { ok: false, error: `Beklenmedik Fehler: ${detail.slice(0, 200)}` };
   }
 }
 
