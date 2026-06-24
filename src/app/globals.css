@@ -4152,3 +4152,101 @@ body:has(.hero-full) header.site .brand-other img{filter:none;height:52px}
 .dtf-launcher-btn {
   border-radius: 0 !important;
 }
+
+/* === Monday Merch tarzı orantılar === */
+
+/* Galery daha büyük - max-width sınırı kaldır, tam kolon kullansın */
+@media (min-width: 1024px) {
+  .mm-detail-grid {
+    grid-template-columns: 1.05fr 1fr; /* sol biraz daha geniş */
+    gap: 56px;
+  }
+  .mm-detail-gallery .gallery {
+    max-width: none; /* Tam genişlik */
+  }
+  .mm-detail-gallery .gallery-main {
+    background: #f8f8f8; /* soft gri arkaplan */
+  }
+}
+
+/* Başlık font - daha kontrollü, MM tarzı */
+.mm-detail-h1 {
+  font-size: clamp(1.5rem, 2.4vw, 2rem) !important;
+  font-weight: 700 !important;
+  letter-spacing: -0.015em !important;
+  margin: 0 0 8px !important;
+}
+.mm-detail-sub {
+  font-size: 0.92rem !important;
+  color: #64748b !important;
+  margin: 0 0 10px !important;
+  line-height: 1.5 !important;
+}
+.mm-detail-meta {
+  font-size: 0.82rem !important;
+  color: #94a3b8 !important;
+  margin: 0 0 18px !important;
+}
+.mm-detail-meta strong {
+  color: #475569 !important;
+  font-weight: 600 !important;
+}
+
+/* Renk butonları MM tarzı - kompakt kare swatches */
+.det-order-color {
+  width: 32px !important;
+  height: 32px !important;
+  border-radius: 4px !important;
+  border: 2px solid #fff !important;
+  box-shadow: 0 0 0 1px #e2e8f0 !important;
+  transition: all 0.15s !important;
+}
+.det-order-color:hover {
+  transform: translateY(-1px) !important;
+}
+.det-order-color.active {
+  box-shadow: 0 0 0 2px #14b8a6 !important;
+  transform: translateY(-1px) !important;
+}
+.det-order-colors-grid {
+  gap: 8px !important;
+}
+
+/* Tab başlıkları MM tarzı - daha kompakt */
+.mm-tab {
+  font-size: 0.78rem !important;
+  padding: 10px 4px !important;
+  margin-right: 24px !important;
+  letter-spacing: 0.08em !important;
+}
+
+/* DetailOrderForm header MM tarzı */
+.det-order-head h3 {
+  font-size: 0.9rem !important;
+  font-weight: 600 !important;
+  text-transform: uppercase !important;
+  letter-spacing: 0.05em !important;
+  color: #475569 !important;
+  margin-bottom: 4px !important;
+}
+.det-order-head p {
+  font-size: 0.78rem !important;
+}
+
+/* DesignerLauncher CTA — kompakt, MM "Design Studio" tarzı */
+.dtf-launcher-btn {
+  background: #14b8a6 !important;
+  color: #fff !important;
+  border: 0 !important;
+  padding: 13px 18px !important;
+  font-size: 0.88rem !important;
+  font-weight: 600 !important;
+  letter-spacing: 0.02em !important;
+  display: flex !important;
+  align-items: center !important;
+  gap: 10px !important;
+  width: 100% !important;
+  cursor: pointer;
+  transition: opacity 0.15s;
+}
+.dtf-launcher-btn:hover { opacity: 0.92; }
