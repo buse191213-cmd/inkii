@@ -4020,6 +4020,8 @@ body:has(.hero-full) header.site .brand-other img{filter:none;height:52px}
   gap: 4px;
   border-bottom: 1px solid #e5e7eb;
   margin-bottom: 20px;
+  overflow: visible !important; /* scroll çubuğunu kapat */
+  overflow-x: visible !important;
 }
 .mm-tab {
   background: transparent;
@@ -4098,7 +4100,7 @@ body:has(.hero-full) header.site .brand-other img{filter:none;height:52px}
 /* Gallery image boyutunu eski haline koruma (sticky yüzünden büyümesin) */
 @media (min-width: 1024px) {
   .mm-detail-gallery .gallery {
-    max-width: 520px;
+    max-width: 440px;
   }
   /* Info kolonu kendi içinde scroll yapmasın - browser scroll yeterli */
   .mm-detail-info {
