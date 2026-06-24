@@ -4,7 +4,7 @@ import { useState, useMemo, useRef } from "react";
 import { useRouter } from "next/navigation";
 import { ProductIcon } from "@/lib/icons";
 import { formatPrice, centsToInput, formatNumber } from "@/lib/format";
-import { PRODUCT_COLORS, PRODUCT_MATERIALS } from "@/lib/catalog-options";
+import { PRODUCT_COLORS, PRODUCT_MATERIALS, colorLabel, colorHex } from "@/lib/catalog-options";
 import { saveProduct, deleteProduct } from "@/app/admin/actions";
 import { parsePriceTiers, stringifyPriceTiers, type PriceTier } from "@/lib/price-tiers";
 import { parseSizesField, stringifySizesFromDrafts } from "@/lib/sizes";
