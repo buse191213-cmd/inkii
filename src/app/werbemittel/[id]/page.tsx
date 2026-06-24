@@ -14,6 +14,7 @@ import { getLocale } from "@/lib/i18n-server";
 import { getDictionary } from "@/dictionaries";
 import DetailOrderForm from "@/components/DetailOrderForm";
 import DesignerLauncher from "@/components/DesignerLauncher";
+import ProductDetailTabs, { type DetailTab } from "@/components/ProductDetailTabs";
 
 export const dynamic = "force-dynamic";
 
@@ -155,42 +156,23 @@ export default async function ProductDetailPage({
               {/* Eigenes Design hochladen — Tasarımcı modali açar */}
               <DesignerLauncher productName={product.name} productCode={product.code} />
 
-              {/* Beschreibung — HTML render (Admin RichEditor'dan kayıtlı) */}
-              {product.description && (
-                <div className="mm-detail-section">
-                  <h2 className="mm-detail-h2">ÜBERSICHT</h2>
-                  <div
-                    className="product-description-html"
-                    style={{ lineHeight: 1.65, color: "#3b4540" }}
-                    dangerouslySetInnerHTML={{ __html: product.description }}
-                  />
-                </div>
-              )}
-
-              {/* Details */}
-              <div className="mm-detail-section">
-                <h2 className="mm-detail-h2">DETAILS</h2>
-                <div className="mm-detail-specs">
-                  <div className="mm-spec-row">
-                    <span>{dt.specArtNr}</span>
-                    <strong>{product.code}</strong>
-                  </div>
-                  <div className="mm-spec-row">
-                    <span>{dt.specCategory}</span>
-                    <strong>{categoryName}</strong>
-                  </div>
-                  <div className="mm-spec-row">
-                    <span>{dt.specStock}</span>
-                    <strong>{formatNumber(product.stock)} {dt.stockUnit}</strong>
-                  </div>
-                  {materials.length > 0 && (
-                    <div className="mm-spec-row">
-                      <span>{dt.specMaterial}</span>
-                      <strong>{materials.map((m) => materialLabel(m)).join(", ")}</strong>
-                    </div>
-                  )}
-                </div>
-              </div>
+              {/* ÜBERSICHT + DETAILS tabs yan yana */}
+              {(() => {
+                const tabs: DetailTab[] = [];
+                if (product.description) {
+                  tabs.push({ key: "ubersicht", label: "ÜBERSICHT", html: product.description });
+                }
+                const rows: Array<{ k: string; v: string }> = [
+                  { k: dt.specArtNr, v: product.code },
+                  { k: dt.specCategory, v: categoryName },
+                  { k: dt.specStock, v: `${formatNumber(product.stock)} ${dt.stockUnit}` },
+                ];
+                if (materials.length > 0) {
+                  rows.push({ k: dt.specMaterial, v: materials.map((m) => materialLabel(m)).join(", ") });
+                }
+                tabs.push({ key: "details", label: "DETAILS", rows });
+                return <ProductDetailTabs tabs={tabs} />;
+              })()}
 
               {/* Mengenstaffel-Tabelle (eski yeri: Material altında) */}
               {SHOW_TIERS && tiers.length > 0 && (
