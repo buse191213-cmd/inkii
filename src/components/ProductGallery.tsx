@@ -52,10 +52,15 @@ export default function ProductGallery({
       const rels = matchedKey ? colorImages[matchedKey] : null;
       if (rels && rels.length > 0) {
         const resolved = rels.map((r) => resolveUrl(r, images));
+        // Sadece geçerli URL'leri tut (http:// veya /static/path)
+        const usable = resolved.filter((u) =>
+          u.startsWith("http://") || u.startsWith("https://") || u.startsWith("/")
+        );
         if (typeof window !== "undefined") {
-          console.log("[Gallery] Resolved URLs:", resolved);
+          console.log("[Gallery] Usable URLs:", usable.length, "of", resolved.length);
         }
-        return resolved;
+        // Geçerli URL varsa onları, yoksa default images'i göster
+        if (usable.length > 0) return usable;
       }
     }
     return images;
