@@ -141,9 +141,6 @@ export default async function ProductDetailPage({
                 Produktionszeit: <strong>Auf Anfrage</strong> · exkl. Versand
               </p>
 
-              {/* Eigenes Design hochladen — EN ÜSTTE */}
-              <DesignerLauncher productName={product.name} productCode={product.code} />
-
               {/* ÜBERSICHT + DETAILS tabs yan yana */}
               {(() => {
                 const tabs: DetailTab[] = [];
@@ -161,6 +158,9 @@ export default async function ProductDetailPage({
                 tabs.push({ key: "details", label: "DETAILS", rows });
                 return <ProductDetailTabs tabs={tabs} />;
               })()}
+
+              {/* Eigenes Design hochladen — DETAILS altında */}
+              <DesignerLauncher productName={product.name} productCode={product.code} />
 
               {/* Sipariş formu */}
               <DetailOrderForm

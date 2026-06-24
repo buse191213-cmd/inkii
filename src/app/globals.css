@@ -4250,3 +4250,30 @@ body:has(.hero-full) header.site .brand-other img{filter:none;height:52px}
   transition: opacity 0.15s;
 }
 .dtf-launcher-btn:hover { opacity: 0.92; }
+
+/* === Final tweaks 2 === */
+
+/* 1) Details tab içindeki kesik çizgileri kaldır */
+.mm-tab-row {
+  border-bottom: 0 !important;
+  padding: 4px 0 !important;
+}
+
+/* 2) Görseli biraz küçült */
+@media (min-width: 1024px) {
+  .mm-detail-gallery .gallery {
+    max-width: 460px !important;
+  }
+}
+
+/* 3) DetailOrderForm içindeki TÜM border-radius'ları kaldır - tek tip kare köşeler */
+.det-order,
+.det-order-size,
+.det-order-color,
+.det-order *,
+.det-order-cta,
+.det-order-color-name,
+.det-order-colors-grid > *,
+.det-order-success {
+  border-radius: 0 !important;
+}
