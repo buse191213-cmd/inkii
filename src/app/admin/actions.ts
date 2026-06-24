@@ -176,7 +176,17 @@ export async function saveProduct(formData: FormData): Promise<ActionResult> {
     isEco: formData.get("isEco") === "on",
     colors: String(formData.get("colors") ?? "")
       .split(",")
-      .map((c) => c.trim().toLowerCase())
+      .map((c) => {
+        const trimmed = c.trim();
+        if (!trimmed) return "";
+        // "hex:name" formatı için: hex küçük, name korunur
+        if (trimmed.includes(":") && trimmed.startsWith("#")) {
+          const [hex, ...nameParts] = trimmed.split(":");
+          const name = nameParts.join(":").trim();
+          return name ? `${hex.toLowerCase()}:${name}` : hex.toLowerCase();
+        }
+        return trimmed.toLowerCase();
+      })
       .filter(Boolean)
       .join(","),
     material: String(formData.get("material") ?? "")

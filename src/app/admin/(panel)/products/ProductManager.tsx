@@ -97,6 +97,7 @@ export default function ProductManager({
   const [tiers, setTiers] = useState<TierDraft[]>([]);
   const [sizes, setSizes] = useState<Array<{ nameText: string; extraText: string }>>([]);
   const [customColor, setCustomColor] = useState("#3f9c5c");
+  const [customColorName, setCustomColorName] = useState("");
   const fileInput = useRef<HTMLInputElement>(null);
 
   const list = useMemo(() => {
@@ -810,6 +811,15 @@ export default function ProductManager({
                       }}
                       placeholder="#3f9c5c"
                       className="custom-color-input"
+                      style={{ width: 110 }}
+                    />
+                    <input
+                      type="text"
+                      value={customColorName}
+                      onChange={(e) => setCustomColorName(e.target.value)}
+                      placeholder="z. B. Bordeaux, Mint, Pfirsich …"
+                      className="custom-color-input"
+                      style={{ flex: 1, minWidth: 140 }}
                     />
                     <button
                       type="button"
@@ -817,8 +827,12 @@ export default function ProductManager({
                       onClick={() => {
                         const hex = customColor.toLowerCase();
                         if (!/^#[0-9a-f]{6}$/.test(hex)) return;
-                        if (!selColors.includes(hex)) {
-                          setSelColors((cur) => [...cur, hex]);
+                        const name = customColorName.trim();
+                        // İsim varsa "hex:name", yoksa sadece "hex" formatı
+                        const key = name ? `${hex}:${name}` : hex;
+                        if (!selColors.some((c) => c.split(":")[0] === hex)) {
+                          setSelColors((cur) => [...cur, key]);
+                          setCustomColorName(""); // input'u temizle
                         }
                       }}
                     >

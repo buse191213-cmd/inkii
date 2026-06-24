@@ -47,13 +47,25 @@ function isHex(key: string): boolean {
  *  Wenn der Schlüssel selbst schon ein Hex-Code ist (Custom-Farbe),
  *  wird er direkt zurückgegeben. */
 export function colorHex(key: string): string {
+  // "hex:name" formatı: hex'i al
+  if (key.includes(":") && key.startsWith("#")) {
+    const hex = key.split(":")[0];
+    if (isHex(hex)) return hex;
+  }
   if (isHex(key)) return key;
   return colorMap.get(key)?.hex ?? "#cccccc";
 }
 
 /** Anzeigename zu einem Farbschlüssel.
- *  Bei Custom-Farben (Hex) wird der Code in Großbuchstaben angezeigt. */
+ *  Bei Custom-Farben (Hex) wird der Code in Großbuchstaben angezeigt.
+ *  Bei "hex:name" Format wird der Name angezeigt. */
 export function colorLabel(key: string): string {
+  // "hex:name" formatı: name'i al
+  if (key.includes(":") && key.startsWith("#")) {
+    const parts = key.split(":");
+    if (parts[1] && parts[1].trim()) return parts[1].trim();
+    return parts[0].toUpperCase();
+  }
   if (isHex(key)) return key.toUpperCase();
   return colorMap.get(key)?.label ?? key;
 }
