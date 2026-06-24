@@ -39,7 +39,7 @@ export type AdminCategory = { id: string; name: string };
 /** Ein Bild im Editor: entweder bereits gespeichert (url) oder neu (file). */
 type ImgItem = { key: string; url?: string; file?: File; preview: string };
 
-const MAX_IMAGES = 5;
+const MAX_IMAGES = 15;
 
 const EMPTY: AdminProduct = {
   id: "", code: "VS-", name: "", subtitle: "", description: "", icon: "box",
@@ -838,9 +838,10 @@ export default function ProductManager({
                     style={{ width: "100%", fontFamily: "ui-monospace,monospace", fontSize: 12, padding: 10, border: "1px solid #d1d5db", borderRadius: 6 }}
                   />
                   <p className="form-note" style={{ marginTop: 6 }}>
-                    Beim Klick auf eine Farbe wechseln die Bilder der Galerie zu den hier hinterlegten Bildern.
-                    Die Bild-URLs zuerst über die <b>Produktbilder</b> oben hochladen, dann hier den
-                    URL-Eintrag pro Farbe einsortieren. Wenn leer (<code>{`{}`}</code>), wird für alle Farben die normale Galerie gezeigt.
+                    Beim Klick auf eine Farbe wechseln die Galerie-Bilder zur hier hinterlegten Auswahl.
+                    Sie können <b>nur den Dateinamen</b> einer bereits hochgeladenen Datei eintragen (z.B. <code>BY102_Black.jpg</code>),
+                    das System findet automatisch die volle URL.<br />
+                    Farbschlüssel (weiß/schwarz/...) werden flexibel verglichen — Groß-/Kleinschreibung und Umlaute spielen keine Rolle.
                   </p>
                 </div>
                 <div className="field">
