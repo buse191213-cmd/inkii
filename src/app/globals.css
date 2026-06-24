@@ -4336,11 +4336,36 @@ body:has(.hero-full) header.site .brand-other img{filter:none;height:52px}
   font-family: inherit !important;
 }
 
-/* 3) "Auf den Merkzettel" buton — sticky, ekranda sabit kalsın */
+/* 3) "Variante aktualisieren" buton — full width, yeşil */
 .det-order-submit {
-  position: sticky !important;
-  bottom: 16px !important;
-  z-index: 50 !important;
+  position: static !important;
+  width: 100% !important;
+  background: #14b8a6 !important;
+  color: #fff !important;
+  border: 0 !important;
+  padding: 15px 18px !important;
+  font-size: 0.95rem !important;
+  font-weight: 700 !important;
+  letter-spacing: 0.02em !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  gap: 10px !important;
+  cursor: pointer !important;
+  transition: background 0.15s !important;
   margin-top: 16px !important;
-  box-shadow: 0 6px 24px rgba(0,0,0,.12) !important;
+  box-shadow: none !important;
+}
+.det-order-submit:hover {
+  background: #0d9488 !important;
+}
+
+/* Zurück zum Katalog altındaki çizgiyi kaldır */
+.mm-detail-cta-secondary {
+  border-top: 0 !important;
+  border-bottom: 0 !important;
+}
+.mm-detail-cta-back {
+  border-bottom: 0 !important;
+  text-decoration: none !important;
 }

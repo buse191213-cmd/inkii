@@ -307,10 +307,6 @@ export default function DetailOrderForm({
         {totalQty > 0 ? ` · ${totalQty} Stk` : ""}
         {selectedColor ? ` · ${colorLabel(selectedColor)}` : ""}
       </button>
-
-      <p className="det-order-foot">
-        Tipp: Sie können beliebig viele Produkte sammeln und in einer einzigen Anfrage gemeinsam senden.
-      </p>
     </div>
   );
 }
