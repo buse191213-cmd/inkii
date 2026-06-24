@@ -4385,14 +4385,14 @@ body:has(.hero-full) header.site .brand-other img{filter:none;height:52px}
 }
 /* Aktif sayfa belirteci (yeşil underline) zaten ::after ile var */
 
-/* 2) Details tab içeriği site font'u (Montserrat) kullansın */
+/* 2) Details tab içeriği — explicit Montserrat */
 .mm-tab-prose,
 .mm-tab-prose *,
 .mm-tab-rows,
 .mm-tab-row,
 .mm-tab-row dt,
 .mm-tab-row dd {
-  font-family: var(--body) !important; /* Montserrat */
+  font-family: "Montserrat", "Montserrat Fallback", sans-serif !important;
 }
 
 /* 3) "Variante aktualisieren" buton — YEŞİL, FULL WIDTH, STICKY (ekranda sabit) */
