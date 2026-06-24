@@ -779,19 +779,23 @@ export default function ProductManager({
                     ))}
                     {/* Benutzerdefinierte Hex-Farben, die schon ausgewählt sind */}
                     {selColors
-                      .filter((k) => /^#[0-9a-fA-F]{3,8}$/.test(k))
-                      .map((k) => (
-                        <button
-                          type="button"
-                          key={k}
-                          className="opt-swatch on opt-swatch-custom"
-                          onClick={() => toggleColor(k)}
-                          title="Eigene Farbe — klicken zum Entfernen"
-                        >
-                          <span className="opt-dot" style={{ background: k }} />
-                          {k.toUpperCase()}
-                        </button>
-                      ))}
+                      .filter((k) => k.startsWith("#"))
+                      .map((k) => {
+                        const hex = colorHex(k);
+                        const label = colorLabel(k);
+                        return (
+                          <button
+                            type="button"
+                            key={k}
+                            className="opt-swatch on opt-swatch-custom"
+                            onClick={() => toggleColor(k)}
+                            title="Eigene Farbe — klicken zum Entfernen"
+                          >
+                            <span className="opt-dot" style={{ background: hex }} />
+                            {label}
+                          </button>
+                        );
+                      })}
                   </div>
                   <div className="custom-color-row">
                     <input
