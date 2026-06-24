@@ -4462,3 +4462,58 @@ body:has(.hero-full) header.site .brand-other img{filter:none;height:52px}
 .det-order {
   padding-bottom: 0 !important;
 }
+
+/* === ÜBERSICHT ve DETAILS — TAMAMEN AYNI STİL === */
+.mm-tab-prose,
+.mm-tab-prose p,
+.mm-tab-prose li,
+.mm-tab-prose strong,
+.mm-tab-prose em,
+.mm-tab-prose span,
+.mm-tab-prose div,
+.mm-tab-rows,
+.mm-tab-row,
+.mm-tab-row dt,
+.mm-tab-row dd {
+  font-family: "Montserrat", "Montserrat Fallback", sans-serif !important;
+  font-size: 14px !important;
+  font-weight: 400 !important;
+  line-height: 1.6 !important;
+  color: #3b4540 !important;
+  letter-spacing: 0 !important;
+}
+
+/* Bold sadece <strong> için (ama yine de hafif) */
+.mm-tab-prose strong {
+  font-weight: 600 !important;
+  color: #1c2722 !important;
+}
+
+/* dt = label (DETAILS rows) sol kolon, biraz daha açık */
+.mm-tab-row dt {
+  color: #64748b !important;
+}
+
+/* dd = değer (DETAILS rows) sağ kolon, normal */
+.mm-tab-row dd {
+  color: #3b4540 !important;
+}
+
+/* List spacing ve padding */
+.mm-tab-prose ul,
+.mm-tab-prose ol {
+  padding-left: 20px !important;
+  margin: 6px 0 10px !important;
+}
+.mm-tab-prose li {
+  margin-bottom: 3px !important;
+}
+.mm-tab-prose li p {
+  margin: 0 !important;
+}
+.mm-tab-prose p {
+  margin: 0 0 8px !important;
+}
+.mm-tab-row {
+  padding: 5px 0 !important;
+}
