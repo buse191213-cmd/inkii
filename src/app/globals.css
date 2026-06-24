@@ -4247,7 +4247,7 @@ body:has(.hero-full) header.site .brand-other img{filter:none;height:52px}
   display: flex;
   flex-direction: column;
   background: #fff;
-  border-radius: 16px;
+  border-radius: 0;
   box-shadow:
     0 1px 2px rgba(15, 23, 36, 0.04),
     0 8px 32px rgba(15, 23, 36, 0.06);
@@ -4262,9 +4262,9 @@ body:has(.hero-full) header.site .brand-other img{filter:none;height:52px}
   content: "";
   position: absolute;
   inset: 0;
-  border-radius: 16px;
+  border-radius: 0;
   padding: 1px;
-  background: linear-gradient(180deg, rgba(200, 164, 107, 0.18), rgba(200, 164, 107, 0));
+  background: linear-gradient(180deg, rgba(20, 184, 166, 0.18), rgba(20, 184, 166, 0));
   -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
   -webkit-mask-composite: xor;
   mask-composite: exclude;
@@ -4273,18 +4273,18 @@ body:has(.hero-full) header.site .brand-other img{filter:none;height:52px}
 .dtf-prem:hover {
   box-shadow:
     0 1px 2px rgba(15, 23, 36, 0.05),
-    0 14px 44px rgba(200, 164, 107, 0.15);
+    0 14px 44px rgba(20, 184, 166, 0.15);
   transform: translateY(-1px);
 }
 .dtf-prem-icon {
   width: 44px;
   height: 44px;
-  background: linear-gradient(135deg, #f9f3e6 0%, #f3e6cb 100%);
-  border-radius: 12px;
+  background: linear-gradient(135deg, #d1fae5 0%, #a7f3d0 100%);
+  border-radius: 0;
   display: flex;
   align-items: center;
   justify-content: center;
-  color: #C8A46B;
+  color: #14b8a6;
   margin-bottom: 14px;
 }
 .dtf-prem-title {
@@ -4325,7 +4325,7 @@ body:has(.hero-full) header.site .brand-other img{filter:none;height:52px}
   width: 16px;
   height: 16px;
   border-radius: 50%;
-  background: #C8A46B;
+  background: #14b8a6;
   color: #fff;
   display: inline-flex;
   align-items: center;
@@ -4345,7 +4345,7 @@ body:has(.hero-full) header.site .brand-other img{filter:none;height:52px}
   letter-spacing: 0.08em;
   width: 100%;
   cursor: pointer;
-  border-radius: 10px;
+  border-radius: 0;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -4378,7 +4378,7 @@ body:has(.hero-full) header.site .brand-other img{filter:none;height:52px}
   letter-spacing: 0.02em;
 }
 .dtf-prem-foot-dot {
-  color: #C8A46B;
+  color: #14b8a6;
 }
 
 /* === Final tweaks 2 === */
