@@ -4243,22 +4243,80 @@ body:has(.hero-full) header.site .brand-other img{filter:none;height:52px}
 }
 
 /* DesignerLauncher CTA — kompakt, MM "Design Studio" tarzı */
-.dtf-launcher-btn {
-  background: #14b8a6 !important;
-  color: #fff !important;
-  border: 0 !important;
-  padding: 13px 18px !important;
-  font-size: 0.88rem !important;
-  font-weight: 600 !important;
-  letter-spacing: 0.02em !important;
-  display: flex !important;
-  align-items: center !important;
-  gap: 10px !important;
-  width: 100% !important;
+.dtf-launcher-card {
+  display: block;
+  background: #fff;
+  border: 2px dashed #14b8a6;
+  padding: 18px 18px 16px;
   cursor: pointer;
-  transition: opacity 0.15s;
+  transition: all 0.18s;
+  margin-bottom: 16px;
+  position: relative;
+  overflow: hidden;
 }
-.dtf-launcher-btn:hover { opacity: 0.92; }
+.dtf-launcher-card:hover {
+  background: #f0fdfa;
+  border-color: #0d9488;
+}
+.dtf-launcher-card::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(135deg, transparent 0%, rgba(20,184,166,0.04) 100%);
+  pointer-events: none;
+}
+.dtf-launcher-head {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  margin-bottom: 8px;
+  position: relative;
+}
+.dtf-launcher-icon {
+  width: 48px;
+  height: 48px;
+  background: #14b8a6;
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+.dtf-launcher-body {
+  flex: 1;
+  min-width: 0;
+}
+.dtf-launcher-title {
+  font-family: var(--display);
+  font-size: 1rem;
+  font-weight: 700;
+  color: #0f1714;
+  margin: 0 0 2px;
+  line-height: 1.3;
+}
+.dtf-launcher-sub {
+  font-size: 0.82rem;
+  color: #64748b;
+  margin: 0;
+  line-height: 1.4;
+}
+.dtf-launcher-hint {
+  font-size: 0.72rem;
+  color: #94a3b8;
+  margin: 6px 0 8px;
+  line-height: 1.45;
+}
+.dtf-launcher-cta {
+  display: inline-block;
+  font-size: 0.78rem;
+  font-weight: 700;
+  color: #14b8a6;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+}
+.dtf-launcher-card:hover .dtf-launcher-cta {
+  color: #0d9488;
+}
 
 /* === Final tweaks 2 === */
 
@@ -4327,13 +4385,14 @@ body:has(.hero-full) header.site .brand-other img{filter:none;height:52px}
 }
 /* Aktif sayfa belirteci (yeşil underline) zaten ::after ile var */
 
-/* 2) Details tab içeriği site font'u kullansın */
+/* 2) Details tab içeriği site font'u (Montserrat) kullansın */
 .mm-tab-prose,
+.mm-tab-prose *,
 .mm-tab-rows,
 .mm-tab-row,
 .mm-tab-row dt,
 .mm-tab-row dd {
-  font-family: inherit !important;
+  font-family: var(--body) !important; /* Montserrat */
 }
 
 /* 3) "Variante aktualisieren" buton — YEŞİL, FULL WIDTH, STICKY (ekranda sabit) */

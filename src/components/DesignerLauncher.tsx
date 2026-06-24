@@ -4,9 +4,24 @@ import { useState, useEffect } from "react";
 import DtfEngine from "./DtfEngine";
 
 const LABELS = {
-  de: "Eigenes Design hochladen",
-  en: "Upload Your Own Design",
-  tr: "Kendi Tasarımını Yükle",
+  de: {
+    title: "Eigenes Design hochladen",
+    sub: "Klicken zum Hochladen oder Drag & Drop",
+    hint: "Maximale Dateigröße 10 MB · PNG, JPG · KI entfernt Hintergrund automatisch",
+    cta: "Design Studio öffnen →",
+  },
+  en: {
+    title: "Upload Your Own Design",
+    sub: "Click to upload or Drag & Drop",
+    hint: "Maximum file size 10 MB · PNG, JPG · AI removes background automatically",
+    cta: "Open Design Studio →",
+  },
+  tr: {
+    title: "Kendi Tasarımını Yükle",
+    sub: "Yüklemek için tıklayın veya Sürükle Bırak",
+    hint: "Maks 10 MB · PNG, JPG · Yapay zeka arka planı otomatik kaldırır",
+    cta: "Tasarım Stüdyosu Aç →",
+  },
 };
 
 function getLocale(): "de" | "en" | "tr" {
@@ -28,23 +43,34 @@ export default function DesignerLauncher({
 
   useEffect(() => { setLocale(getLocale()); }, []);
 
-  const label = LABELS[locale];
+  const L = LABELS[locale];
 
   return (
     <>
-      <button
-        type="button"
-        className="dtf-launcher-btn"
+      <div
+        className="dtf-launcher-card"
         onClick={() => setOpen(true)}
-        aria-label={label}
+        role="button"
+        tabIndex={0}
+        onKeyDown={(e) => { if (e.key === "Enter" || e.key === " ") setOpen(true); }}
+        aria-label={L.title}
       >
-        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-          <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
-          <path d="M17 8l-5-5-5 5"/>
-          <path d="M12 3v12"/>
-        </svg>
-        <span>{label}</span>
-      </button>
+        <div className="dtf-launcher-head">
+          <div className="dtf-launcher-icon">
+            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+              <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+              <path d="M17 8l-5-5-5 5" />
+              <path d="M12 3v12" />
+            </svg>
+          </div>
+          <div className="dtf-launcher-body">
+            <h3 className="dtf-launcher-title">{L.title}</h3>
+            <p className="dtf-launcher-sub">{L.sub}</p>
+          </div>
+        </div>
+        <p className="dtf-launcher-hint">{L.hint}</p>
+        <span className="dtf-launcher-cta">{L.cta}</span>
+      </div>
 
       {open && (
         <DtfEngine
