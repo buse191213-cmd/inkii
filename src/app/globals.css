@@ -4336,9 +4336,11 @@ body:has(.hero-full) header.site .brand-other img{filter:none;height:52px}
   font-family: inherit !important;
 }
 
-/* 3) "Variante aktualisieren" buton — full width, yeşil */
+/* 3) "Variante aktualisieren" buton — YEŞİL, FULL WIDTH, STICKY (ekranda sabit) */
 .det-order-submit {
-  position: static !important;
+  position: sticky !important;
+  bottom: 16px !important;
+  z-index: 30 !important;
   width: 100% !important;
   background: #14b8a6 !important;
   color: #fff !important;
@@ -4354,18 +4356,19 @@ body:has(.hero-full) header.site .brand-other img{filter:none;height:52px}
   cursor: pointer !important;
   transition: background 0.15s !important;
   margin-top: 16px !important;
-  box-shadow: none !important;
+  box-shadow: 0 6px 20px rgba(20,184,166,0.25) !important;
 }
 .det-order-submit:hover {
   background: #0d9488 !important;
 }
 
-/* Zurück zum Katalog altındaki çizgiyi kaldır */
-.mm-detail-cta-secondary {
+/* Katalog kısmındaki TÜM çizgileri kaldır */
+.mm-detail-cta-secondary,
+.mm-detail-cta-back,
+.mm-detail-cta-back:hover,
+.mm-detail-related,
+.mm-detail-related-head {
   border-top: 0 !important;
-  border-bottom: 0 !important;
-}
-.mm-detail-cta-back {
   border-bottom: 0 !important;
   text-decoration: none !important;
 }
