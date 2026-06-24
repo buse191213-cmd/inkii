@@ -828,11 +828,13 @@ export default function ProductManager({
                         const hex = customColor.toLowerCase();
                         if (!/^#[0-9a-f]{6}$/.test(hex)) return;
                         const name = customColorName.trim();
-                        // İsim varsa "hex:name", yoksa sadece "hex" formatı
                         const key = name ? `${hex}:${name}` : hex;
                         if (!selColors.some((c) => c.split(":")[0] === hex)) {
-                          setSelColors((cur) => [...cur, key]);
-                          setCustomColorName(""); // input'u temizle
+                          // EN BAŞA ekle - kullanıcı eklediğini hemen görsün
+                          setSelColors((cur) => [key, ...cur]);
+                          // Input'ları reset et — yeni renk eklemeye hazır
+                          setCustomColor("#3f9c5c");
+                          setCustomColorName("");
                         }
                       }}
                     >
