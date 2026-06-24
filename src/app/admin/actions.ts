@@ -141,6 +141,24 @@ export async function saveProduct(formData: FormData): Promise<ActionResult> {
       .filter(Boolean)
       .join(","),
     images,
+    colorImages: (() => {
+      const raw = String(formData.get("colorImages") ?? "{}").trim();
+      if (!raw || raw === "{}") return "{}";
+      try {
+        const parsed = JSON.parse(raw);
+        if (parsed && typeof parsed === "object" && !Array.isArray(parsed)) {
+          // Sadece string array değerleri kabul et
+          const clean: Record<string, string[]> = {};
+          for (const [k, v] of Object.entries(parsed)) {
+            if (Array.isArray(v)) {
+              clean[k.toLowerCase().trim()] = v.filter((x) => typeof x === "string");
+            }
+          }
+          return JSON.stringify(clean);
+        }
+      } catch { /* görmezden gel */ }
+      return "{}";
+    })(),
     visiblePages: (() => {
       const raw = String(formData.get("visiblePages") ?? "[]");
       try {

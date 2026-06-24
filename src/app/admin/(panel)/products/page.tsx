@@ -32,6 +32,7 @@ export default async function ProductsPage() {
     colors: p.colors,
     material: p.material,
     images: p.images,
+    colorImages: (p as { colorImages?: string }).colorImages || "{}",
     visiblePages: (() => {
       try {
         const arr = JSON.parse(p.visiblePages ?? "[]");

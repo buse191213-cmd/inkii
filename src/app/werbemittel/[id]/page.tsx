@@ -96,6 +96,16 @@ export default async function ProductDetailPage({
   const tiers = parsePriceTiers(product.priceTiers);
   const sizesList = parseSizes(product.sizes);
 
+  // Renk başına görseller (JSON: { "weiß": ["url1","url2"], "schwarz": ["url3"] })
+  let colorImages: Record<string, string[]> = {};
+  try {
+    const raw = (product as { colorImages?: string }).colorImages;
+    if (raw) {
+      const parsed = JSON.parse(raw);
+      if (parsed && typeof parsed === "object") colorImages = parsed;
+    }
+  } catch { /* görmezden gel */ }
+
   return (
     <SiteShell>
       <section className="mm-detail">
@@ -119,7 +129,7 @@ export default async function ProductDetailPage({
                 {product.stock > 0 && <span className="mm-tag tag-stock">AB LAGER</span>}
                 {product.isEco && <span className="mm-tag tag-eco">✦ NACHHALTIG</span>}
               </div>
-              <ProductGallery images={images} name={product.name} iconName={product.icon} />
+              <ProductGallery images={images} colorImages={colorImages} name={product.name} iconName={product.icon} />
             </div>
 
             {/* Info */}
@@ -130,13 +140,15 @@ export default async function ProductDetailPage({
                 Produktionszeit: <strong>Auf Anfrage</strong> · exkl. Versand
               </p>
 
-              {/* Beschreibung (als reiner Text, ohne HTML/DOMPurify) */}
+              {/* Beschreibung — HTML render (Admin RichEditor'dan kayıtlı) */}
               {product.description && (
                 <div className="mm-detail-section">
                   <h2 className="mm-detail-h2">ÜBERSICHT</h2>
-                  <div style={{ lineHeight: 1.65, color: "#3b4540", whiteSpace: "pre-wrap" }}>
-                    {product.description}
-                  </div>
+                  <div
+                    className="product-description-html"
+                    style={{ lineHeight: 1.65, color: "#3b4540" }}
+                    dangerouslySetInnerHTML={{ __html: product.description }}
+                  />
                 </div>
               )}
 

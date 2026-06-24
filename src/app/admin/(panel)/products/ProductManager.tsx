@@ -27,6 +27,7 @@ export type AdminProduct = {
   colors: string;
   material: string;
   images: string;
+  colorImages?: string; // JSON: { "weiß": ["url1","url2"], ... }
   visiblePages: string[]; // ["kleidung","werbeartikel"] vs.
   categoryId: string;
   categoryName: string;
@@ -44,7 +45,7 @@ const EMPTY: AdminProduct = {
   id: "", code: "VS-", name: "", subtitle: "", description: "", icon: "box",
   priceCents: null, priceTiers: "[]", sizes: "[]", stock: 0, status: "active",
   isNew: false, isEco: false,
-  colors: "", material: "", images: "", visiblePages: [], categoryId: "", categoryName: "",
+  colors: "", material: "", images: "", colorImages: "{}", visiblePages: [], categoryId: "", categoryName: "",
 };
 
 const SORTS = [
@@ -820,6 +821,27 @@ export default function ProductManager({
                       + Hinzufügen
                     </button>
                   </div>
+                </div>
+                <div className="field">
+                  <label>Bilder pro Farbe (JSON, optional)</label>
+                  <textarea
+                    name="colorImages"
+                    rows={5}
+                    defaultValue={(() => {
+                      const raw = (modal as { colorImages?: string }).colorImages || "{}";
+                      try {
+                        const obj = JSON.parse(raw);
+                        return JSON.stringify(obj, null, 2);
+                      } catch { return "{}"; }
+                    })()}
+                    placeholder='{\n  "weiß": ["https://...weiss-1.jpg", "https://...weiss-2.jpg"],\n  "schwarz": ["https://...schwarz-1.jpg"]\n}'
+                    style={{ width: "100%", fontFamily: "ui-monospace,monospace", fontSize: 12, padding: 10, border: "1px solid #d1d5db", borderRadius: 6 }}
+                  />
+                  <p className="form-note" style={{ marginTop: 6 }}>
+                    Beim Klick auf eine Farbe wechseln die Bilder der Galerie zu den hier hinterlegten Bildern.
+                    Die Bild-URLs zuerst über die <b>Produktbilder</b> oben hochladen, dann hier den
+                    URL-Eintrag pro Farbe einsortieren. Wenn leer (<code>{`{}`}</code>), wird für alle Farben die normale Galerie gezeigt.
+                  </p>
                 </div>
                 <div className="field">
                   <label>Beschreibung</label>

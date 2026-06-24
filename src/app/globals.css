@@ -3928,3 +3928,25 @@ body:has(.hero-full) header.site .brand-other img{filter:none;height:52px}
 .kf-design-info{flex:1;min-width:0}
 .kf-design-info strong{display:block;font-size:.95rem;color:#0f766e;margin-bottom:3px}
 .kf-design-info p{margin:0;font-size:.82rem;color:#0d544c;line-height:1.4}
+
+/* Ürün açıklaması (RichEditor HTML çıktısı) */
+.product-description-html ul,
+.product-description-html ol { margin: 8px 0 12px 0; padding-left: 22px; }
+.product-description-html ul { list-style: disc; }
+.product-description-html ol { list-style: decimal; }
+.product-description-html li { margin-bottom: 4px; line-height: 1.55; }
+.product-description-html li p { margin: 0; }
+.product-description-html p { margin: 0 0 10px 0; }
+.product-description-html p:empty { display: none; }
+.product-description-html strong { font-weight: 700; color: #0f1714; }
+.product-description-html em { font-style: italic; }
+.product-description-html a { color: #14b8a6; text-decoration: underline; }
+.product-description-html h1, .product-description-html h2, .product-description-html h3 {
+  font-weight: 700;
+  margin: 14px 0 8px;
+  color: #0f1714;
+  letter-spacing: -.01em;
+}
+.product-description-html h1 { font-size: 1.25rem; }
+.product-description-html h2 { font-size: 1.1rem; }
+.product-description-html h3 { font-size: 1rem; }

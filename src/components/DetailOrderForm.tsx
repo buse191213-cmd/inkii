@@ -60,6 +60,12 @@ export default function DetailOrderForm({
   // beginnt eine neue Auswahl für die andere Farbvariante.
   useEffect(() => {
     setAdded(false);
+    // ProductGallery'a renk değişikliğini bildir
+    if (typeof window !== "undefined") {
+      window.dispatchEvent(
+        new CustomEvent("product-color-change", { detail: { color: selectedColor } })
+      );
+    }
   }, [selectedColor]);
 
   const totalQty = useMemo(
