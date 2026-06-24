@@ -4588,3 +4588,32 @@ body:has(.hero-full) header.site .brand-other img{filter:none;height:52px}
 .mm-related-body {
   border-radius: 0 !important;
 }
+
+/* === Boşluk ve font-weight düzeltmeleri === */
+
+/* 1) ÜBERSICHT/DETAILS üst boşluğunu azalt */
+.mm-tabs {
+  margin-top: 0 !important;
+  padding-top: 4px !important;
+}
+
+/* 2) Tab içerikleri daha kalın font */
+.mm-tab-prose,
+.mm-tab-prose p,
+.mm-tab-prose li,
+.mm-tab-prose span,
+.mm-tab-prose div,
+.mm-tab-row dt,
+.mm-tab-row dd {
+  font-weight: 500 !important;
+}
+.mm-tab-prose strong,
+.mm-tab-row dd {
+  font-weight: 600 !important;
+}
+
+/* 3) "Ihr Design hochladen" kart üst boşluğunu kaldır */
+.dtf-prem {
+  margin-top: 0 !important;
+  margin-bottom: 14px !important;
+}
