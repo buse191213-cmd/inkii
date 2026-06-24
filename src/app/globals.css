@@ -4112,3 +4112,43 @@ body:has(.hero-full) header.site .brand-other img{filter:none;height:52px}
     max-height: none;
   }
 }
+
+/* === Üretim sürümü 2026-06-24 — final düzeltmeler === */
+
+/* 1) Sol görseli biraz büyüt (440 → 500) */
+@media (min-width: 1024px) {
+  .mm-detail-gallery .gallery {
+    max-width: 500px;
+  }
+}
+
+/* 2) Title + subtitle + meta margin azalt — görselle yakın olsun */
+.mm-detail-h1 { margin-bottom: 4px !important; }
+.mm-detail-sub { margin-bottom: 6px !important; }
+.mm-detail-meta { margin-bottom: 12px !important; }
+
+/* 3) ÜBERSICHT/DETAILS tabs — üstte boşluk azalt */
+.mm-tabs {
+  margin-top: 8px !important;
+  padding-top: 12px !important;
+}
+
+/* 4) DETAILS tab içeriği — bold değil, normal font */
+.mm-tab-row dt {
+  font-weight: 400 !important;
+  color: #64748b !important;
+}
+.mm-tab-row dd {
+  font-weight: 500 !important;
+  color: #3b4540 !important;
+}
+
+/* 5) Variante wählen card — köşeleri keskin (radius yok) */
+.det-order {
+  border-radius: 0 !important;
+}
+
+/* 6) DTF Launcher buton köşesi keskin, üst kart ile uyumlu */
+.dtf-launcher-btn {
+  border-radius: 0 !important;
+}

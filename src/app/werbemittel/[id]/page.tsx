@@ -141,7 +141,10 @@ export default async function ProductDetailPage({
                 Produktionszeit: <strong>Auf Anfrage</strong> · exkl. Versand
               </p>
 
-              {/* ÜBERSICHT + DETAILS tabs yan yana — ÖNCE gelsin */}
+              {/* Eigenes Design hochladen — EN ÜSTTE */}
+              <DesignerLauncher productName={product.name} productCode={product.code} />
+
+              {/* ÜBERSICHT + DETAILS tabs yan yana */}
               {(() => {
                 const tabs: DetailTab[] = [];
                 if (product.description) {
@@ -158,9 +161,6 @@ export default async function ProductDetailPage({
                 tabs.push({ key: "details", label: "DETAILS", rows });
                 return <ProductDetailTabs tabs={tabs} />;
               })()}
-
-              {/* Eigenes Design hochladen — Variante öncesi */}
-              <DesignerLauncher productName={product.name} productCode={product.code} />
 
               {/* Sipariş formu */}
               <DetailOrderForm
