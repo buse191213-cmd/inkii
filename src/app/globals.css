@@ -4372,3 +4372,34 @@ body:has(.hero-full) header.site .brand-other img{filter:none;height:52px}
   border-bottom: 0 !important;
   text-decoration: none !important;
 }
+
+/* === Final cleanup === */
+
+/* 1) MerkenButton (+ Auf den Merkzettel) gizle */
+.btn.merken-btn,
+.mm-detail-cta-secondary .merken-btn {
+  display: none !important;
+}
+
+/* 2) mm-detail-trust üst çizgisini kaldır */
+.mm-detail-trust {
+  border-top: 0 !important;
+  border: 0 !important;
+}
+
+/* 3) Variante aktualisieren - KOYU YEŞİL + kart kenarına kadar uzasın */
+.det-order-submit {
+  background: #0d9488 !important; /* koyu yeşil */
+  margin-left: -18px !important;
+  margin-right: -18px !important;
+  margin-bottom: -16px !important;
+  width: calc(100% + 36px) !important;
+}
+.det-order-submit:hover {
+  background: #0a7268 !important; /* daha koyu hover */
+}
+
+/* Kart alt padding'ini sıfırla ki buton edge'e yapışsın */
+.det-order {
+  padding-bottom: 0 !important;
+}

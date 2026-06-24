@@ -43,9 +43,7 @@ export default function DetailOrderForm({
   basePriceCents,
 }: Props) {
   const { addOrUpdate, has } = useMerkliste();
-  const [selectedColor, setSelectedColor] = useState<string | null>(
-    colors.length > 0 ? colors[0] : null
-  );
+  const [selectedColor, setSelectedColor] = useState<string | null>(null);
   const [qty, setQty] = useState<Record<string, number>>(() => {
     const init: Record<string, number> = {};
     sizes.forEach((s) => (init[s.name] = 0));
