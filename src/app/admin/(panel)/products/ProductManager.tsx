@@ -563,7 +563,8 @@ export default function ProductManager({
       </div>
 
       {modal && (
-        <div className="modal-bg" onClick={(e) => e.target === e.currentTarget && closeModal()}>
+        <div className="modal-bg">
+          {/* Overlay click ile kapanmaz - sadece X butonu ve Abbrechen ile */}
           <div className="modal">
             <form onSubmit={handleSave}>
               <div className="modal-head">
