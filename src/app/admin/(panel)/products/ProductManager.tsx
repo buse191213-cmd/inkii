@@ -295,6 +295,17 @@ export default function ProductManager({
     setSelMaterials((cur) => (cur.includes(k) ? cur.filter((x) => x !== k) : [...cur, k]));
   }
   function closeModal() {
+    // Yeni ürün için taslak otomatik kayıtlı — kullanıcıyı bilgilendir
+    if (modal && !modal.id) {
+      // Form değişmişse (en azından code/name varsa) taslak bilgisi göster
+      const hasContent = modal.code !== "INKI-" || modal.name.trim() !== "";
+      if (hasContent) {
+        // Browser native notification gibi alert
+        setTimeout(() => {
+          alert("✓ Entwurf gespeichert.\n\nIhre Eingaben bleiben erhalten und können beim nächsten Öffnen wiederhergestellt werden.");
+        }, 100);
+      }
+    }
     revokeAll(images);
     setImages([]);
     setModal(null);
@@ -982,10 +993,13 @@ export default function ProductManager({
                 </div>
                 {selColors.length > 0 && (
                   <div className="field">
-                    <label>Bilder pro Farbe</label>
+                    <label>Bilder pro Farbe (optional)</label>
                     <p className="form-note" style={{ marginBottom: 12, marginTop: 0 }}>
-                      Laden Sie für jede Farbe eigene Produktbilder hoch. Klickt der Kunde auf
-                      eine Farbe, wechselt die Galerie automatisch zu diesen Bildern.
+                      <strong>Optional:</strong> Wenn Sie pro Farbe spezifische Bilder hochladen wollen, machen Sie das hier.
+                      Wenn Sie hier <b>nichts</b> hochladen, werden für alle Farben die Bilder aus <b>"Produktbilder"</b> oben verwendet.
+                      {selColors.length === 1 && (
+                        <> Bei nur <b>einer Farbe</b> reicht es, oben "Produktbilder" auszufüllen — hier nichts hochladen.</>
+                      )}
                     </p>
                     <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
                       {selColors.map((colorKey) => {
