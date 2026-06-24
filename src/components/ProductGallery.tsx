@@ -43,13 +43,19 @@ export default function ProductGallery({
       // Debug: console'a yazalım — sorun olursa görelim
       if (typeof window !== "undefined") {
         console.log("[Gallery] color:", activeColor, "→ norm:", target,
-          "| keys:", Object.keys(colorImages),
           "| matched:", matchedKey,
           "| count:", matchedKey ? colorImages[matchedKey].length : 0);
+        if (matchedKey && colorImages[matchedKey]) {
+          console.log("[Gallery] URLs:", colorImages[matchedKey]);
+        }
       }
       const rels = matchedKey ? colorImages[matchedKey] : null;
       if (rels && rels.length > 0) {
-        return rels.map((r) => resolveUrl(r, images));
+        const resolved = rels.map((r) => resolveUrl(r, images));
+        if (typeof window !== "undefined") {
+          console.log("[Gallery] Resolved URLs:", resolved);
+        }
+        return resolved;
       }
     }
     return images;
