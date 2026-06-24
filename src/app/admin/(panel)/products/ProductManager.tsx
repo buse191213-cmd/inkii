@@ -88,6 +88,8 @@ export default function ProductManager({
   const [error, setError] = useState("");
   const [busy, setBusy] = useState(false);
   const [images, setImages] = useState<ImgItem[]>([]);
+  // Renk bazında ayrı görsel listesi: { "weiß": [ImgItem,...], "schwarz": [...] }
+  const [colorImages, setColorImagesState] = useState<Record<string, ImgItem[]>>({});
   const [selColors, setSelColors] = useState<string[]>([]);
   const [selMaterials, setSelMaterials] = useState<string[]>([]);
   const [matInput, setMatInput] = useState("");
@@ -141,10 +143,34 @@ export default function ProductManager({
     items.forEach((it) => it.file && URL.revokeObjectURL(it.preview));
   }
 
+  // Bir renge yeni görseller ekle
+  function addColorImages(colorKey: string, files: File[]) {
+    const newItems: ImgItem[] = files.map((file, i) => ({
+      key: `nc-${colorKey}-${Date.now()}-${i}`,
+      file,
+      preview: URL.createObjectURL(file),
+    }));
+    setColorImagesState((prev) => ({
+      ...prev,
+      [colorKey]: [...(prev[colorKey] || []), ...newItems],
+    }));
+  }
+
+  // Renkten bir görseli sil
+  function removeColorImage(colorKey: string, idx: number) {
+    setColorImagesState((prev) => {
+      const cur = prev[colorKey] || [];
+      if (cur[idx]?.file) URL.revokeObjectURL(cur[idx].preview);
+      return { ...prev, [colorKey]: cur.filter((_, i) => i !== idx) };
+    });
+  }
+
   function openNew() {
     setError("");
     revokeAll(images);
+    Object.values(colorImages).forEach(revokeAll);
     setImages([]);
+    setColorImagesState({});
     setSelColors([]);
     setSelMaterials([]);
     setTiers([]);
@@ -154,9 +180,25 @@ export default function ProductManager({
   function openEdit(p: AdminProduct) {
     setError("");
     revokeAll(images);
+    Object.values(colorImages).forEach(revokeAll);
     setImages(
       splitImages(p.images).map((url, i) => ({ key: `e${i}-${url}`, url, preview: url }))
     );
+    // colorImages JSON parse
+    try {
+      const obj = JSON.parse(p.colorImages || "{}");
+      const state: Record<string, ImgItem[]> = {};
+      if (obj && typeof obj === "object") {
+        for (const [k, v] of Object.entries(obj)) {
+          if (Array.isArray(v)) {
+            state[k] = (v as string[])
+              .filter((u) => typeof u === "string" && u.length > 0)
+              .map((url, i) => ({ key: `ec-${k}-${i}-${url}`, url, preview: url }));
+          }
+        }
+      }
+      setColorImagesState(state);
+    } catch { setColorImagesState({}); }
     setSelColors(splitCsv(p.colors));
     setSelMaterials(splitCsv(p.material));
     setTiers(
@@ -232,6 +274,24 @@ export default function ProductManager({
     fd.set("imageOrder", JSON.stringify(order));
     fd.set("colors", selColors.join(","));
     fd.set("material", selMaterials.join(","));
+
+    // Renk bazında görseller - her renk için ayrı upload + sıralama
+    const colorImagesOrder: Record<string, string[]> = {};
+    for (const [colorKey, items] of Object.entries(colorImages)) {
+      if (!items || items.length === 0) continue;
+      const ord: string[] = [];
+      items.forEach((img) => {
+        if (img.url) {
+          ord.push("e:" + img.url);
+        } else if (img.file) {
+          ord.push("n");
+          // Her renk için ayrı field key — server bunu parse edecek
+          fd.append(`colorNewImages__${colorKey}`, img.file);
+        }
+      });
+      if (ord.length > 0) colorImagesOrder[colorKey] = ord;
+    }
+    fd.set("colorImagesOrder", JSON.stringify(colorImagesOrder));
 
     // Mengenstaffel: aus den Roh-Texten in [{qty,cents}] umwandeln
     const parsedTiers: PriceTier[] = tiers
@@ -822,28 +882,67 @@ export default function ProductManager({
                     </button>
                   </div>
                 </div>
-                <div className="field">
-                  <label>Bilder pro Farbe (JSON, optional)</label>
-                  <textarea
-                    name="colorImages"
-                    rows={5}
-                    defaultValue={(() => {
-                      const raw = (modal as { colorImages?: string }).colorImages || "{}";
-                      try {
-                        const obj = JSON.parse(raw);
-                        return JSON.stringify(obj, null, 2);
-                      } catch { return "{}"; }
-                    })()}
-                    placeholder='{\n  "weiß": ["https://...weiss-1.jpg", "https://...weiss-2.jpg"],\n  "schwarz": ["https://...schwarz-1.jpg"]\n}'
-                    style={{ width: "100%", fontFamily: "ui-monospace,monospace", fontSize: 12, padding: 10, border: "1px solid #d1d5db", borderRadius: 6 }}
-                  />
-                  <p className="form-note" style={{ marginTop: 6 }}>
-                    Beim Klick auf eine Farbe wechseln die Galerie-Bilder zur hier hinterlegten Auswahl.
-                    Sie können <b>nur den Dateinamen</b> einer bereits hochgeladenen Datei eintragen (z.B. <code>BY102_Black.jpg</code>),
-                    das System findet automatisch die volle URL.<br />
-                    Farbschlüssel (weiß/schwarz/...) werden flexibel verglichen — Groß-/Kleinschreibung und Umlaute spielen keine Rolle.
-                  </p>
-                </div>
+                {selColors.length > 0 && (
+                  <div className="field">
+                    <label>Bilder pro Farbe</label>
+                    <p className="form-note" style={{ marginBottom: 12, marginTop: 0 }}>
+                      Laden Sie für jede Farbe eigene Produktbilder hoch. Klickt der Kunde auf
+                      eine Farbe, wechselt die Galerie automatisch zu diesen Bildern.
+                    </p>
+                    <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
+                      {selColors.map((colorKey) => {
+                        const list = colorImages[colorKey] || [];
+                        const label = colorLabel(colorKey);
+                        const hex = colorHex(colorKey) || colorKey;
+                        return (
+                          <div key={colorKey} style={{ border: "1px solid #e5e7eb", borderRadius: 8, padding: 12, background: "#fafafa" }}>
+                            <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 10 }}>
+                              <span style={{
+                                display: "inline-block", width: 18, height: 18, borderRadius: "50%",
+                                background: hex, border: "1px solid rgba(0,0,0,.15)"
+                              }} />
+                              <strong style={{ fontSize: 13 }}>{label}</strong>
+                              <span style={{ fontSize: 11, color: "#6b7280" }}>
+                                ({list.length} {list.length === 1 ? "Bild" : "Bilder"})
+                              </span>
+                            </div>
+                            <div className="img-manager">
+                              {list.map((img, i) => (
+                                <div className="img-thumb" key={img.key}>
+                                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                                  <img src={img.preview} alt="" />
+                                  {img.file && <span className="img-new">neu</span>}
+                                  <button
+                                    type="button"
+                                    className="img-del"
+                                    title="Bild entfernen"
+                                    onClick={() => removeColorImage(colorKey, i)}
+                                  >
+                                    ✕
+                                  </button>
+                                </div>
+                              ))}
+                              <label className="img-add">
+                                <span>+</span>
+                                <small>Bilder hinzufügen</small>
+                                <input
+                                  type="file"
+                                  accept="image/png,image/jpeg,image/webp,image/gif"
+                                  multiple
+                                  onChange={(e) => {
+                                    const files = Array.from(e.target.files || []);
+                                    if (files.length > 0) addColorImages(colorKey, files);
+                                    e.target.value = ""; // reset
+                                  }}
+                                />
+                              </label>
+                            </div>
+                          </div>
+                        );
+                      })}
+                    </div>
+                  </div>
+                )}
                 <div className="field">
                   <label>Beschreibung</label>
                   <RichEditor

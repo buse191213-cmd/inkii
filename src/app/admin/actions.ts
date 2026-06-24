@@ -117,6 +117,50 @@ export async function saveProduct(formData: FormData): Promise<ActionResult> {
   }
   const images = finalImages.join(",");
 
+  // === Renk bazında görseller — her renk için ayrı upload ===
+  let colorImagesOrder: Record<string, string[]> = {};
+  try {
+    const parsed = JSON.parse(String(formData.get("colorImagesOrder") ?? "{}"));
+    if (parsed && typeof parsed === "object" && !Array.isArray(parsed)) {
+      for (const [k, v] of Object.entries(parsed)) {
+        if (Array.isArray(v)) {
+          colorImagesOrder[k] = (v as unknown[]).map(String);
+        }
+      }
+    }
+  } catch { colorImagesOrder = {}; }
+
+  const colorImagesPayload: Record<string, string[]> = {};
+  for (const [colorKey, orderArr] of Object.entries(colorImagesOrder)) {
+    const colorNewFiles = formData
+      .getAll(`colorNewImages__${colorKey}`)
+      .filter((f): f is File => f instanceof File && f.size > 0)
+      .filter((f) => f.type.startsWith("image/"));
+
+    let colorUploaded: string[] = [];
+    try {
+      colorUploaded = await saveUploadedImages(colorNewFiles.slice(0, MAX_IMAGES));
+    } catch (e) {
+      return { ok: false, error: `Farbbilder-Upload fehlgeschlagen für ${colorKey}: ${e instanceof Error ? e.message : "Fehler"}` };
+    }
+
+    const finalColorImgs: string[] = [];
+    let nextColorNew = 0;
+    for (const token of orderArr) {
+      if (finalColorImgs.length >= MAX_IMAGES) break;
+      if (token.startsWith("e:")) {
+        finalColorImgs.push(token.slice(2));
+      } else if (token === "n") {
+        if (colorUploaded[nextColorNew]) finalColorImgs.push(colorUploaded[nextColorNew]);
+        nextColorNew++;
+      }
+    }
+    if (finalColorImgs.length > 0) {
+      colorImagesPayload[colorKey.toLowerCase().trim()] = finalColorImgs;
+    }
+  }
+  const colorImagesJson = JSON.stringify(colorImagesPayload);
+
   const data = {
     code,
     name,
@@ -141,24 +185,7 @@ export async function saveProduct(formData: FormData): Promise<ActionResult> {
       .filter(Boolean)
       .join(","),
     images,
-    colorImages: (() => {
-      const raw = String(formData.get("colorImages") ?? "{}").trim();
-      if (!raw || raw === "{}") return "{}";
-      try {
-        const parsed = JSON.parse(raw);
-        if (parsed && typeof parsed === "object" && !Array.isArray(parsed)) {
-          // Sadece string array değerleri kabul et
-          const clean: Record<string, string[]> = {};
-          for (const [k, v] of Object.entries(parsed)) {
-            if (Array.isArray(v)) {
-              clean[k.toLowerCase().trim()] = v.filter((x) => typeof x === "string");
-            }
-          }
-          return JSON.stringify(clean);
-        }
-      } catch { /* görmezden gel */ }
-      return "{}";
-    })(),
+    colorImages: colorImagesJson,
     visiblePages: (() => {
       const raw = String(formData.get("visiblePages") ?? "[]");
       try {
