@@ -4580,3 +4580,11 @@ body:has(.hero-full) header.site .brand-other img{filter:none;height:52px}
 .mm-tab-row {
   padding: 5px 0 !important;
 }
+
+/* === Related products kart radius kaldır === */
+.mm-related-card,
+.mm-related-card *,
+.mm-related-img,
+.mm-related-body {
+  border-radius: 0 !important;
+}
