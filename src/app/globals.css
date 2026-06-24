@@ -4617,3 +4617,32 @@ body:has(.hero-full) header.site .brand-other img{filter:none;height:52px}
   margin-top: 0 !important;
   margin-bottom: 14px !important;
 }
+
+/* === DETAILS — kompakt inline satırlar (Materialien: ... şeklinde) === */
+.mm-tab-rows {
+  gap: 2px !important;
+  display: flex !important;
+  flex-direction: column !important;
+}
+.mm-tab-row {
+  display: block !important;
+  padding: 1px 0 !important;
+  border: 0 !important;
+  grid-template-columns: none !important;
+  line-height: 1.55 !important;
+}
+.mm-tab-row dt {
+  display: inline !important;
+  font-weight: 600 !important;
+  color: #1c2722 !important;
+  margin: 0 4px 0 0 !important;
+}
+.mm-tab-row dt::after {
+  content: ":";
+}
+.mm-tab-row dd {
+  display: inline !important;
+  font-weight: 500 !important;
+  color: #3b4540 !important;
+  margin: 0 !important;
+}
