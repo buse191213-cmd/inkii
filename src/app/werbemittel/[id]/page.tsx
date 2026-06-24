@@ -140,6 +140,21 @@ export default async function ProductDetailPage({
                 Produktionszeit: <strong>Auf Anfrage</strong> · exkl. Versand
               </p>
 
+              {/* Sipariş formu — Galery'e yakın olsun diye en üste alındı */}
+              <DetailOrderForm
+                productId={product.id}
+                productCode={product.code}
+                productName={product.name}
+                productImage={images[0] ?? null}
+                colors={colors}
+                sizes={sizesList}
+                tiers={tiers}
+                basePriceCents={product.priceCents}
+              />
+
+              {/* Eigenes Design hochladen — Tasarımcı modali açar */}
+              <DesignerLauncher productName={product.name} productCode={product.code} />
+
               {/* Beschreibung — HTML render (Admin RichEditor'dan kayıtlı) */}
               {product.description && (
                 <div className="mm-detail-section">
@@ -213,19 +228,6 @@ export default async function ProductDetailPage({
               )}
 
               {/* Eigenes Design hochladen — Tasarımcı modali açar */}
-              <DesignerLauncher productName={product.name} productCode={product.code} />
-
-              {/* Farbe + Größen + Mengen + Merkzettel-Submit */}
-              <DetailOrderForm
-                productId={product.id}
-                productCode={product.code}
-                productName={product.name}
-                productImage={images[0] ?? null}
-                colors={colors}
-                sizes={sizesList}
-                tiers={tiers}
-                basePriceCents={product.priceCents}
-              />
 
               <div className="mm-detail-cta-secondary">
                 <MerkenButton

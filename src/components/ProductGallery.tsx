@@ -101,31 +101,6 @@ export default function ProductGallery({
           ))}
         </div>
       )}
-      {/* Galerinin hemen altında renk butonları */}
-      {colors && colors.length > 0 && (
-        <div className="gallery-colors">
-          <div className="gallery-colors-row">
-            {colors.map((c) => {
-              const hex = colorHex(c) || c;
-              const isActive = activeColor === c;
-              return (
-                <button
-                  key={c}
-                  type="button"
-                  className={`gallery-color-dot${isActive ? " active" : ""}`}
-                  onClick={() => selectColor(c)}
-                  aria-label={colorLabel(c)}
-                  title={colorLabel(c)}
-                  style={{ background: hex }}
-                />
-              );
-            })}
-          </div>
-          {activeColor && (
-            <div className="gallery-colors-label">{colorLabel(activeColor)}</div>
-          )}
-        </div>
-      )}
     </div>
   );
 }
