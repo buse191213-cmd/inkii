@@ -156,7 +156,18 @@ export async function saveProduct(formData: FormData): Promise<ActionResult> {
       }
     }
     if (finalColorImgs.length > 0) {
-      colorImagesPayload[colorKey.toLowerCase().trim()] = finalColorImgs;
+      // Key'i selColors-uyumlu formatta sakla:
+      // "hex:name" → hex küçük + name original (case preserved)
+      // predefined → tüm lowercase
+      let cleanKey: string;
+      const trimmed = colorKey.trim();
+      if (trimmed.startsWith("#") && trimmed.includes(":")) {
+        const [hex, ...nameParts] = trimmed.split(":");
+        cleanKey = `${hex.toLowerCase()}:${nameParts.join(":").trim()}`;
+      } else {
+        cleanKey = trimmed.toLowerCase();
+      }
+      colorImagesPayload[cleanKey] = finalColorImgs;
     }
   }
   const colorImagesJson = JSON.stringify(colorImagesPayload);

@@ -144,25 +144,34 @@ export default function ProductManager({
     items.forEach((it) => it.file && URL.revokeObjectURL(it.preview));
   }
 
+  // Esnek key matching helper
+  function findExistingColorKey(targetKey: string): string {
+    const norm = (s: string) => s.toLowerCase().trim();
+    const tk = norm(targetKey);
+    return Object.keys(colorImages).find((k) => norm(k) === tk) || targetKey;
+  }
+
   // Bir renge yeni görseller ekle
   function addColorImages(colorKey: string, files: File[]) {
+    const useKey = findExistingColorKey(colorKey);
     const newItems: ImgItem[] = files.map((file, i) => ({
-      key: `nc-${colorKey}-${Date.now()}-${i}`,
+      key: `nc-${useKey}-${Date.now()}-${i}`,
       file,
       preview: URL.createObjectURL(file),
     }));
     setColorImagesState((prev) => ({
       ...prev,
-      [colorKey]: [...(prev[colorKey] || []), ...newItems],
+      [useKey]: [...(prev[useKey] || []), ...newItems],
     }));
   }
 
   // Renkten bir görseli sil
   function removeColorImage(colorKey: string, idx: number) {
+    const useKey = findExistingColorKey(colorKey);
     setColorImagesState((prev) => {
-      const cur = prev[colorKey] || [];
+      const cur = prev[useKey] || [];
       if (cur[idx]?.file) URL.revokeObjectURL(cur[idx].preview);
-      return { ...prev, [colorKey]: cur.filter((_, i) => i !== idx) };
+      return { ...prev, [useKey]: cur.filter((_, i) => i !== idx) };
     });
   }
 
@@ -915,7 +924,11 @@ export default function ProductManager({
                     </p>
                     <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
                       {selColors.map((colorKey) => {
-                        const list = colorImages[colorKey] || [];
+                        // Esnek key matching - tam veya normalize edilmiş match
+                        const norm = (s: string) => s.toLowerCase().trim();
+                        const tk = norm(colorKey);
+                        const matchedKey = Object.keys(colorImages).find((k) => norm(k) === tk) || colorKey;
+                        const list = colorImages[matchedKey] || [];
                         const label = colorLabel(colorKey);
                         const hex = colorHex(colorKey) || colorKey;
                         return (
