@@ -5,6 +5,7 @@ import DtfEngine from "./DtfEngine";
 
 const LABELS = {
   de: {
+    badge: "⚡ Beliebt bei 500+ Kunden",
     title: "Ihr Design hochladen",
     desc: "Laden Sie Ihr Logo oder Motiv hoch und erhalten Sie sofort eine Druckvorschau.",
     feat1: "Hintergrund automatisch entfernt",
@@ -13,8 +14,10 @@ const LABELS = {
     cta: "DESIGN HOCHLADEN",
     foot1: "PNG · JPG · SVG · PDF",
     foot2: "Max. 10 MB",
+    proof: "✓ Kostenlos · ✓ Unverbindlich · ✓ Antwort in 24h",
   },
   en: {
+    badge: "⚡ Trusted by 500+ Customers",
     title: "Upload Your Design",
     desc: "Upload your logo or artwork and receive an instant print preview.",
     feat1: "Background removed automatically",
@@ -23,8 +26,10 @@ const LABELS = {
     cta: "UPLOAD DESIGN",
     foot1: "PNG · JPG · SVG · PDF",
     foot2: "Max. 10 MB",
+    proof: "✓ Free · ✓ No commitment · ✓ 24h response",
   },
   tr: {
+    badge: "⚡ 500+ Müşterinin Tercihi",
     title: "Tasarımınızı Yükleyin",
     desc: "Logonuzu veya tasarımınızı yükleyin, anında baskı önizlemesi alın.",
     feat1: "Arka plan otomatik kaldırılır",
@@ -33,6 +38,7 @@ const LABELS = {
     cta: "TASARIMI YÜKLE",
     foot1: "PNG · JPG · SVG · PDF",
     foot2: "Maks. 10 MB",
+    proof: "✓ Ücretsiz · ✓ Bağlayıcı değil · ✓ 24 saat içinde dönüş",
   },
 };
 
@@ -64,6 +70,7 @@ export default function DesignerLauncher({
         onKeyDown={(e) => { if (e.key === "Enter" || e.key === " ") setOpen(true); }}
         aria-label={L.title}
       >
+        <div className="dtf-prem-badge">{L.badge}</div>
         <div className="dtf-prem-icon">
           <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor"
             strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
@@ -86,6 +93,7 @@ export default function DesignerLauncher({
         >
           {L.cta} <span className="dtf-prem-cta-arrow">→</span>
         </button>
+        <div className="dtf-prem-proof">{L.proof}</div>
         <div className="dtf-prem-foot">
           <span>{L.foot1}</span>
           <span className="dtf-prem-foot-dot">•</span>
