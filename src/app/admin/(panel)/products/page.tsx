@@ -36,6 +36,7 @@ export default async function ProductsPage() {
     careSymbols: (p as { careSymbols?: string }).careSymbols || "",
     displayOrder: (p as { displayOrder?: number }).displayOrder ?? 0,
     cardFit: (p as { cardFit?: string }).cardFit || "cover",
+    cardCrop: (p as { cardCrop?: string }).cardCrop || "",
     visiblePages: (() => {
       try {
         const arr = JSON.parse(p.visiblePages ?? "[]");

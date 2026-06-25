@@ -25,7 +25,8 @@ export type CatalogProduct = {
   material: string[];
   categorySlug: string;
   visiblePages: string[];
-  cardFit?: string; // "cover" | "contain" | "cover-top"
+  cardFit?: string;
+  cardCrop?: string; // JSON: {"zoom":1.2,"x":0,"y":-15}
 };
 
 export type CatalogCategory = { slug: string; name: string; count: number };
@@ -269,11 +270,26 @@ export default function CatalogClient({
                       <img
                         src={p.images[0]}
                         alt={p.name}
-                        style={{
-                          objectFit: p.cardFit === "contain" ? "contain" : "cover",
-                          objectPosition: p.cardFit === "cover-top" ? "center top" : "center",
-                          padding: p.cardFit === "contain" ? 8 : 0,
-                        }}
+                        style={(() => {
+                          // cardCrop varsa transform uygula
+                          let zoom = 1, tx = 0, ty = 0;
+                          try {
+                            if (p.cardCrop) {
+                              const c = JSON.parse(p.cardCrop);
+                              zoom = Number(c.zoom) || 1;
+                              tx = Number(c.x) || 0;
+                              ty = Number(c.y) || 0;
+                            }
+                          } catch {}
+                          return {
+                            width: "100%",
+                            height: "100%",
+                            objectFit: "cover" as const,
+                            objectPosition: "center" as const,
+                            transform: `scale(${zoom}) translate(${tx}%, ${ty}%)`,
+                            transformOrigin: "center",
+                          };
+                        })()}
                       />
                     ) : (
                       <ProductIcon name={p.icon} />

@@ -51,6 +51,7 @@ export default async function WerbemittelPage() {
     material: p.material ? String(p.material).split(",").map((m: string) => m.trim()).filter(Boolean) : [],
     categorySlug: p.category.slug,
     cardFit: (p as { cardFit?: string }).cardFit || "cover",
+    cardCrop: (p as { cardCrop?: string }).cardCrop || "",
     visiblePages: (() => {
       try {
         const arr = JSON.parse(p.visiblePages ?? "[]");

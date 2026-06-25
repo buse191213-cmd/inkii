@@ -9,6 +9,7 @@ import { saveProduct, deleteProduct } from "@/app/admin/actions";
 import { parsePriceTiers, stringifyPriceTiers, type PriceTier } from "@/lib/price-tiers";
 import { parseSizesField, stringifySizesFromDrafts } from "@/lib/sizes";
 import RichEditor from "@/components/admin/RichEditor";
+import CropEditor from "@/components/admin/CropEditor";
 import { CARE_SYMBOLS, careLabel } from "@/lib/care-symbols";
 
 export type AdminProduct = {
@@ -31,7 +32,8 @@ export type AdminProduct = {
   colorImages?: string;
   careSymbols?: string; // "wash-30,no-bleach,iron-low"
   displayOrder?: number;
-  cardFit?: string; // "cover" | "contain" | "cover-top"
+  cardFit?: string;
+  cardCrop?: string; // JSON: {"zoom":1.2,"x":0,"y":-15}
   visiblePages: string[];
   categoryId: string;
   categoryName: string;
@@ -49,7 +51,7 @@ const EMPTY: AdminProduct = {
   id: "", code: "INKI-", name: "", subtitle: "", description: "", icon: "box",
   priceCents: null, priceTiers: "[]", sizes: "[]", stock: 0, status: "active",
   isNew: false, isEco: false,
-  colors: "", material: "", images: "", colorImages: "{}", careSymbols: "", displayOrder: 0, cardFit: "cover", visiblePages: [], categoryId: "", categoryName: "",
+  colors: "", material: "", images: "", colorImages: "{}", careSymbols: "", displayOrder: 0, cardFit: "cover", cardCrop: "", visiblePages: [], categoryId: "", categoryName: "",
 };
 
 const SORTS = [
@@ -1111,27 +1113,24 @@ export default function ProductManager({
                   />
                 </div>
                 <div className="field">
-                  <label>Vitrin-Bild Darstellung (im Katalog)</label>
-                  <p className="form-note" style={{ marginBottom: 8, marginTop: 0 }}>
-                    Wie soll das erste Bild im Katalog-Kärtchen aussehen?
+                  <label>Vitrin-Bild zuschneiden (Zoom & Position)</label>
+                  <p className="form-note" style={{ marginBottom: 10, marginTop: 0 }}>
+                    Stellen Sie ein, wie das erste Produktbild im Katalog dargestellt wird.
+                    Zoom = größer, Verschiebung X/Y = Bild in der Kachel positionieren.
                   </p>
-                  <div style={{ display: "flex", flexDirection: "column", gap: 6 }}>
-                    {[
-                      { val: "cover", label: "Komplett füllen (kann beschnitten werden)" },
-                      { val: "contain", label: "Ganz zeigen (mit Rand)" },
-                      { val: "cover-top", label: "Oberkante zeigen (für längere Bilder)" },
-                    ].map((opt) => (
-                      <label key={opt.val} style={{ display: "flex", gap: 8, alignItems: "center", fontSize: 13, cursor: "pointer" }}>
-                        <input
-                          type="radio"
-                          name="cardFit"
-                          value={opt.val}
-                          defaultChecked={(modal.cardFit || "cover") === opt.val}
-                        />
-                        <span>{opt.label}</span>
-                      </label>
-                    ))}
-                  </div>
+                  {(() => {
+                    // İlk görselin URL'i (preview)
+                    const firstImg = images[0]?.preview || images[0]?.url;
+                    // Mevcut crop değerleri parse
+                    const cropData = (() => {
+                      try {
+                        const raw = (modal as { cardCrop?: string }).cardCrop || "";
+                        if (raw) return JSON.parse(raw);
+                      } catch {}
+                      return { zoom: 1, x: 0, y: 0 };
+                    })();
+                    return <CropEditor firstImage={firstImg} initial={cropData} />;
+                  })()}
                 </div>
                 <div className="field">
                   <label>Beschreibung</label>

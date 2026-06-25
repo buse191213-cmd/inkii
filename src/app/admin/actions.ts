@@ -218,6 +218,21 @@ export async function saveProduct(formData: FormData): Promise<ActionResult> {
       const v = String(formData.get("cardFit") ?? "cover");
       return ["cover", "contain", "cover-top"].includes(v) ? v : "cover";
     })(),
+    cardCrop: (() => {
+      const raw = String(formData.get("cardCrop") ?? "").trim();
+      if (!raw) return "";
+      try {
+        const o = JSON.parse(raw);
+        if (typeof o === "object" && o) {
+          return JSON.stringify({
+            zoom: Math.min(3, Math.max(1, Number(o.zoom) || 1)),
+            x: Math.min(50, Math.max(-50, Number(o.x) || 0)),
+            y: Math.min(50, Math.max(-50, Number(o.y) || 0)),
+          });
+        }
+      } catch {}
+      return "";
+    })(),
     visiblePages: (() => {
       const raw = String(formData.get("visiblePages") ?? "[]");
       try {
