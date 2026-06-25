@@ -4705,3 +4705,30 @@ body:has(.hero-full) header.site .brand-other img{filter:none;height:52px}
   padding: 8px 10px;
   border-left: 3px solid #14b8a6;
 }
+
+/* Trust badges (Kostenlose Designvorschläge / Angebot / Beratung) gizle */
+.mm-detail-trust {
+  display: none !important;
+}
+
+/* Proof satırı yeşil arka planı kaldır */
+.dtf-prem-proof {
+  background: transparent !important;
+  border-left: 0 !important;
+  padding: 6px 0 !important;
+  color: #475569 !important;
+  text-align: left !important;
+}
+
+/* === mm-detail-trust 3 madde - gizle === */
+.mm-detail-trust {
+  display: none !important;
+}
+
+/* === dtf-prem-proof - yeşil arkaplan kaldır === */
+.dtf-prem-proof {
+  background: transparent !important;
+  border-left: 0 !important;
+  padding: 4px 0 !important;
+  color: #475569 !important;
+}
