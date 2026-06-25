@@ -83,25 +83,7 @@ export default function ProductGallery({
       <div className="gallery-main">
         {currentImages.length > 0 ? (
           /* eslint-disable-next-line @next/next/no-img-element */
-          <img
-            src={currentImages[active]}
-            alt={name}
-            key={currentImages[active]}
-            style={(() => {
-              try {
-                if (!cardCrop) return undefined;
-                const c = JSON.parse(cardCrop);
-                const zoom = Number(c.zoom) || 1;
-                const tx = Number(c.x) || 0;
-                const ty = Number(c.y) || 0;
-                if (zoom === 1 && tx === 0 && ty === 0) return undefined;
-                return {
-                  transform: `scale(${zoom}) translate(${tx}%, ${ty}%)`,
-                  transformOrigin: "center",
-                };
-              } catch { return undefined; }
-            })()}
-          />
+          <img src={currentImages[active]} alt={name} key={currentImages[active]} />
         ) : (
           <div className="gallery-empty"><ProductIcon name={iconName} /></div>
         )}
