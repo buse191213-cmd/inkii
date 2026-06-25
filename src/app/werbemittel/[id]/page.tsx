@@ -118,7 +118,9 @@ export default async function ProductDetailPage({
           <div className="mm-crumb mm-detail-crumb">
             <Link href="/werbemittel">ALLE PRODUKTE</Link>
             <span className="mm-dot">•</span>
-            <Link href="/werbemittel">{categoryName.toUpperCase()}</Link>
+            <Link href={product.category?.slug ? `/werbemittel?cat=${product.category.slug}` : "/werbemittel"}>
+              {categoryName.toUpperCase()}
+            </Link>
             <span className="mm-dot">•</span>
             <span className="active">{product.name.toUpperCase()}</span>
           </div>
