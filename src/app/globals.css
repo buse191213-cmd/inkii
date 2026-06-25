@@ -3878,13 +3878,13 @@ body:has(.hero-full) header.site .brand-other img{filter:none;height:52px}
 .dtf-launcher-btn{
   display:flex;align-items:center;gap:10px;width:100%;justify-content:center;
   padding:14px 22px;margin-bottom:16px;position:relative;
-  background:linear-gradient(135deg,#0f766e 0%,#14b8a6 100%);color:#fff;
+  background:linear-gradient(135deg,#0f766e 0%,#004537 100%);color:#fff;
   border:none;border-radius:11px;font-weight:600;font-size:.98rem;
   cursor:pointer;transition:all .25s;letter-spacing:.01em;
-  box-shadow:0 4px 18px rgba(20,184,166,.25)}
+  box-shadow:0 4px 18px rgba(0,69,55,.25)}
 .dtf-launcher-btn:hover{transform:translateY(-2px);
-  box-shadow:0 12px 32px rgba(20,184,166,.36);
-  background:linear-gradient(135deg,#14b8a6 0%,#2dd4bf 100%)}
+  box-shadow:0 12px 32px rgba(0,69,55,.36);
+  background:linear-gradient(135deg,#004537 0%,#2dd4bf 100%)}
 .dtf-launcher-btn svg{flex-shrink:0}
 .dtf-launcher-badge{background:rgba(255,255,255,.2);padding:3px 8px;
   border-radius:5px;font-size:.7rem;letter-spacing:.06em;font-weight:700;
@@ -3919,7 +3919,7 @@ body:has(.hero-full) header.site .brand-other img{filter:none;height:52px}
 
 /* Kontakt formunda DTF tasarım önizleme kartı */
 .kf-design-preview{display:flex;align-items:center;gap:14px;
-  background:linear-gradient(135deg,#f0fdfa 0%,#ccfbf1 100%);
+  background:linear-gradient(135deg,#e8f5f1 0%,#ccfbf1 100%);
   border:1px solid #5eead4;border-radius:10px;padding:14px;margin-bottom:18px}
 .kf-design-thumb{width:72px;height:72px;background:#fff;border-radius:8px;
   display:flex;align-items:center;justify-content:center;overflow:hidden;
@@ -3940,7 +3940,7 @@ body:has(.hero-full) header.site .brand-other img{filter:none;height:52px}
 .product-description-html p:empty { display: none; }
 .product-description-html strong { font-weight: 700; color: #0f1714; }
 .product-description-html em { font-style: italic; }
-.product-description-html a { color: #14b8a6; text-decoration: underline; }
+.product-description-html a { color: #004537; text-decoration: underline; }
 .product-description-html h1, .product-description-html h2, .product-description-html h3 {
   font-weight: 700;
   margin: 14px 0 8px;
@@ -3981,9 +3981,9 @@ body:has(.hero-full) header.site .brand-other img{filter:none;height:52px}
   transform: scale(1.12);
 }
 .gallery-color-dot.active {
-  border-color: #14b8a6;
+  border-color: #004537;
   transform: scale(1.18);
-  box-shadow: 0 0 0 1px rgba(0,0,0,0.18) inset, 0 3px 10px rgba(20,184,166,0.35);
+  box-shadow: 0 0 0 1px rgba(0,0,0,0.18) inset, 0 3px 10px rgba(0,69,55,0.35);
 }
 .gallery-colors-label {
   font-size: 12px;
@@ -4049,7 +4049,7 @@ body:has(.hero-full) header.site .brand-other img{filter:none;height:52px}
   right: 0;
   bottom: -1px;
   height: 2px;
-  background: #14b8a6;
+  background: #004537;
 }
 .mm-tab-panel {
   padding: 4px 0 16px;
@@ -4214,7 +4214,7 @@ body:has(.hero-full) header.site .brand-other img{filter:none;height:52px}
   transform: translateY(-1px) !important;
 }
 .det-order-color.active {
-  box-shadow: 0 0 0 2px #14b8a6 !important;
+  box-shadow: 0 0 0 2px #004537 !important;
   transform: translateY(-1px) !important;
 }
 .det-order-colors-grid {
@@ -4264,7 +4264,7 @@ body:has(.hero-full) header.site .brand-other img{filter:none;height:52px}
   inset: 0;
   border-radius: 0;
   padding: 1px;
-  background: linear-gradient(180deg, rgba(20, 184, 166, 0.18), rgba(20, 184, 166, 0));
+  background: linear-gradient(180deg, rgba(0, 69, 55, 0.18), rgba(0, 69, 55, 0));
   -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
   -webkit-mask-composite: xor;
   mask-composite: exclude;
@@ -4273,18 +4273,18 @@ body:has(.hero-full) header.site .brand-other img{filter:none;height:52px}
 .dtf-prem:hover {
   box-shadow:
     0 1px 2px rgba(15, 23, 36, 0.05),
-    0 14px 44px rgba(20, 184, 166, 0.15);
+    0 14px 44px rgba(0, 69, 55, 0.15);
   transform: translateY(-1px);
 }
 .dtf-prem-icon {
   width: 44px;
   height: 44px;
-  background: linear-gradient(135deg, #d1fae5 0%, #a7f3d0 100%);
+  background: linear-gradient(135deg, #cce5dd 0%, #7fb8a3 100%);
   border-radius: 0;
   display: flex;
   align-items: center;
   justify-content: center;
-  color: #14b8a6;
+  color: #004537;
   margin-bottom: 14px;
 }
 .dtf-prem-title {
@@ -4325,7 +4325,7 @@ body:has(.hero-full) header.site .brand-other img{filter:none;height:52px}
   width: 16px;
   height: 16px;
   border-radius: 50%;
-  background: #14b8a6;
+  background: #004537;
   color: #fff;
   display: inline-flex;
   align-items: center;
@@ -4378,7 +4378,7 @@ body:has(.hero-full) header.site .brand-other img{filter:none;height:52px}
   letter-spacing: 0.02em;
 }
 .dtf-prem-foot-dot {
-  color: #14b8a6;
+  color: #004537;
 }
 
 /* === Final tweaks 2 === */
@@ -4464,7 +4464,7 @@ body:has(.hero-full) header.site .brand-other img{filter:none;height:52px}
   bottom: 16px !important;
   z-index: 30 !important;
   width: 100% !important;
-  background: #14b8a6 !important;
+  background: #004537 !important;
   color: #fff !important;
   border: 0 !important;
   padding: 15px 18px !important;
@@ -4478,10 +4478,10 @@ body:has(.hero-full) header.site .brand-other img{filter:none;height:52px}
   cursor: pointer !important;
   transition: background 0.15s !important;
   margin-top: 16px !important;
-  box-shadow: 0 6px 20px rgba(20,184,166,0.25) !important;
+  box-shadow: 0 6px 20px rgba(0,69,55,0.25) !important;
 }
 .det-order-submit:hover {
-  background: #0d9488 !important;
+  background: #003528 !important;
 }
 
 /* Katalog kısmındaki TÜM çizgileri kaldır */
@@ -4511,14 +4511,14 @@ body:has(.hero-full) header.site .brand-other img{filter:none;height:52px}
 
 /* 3) Variante aktualisieren - KOYU YEŞİL + kart kenarına kadar uzasın */
 .det-order-submit {
-  background: #0d9488 !important; /* koyu yeşil */
+  background: #003528 !important; /* koyu yeşil */
   margin-left: -18px !important;
   margin-right: -18px !important;
   margin-bottom: -16px !important;
   width: calc(100% + 36px) !important;
 }
 .det-order-submit:hover {
-  background: #0a7268 !important; /* daha koyu hover */
+  background: #00261c !important; /* daha koyu hover */
 }
 
 /* Kart alt padding'ini sıfırla ki buton edge'e yapışsın */
@@ -4689,20 +4689,20 @@ body:has(.hero-full) header.site .brand-other img{filter:none;height:52px}
   font-weight: 800;
   letter-spacing: 0.04em;
   text-transform: uppercase;
-  background: linear-gradient(135deg, #14b8a6 0%, #06b6d4 100%);
+  background: linear-gradient(135deg, #004537 0%, #006b56 100%);
   color: #fff;
   padding: 6px 12px;
-  box-shadow: 0 4px 14px rgba(20, 184, 166, 0.4), 0 0 0 3px rgba(20, 184, 166, 0.08);
+  box-shadow: 0 4px 14px rgba(0, 69, 55, 0.4), 0 0 0 3px rgba(0, 69, 55, 0.08);
   z-index: 2;
   animation: prem-badge-pulse 2.4s ease-in-out infinite;
 }
 @keyframes prem-badge-pulse {
   0%, 100% {
-    box-shadow: 0 4px 14px rgba(20, 184, 166, 0.4), 0 0 0 3px rgba(20, 184, 166, 0.08);
+    box-shadow: 0 4px 14px rgba(0, 69, 55, 0.4), 0 0 0 3px rgba(0, 69, 55, 0.08);
     transform: scale(1);
   }
   50% {
-    box-shadow: 0 6px 22px rgba(20, 184, 166, 0.55), 0 0 0 6px rgba(20, 184, 166, 0.12);
+    box-shadow: 0 6px 22px rgba(0, 69, 55, 0.55), 0 0 0 6px rgba(0, 69, 55, 0.12);
     transform: scale(1.04);
   }
 }
@@ -4802,4 +4802,18 @@ body:has(.hero-full) header.site .brand-other img{filter:none;height:52px}
   padding: 10px 22px !important;
   align-self: flex-start !important;
   display: inline-flex !important;
+}
+
+/* === CTA - sayfayla uyumlu zümrüt yeşil, full width === */
+.dtf-prem-cta {
+  background: #004537 !important;
+  color: #fff !important;
+  width: 100% !important;
+  align-self: stretch !important;
+  padding: 12px 16px !important;
+  display: flex !important;
+  margin: 6px 0 8px !important;
+}
+.dtf-prem-cta:hover {
+  background: #003528 !important;
 }
