@@ -4794,3 +4794,12 @@ body:has(.hero-full) header.site .brand-other img{filter:none;height:52px}
   font-size: 0.85rem !important;
   font-weight: 400 !important;
 }
+
+/* === CTA buton - kompakt, sadece içerik kadar === */
+.dtf-prem-cta {
+  width: fit-content !important;
+  min-width: 0 !important;
+  padding: 10px 22px !important;
+  align-self: flex-start !important;
+  display: inline-flex !important;
+}
