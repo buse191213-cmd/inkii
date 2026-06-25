@@ -4768,3 +4768,29 @@ body:has(.hero-full) header.site .brand-other img{filter:none;height:52px}
   letter-spacing: 0.02em !important;
   display: block !important;
 }
+
+/* === CTA buton - minimal premium === */
+.dtf-prem-cta {
+  background: #0f1714 !important;
+  color: #fff !important;
+  border: 0 !important;
+  padding: 10px 14px !important;
+  font-size: 0.72rem !important;
+  font-weight: 700 !important;
+  letter-spacing: 0.06em !important;
+  width: 100% !important;
+  height: auto !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  gap: 8px !important;
+  margin: 4px 0 8px !important;
+  transition: background 0.2s ease, transform 0.12s ease !important;
+}
+.dtf-prem-cta:hover {
+  background: #1c2722 !important;
+}
+.dtf-prem-cta-arrow {
+  font-size: 0.85rem !important;
+  font-weight: 400 !important;
+}
