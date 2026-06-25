@@ -9,6 +9,7 @@ export type CareSymbol = {
   key: string;
   label: { de: string; en: string; tr: string };
   svg: ReactElement;
+  imgUrl?: string; // Alternatif: dış kaynaktan görsel URL (varsa SVG yerine kullanılır)
 };
 
 // Kompakte inline-SVG'ler (24x24, currentColor)
@@ -116,6 +117,7 @@ export const CARE_SYMBOLS: CareSymbol[] = [
     key: "iron-low",
     label: { de: "Niedrig bügeln (110°C)", en: "Iron low", tr: "Düşük ısıda ütüle" },
     svg: <Iron><circle cx="12" cy="13" r="1" fill="currentColor" /></Iron>,
+    imgUrl: "https://images.nawajo.de/frontend/instructions/bg1.png",
   },
   {
     key: "iron-medium",
@@ -167,4 +169,10 @@ export function careLabel(key: string, locale: "de" | "en" | "tr" = "de"): strin
 export function careSvg(key: string): ReactElement | null {
   const sym = CARE_SYMBOLS.find((s) => s.key === key);
   return sym?.svg ?? null;
+}
+
+
+export function careImgUrl(key: string): string | undefined {
+  const sym = CARE_SYMBOLS.find((s) => s.key === key);
+  return sym?.imgUrl;
 }

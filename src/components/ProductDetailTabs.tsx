@@ -8,8 +8,8 @@ export type DetailTab = {
   html?: string;
   text?: string;
   rows?: Array<{ k: string; v: string }>;
-  /** Pflegesymbole (SVG-Icons) am Ende des Tabs. */
-  careIcons?: Array<{ key: string; label: string; svg: ReactNode }>;
+  /** Pflegesymbole (SVG-Icons veya Bild-URL) am Ende des Tabs. */
+  careIcons?: Array<{ key: string; label: string; svg: ReactNode; imgUrl?: string }>;
 };
 
 export default function ProductDetailTabs({ tabs }: { tabs: DetailTab[] }) {
@@ -54,7 +54,12 @@ export default function ProductDetailTabs({ tabs }: { tabs: DetailTab[] }) {
             <div className="mm-care-icons">
               {current.careIcons.map((c) => (
                 <span key={c.key} className="mm-care-icon" title={c.label}>
-                  {c.svg}
+                  {c.imgUrl ? (
+                    /* eslint-disable-next-line @next/next/no-img-element */
+                    <img src={c.imgUrl} alt={c.label} />
+                  ) : (
+                    c.svg
+                  )}
                 </span>
               ))}
             </div>

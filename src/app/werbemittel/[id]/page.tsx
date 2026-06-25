@@ -170,6 +170,7 @@ export default async function ProductDetailPage({
                       key,
                       label: sym?.label[loc] ?? key,
                       svg: sym?.svg ?? null,
+                      imgUrl: sym?.imgUrl,
                     };
                   });
                   const careLabel = loc === "tr" ? "YIKAMA TALİMATI" : loc === "en" ? "CARE INSTRUCTIONS" : "WASCHANLEITUNG";
