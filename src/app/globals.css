@@ -4855,8 +4855,11 @@ body:has(.hero-full) header.site .brand-other img{filter:none;height:52px}
   display: block;
 }
 
-/* === Catalog card image - tüm tişörtler tam sığsın (kırpma yok) === */
+/* === Catalog card image - tüm tişörtler kart'ı dolduracak (kırpma olabilir, ama merkezi tutar) === */
 .mm-card-img img {
-  object-fit: contain !important;
-  padding: 8px !important;
+  object-fit: cover !important;
+  object-position: center !important;
+  padding: 0 !important;
+  width: 100% !important;
+  height: 100% !important;
 }
