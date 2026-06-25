@@ -15,6 +15,7 @@ import { getDictionary } from "@/dictionaries";
 import DetailOrderForm from "@/components/DetailOrderForm";
 import DesignerLauncher from "@/components/DesignerLauncher";
 import ProductDetailTabs, { type DetailTab } from "@/components/ProductDetailTabs";
+import { CARE_SYMBOLS } from "@/lib/care-symbols";
 
 export const dynamic = "force-dynamic";
 
@@ -155,7 +156,24 @@ export default async function ProductDetailPage({
                 if (materials.length > 0) {
                   rows.push({ k: dt.specMaterial, v: materials.map((m) => materialLabel(m)).join(", ") });
                 }
-                tabs.push({ key: "details", label: "DETAILS", rows });
+                tabs.push({
+                  key: "details",
+                  label: "DETAILS",
+                  rows,
+                  careIcons: (() => {
+                    const raw = (product as { careSymbols?: string }).careSymbols || "";
+                    if (!raw) return undefined;
+                    const keys = raw.split(",").map((s) => s.trim()).filter(Boolean);
+                    return keys.map((key) => {
+                      const sym = CARE_SYMBOLS.find((s) => s.key === key);
+                      return {
+                        key,
+                        label: sym?.label[locale === "tr" || locale === "en" ? locale : "de"] ?? key,
+                        svg: sym?.svg ?? null,
+                      };
+                    });
+                  })(),
+                });
                 return <ProductDetailTabs tabs={tabs} />;
               })()}
 

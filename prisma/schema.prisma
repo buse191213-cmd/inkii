@@ -34,9 +34,11 @@ model Product {
   isEco       Boolean  @default(false)
   colors      String   @default("") // kommagetrennt, z. B. "blau,schwarz"
   material    String   @default("") // kommagetrennt, z. B. "metall,kunststoff"
-  images      String   @default("") // kommagetrennte Bild-URLs (max. 5)
-  colorImages String   @default("{}") // JSON: { "weiss": ["url1","url2"], "schwarz": ["url3"] } — Bilder pro Farbe
-  visiblePages String  @default("[]") // JSON: ["kleidung","werbeartikel"] — Seiten, wo das Produkt angezeigt wird
+  images      String   @default("") // kommagetrennte Bild-URLs (max. 15)
+  colorImages String   @default("{}") // JSON: { "weiss": ["url1","url2"], ... }
+  careSymbols String   @default("") // kommagetrennte Pflegesymbole: "wash-30,no-bleach,iron-low"
+  displayOrder Int     @default(0) // Anzeige-Reihenfolge im Katalog (höher = oben)
+  visiblePages String  @default("[]") // JSON: ["kleidung","werbeartikel"]
   categoryId  String
   category    Category @relation(fields: [categoryId], references: [id])
   createdAt   DateTime @default(now())

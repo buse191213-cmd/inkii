@@ -4817,3 +4817,37 @@ body:has(.hero-full) header.site .brand-other img{filter:none;height:52px}
 .dtf-prem-cta:hover {
   background: #003528 !important;
 }
+
+/* === Pflege icons block === */
+.mm-care-block {
+  margin-top: 14px;
+  padding-top: 12px;
+  border-top: 1px solid #f0f0f0;
+}
+.mm-care-label {
+  font-family: "Montserrat", "Montserrat Fallback", sans-serif;
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: #64748b;
+  margin-bottom: 8px;
+}
+.mm-care-icons {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+.mm-care-icon {
+  width: 32px;
+  height: 32px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: #1c2722;
+  cursor: help;
+}
+.mm-care-icon svg {
+  width: 100%;
+  height: 100%;
+}

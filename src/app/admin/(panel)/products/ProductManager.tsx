@@ -9,6 +9,7 @@ import { saveProduct, deleteProduct } from "@/app/admin/actions";
 import { parsePriceTiers, stringifyPriceTiers, type PriceTier } from "@/lib/price-tiers";
 import { parseSizesField, stringifySizesFromDrafts } from "@/lib/sizes";
 import RichEditor from "@/components/admin/RichEditor";
+import { CARE_SYMBOLS, careLabel } from "@/lib/care-symbols";
 
 export type AdminProduct = {
   id: string;
@@ -27,8 +28,10 @@ export type AdminProduct = {
   colors: string;
   material: string;
   images: string;
-  colorImages?: string; // JSON: { "weiß": ["url1","url2"], ... }
-  visiblePages: string[]; // ["kleidung","werbeartikel"] vs.
+  colorImages?: string;
+  careSymbols?: string; // "wash-30,no-bleach,iron-low"
+  displayOrder?: number;
+  visiblePages: string[];
   categoryId: string;
   categoryName: string;
   createdAt?: string;
@@ -45,7 +48,7 @@ const EMPTY: AdminProduct = {
   id: "", code: "INKI-", name: "", subtitle: "", description: "", icon: "box",
   priceCents: null, priceTiers: "[]", sizes: "[]", stock: 0, status: "active",
   isNew: false, isEco: false,
-  colors: "", material: "", images: "", colorImages: "{}", visiblePages: [], categoryId: "", categoryName: "",
+  colors: "", material: "", images: "", colorImages: "{}", careSymbols: "", displayOrder: 0, visiblePages: [], categoryId: "", categoryName: "",
 };
 
 const SORTS = [
@@ -90,6 +93,7 @@ export default function ProductManager({
   const [images, setImages] = useState<ImgItem[]>([]);
   // Renk bazında ayrı görsel listesi: { "weiß": [ImgItem,...], "schwarz": [...] }
   const [colorImages, setColorImagesState] = useState<Record<string, ImgItem[]>>({});
+  const [selCare, setSelCare] = useState<string[]>([]);
   const [selColors, setSelColors] = useState<string[]>([]);
   const [selMaterials, setSelMaterials] = useState<string[]>([]);
   const [matInput, setMatInput] = useState("");
@@ -246,6 +250,7 @@ export default function ProductManager({
     setColorImagesState({});
     setSelColors([]);
     setSelMaterials([]);
+    setSelCare([]);
     setTiers([]);
     setSizes([]);
     setModal({ ...EMPTY, categoryId: categories[0]?.id ?? "" });
@@ -278,6 +283,7 @@ export default function ProductManager({
     } catch { setColorImagesState({}); }
     setSelColors(splitCsv(p.colors));
     setSelMaterials(splitCsv(p.material));
+    setSelCare(splitCsv(p.careSymbols || ""));
     setTiers(
       parsePriceTiers(p.priceTiers).map((t) => ({
         qtyText: String(t.qty),
@@ -362,6 +368,7 @@ export default function ProductManager({
     fd.set("imageOrder", JSON.stringify(order));
     fd.set("colors", selColors.join(","));
     fd.set("material", selMaterials.join(","));
+    fd.set("careSymbols", selCare.join(","));
 
     // Renk bazında görseller - her renk için ayrı upload + sıralama
     const colorImagesOrder: Record<string, string[]> = {};
@@ -1059,6 +1066,49 @@ export default function ProductManager({
                     </div>
                   </div>
                 )}
+                <div className="field">
+                  <label>Pflegesymbole (Wäsche, Bügeln, Reinigung)</label>
+                  <p className="form-note" style={{ marginBottom: 8, marginTop: 0 }}>
+                    Wählen Sie die Pflegesymbole, die auf der Produktseite unter „DETAILS" angezeigt werden.
+                  </p>
+                  <div className="opt-list" style={{ gap: 6 }}>
+                    {CARE_SYMBOLS.map((s) => {
+                      const on = selCare.includes(s.key);
+                      return (
+                        <button
+                          key={s.key}
+                          type="button"
+                          className={`opt-chip${on ? " on" : ""}`}
+                          onClick={() =>
+                            setSelCare((cur) =>
+                              cur.includes(s.key) ? cur.filter((x) => x !== s.key) : [...cur, s.key]
+                            )
+                          }
+                          title={careLabel(s.key, "de")}
+                          style={{ display: "inline-flex", alignItems: "center", gap: 6 }}
+                        >
+                          <span style={{ width: 18, height: 18, display: "inline-flex" }}>
+                            {s.svg}
+                          </span>
+                          <span style={{ fontSize: 12 }}>{careLabel(s.key, "de")}</span>
+                        </button>
+                      );
+                    })}
+                  </div>
+                </div>
+                <div className="field">
+                  <label>Anzeige-Reihenfolge im Katalog</label>
+                  <p className="form-note" style={{ marginBottom: 6, marginTop: 0 }}>
+                    Höhere Zahl = weiter oben. Beispiel: 100 (ganz oben), 0 (Standard).
+                  </p>
+                  <input
+                    type="number"
+                    name="displayOrder"
+                    defaultValue={modal.displayOrder ?? 0}
+                    placeholder="0"
+                    style={{ width: 120 }}
+                  />
+                </div>
                 <div className="field">
                   <label>Beschreibung</label>
                   <RichEditor

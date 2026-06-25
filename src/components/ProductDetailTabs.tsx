@@ -1,17 +1,15 @@
 "use client";
 
-import { useState } from "react";
+import { useState, type ReactNode } from "react";
 
 export type DetailTab = {
   key: string;
   label: string;
-  /** HTML-Inhalt (z. B. Beschreibung) – wird sicher mit dangerouslySetInnerHTML
-   *  eingesetzt, daher muss der Aufrufer schon sanitizen. */
   html?: string;
-  /** Alternativ: Klartext, der direkt gerendert wird. */
   text?: string;
-  /** Oder beliebige Liste von Key/Value-Zeilen (für Details/Specs). */
   rows?: Array<{ k: string; v: string }>;
+  /** Pflegesymbole (SVG-Icons) am Ende des Tabs. */
+  careIcons?: Array<{ key: string; label: string; svg: ReactNode }>;
 };
 
 export default function ProductDetailTabs({ tabs }: { tabs: DetailTab[] }) {
@@ -50,6 +48,18 @@ export default function ProductDetailTabs({ tabs }: { tabs: DetailTab[] }) {
               </div>
             ))}
           </dl>
+        )}
+        {current.careIcons && current.careIcons.length > 0 && (
+          <div className="mm-care-block">
+            <div className="mm-care-label">Pflege</div>
+            <div className="mm-care-icons">
+              {current.careIcons.map((c) => (
+                <span key={c.key} className="mm-care-icon" title={c.label}>
+                  {c.svg}
+                </span>
+              ))}
+            </div>
+          </div>
         )}
       </div>
     </div>

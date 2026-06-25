@@ -10,7 +10,7 @@ export default async function ProductsPage() {
   const [dbProducts, dbCategories] = await Promise.all([
     db.product.findMany({
       include: { category: true },
-      orderBy: { createdAt: "desc" },
+      orderBy: [{ displayOrder: "desc" }, { createdAt: "desc" }],
     }),
     db.category.findMany({ orderBy: { name: "asc" } }),
   ]);
@@ -33,6 +33,8 @@ export default async function ProductsPage() {
     material: p.material,
     images: p.images,
     colorImages: (p as { colorImages?: string }).colorImages || "{}",
+    careSymbols: (p as { careSymbols?: string }).careSymbols || "",
+    displayOrder: (p as { displayOrder?: number }).displayOrder ?? 0,
     visiblePages: (() => {
       try {
         const arr = JSON.parse(p.visiblePages ?? "[]");

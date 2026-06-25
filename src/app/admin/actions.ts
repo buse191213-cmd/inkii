@@ -208,6 +208,12 @@ export async function saveProduct(formData: FormData): Promise<ActionResult> {
       .join(","),
     images,
     colorImages: colorImagesJson,
+    careSymbols: String(formData.get("careSymbols") ?? "")
+      .split(",")
+      .map((c) => c.trim())
+      .filter(Boolean)
+      .join(","),
+    displayOrder: Number(formData.get("displayOrder") ?? 0) || 0,
     visiblePages: (() => {
       const raw = String(formData.get("visiblePages") ?? "[]");
       try {

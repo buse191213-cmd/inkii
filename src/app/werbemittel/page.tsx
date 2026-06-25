@@ -23,7 +23,10 @@ export default async function WerbemittelPage() {
     db.product.findMany({
       where: { status: "active" },
       include: { category: true },
-      orderBy: { createdAt: "desc" },
+      orderBy: [
+        { displayOrder: "desc" },
+        { createdAt: "desc" },
+      ],
     }),
     db.category.findMany({
       orderBy: { name: "asc" },
