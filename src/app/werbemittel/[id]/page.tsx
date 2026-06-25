@@ -62,7 +62,8 @@ export default async function ProductDetailPage({
   params: Promise<{ id: string }>;
 }) {
   const { id } = await params;
-  const d = getDictionary(await getLocale());
+  const locale = await getLocale();
+  const d = getDictionary(locale);
   const dt = d.detail;
 
   const product = await db.product.findUnique({
