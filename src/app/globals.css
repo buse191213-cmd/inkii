@@ -4754,3 +4754,17 @@ body:has(.hero-full) header.site .brand-other img{filter:none;height:52px}
   padding: 4px 0 !important;
   color: #475569 !important;
 }
+
+/* Proof line — ortalı, küçük, açık gri */
+.dtf-prem-proof {
+  background: transparent !important;
+  border-left: 0 !important;
+  padding: 6px 0 !important;
+  margin: 6px 0 4px !important;
+  color: #94a3b8 !important;
+  text-align: center !important;
+  font-size: 0.68rem !important;
+  font-weight: 500 !important;
+  letter-spacing: 0.02em !important;
+  display: block !important;
+}
