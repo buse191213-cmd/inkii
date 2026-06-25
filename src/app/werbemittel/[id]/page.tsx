@@ -166,9 +166,10 @@ export default async function ProductDetailPage({
                     const keys = raw.split(",").map((s) => s.trim()).filter(Boolean);
                     return keys.map((key) => {
                       const sym = CARE_SYMBOLS.find((s) => s.key === key);
+                      const loc: "de" | "en" | "tr" = locale === "tr" ? "tr" : locale === "en" ? "en" : "de";
                       return {
                         key,
-                        label: sym?.label[locale === "tr" || locale === "en" ? locale : "de"] ?? key,
+                        label: sym?.label[loc] ?? key,
                         svg: sym?.svg ?? null,
                       };
                     });
