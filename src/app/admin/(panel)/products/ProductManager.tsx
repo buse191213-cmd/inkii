@@ -31,6 +31,7 @@ export type AdminProduct = {
   colorImages?: string;
   careSymbols?: string; // "wash-30,no-bleach,iron-low"
   displayOrder?: number;
+  cardFit?: string; // "cover" | "contain" | "cover-top"
   visiblePages: string[];
   categoryId: string;
   categoryName: string;
@@ -48,7 +49,7 @@ const EMPTY: AdminProduct = {
   id: "", code: "INKI-", name: "", subtitle: "", description: "", icon: "box",
   priceCents: null, priceTiers: "[]", sizes: "[]", stock: 0, status: "active",
   isNew: false, isEco: false,
-  colors: "", material: "", images: "", colorImages: "{}", careSymbols: "", displayOrder: 0, visiblePages: [], categoryId: "", categoryName: "",
+  colors: "", material: "", images: "", colorImages: "{}", careSymbols: "", displayOrder: 0, cardFit: "cover", visiblePages: [], categoryId: "", categoryName: "",
 };
 
 const SORTS = [
@@ -1108,6 +1109,29 @@ export default function ProductManager({
                     placeholder="0"
                     style={{ width: 120 }}
                   />
+                </div>
+                <div className="field">
+                  <label>Vitrin-Bild Darstellung (im Katalog)</label>
+                  <p className="form-note" style={{ marginBottom: 8, marginTop: 0 }}>
+                    Wie soll das erste Bild im Katalog-Kärtchen aussehen?
+                  </p>
+                  <div style={{ display: "flex", flexDirection: "column", gap: 6 }}>
+                    {[
+                      { val: "cover", label: "Komplett füllen (kann beschnitten werden)" },
+                      { val: "contain", label: "Ganz zeigen (mit Rand)" },
+                      { val: "cover-top", label: "Oberkante zeigen (für längere Bilder)" },
+                    ].map((opt) => (
+                      <label key={opt.val} style={{ display: "flex", gap: 8, alignItems: "center", fontSize: 13, cursor: "pointer" }}>
+                        <input
+                          type="radio"
+                          name="cardFit"
+                          value={opt.val}
+                          defaultChecked={(modal.cardFit || "cover") === opt.val}
+                        />
+                        <span>{opt.label}</span>
+                      </label>
+                    ))}
+                  </div>
                 </div>
                 <div className="field">
                   <label>Beschreibung</label>

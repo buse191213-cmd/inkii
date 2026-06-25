@@ -214,6 +214,10 @@ export async function saveProduct(formData: FormData): Promise<ActionResult> {
       .filter(Boolean)
       .join(","),
     displayOrder: Number(formData.get("displayOrder") ?? 0) || 0,
+    cardFit: (() => {
+      const v = String(formData.get("cardFit") ?? "cover");
+      return ["cover", "contain", "cover-top"].includes(v) ? v : "cover";
+    })(),
     visiblePages: (() => {
       const raw = String(formData.get("visiblePages") ?? "[]");
       try {

@@ -38,6 +38,7 @@ model Product {
   colorImages String   @default("{}") // JSON: { "weiss": ["url1","url2"], ... }
   careSymbols String   @default("") // kommagetrennte Pflegesymbole: "wash-30,no-bleach,iron-low"
   displayOrder Int     @default(0) // Anzeige-Reihenfolge im Katalog (höher = oben)
+  cardFit     String   @default("cover") // "cover" | "contain" | "cover-top" — wie das Vitrin-Bild dargestellt wird
   visiblePages String  @default("[]") // JSON: ["kleidung","werbeartikel"]
   categoryId  String
   category    Category @relation(fields: [categoryId], references: [id])

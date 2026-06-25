@@ -24,7 +24,8 @@ export type CatalogProduct = {
   colors: string[];
   material: string[];
   categorySlug: string;
-  visiblePages: string[]; // Seiten, in denen das Produkt gefiltert erscheint
+  visiblePages: string[];
+  cardFit?: string; // "cover" | "contain" | "cover-top"
 };
 
 export type CatalogCategory = { slug: string; name: string; count: number };
@@ -265,7 +266,15 @@ export default function CatalogClient({
                   <div className="mm-card-img">
                     {p.images.length > 0 ? (
                       // eslint-disable-next-line @next/next/no-img-element
-                      <img src={p.images[0]} alt={p.name} />
+                      <img
+                        src={p.images[0]}
+                        alt={p.name}
+                        style={{
+                          objectFit: p.cardFit === "contain" ? "contain" : "cover",
+                          objectPosition: p.cardFit === "cover-top" ? "center top" : "center",
+                          padding: p.cardFit === "contain" ? 8 : 0,
+                        }}
+                      />
                     ) : (
                       <ProductIcon name={p.icon} />
                     )}
