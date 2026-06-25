@@ -3,7 +3,7 @@
 import { useEditor, EditorContent } from "@tiptap/react";
 import StarterKit from "@tiptap/starter-kit";
 import Link from "@tiptap/extension-link";
-import { useRef } from "react";
+import { useState, useEffect } from "react";
 
 type Props = {
   /** Formularfeld-Name – wird beim Submit übermittelt. */
@@ -19,7 +19,8 @@ type Props = {
  * Liefert HTML-Inhalt über ein verstecktes Form-Feld mit dem Namen {name}.
  */
 export default function RichEditor({ name, initial = "", minHeight = 320 }: Props) {
-  const hiddenRef = useRef<HTMLInputElement>(null);
+  // Hidden input'u state ile bağla — her zaman güncel
+  const [html, setHtml] = useState<string>(initial);
 
   const editor = useEditor({
     extensions: [
@@ -29,11 +30,18 @@ export default function RichEditor({ name, initial = "", minHeight = 320 }: Prop
     content: initial,
     immediatelyRender: false,
     onUpdate: ({ editor }) => {
-      if (hiddenRef.current) {
-        hiddenRef.current.value = editor.getHTML();
-      }
+      setHtml(editor.getHTML());
     },
   });
+
+  // Initial değişirse (örn. başka ürün açılınca) editor'u güncelle
+  useEffect(() => {
+    setHtml(initial);
+    if (editor && initial !== editor.getHTML()) {
+      editor.commands.setContent(initial || "<p></p>");
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [initial]);
 
   function Btn({
     label,
@@ -140,7 +148,7 @@ export default function RichEditor({ name, initial = "", minHeight = 320 }: Prop
         )}
       </div>
       <EditorContent editor={editor} className="rt-content" style={{ minHeight }} />
-      <input type="hidden" name={name} defaultValue={initial} ref={hiddenRef} />
+      <input type="hidden" name={name} value={html} readOnly />
     </div>
   );
 }
