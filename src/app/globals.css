@@ -4846,3 +4846,11 @@ body:has(.hero-full) header.site .brand-other img{filter:none;height:52px}
   height: 100%;
   object-fit: contain;
 }
+
+/* === Product card image - tüm tişörtler aynı şekilde sığsın === */
+.pcard-img img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain !important; /* görsel tam içeride - kırpma yok */
+  display: block;
+}
