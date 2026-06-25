@@ -17,12 +17,14 @@ export default function ProductGallery({
   colors,
   name,
   iconName,
+  cardCrop,
 }: {
   images: string[];
   colorImages?: Record<string, string[]>;
   colors?: string[];
   name: string;
   iconName: string;
+  cardCrop?: string;
 }) {
   const [activeColor, setActiveColor] = useState<string | null>(colors?.[0] ?? null);
   const [active, setActive] = useState(0);
@@ -81,7 +83,25 @@ export default function ProductGallery({
       <div className="gallery-main">
         {currentImages.length > 0 ? (
           /* eslint-disable-next-line @next/next/no-img-element */
-          <img src={currentImages[active]} alt={name} key={currentImages[active]} />
+          <img
+            src={currentImages[active]}
+            alt={name}
+            key={currentImages[active]}
+            style={(() => {
+              try {
+                if (!cardCrop) return undefined;
+                const c = JSON.parse(cardCrop);
+                const zoom = Number(c.zoom) || 1;
+                const tx = Number(c.x) || 0;
+                const ty = Number(c.y) || 0;
+                if (zoom === 1 && tx === 0 && ty === 0) return undefined;
+                return {
+                  transform: `scale(${zoom}) translate(${tx}%, ${ty}%)`,
+                  transformOrigin: "center",
+                };
+              } catch { return undefined; }
+            })()}
+          />
         ) : (
           <div className="gallery-empty"><ProductIcon name={iconName} /></div>
         )}
