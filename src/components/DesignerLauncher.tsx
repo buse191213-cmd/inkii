@@ -5,7 +5,7 @@ import DtfEngine from "./DtfEngine";
 
 const LABELS = {
   de: {
-    badge: "⚡ Beliebt bei 500+ Kunden",
+    badge: "⚡ KI-Optimierung inklusive",
     title: "Ihr Design hochladen",
     desc: "Laden Sie Ihr Logo oder Motiv hoch und erhalten Sie sofort eine Druckvorschau.",
     feat1: "Hintergrund automatisch entfernt",
@@ -17,7 +17,7 @@ const LABELS = {
     proof: "✓ Kostenlos · ✓ Unverbindlich · ✓ Antwort in 24h",
   },
   en: {
-    badge: "⚡ Trusted by 500+ Customers",
+    badge: "⚡ AI Optimization Included",
     title: "Upload Your Design",
     desc: "Upload your logo or artwork and receive an instant print preview.",
     feat1: "Background removed automatically",
@@ -29,7 +29,7 @@ const LABELS = {
     proof: "✓ Free · ✓ No commitment · ✓ 24h response",
   },
   tr: {
-    badge: "⚡ 500+ Müşterinin Tercihi",
+    badge: "⚡ AI Optimizasyonu Dahil",
     title: "Tasarımınızı Yükleyin",
     desc: "Logonuzu veya tasarımınızı yükleyin, anında baskı önizlemesi alın.",
     feat1: "Arka plan otomatik kaldırılır",
