@@ -51,7 +51,6 @@ export default function ProductDetailTabs({ tabs }: { tabs: DetailTab[] }) {
         )}
         {current.careIcons && current.careIcons.length > 0 && (
           <div className="mm-care-block">
-            <div className="mm-care-label">Pflege</div>
             <div className="mm-care-icons">
               {current.careIcons.map((c) => (
                 <span key={c.key} className="mm-care-icon" title={c.label}>

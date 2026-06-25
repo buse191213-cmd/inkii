@@ -157,25 +157,25 @@ export default async function ProductDetailPage({
                 if (materials.length > 0) {
                   rows.push({ k: dt.specMaterial, v: materials.map((m) => materialLabel(m)).join(", ") });
                 }
-                tabs.push({
-                  key: "details",
-                  label: "DETAILS",
-                  rows,
-                  careIcons: (() => {
-                    const raw = (product as { careSymbols?: string }).careSymbols || "";
-                    if (!raw) return undefined;
-                    const keys = raw.split(",").map((s) => s.trim()).filter(Boolean);
-                    return keys.map((key) => {
-                      const sym = CARE_SYMBOLS.find((s) => s.key === key);
-                      const loc: "de" | "en" | "tr" = locale === "tr" ? "tr" : locale === "en" ? "en" : "de";
-                      return {
-                        key,
-                        label: sym?.label[loc] ?? key,
-                        svg: sym?.svg ?? null,
-                      };
-                    });
-                  })(),
-                });
+                tabs.push({ key: "details", label: "DETAILS", rows });
+
+                // 3. tab: Waschanleitung (sadece care symbols seçilmişse)
+                const careRaw = (product as { careSymbols?: string }).careSymbols || "";
+                if (careRaw.trim()) {
+                  const keys = careRaw.split(",").map((s) => s.trim()).filter(Boolean);
+                  const loc: "de" | "en" | "tr" = locale === "tr" ? "tr" : locale === "en" ? "en" : "de";
+                  const icons = keys.map((key) => {
+                    const sym = CARE_SYMBOLS.find((s) => s.key === key);
+                    return {
+                      key,
+                      label: sym?.label[loc] ?? key,
+                      svg: sym?.svg ?? null,
+                    };
+                  });
+                  const careLabel = loc === "tr" ? "YIKAMA TALİMATI" : loc === "en" ? "CARE INSTRUCTIONS" : "WASCHANLEITUNG";
+                  tabs.push({ key: "care", label: careLabel, careIcons: icons });
+                }
+
                 return <ProductDetailTabs tabs={tabs} />;
               })()}
 
