@@ -117,7 +117,6 @@ export const CARE_SYMBOLS: CareSymbol[] = [
     key: "iron-low",
     label: { de: "Niedrig bügeln (110°C)", en: "Iron low", tr: "Düşük ısıda ütüle" },
     svg: <Iron><circle cx="12" cy="13" r="1" fill="currentColor" /></Iron>,
-    imgUrl: "https://images.nawajo.de/frontend/instructions/bg1.png",
   },
   {
     key: "iron-medium",
