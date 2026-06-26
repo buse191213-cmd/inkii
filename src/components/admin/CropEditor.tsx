@@ -57,11 +57,12 @@ export default function CropEditor({
                 style={{
                   width: "100%",
                   height: "100%",
-                  objectFit: "cover",
-                  objectPosition: "center top",
+                  objectFit: (hasCrop ? "cover" : "contain") as "cover" | "contain",
+                  objectPosition: "center",
                   transform: hasCrop ? `scale(${zoom}) translate(${-x}%, ${y}%)` : undefined,
-                  transformOrigin: "center top",
+                  transformOrigin: "center",
                   transition: "transform 0.1s ease",
+                  padding: hasCrop ? 0 : 6,
                 }}
               />
             );

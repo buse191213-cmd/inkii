@@ -277,10 +277,6 @@ export default function CatalogClient({
                           hasCrop = zoom !== 1 || tx !== 0 || ty !== 0;
                         }
                       } catch {}
-                      // Tek mantık her ürün için:
-                      // - object-fit: cover (kartı doldurur)
-                      // - default object-position: center top (giysi üst kısmı görünür)
-                      // - cardCrop ayarlı ise transform ile ek kayma
                       return (
                         // eslint-disable-next-line @next/next/no-img-element
                         <img
@@ -289,10 +285,13 @@ export default function CatalogClient({
                           style={{
                             width: "100%",
                             height: "100%",
-                            objectFit: "cover",
-                            objectPosition: "center top",
+                            // Default contain → her cihazda tüm görsel görünür (mobile+web tutarlı)
+                            // Crop ayarlı → cover + transform
+                            objectFit: (hasCrop ? "cover" : "contain") as "cover" | "contain",
+                            objectPosition: "center",
                             transform: hasCrop ? `scale(${zoom}) translate(${-tx}%, ${ty}%)` : undefined,
-                            transformOrigin: "center top",
+                            transformOrigin: "center",
+                            padding: hasCrop ? 0 : 6,
                           }}
                         />
                       );
