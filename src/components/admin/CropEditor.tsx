@@ -49,29 +49,19 @@ export default function CropEditor({
         >
           {firstImage ? (() => {
             const hasCrop = zoom !== 1 || x !== 0 || y !== 0;
-            if (!hasCrop) {
-              return (
-                /* eslint-disable-next-line @next/next/no-img-element */
-                <img
-                  src={firstImage}
-                  alt="Vitrin-Vorschau"
-                  style={{ width: "100%", height: "100%", objectFit: "contain", padding: 6 }}
-                />
-              );
-            }
-            const posX = 50 + x;
-            const posY = 50 - y;
-            const sizePercent = 100 * zoom;
             return (
-              <div
+              /* eslint-disable-next-line @next/next/no-img-element */
+              <img
+                src={firstImage}
+                alt="Vitrin-Vorschau"
                 style={{
                   width: "100%",
                   height: "100%",
-                  backgroundImage: `url("${firstImage}")`,
-                  backgroundRepeat: "no-repeat",
-                  backgroundSize: `${sizePercent}% auto`,
-                  backgroundPosition: `${posX}% ${posY}%`,
-                  transition: "background-position 0.1s ease, background-size 0.1s ease",
+                  objectFit: (hasCrop ? "cover" : "contain") as "cover" | "contain",
+                  transform: hasCrop ? `scale(${zoom}) translate(${-x}%, ${y}%)` : undefined,
+                  transformOrigin: "center",
+                  transition: "transform 0.1s ease",
+                  padding: hasCrop ? 0 : 6,
                 }}
               />
             );
@@ -88,26 +78,6 @@ export default function CropEditor({
 
         {/* Slider'lar */}
         <div style={{ flex: 1, minWidth: 260, display: "flex", flexDirection: "column", gap: 14 }}>
-          <p style={{ fontSize: 11, color: "#64748b", margin: "0 0 4px", lineHeight: 1.4 }}>
-            💡 Hızlı seçim için butonlara basın. İnce ayar için slider'ları kullanın.
-          </p>
-
-          {/* Hızlı yön butonları */}
-          <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: 4, marginBottom: 8 }}>
-            <button type="button" className="btn btn-ghost" style={{ fontSize: 11, padding: "6px 4px" }}
-              onClick={() => { setX(0); setY(35); }}>↑ Üst (Kapuze)</button>
-            <button type="button" className="btn btn-ghost" style={{ fontSize: 11, padding: "6px 4px" }}
-              onClick={() => { setX(0); setY(0); setZoom(1); }}>⊙ Mitte</button>
-            <button type="button" className="btn btn-ghost" style={{ fontSize: 11, padding: "6px 4px" }}
-              onClick={() => { setX(0); setY(-35); }}>↓ Unten</button>
-            <button type="button" className="btn btn-ghost" style={{ fontSize: 11, padding: "6px 4px" }}
-              onClick={() => { setX(-35); setY(0); }}>← Links</button>
-            <button type="button" className="btn btn-ghost" style={{ fontSize: 11, padding: "6px 4px" }}
-              onClick={() => { setZoom(Math.min(3, zoom + 0.2)); }}>🔍+ Zoom</button>
-            <button type="button" className="btn btn-ghost" style={{ fontSize: 11, padding: "6px 4px" }}
-              onClick={() => { setX(35); setY(0); }}>Rechts →</button>
-          </div>
-
           <SliderField
             label="Zoom"
             value={zoom}

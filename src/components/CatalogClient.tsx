@@ -277,30 +277,18 @@ export default function CatalogClient({
                           hasCrop = zoom !== 1 || tx !== 0 || ty !== 0;
                         }
                       } catch {}
-                      if (!hasCrop) {
-                        return (
-                          // eslint-disable-next-line @next/next/no-img-element
-                          <img
-                            src={p.images[0]}
-                            alt={p.name}
-                            style={{ width: "100%", height: "100%", objectFit: "contain", padding: 6 }}
-                          />
-                        );
-                      }
-                      // X+: image SAĞ kısmı görünür / Y+: image ÜST kısmı görünür
-                      const posX = 50 + tx;
-                      const posY = 50 - ty;
-                      const sizePercent = 100 * zoom;
                       return (
-                        <div
-                          aria-label={p.name}
+                        // eslint-disable-next-line @next/next/no-img-element
+                        <img
+                          src={p.images[0]}
+                          alt={p.name}
                           style={{
                             width: "100%",
                             height: "100%",
-                            backgroundImage: `url("${p.images[0]}")`,
-                            backgroundRepeat: "no-repeat",
-                            backgroundSize: `${sizePercent}% auto`,
-                            backgroundPosition: `${posX}% ${posY}%`,
+                            objectFit: (hasCrop ? "cover" : "contain") as "cover" | "contain",
+                            transform: hasCrop ? `scale(${zoom}) translate(${-tx}%, ${ty}%)` : undefined,
+                            transformOrigin: "center",
+                            padding: hasCrop ? 0 : 6,
                           }}
                         />
                       );
