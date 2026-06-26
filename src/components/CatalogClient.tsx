@@ -280,15 +280,14 @@ export default function CatalogClient({
                               ty = Number(c.y) || 0;
                             }
                           } catch {}
-                          // cover → görsel kartı doldurur
-                          // X/Y → hangi parçanın görüneceğini seç (kırpılan kısım kayar)
-                          // Zoom → yakınlaştır (kart dışına taşar, kart sınırı içinde kırpılır)
+                          // Transform translate + scale → görsel her zaman görünür kayar
+                          // Container overflow:hidden ile fazlalık kırpılır
                           return {
                             width: "100%",
                             height: "100%",
                             objectFit: "cover" as const,
-                            objectPosition: `${50 + tx}% ${50 + ty}%`,
-                            transform: zoom !== 1 ? `scale(${zoom})` : undefined,
+                            objectPosition: "center" as const,
+                            transform: `scale(${zoom}) translate(${tx}%, ${ty}%)`,
                             transformOrigin: "center",
                           };
                         })()}

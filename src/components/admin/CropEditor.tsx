@@ -56,10 +56,10 @@ export default function CropEditor({
                 width: "100%",
                 height: "100%",
                 objectFit: "cover",
-                objectPosition: `${50 + x}% ${50 + y}%`,
-                transform: zoom !== 1 ? `scale(${zoom})` : undefined,
+                objectPosition: "center",
+                transform: `scale(${zoom}) translate(${x}%, ${y}%)`,
                 transformOrigin: "center",
-                transition: "transform 0.1s ease, object-position 0.1s ease",
+                transition: "transform 0.1s ease",
               }}
             />
           ) : (
