@@ -54,15 +54,12 @@ export default function CropEditor({
               alt="Vitrin-Vorschau"
               style={(() => {
                 const hasCrop = zoom !== 1 || x !== 0 || y !== 0;
-                const maxOffset = Math.max(Math.abs(x), Math.abs(y));
-                const autoZoom = 1 + (maxOffset / 50) * 0.5;
-                const effectiveZoom = hasCrop ? Math.max(zoom, autoZoom) : zoom;
                 return {
                   width: "100%",
                   height: "100%",
                   objectFit: (hasCrop ? "cover" : "contain") as "cover" | "contain",
                   objectPosition: hasCrop ? `${50 - x}% ${50 - y}%` : "center",
-                  transform: hasCrop && effectiveZoom !== 1 ? `scale(${effectiveZoom})` : undefined,
+                  transform: hasCrop && zoom !== 1 ? `scale(${zoom})` : undefined,
                   transformOrigin: "center",
                   transition: "object-position 0.1s ease, transform 0.1s ease",
                   padding: hasCrop ? 0 : 6,
@@ -82,6 +79,9 @@ export default function CropEditor({
 
         {/* Slider'lar */}
         <div style={{ flex: 1, minWidth: 260, display: "flex", flexDirection: "column", gap: 14 }}>
+          <p style={{ fontSize: 11, color: "#64748b", margin: "0 0 4px", lineHeight: 1.4 }}>
+            💡 Wenn X/Y keine sichtbare Wirkung haben (z.B. bei quadratischen Bildern), erhöhen Sie den Zoom.
+          </p>
           <SliderField
             label="Zoom"
             value={zoom}

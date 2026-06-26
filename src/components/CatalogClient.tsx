@@ -282,17 +282,12 @@ export default function CatalogClient({
                               hasCrop = zoom !== 1 || tx !== 0 || ty !== 0;
                             }
                           } catch {}
-                          // Dinamik auto-zoom: X/Y büyük ise zoom da büyür (kare görsellerde X/Y görünür)
-                          // |X| veya |Y| = 50 → autoZoom = 1.5 (image %50 büyür, kayma belirgin)
-                          const maxOffset = Math.max(Math.abs(tx), Math.abs(ty));
-                          const autoZoom = 1 + (maxOffset / 50) * 0.5;
-                          const effectiveZoom = hasCrop ? Math.max(zoom, autoZoom) : zoom;
                           return {
                             width: "100%",
                             height: "100%",
                             objectFit: (hasCrop ? "cover" : "contain") as "cover" | "contain",
                             objectPosition: hasCrop ? `${50 - tx}% ${50 - ty}%` : "center",
-                            transform: hasCrop && effectiveZoom !== 1 ? `scale(${effectiveZoom})` : undefined,
+                            transform: hasCrop && zoom !== 1 ? `scale(${zoom})` : undefined,
                             transformOrigin: "center",
                             padding: hasCrop ? 0 : 6,
                           };
