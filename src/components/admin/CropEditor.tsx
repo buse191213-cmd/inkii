@@ -54,7 +54,9 @@ export default function CropEditor({
               alt="Vitrin-Vorschau"
               style={(() => {
                 const hasCrop = zoom !== 1 || x !== 0 || y !== 0;
-                const effectiveZoom = hasCrop && (x !== 0 || y !== 0) ? Math.max(zoom, 1.1) : zoom;
+                const maxOffset = Math.max(Math.abs(x), Math.abs(y));
+                const autoZoom = 1 + (maxOffset / 50) * 0.5;
+                const effectiveZoom = hasCrop ? Math.max(zoom, autoZoom) : zoom;
                 return {
                   width: "100%",
                   height: "100%",
