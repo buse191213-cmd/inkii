@@ -35,11 +35,11 @@ export default function CropEditor({
       <input type="hidden" name="cardCrop" value={cropJson} readOnly />
 
       <div style={{ display: "flex", gap: 18, alignItems: "flex-start", flexWrap: "wrap" }}>
-        {/* Preview (kare 240px) */}
+        {/* Preview (4:5 portrait — catalog ile aynı oran) */}
         <div
           style={{
-            width: 240,
-            height: 240,
+            width: 200,
+            height: 250,
             background: "#f4f5f3",
             overflow: "hidden",
             border: "1px solid #e5e7eb",
@@ -55,14 +55,14 @@ export default function CropEditor({
                 src={firstImage}
                 alt="Vitrin-Vorschau"
                 style={{
-                  width: "100%",
-                  height: "100%",
-                  objectFit: (hasCrop ? "cover" : "contain") as "cover" | "contain",
-                  objectPosition: "center",
-                  transform: hasCrop ? `scale(${zoom}) translate(${-x}%, ${y}%)` : undefined,
-                  transformOrigin: "center",
-                  transition: "transform 0.1s ease",
-                }}
+                width: "100%",
+                height: "100%",
+                objectFit: "cover",
+                objectPosition: "center",
+                transform: hasCrop ? `scale(${zoom}) translate(${-x}%, ${y}%)` : undefined,
+                transformOrigin: "center",
+                transition: "transform 0.1s ease",
+              }}
               />
             );
           })() : (

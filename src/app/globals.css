@@ -1537,7 +1537,7 @@ body:has(.home-services) footer.site{margin-top:0}
 .mm-tag.tag-eco{border-color:var(--leaf);color:var(--leaf-deep)}
 .mm-card-link{display:flex;flex-direction:column;text-decoration:none;color:inherit;
   flex:1}
-.mm-card-img{position:relative;background:#f4f5f3;aspect-ratio:1/1;
+.mm-card-img{position:relative;background:#f4f5f3;aspect-ratio:4/5;
   display:grid;place-items:center;overflow:hidden;transition:.25s}
 .mm-card-img img{width:100%;height:100%;transition:transform .35s ease}
 .mm-card-img svg{width:46%;height:46%;color:var(--muted);opacity:.6}

@@ -285,7 +285,9 @@ export default function CatalogClient({
                           style={{
                             width: "100%",
                             height: "100%",
-                            objectFit: (hasCrop ? "cover" : "contain") as "cover" | "contain",
+                            // 4:5 portrait kart → giysi/çanta görselleri ile uyumlu
+                            // Default cover ile kart doluyor, kırpma minimum
+                            objectFit: "cover",
                             objectPosition: "center",
                             transform: hasCrop ? `scale(${zoom}) translate(${-tx}%, ${ty}%)` : undefined,
                             transformOrigin: "center",
