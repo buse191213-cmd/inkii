@@ -4886,3 +4886,11 @@ body:has(.hero-full) header.site .brand-other img{filter:none;height:52px}
     /* object-fit kaldırıldı - inline style kullanılır */
   }
 }
+
+/* === Admin ürün listesindeki thumbnail görseli — taşmasın === */
+.adm .t-thumb img {
+  width: 100% !important;
+  height: 100% !important;
+  object-fit: cover !important;
+  display: block;
+}
