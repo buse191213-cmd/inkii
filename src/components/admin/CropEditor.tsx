@@ -52,15 +52,19 @@ export default function CropEditor({
             <img
               src={firstImage}
               alt="Vitrin-Vorschau"
-              style={{
-                width: "100%",
-                height: "100%",
-                objectFit: "cover",
-                objectPosition: "center",
-                transform: `scale(${zoom}) translate(${x}%, ${y}%)`,
-                transformOrigin: "center",
-                transition: "transform 0.1s ease",
-              }}
+              style={(() => {
+                const hasCrop = zoom !== 1 || x !== 0 || y !== 0;
+                return {
+                  width: "100%",
+                  height: "100%",
+                  objectFit: (hasCrop ? "cover" : "contain") as "cover" | "contain",
+                  objectPosition: "center",
+                  transform: hasCrop ? `scale(${zoom}) translate(${x}%, ${y}%)` : undefined,
+                  transformOrigin: "center",
+                  transition: "transform 0.1s ease",
+                  padding: hasCrop ? 0 : 6,
+                };
+              })()}
             />
           ) : (
             <div style={{ display: "flex", alignItems: "center", justifyContent: "center", height: "100%", fontSize: 13, color: "#94a3b8", textAlign: "center", padding: 20 }}>

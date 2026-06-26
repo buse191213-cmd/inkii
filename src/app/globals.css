@@ -4880,9 +4880,9 @@ body:has(.hero-full) header.site .brand-other img{filter:none;height:52px}
     transform: none !important;
   }
 }
-/* Çok küçük ekranlarda da cover (inline objectPosition çalışsın) */
+/* Mobile: inline style (contain veya cover, cardCrop'a göre) win etsin */
 @media (max-width: 600px) {
   .mm-card-img img {
-    object-fit: cover !important;
+    /* object-fit kaldırıldı - inline style kullanılır */
   }
 }
