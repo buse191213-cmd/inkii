@@ -285,12 +285,12 @@ export default function CatalogClient({
                           style={{
                             width: "100%",
                             height: "100%",
-                            // 4:5 portrait kart → giysi/çanta görselleri ile uyumlu
-                            // Default cover ile kart doluyor, kırpma minimum
-                            objectFit: "cover",
+                            // contain → görselin TAMAMI her zaman görünür, hiçbir şey kesilmez
+                            objectFit: (hasCrop ? "cover" : "contain") as "cover" | "contain",
                             objectPosition: "center",
                             transform: hasCrop ? `scale(${zoom}) translate(${-tx}%, ${ty}%)` : undefined,
                             transformOrigin: "center",
+                            padding: hasCrop ? 0 : 4,
                           }}
                         />
                       );
