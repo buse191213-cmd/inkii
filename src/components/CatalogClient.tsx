@@ -285,11 +285,10 @@ export default function CatalogClient({
                           style={{
                             width: "100%",
                             height: "100%",
-                            objectFit: "cover",
-                            // center top → giysi üst kısmı (yaka/omuz/kapüşon) her zaman görünür
-                            objectPosition: "center top",
+                            objectFit: (hasCrop ? "cover" : "contain") as "cover" | "contain",
+                            objectPosition: "center",
                             transform: hasCrop ? `scale(${zoom}) translate(${-tx}%, ${ty}%)` : undefined,
-                            transformOrigin: "center top",
+                            transformOrigin: "center",
                           }}
                         />
                       );

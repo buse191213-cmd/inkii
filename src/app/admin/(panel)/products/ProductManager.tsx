@@ -510,7 +510,11 @@ export default function ProductManager({
                         <div className="t-thumb">
                           {imgs.length > 0 ? (
                             // eslint-disable-next-line @next/next/no-img-element
-                            <img src={imgs[0]} alt={p.name} />
+                            <img
+                              src={imgs[0]}
+                              alt={p.name}
+                              style={{ width: 40, height: 40, objectFit: "cover", display: "block" }}
+                            />
                           ) : (
                             <ProductIcon name={p.icon} />
                           )}
