@@ -4880,10 +4880,9 @@ body:has(.hero-full) header.site .brand-other img{filter:none;height:52px}
     transform: none !important;
   }
 }
-/* Çok küçük ekranlarda kart yüksekliği biraz daha esnek */
+/* Çok küçük ekranlarda da cover (inline objectPosition çalışsın) */
 @media (max-width: 600px) {
   .mm-card-img img {
-    object-fit: contain !important;
-    object-position: center center !important;
+    object-fit: cover !important;
   }
 }

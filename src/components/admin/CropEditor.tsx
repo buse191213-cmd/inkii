@@ -55,7 +55,7 @@ export default function CropEditor({
               style={{
                 width: "100%",
                 height: "100%",
-                objectFit: "contain",
+                objectFit: "cover",
                 objectPosition: `${50 + x}% ${50 + y}%`,
                 transform: zoom !== 1 ? `scale(${zoom})` : undefined,
                 transformOrigin: "center",

@@ -280,13 +280,13 @@ export default function CatalogClient({
                               ty = Number(c.y) || 0;
                             }
                           } catch {}
-                          // contain → görsel her zaman TAM görünür, kırpma yok
-                          // X/Y → görselin kart içindeki pozisyonu
-                          // Zoom > 1 → kullanıcı bilinçli büyüttü ise scale
+                          // cover → görsel kartı doldurur
+                          // X/Y → hangi parçanın görüneceğini seç (kırpılan kısım kayar)
+                          // Zoom → yakınlaştır (kart dışına taşar, kart sınırı içinde kırpılır)
                           return {
                             width: "100%",
                             height: "100%",
-                            objectFit: "contain" as const,
+                            objectFit: "cover" as const,
                             objectPosition: `${50 + tx}% ${50 + ty}%`,
                             transform: zoom !== 1 ? `scale(${zoom})` : undefined,
                             transformOrigin: "center",
