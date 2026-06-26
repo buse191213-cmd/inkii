@@ -272,21 +272,26 @@ export default function CatalogClient({
                         alt={p.name}
                         style={(() => {
                           let zoom = 1, tx = 0, ty = 0;
+                          let hasCrop = false;
                           try {
                             if (p.cardCrop) {
                               const c = JSON.parse(p.cardCrop);
                               zoom = Number(c.zoom) || 1;
                               tx = Number(c.x) || 0;
                               ty = Number(c.y) || 0;
+                              hasCrop = zoom !== 1 || tx !== 0 || ty !== 0;
                             }
                           } catch {}
+                          // Crop ayarsız → contain (tüm görsel, kesim yok)
+                          // Crop ayarlı → cover + transform (kullanıcı bilinçli kırptı)
                           return {
                             width: "100%",
                             height: "100%",
-                            objectFit: "cover" as const,
+                            objectFit: (hasCrop ? "cover" : "contain") as "cover" | "contain",
                             objectPosition: "center" as const,
-                            transform: `scale(${zoom}) translate(${tx}%, ${ty}%)`,
+                            transform: hasCrop ? `scale(${zoom}) translate(${tx}%, ${ty}%)` : undefined,
                             transformOrigin: "center",
+                            padding: hasCrop ? 0 : 6,
                           };
                         })()}
                       />
