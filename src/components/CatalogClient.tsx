@@ -285,13 +285,11 @@ export default function CatalogClient({
                           style={{
                             width: "100%",
                             height: "100%",
-                            // Default contain → her cihazda tüm görsel görünür (mobile+web tutarlı)
-                            // Crop ayarlı → cover + transform
-                            objectFit: (hasCrop ? "cover" : "contain") as "cover" | "contain",
-                            objectPosition: "center",
+                            objectFit: "cover",
+                            // center top → giysi üst kısmı (yaka/omuz/kapüşon) her zaman görünür
+                            objectPosition: "center top",
                             transform: hasCrop ? `scale(${zoom}) translate(${-tx}%, ${ty}%)` : undefined,
-                            transformOrigin: "center",
-                            padding: hasCrop ? 0 : 6,
+                            transformOrigin: "center top",
                           }}
                         />
                       );
