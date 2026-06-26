@@ -54,12 +54,13 @@ export default function CropEditor({
               alt="Vitrin-Vorschau"
               style={(() => {
                 const hasCrop = zoom !== 1 || x !== 0 || y !== 0;
+                const effectiveZoom = hasCrop && (x !== 0 || y !== 0) ? Math.max(zoom, 1.1) : zoom;
                 return {
                   width: "100%",
                   height: "100%",
                   objectFit: (hasCrop ? "cover" : "contain") as "cover" | "contain",
                   objectPosition: hasCrop ? `${50 - x}% ${50 - y}%` : "center",
-                  transform: hasCrop && zoom !== 1 ? `scale(${zoom})` : undefined,
+                  transform: hasCrop && effectiveZoom !== 1 ? `scale(${effectiveZoom})` : undefined,
                   transformOrigin: "center",
                   transition: "object-position 0.1s ease, transform 0.1s ease",
                   padding: hasCrop ? 0 : 6,

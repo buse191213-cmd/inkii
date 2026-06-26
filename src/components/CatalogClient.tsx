@@ -282,15 +282,14 @@ export default function CatalogClient({
                               hasCrop = zoom !== 1 || tx !== 0 || ty !== 0;
                             }
                           } catch {}
-                          // Crop ayarsız → contain (tam görsel)
-                          // Crop ayarlı → cover + object-position (image kart dışına taşmaz)
-                          // Y intuition: + = üst kısım görünür (kapüşon), - = alt kısım görünür
+                          // X/Y kullanılıyorsa zoom minimum 1.1 (kare görsellerde de Y çalışsın)
+                          const effectiveZoom = hasCrop && (tx !== 0 || ty !== 0) ? Math.max(zoom, 1.1) : zoom;
                           return {
                             width: "100%",
                             height: "100%",
                             objectFit: (hasCrop ? "cover" : "contain") as "cover" | "contain",
                             objectPosition: hasCrop ? `${50 - tx}% ${50 - ty}%` : "center",
-                            transform: hasCrop && zoom !== 1 ? `scale(${zoom})` : undefined,
+                            transform: hasCrop && effectiveZoom !== 1 ? `scale(${effectiveZoom})` : undefined,
                             transformOrigin: "center",
                             padding: hasCrop ? 0 : 6,
                           };
