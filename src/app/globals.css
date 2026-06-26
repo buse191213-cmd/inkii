@@ -4868,3 +4868,22 @@ body:has(.hero-full) header.site .brand-other img{filter:none;height:52px}
   max-width: 100%;
   max-height: 100%;
 }
+
+/* === Mobil + tüm cihazlarda görsel kesilmez - inline style + safety net === */
+.mm-card-img {
+  background: #f4f5f3 !important;
+}
+/* Mobil (dokunmatik): hover scale efekti yok, görsel sabit */
+@media (hover: none) {
+  .mm-card:hover .mm-card-img img,
+  .mm-card-img img {
+    transform: none !important;
+  }
+}
+/* Çok küçük ekranlarda kart yüksekliği biraz daha esnek */
+@media (max-width: 600px) {
+  .mm-card-img img {
+    object-fit: contain !important;
+    object-position: center center !important;
+  }
+}

@@ -271,7 +271,6 @@ export default function CatalogClient({
                         src={p.images[0]}
                         alt={p.name}
                         style={(() => {
-                          // cardCrop varsa transform uygula
                           let zoom = 1, tx = 0, ty = 0;
                           try {
                             if (p.cardCrop) {
@@ -281,12 +280,15 @@ export default function CatalogClient({
                               ty = Number(c.y) || 0;
                             }
                           } catch {}
+                          // contain → görsel her zaman TAM görünür, kırpma yok
+                          // X/Y → görselin kart içindeki pozisyonu
+                          // Zoom > 1 → kullanıcı bilinçli büyüttü ise scale
                           return {
                             width: "100%",
                             height: "100%",
-                            objectFit: "cover" as const,
-                            objectPosition: "center" as const,
-                            transform: `scale(${zoom}) translate(${tx}%, ${ty}%)`,
+                            objectFit: "contain" as const,
+                            objectPosition: `${50 + tx}% ${50 + ty}%`,
+                            transform: zoom !== 1 ? `scale(${zoom})` : undefined,
                             transformOrigin: "center",
                           };
                         })()}
