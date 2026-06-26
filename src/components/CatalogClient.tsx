@@ -280,14 +280,14 @@ export default function CatalogClient({
                               ty = Number(c.y) || 0;
                             }
                           } catch {}
-                          // Transform translate + scale → görsel her zaman görünür kayar
-                          // Container overflow:hidden ile fazlalık kırpılır
+                          // Y ters çevrildi: kullanıcı Y'yi azaltınca (sola) ÜST kısım görünür (kapüşon)
+                          // Y'yi arttırınca (sağa) ALT kısım görünür
                           return {
                             width: "100%",
                             height: "100%",
                             objectFit: "cover" as const,
                             objectPosition: "center" as const,
-                            transform: `scale(${zoom}) translate(${tx}%, ${ty}%)`,
+                            transform: `scale(${zoom}) translate(${tx}%, ${-ty}%)`,
                             transformOrigin: "center",
                           };
                         })()}
