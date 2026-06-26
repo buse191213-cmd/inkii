@@ -57,7 +57,7 @@ export default function CropEditor({
                 height: "100%",
                 objectFit: "cover",
                 objectPosition: "center",
-                transform: `scale(${zoom}) translate(${x}%, ${-y}%)`,
+                transform: `scale(${zoom}) translate(${x}%, ${y}%)`,
                 transformOrigin: "center",
                 transition: "transform 0.1s ease",
               }}
@@ -96,14 +96,14 @@ export default function CropEditor({
             format={(v) => v.toString()}
           />
           <SliderField
-            label="Vertikal (oben ↔ unten)"
+            label="Vertikal — nach unten = Oberseite zeigen (Kapuze) ↓"
             value={y}
             min={-50}
             max={50}
             step={1}
             onChange={setY}
             unit="%"
-            format={(v) => v > 0 ? `${v} (oben)` : v < 0 ? `${v} (unten)` : "Mitte"}
+            format={(v) => v > 0 ? `+${v} (Oberseite)` : v < 0 ? `${v} (Unterseite)` : "Mitte"}
           />
           <button
             type="button"
