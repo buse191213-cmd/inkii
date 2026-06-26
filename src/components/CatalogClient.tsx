@@ -282,14 +282,15 @@ export default function CatalogClient({
                               hasCrop = zoom !== 1 || tx !== 0 || ty !== 0;
                             }
                           } catch {}
-                          // Crop ayarsız → contain (tüm görsel, kesim yok)
-                          // Crop ayarlı → cover + transform (kullanıcı bilinçli kırptı)
+                          // Crop ayarsız → contain (tam görsel)
+                          // Crop ayarlı → cover + object-position (image kart dışına taşmaz)
+                          // Y intuition: + = üst kısım görünür (kapüşon), - = alt kısım görünür
                           return {
                             width: "100%",
                             height: "100%",
                             objectFit: (hasCrop ? "cover" : "contain") as "cover" | "contain",
-                            objectPosition: "center" as const,
-                            transform: hasCrop ? `scale(${zoom}) translate(${tx}%, ${ty}%)` : undefined,
+                            objectPosition: hasCrop ? `${50 - tx}% ${50 - ty}%` : "center",
+                            transform: hasCrop && zoom !== 1 ? `scale(${zoom})` : undefined,
                             transformOrigin: "center",
                             padding: hasCrop ? 0 : 6,
                           };
