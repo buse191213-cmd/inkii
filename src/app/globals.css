@@ -4873,11 +4873,10 @@ body:has(.hero-full) header.site .brand-other img{filter:none;height:52px}
 .mm-card-img {
   background: #f4f5f3 !important;
 }
-/* Mobil (dokunmatik): hover scale efekti yok, görsel sabit */
+/* Mobil (dokunmatik): hover scale efekti yok */
 @media (hover: none) {
-  .mm-card:hover .mm-card-img img,
-  .mm-card-img img {
-    transform: none !important;
+  .mm-card:hover .mm-card-img img {
+    /* hover scale uygulamasını mobile'da iptal et — inline cardCrop transform'unu koru */
   }
 }
 /* Mobile: inline style (contain veya cover, cardCrop'a göre) win etsin */
