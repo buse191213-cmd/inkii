@@ -47,26 +47,40 @@ export default function CropEditor({
             flexShrink: 0,
           }}
         >
-          {firstImage ? (
-            /* eslint-disable-next-line @next/next/no-img-element */
-            <img
-              src={firstImage}
-              alt="Vitrin-Vorschau"
-              style={(() => {
-                const hasCrop = zoom !== 1 || x !== 0 || y !== 0;
-                return {
+          {firstImage ? (() => {
+            const hasCrop = zoom !== 1 || x !== 0 || y !== 0;
+            if (!hasCrop) {
+              return (
+                /* eslint-disable-next-line @next/next/no-img-element */
+                <img
+                  src={firstImage}
+                  alt="Vitrin-Vorschau"
+                  style={{
+                    width: "100%",
+                    height: "100%",
+                    objectFit: "contain",
+                    padding: 6,
+                  }}
+                />
+              );
+            }
+            const sizePercent = 100 * zoom;
+            const posX = 50 - x;
+            const posY = 50 - y;
+            return (
+              <div
+                style={{
                   width: "100%",
                   height: "100%",
-                  objectFit: (hasCrop ? "cover" : "contain") as "cover" | "contain",
-                  objectPosition: hasCrop ? `${50 - x}% ${50 - y}%` : "center",
-                  transform: hasCrop && zoom !== 1 ? `scale(${zoom})` : undefined,
-                  transformOrigin: "center",
-                  transition: "object-position 0.1s ease, transform 0.1s ease",
-                  padding: hasCrop ? 0 : 6,
-                };
-              })()}
-            />
-          ) : (
+                  backgroundImage: `url("${firstImage}")`,
+                  backgroundRepeat: "no-repeat",
+                  backgroundSize: `${sizePercent}% auto`,
+                  backgroundPosition: `${posX}% ${posY}%`,
+                  transition: "background-position 0.1s ease, background-size 0.1s ease",
+                }}
+              />
+            );
+          })() : (
             <div style={{ display: "flex", alignItems: "center", justifyContent: "center", height: "100%", fontSize: 13, color: "#94a3b8", textAlign: "center", padding: 20 }}>
               Erst ein Produktbild oben hochladen, dann hier zuschneiden.
             </div>

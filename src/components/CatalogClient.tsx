@@ -265,35 +265,52 @@ export default function CatalogClient({
 
                 <Link href={`/werbemittel/${p.id}`} className="mm-card-link">
                   <div className="mm-card-img">
-                    {p.images.length > 0 ? (
-                      // eslint-disable-next-line @next/next/no-img-element
-                      <img
-                        src={p.images[0]}
-                        alt={p.name}
-                        style={(() => {
-                          let zoom = 1, tx = 0, ty = 0;
-                          let hasCrop = false;
-                          try {
-                            if (p.cardCrop) {
-                              const c = JSON.parse(p.cardCrop);
-                              zoom = Number(c.zoom) || 1;
-                              tx = Number(c.x) || 0;
-                              ty = Number(c.y) || 0;
-                              hasCrop = zoom !== 1 || tx !== 0 || ty !== 0;
-                            }
-                          } catch {}
-                          return {
+                    {p.images.length > 0 ? (() => {
+                      let zoom = 1, tx = 0, ty = 0;
+                      let hasCrop = false;
+                      try {
+                        if (p.cardCrop) {
+                          const c = JSON.parse(p.cardCrop);
+                          zoom = Number(c.zoom) || 1;
+                          tx = Number(c.x) || 0;
+                          ty = Number(c.y) || 0;
+                          hasCrop = zoom !== 1 || tx !== 0 || ty !== 0;
+                        }
+                      } catch {}
+                      if (!hasCrop) {
+                        return (
+                          // eslint-disable-next-line @next/next/no-img-element
+                          <img
+                            src={p.images[0]}
+                            alt={p.name}
+                            style={{
+                              width: "100%",
+                              height: "100%",
+                              objectFit: "contain",
+                              padding: 6,
+                            }}
+                          />
+                        );
+                      }
+                      // Crop ayarlı: backgroundImage div ile guaranteed pan/zoom
+                      // X +: sağ kısım görünür / Y +: üst kısım görünür
+                      const sizePercent = 100 * zoom;
+                      const posX = 50 - tx; // X+ = sağ kısım görünür
+                      const posY = 50 - ty; // Y+ = üst kısım görünür
+                      return (
+                        <div
+                          aria-label={p.name}
+                          style={{
                             width: "100%",
                             height: "100%",
-                            objectFit: (hasCrop ? "cover" : "contain") as "cover" | "contain",
-                            objectPosition: hasCrop ? `${50 - tx}% ${50 - ty}%` : "center",
-                            transform: hasCrop && zoom !== 1 ? `scale(${zoom})` : undefined,
-                            transformOrigin: "center",
-                            padding: hasCrop ? 0 : 6,
-                          };
-                        })()}
-                      />
-                    ) : (
+                            backgroundImage: `url("${p.images[0]}")`,
+                            backgroundRepeat: "no-repeat",
+                            backgroundSize: `${sizePercent}% auto`,
+                            backgroundPosition: `${posX}% ${posY}%`,
+                          }}
+                        />
+                      );
+                    })() : (
                       <ProductIcon name={p.icon} />
                     )}
                     <span className="mm-quick">{t.details}</span>
