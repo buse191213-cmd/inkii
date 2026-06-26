@@ -267,14 +267,12 @@ export default function CatalogClient({
                   <div className="mm-card-img">
                     {p.images.length > 0 ? (() => {
                       let zoom = 1, tx = 0, ty = 0;
-                      let hasCrop = false;
                       try {
                         if (p.cardCrop) {
                           const c = JSON.parse(p.cardCrop);
                           zoom = Number(c.zoom) || 1;
                           tx = Number(c.x) || 0;
                           ty = Number(c.y) || 0;
-                          hasCrop = zoom !== 1 || tx !== 0 || ty !== 0;
                         }
                       } catch {}
                       return (
@@ -285,12 +283,13 @@ export default function CatalogClient({
                           style={{
                             width: "100%",
                             height: "100%",
-                            // contain → görselin TAMAMI her zaman görünür, hiçbir şey kesilmez
-                            objectFit: (hasCrop ? "cover" : "contain") as "cover" | "contain",
+                            objectFit: "contain",
                             objectPosition: "center",
-                            transform: hasCrop ? `scale(${zoom}) translate(${-tx}%, ${ty}%)` : undefined,
+                            transform: (zoom !== 1 || tx !== 0 || ty !== 0)
+                              ? `scale(${zoom}) translate(${-tx}%, ${ty}%)`
+                              : undefined,
                             transformOrigin: "center",
-                            padding: hasCrop ? 0 : 4,
+                            padding: 4,
                           }}
                         />
                       );

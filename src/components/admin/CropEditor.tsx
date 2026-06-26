@@ -55,15 +55,15 @@ export default function CropEditor({
                 src={firstImage}
                 alt="Vitrin-Vorschau"
                 style={{
-                width: "100%",
-                height: "100%",
-                objectFit: (hasCrop ? "cover" : "contain") as "cover" | "contain",
-                objectPosition: "center",
-                transform: hasCrop ? `scale(${zoom}) translate(${-x}%, ${y}%)` : undefined,
-                transformOrigin: "center",
-                transition: "transform 0.1s ease",
-                padding: hasCrop ? 0 : 4,
-              }}
+                  width: "100%",
+                  height: "100%",
+                  objectFit: "contain",
+                  objectPosition: "center",
+                  transform: hasCrop ? `scale(${zoom}) translate(${-x}%, ${y}%)` : undefined,
+                  transformOrigin: "center",
+                  transition: "transform 0.1s ease",
+                  padding: 4,
+                }}
               />
             );
           })() : (
