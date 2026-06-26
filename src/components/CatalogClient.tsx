@@ -277,36 +277,19 @@ export default function CatalogClient({
                           hasCrop = zoom !== 1 || tx !== 0 || ty !== 0;
                         }
                       } catch {}
-                      if (!hasCrop) {
-                        return (
-                          // eslint-disable-next-line @next/next/no-img-element
-                          <img
-                            src={p.images[0]}
-                            alt={p.name}
-                            style={{
-                              width: "100%",
-                              height: "100%",
-                              objectFit: "contain",
-                              padding: 6,
-                            }}
-                          />
-                        );
-                      }
-                      // Crop ayarlı: backgroundImage div ile guaranteed pan/zoom
-                      // X +: sağ kısım görünür / Y +: üst kısım görünür
-                      const sizePercent = 100 * zoom;
-                      const posX = 50 - tx; // X+ = sağ kısım görünür
-                      const posY = 50 - ty; // Y+ = üst kısım görünür
                       return (
-                        <div
-                          aria-label={p.name}
+                        // eslint-disable-next-line @next/next/no-img-element
+                        <img
+                          src={p.images[0]}
+                          alt={p.name}
                           style={{
                             width: "100%",
                             height: "100%",
-                            backgroundImage: `url("${p.images[0]}")`,
-                            backgroundRepeat: "no-repeat",
-                            backgroundSize: `${sizePercent}% auto`,
-                            backgroundPosition: `${posX}% ${posY}%`,
+                            objectFit: (hasCrop ? "cover" : "contain") as "cover" | "contain",
+                            // X+ = sağ kısım görünür / Y+ = üst kısım görünür
+                            transform: hasCrop ? `scale(${zoom}) translate(${-tx}%, ${ty}%)` : undefined,
+                            transformOrigin: "center",
+                            padding: hasCrop ? 0 : 6,
                           }}
                         />
                       );

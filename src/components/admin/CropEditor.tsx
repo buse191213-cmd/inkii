@@ -49,34 +49,19 @@ export default function CropEditor({
         >
           {firstImage ? (() => {
             const hasCrop = zoom !== 1 || x !== 0 || y !== 0;
-            if (!hasCrop) {
-              return (
-                /* eslint-disable-next-line @next/next/no-img-element */
-                <img
-                  src={firstImage}
-                  alt="Vitrin-Vorschau"
-                  style={{
-                    width: "100%",
-                    height: "100%",
-                    objectFit: "contain",
-                    padding: 6,
-                  }}
-                />
-              );
-            }
-            const sizePercent = 100 * zoom;
-            const posX = 50 - x;
-            const posY = 50 - y;
             return (
-              <div
+              /* eslint-disable-next-line @next/next/no-img-element */
+              <img
+                src={firstImage}
+                alt="Vitrin-Vorschau"
                 style={{
                   width: "100%",
                   height: "100%",
-                  backgroundImage: `url("${firstImage}")`,
-                  backgroundRepeat: "no-repeat",
-                  backgroundSize: `${sizePercent}% auto`,
-                  backgroundPosition: `${posX}% ${posY}%`,
-                  transition: "background-position 0.1s ease, background-size 0.1s ease",
+                  objectFit: (hasCrop ? "cover" : "contain") as "cover" | "contain",
+                  transform: hasCrop ? `scale(${zoom}) translate(${-x}%, ${y}%)` : undefined,
+                  transformOrigin: "center",
+                  transition: "transform 0.1s ease",
+                  padding: hasCrop ? 0 : 6,
                 }}
               />
             );
