@@ -89,13 +89,21 @@ export async function updateOrderStatus(
   newStatus: string
 ): Promise<{ ok: boolean; error?: string; emailSent?: boolean }> {
   try {
-    if (!(await isAuthenticated())) return { ok: false, error: "Nicht autorisiert" };
+    if (!(await isAuthenticated())) {
+      console.warn("[order-status] Nicht autorisiert");
+      return { ok: false, error: "Nicht autorisiert" };
+    }
+
+    console.log(`[order-status] ${orderId} → ${newStatus}`);
 
     const order = await db.order.findUnique({
       where: { id: orderId },
       include: { customer: true, items: true },
     });
-    if (!order) return { ok: false, error: "Bestellung nicht gefunden" };
+    if (!order) {
+      console.error(`[order-status] Bestellung nicht gefunden: ${orderId}`);
+      return { ok: false, error: "Bestellung nicht gefunden" };
+    }
 
     // Zeitstempel-Updates je nach Status
     const updates: Record<string, unknown> = { status: newStatus };
@@ -111,6 +119,7 @@ export async function updateOrderStatus(
     }
 
     await db.order.update({ where: { id: orderId }, data: updates });
+    console.log(`[order-status] ✓ Updated ${orderId} → ${newStatus}`);
 
     // E-Mail
     let emailSent = false;
@@ -241,6 +250,7 @@ export async function updateOrderStatus(
     revalidatePath("/admin/bestellungen");
     return { ok: true, emailSent };
   } catch (e) {
+    console.error("[order-status] Fehler:", e);
     return { ok: false, error: e instanceof Error ? e.message : "Fehler" };
   }
 }

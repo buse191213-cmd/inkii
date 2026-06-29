@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useTransition } from "react";
+import { useState, useTransition, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { updateOrderStatus, updateOrderTracking, updateOrderAdminNote } from "./order-update-actions";
 
@@ -42,20 +42,40 @@ export default function OrderActionsClient({
   const [adminNote, setAdminNote] = useState(initNote);
   const [msg, setMsg] = useState<{ type: "ok" | "err"; text: string } | null>(null);
 
+  // Sync props → state, wenn vom Server neue Werte kommen (router.refresh)
+  useEffect(() => { setStatus(currentStatus); }, [currentStatus]);
+  useEffect(() => { setTracking(initTracking); }, [initTracking]);
+  useEffect(() => { setCarrier(initCarrier || "DHL"); }, [initCarrier]);
+  useEffect(() => { setAdminNote(initNote); }, [initNote]);
+
   function notify(type: "ok" | "err", text: string) {
     setMsg({ type, text });
-    setTimeout(() => setMsg(null), 3000);
+    setTimeout(() => setMsg(null), type === "err" ? 8000 : 5000);
   }
 
   function handleStatusChange(newStatus: string) {
+    if (newStatus === status) return; // değişiklik yok
+
+    // Optimistic UI — hemen güncelle, gerekirse geri al
+    const previousStatus = status;
+    setStatus(newStatus);
+
     startTransition(async () => {
-      const result = await updateOrderStatus(orderId, newStatus);
-      if (result.ok) {
-        setStatus(newStatus);
-        notify("ok", `Status: ${newStatus}${result.emailSent ? " · Kunde benachrichtigt" : ""}`);
-        router.refresh();
-      } else {
-        notify("err", result.error ?? "Fehler");
+      try {
+        const result = await updateOrderStatus(orderId, newStatus);
+        if (result.ok) {
+          notify("ok", `Status geändert auf: ${newStatus}${result.emailSent ? " · Kunde benachrichtigt 📧" : ""}`);
+          router.refresh();
+        } else {
+          // Rollback
+          setStatus(previousStatus);
+          notify("err", `Fehler: ${result.error ?? "Status konnte nicht geändert werden"}`);
+          console.error("Status update failed:", result);
+        }
+      } catch (e) {
+        setStatus(previousStatus);
+        notify("err", `Ausnahme: ${e instanceof Error ? e.message : "Unbekannt"}`);
+        console.error("Status update exception:", e);
       }
     });
   }
