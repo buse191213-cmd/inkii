@@ -256,21 +256,51 @@ export default function WarenkorbClient() {
             </div>
           )}
 
-          <Link
-            href="/kasse"
-            style={{
-              display: "block",
-              marginTop: 20,
-              background: "#004537",
-              color: "#fff",
-              padding: "14px 20px",
-              textAlign: "center",
-              fontWeight: 600,
-              textDecoration: "none",
-            }}
-          >
-            Zur Kasse →
-          </Link>
+          {/* B2B 2 ÇIKIŞ: Angebot anfragen + Direkt kaufen */}
+          <div style={{ marginTop: 24, padding: 16, background: "#fff", border: "1px solid #e5e7eb" }}>
+            <h4 style={{ fontSize: 14, fontWeight: 700, marginBottom: 6 }}>Wie möchten Sie fortfahren?</h4>
+            <p style={{ fontSize: 12, color: "#64748b", marginBottom: 14, lineHeight: 1.5 }}>
+              Sie können ein individuelles Angebot anfragen oder direkt zur Kasse gehen.
+            </p>
+
+            <Link
+              href="/kasse"
+              style={{
+                display: "block",
+                background: "#004537",
+                color: "#fff",
+                padding: "13px 16px",
+                textAlign: "center",
+                fontWeight: 600,
+                textDecoration: "none",
+                fontSize: 14,
+                marginBottom: 8,
+              }}
+            >
+              🛒 Direkt zur Kasse →
+            </Link>
+
+            <Link
+              href="/warenkorb/anfrage"
+              style={{
+                display: "block",
+                background: "#fff",
+                color: "#004537",
+                border: "1px solid #004537",
+                padding: "13px 16px",
+                textAlign: "center",
+                fontWeight: 600,
+                textDecoration: "none",
+                fontSize: 14,
+              }}
+            >
+              ✉️ Angebot anfragen
+            </Link>
+
+            <p style={{ fontSize: 11, color: "#94a3b8", marginTop: 10, lineHeight: 1.4, textAlign: "center" }}>
+              Bei Sonderwünschen, größeren Mengen oder Druckveredelung empfehlen wir „Angebot anfragen".
+            </p>
+          </div>
 
           <Link
             href="/werbemittel"
@@ -279,9 +309,9 @@ export default function WarenkorbClient() {
               marginTop: 10,
               padding: "10px 20px",
               textAlign: "center",
-              color: "#004537",
-              textDecoration: "none",
-              border: "1px solid #004537",
+              color: "#64748b",
+              textDecoration: "underline",
+              fontSize: 13,
             }}
           >
             Weiter einkaufen

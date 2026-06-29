@@ -360,7 +360,7 @@ export default function DetailOrderForm({
       )}
 
       <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
-        {/* Sepete Ekle — Primary (her zaman) */}
+        {/* TEK BUTON — sepete ekle (B2B: liste yap, sonra teklif veya satın al) */}
         <button
           type="button"
           className="det-order-submit"
@@ -376,32 +376,16 @@ export default function DetailOrderForm({
             <circle cx="20" cy="21" r="1.5" />
             <path d="M3 3h2l3 13h12l3-9H6" strokeLinecap="round" strokeLinejoin="round" />
           </svg>
-          In den Warenkorb
-          {totalQty > 0 ? ` · ${totalQty} Stk` : ""}
-          {subtotalCents != null && subtotalCents > 0 ? ` · ${euro(subtotalCents)} €` : ""}
-        </button>
-
-        {(unitCents == null || unitCents === 0) && (
-          <p style={{ fontSize: 12, color: "#64748b", margin: "0 0 4px", textAlign: "center" }}>
-            Bei diesem Artikel erhalten Sie nach Bestellung ein individuelles Angebot.
-          </p>
-        )}
-
-        {/* Merkzettel — Secondary */}
-        <button
-          type="button"
-          className="det-order-submit"
-          onClick={handleAdd}
-          style={{ background: "transparent", color: "#004537", border: "1px solid #004537" }}
-        >
-          <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" strokeWidth="2">
-            <path d="M20.84 4.61a5.5 5.5 0 00-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 00-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 000-7.78z"
-              strokeLinecap="round" strokeLinejoin="round" />
-          </svg>
-          {alreadyOn ? "Variante aktualisieren" : "Auf Merkzettel · Angebot anfragen"}
+          {alreadyOn ? "Variante aktualisieren" : "In den Warenkorb"}
           {totalQty > 0 ? ` · ${totalQty} Stk` : ""}
           {selectedColor ? ` · ${colorLabel(selectedColor)}` : ""}
         </button>
+
+        {(unitCents == null || unitCents === 0) && (
+          <p style={{ fontSize: 12, color: "#64748b", margin: "0", textAlign: "center", lineHeight: 1.5 }}>
+            ℹ️ Bei diesem Artikel erhalten Sie nach Hinzufügen ein individuelles Angebot oder Sie können direkt zur Kasse gehen.
+          </p>
+        )}
       </div>
     </div>
   );

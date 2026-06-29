@@ -89,44 +89,8 @@ function SiteHeaderInner({
             <Link href="/nachhaltigkeit">{nav.nachhaltigkeit}</Link>
             <Link href="/bereiche">{nav.bereiche}</Link>
             <Link href="/kontakt">{nav.kontakt}</Link>
-            <Link href="/merkzettel" className={`u-heart${count > 0 ? " has-items" : ""}`} title={t.merkzettel} aria-label={t.merkzettel}>
-              <span aria-hidden>♥</span>{count > 0 && <span className="u-heart-count">{count}</span>}
-            </Link>
-            <Link
-              href="/warenkorb"
-              className={`u-cart${cartCount > 0 ? " has-items" : ""}`}
-              title="Warenkorb"
-              aria-label="Warenkorb"
-              style={{ position: "relative", display: "inline-flex", alignItems: "center", padding: "0 8px" }}
-            >
-              <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" strokeWidth="1.8" aria-hidden>
-                <circle cx="9" cy="21" r="1.5" />
-                <circle cx="20" cy="21" r="1.5" />
-                <path d="M3 3h2l3 13h12l3-9H6" strokeLinecap="round" strokeLinejoin="round" />
-              </svg>
-              {cartCount > 0 && (
-                <span
-                  style={{
-                    position: "absolute",
-                    top: -4,
-                    right: -2,
-                    background: "#004537",
-                    color: "#fff",
-                    fontSize: 10,
-                    fontWeight: 700,
-                    minWidth: 16,
-                    height: 16,
-                    padding: "0 4px",
-                    borderRadius: 8,
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "center",
-                    lineHeight: 1,
-                  }}
-                >
-                  {cartCount}
-                </span>
-              )}
+            <Link href="/warenkorb" className={`u-heart${(count + cartCount) > 0 ? " has-items" : ""}`} title="Warenkorb / Anfrage" aria-label="Warenkorb">
+              <span aria-hidden>♥</span>{(count + cartCount) > 0 && <span className="u-heart-count">{count + cartCount}</span>}
             </Link>
             <LangSwitcher current={locale} />
           </div>
@@ -203,7 +167,7 @@ function SiteHeaderInner({
             {nav[n.key]}
           </Link>
         ))}
-        <Link href="/merkzettel" onClick={() => setOpen(false)}>
+        <Link href="/warenkorb" onClick={() => setOpen(false)}>
           {t.merkzettel}
           {count > 0 ? ` (${count})` : ""}
         </Link>
