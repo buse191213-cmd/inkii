@@ -264,7 +264,8 @@ export default function WarenkorbClient() {
             </p>
 
             {(() => {
-              const hasQuoteOnly = items.some((i) => i.unitPriceCents === 0);
+              // "Preis auf Anfrage" = HEM ürün fiyatı HEM dtf fiyatı 0 olan
+              const hasQuoteOnly = items.some((i) => (i.unitPriceCents + i.dtfPriceCents) === 0);
 
               return (
                 <>
