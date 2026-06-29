@@ -162,10 +162,7 @@ export default function DetailOrderForm({
       setErr("Bitte mindestens eine Menge eintragen.");
       return;
     }
-    if (unitCents == null || unitCents === 0) {
-      setErr("Dieser Artikel ist nur auf Anfrage verfügbar. Bitte den Merkzettel nutzen.");
-      return;
-    }
+    const priceCents = unitCents ?? 0; // null = 0 (Angebot wird erstellt)
     // Pro Größe (oder Standard) eine Cart-Position anlegen
     if (sizes.length === 0) {
       addToCart({
@@ -176,7 +173,7 @@ export default function DetailOrderForm({
         color: selectedColor ?? "",
         size: "",
         quantity: qty["__default"] || 0,
-        unitPriceCents: unitCents,
+        unitPriceCents: priceCents,
         hasDtf: false,
         dtfSize: "",
         dtfPriceCents: 0,
@@ -186,8 +183,8 @@ export default function DetailOrderForm({
       for (const s of sizes) {
         const q = qty[s.name] || 0;
         if (q > 0) {
-          const sizePrice = s.extraCents > 0 ? s.extraCents : baseCents;
-          const effective = Math.round(sizePrice * effectiveRatio);
+          const sizePrice = s.extraCents > 0 ? s.extraCents : (basePriceCents ?? 0);
+          const effective = priceCents > 0 ? Math.round(sizePrice * effectiveRatio) : 0;
           addToCart({
             productId,
             productCode,
@@ -363,39 +360,39 @@ export default function DetailOrderForm({
       )}
 
       <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
-        {/* Sepete Ekle — Primary (sadece fiyat varsa) */}
-        {unitCents != null && unitCents > 0 && (
-          <button
-            type="button"
-            className="det-order-submit"
-            onClick={handleAddToCart}
-            style={{
-              background: "#004537",
-              color: "#fff",
-              border: "1px solid #004537",
-            }}
-          >
-            <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" strokeWidth="2">
-              <circle cx="9" cy="21" r="1.5" />
-              <circle cx="20" cy="21" r="1.5" />
-              <path d="M3 3h2l3 13h12l3-9H6" strokeLinecap="round" strokeLinejoin="round" />
-            </svg>
-            In den Warenkorb
-            {totalQty > 0 ? ` · ${totalQty} Stk` : ""}
-            {subtotalCents != null && subtotalCents > 0 ? ` · ${euro(subtotalCents)} €` : ""}
-          </button>
+        {/* Sepete Ekle — Primary (her zaman) */}
+        <button
+          type="button"
+          className="det-order-submit"
+          onClick={handleAddToCart}
+          style={{
+            background: "#004537",
+            color: "#fff",
+            border: "1px solid #004537",
+          }}
+        >
+          <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" strokeWidth="2">
+            <circle cx="9" cy="21" r="1.5" />
+            <circle cx="20" cy="21" r="1.5" />
+            <path d="M3 3h2l3 13h12l3-9H6" strokeLinecap="round" strokeLinejoin="round" />
+          </svg>
+          In den Warenkorb
+          {totalQty > 0 ? ` · ${totalQty} Stk` : ""}
+          {subtotalCents != null && subtotalCents > 0 ? ` · ${euro(subtotalCents)} €` : ""}
+        </button>
+
+        {(unitCents == null || unitCents === 0) && (
+          <p style={{ fontSize: 12, color: "#64748b", margin: "0 0 4px", textAlign: "center" }}>
+            Bei diesem Artikel erhalten Sie nach Bestellung ein individuelles Angebot.
+          </p>
         )}
 
-        {/* Merkzettel — Secondary (her zaman) */}
+        {/* Merkzettel — Secondary */}
         <button
           type="button"
           className="det-order-submit"
           onClick={handleAdd}
-          style={
-            unitCents != null && unitCents > 0
-              ? { background: "transparent", color: "#004537", border: "1px solid #004537" }
-              : undefined
-          }
+          style={{ background: "transparent", color: "#004537", border: "1px solid #004537" }}
         >
           <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" strokeWidth="2">
             <path d="M20.84 4.61a5.5 5.5 0 00-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 00-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 000-7.78z"
