@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useTransition } from "react";
+import { useState, useTransition, useRef } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useCart } from "@/components/CartProvider";
@@ -10,6 +10,23 @@ import { createOrder } from "./order-actions";
 function euro(c: number): string {
   return (c / 100).toLocaleString("de-DE", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
 }
+
+function isValidEmail(s: string): boolean {
+  return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(s.trim());
+}
+
+const COUNTRIES = [
+  { code: "DE", label: "Deutschland", phone: "+49" },
+  { code: "AT", label: "Österreich", phone: "+43" },
+  { code: "CH", label: "Schweiz", phone: "+41" },
+  { code: "NL", label: "Niederlande", phone: "+31" },
+  { code: "BE", label: "Belgien", phone: "+32" },
+  { code: "FR", label: "Frankreich", phone: "+33" },
+  { code: "IT", label: "Italien", phone: "+39" },
+  { code: "ES", label: "Spanien", phone: "+34" },
+  { code: "PL", label: "Polen", phone: "+48" },
+  { code: "TR", label: "Türkei", phone: "+90" },
+];
 
 type PaymentMethod = {
   key: string;
@@ -32,14 +49,26 @@ export default function KasseClient({ paymentMethods, shipping }: Props) {
   const router = useRouter();
   const { items, subtotalCents, clearCart, isLoaded } = useCart();
   const [isPending, startTransition] = useTransition();
-  const [error, setError] = useState<string>("");
+  const [generalError, setGeneralError] = useState<string>("");
+  const [validationStarted, setValidationStarted] = useState(false);
+
+  // Refs for scroll-to-error
+  const refs = {
+    firstName: useRef<HTMLInputElement>(null),
+    lastName: useRef<HTMLInputElement>(null),
+    email: useRef<HTMLInputElement>(null),
+    billingStreet: useRef<HTMLInputElement>(null),
+    billingZip: useRef<HTMLInputElement>(null),
+    billingCity: useRef<HTMLInputElement>(null),
+  };
 
   // Form state
   const [salutation, setSalutation] = useState("Herr");
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
   const [email, setEmail] = useState("");
-  const [phone, setPhone] = useState("");
+  const [phoneCountry, setPhoneCountry] = useState("+49");
+  const [phoneNumber, setPhoneNumber] = useState("");
   const [firmname, setFirmname] = useState("");
   const [ustId, setUstId] = useState("");
   // Billing
@@ -90,24 +119,45 @@ export default function KasseClient({ paymentMethods, shipping }: Props) {
     );
   }
 
+  // Validations
+  const errors = {
+    firstName: !firstName.trim(),
+    lastName: !lastName.trim(),
+    email: !email.trim() ? "required" : !isValidEmail(email) ? "format" : "",
+    billingStreet: !billingStreet.trim(),
+    billingZip: !billingZip.trim(),
+    billingCity: !billingCity.trim(),
+  };
+  const hasError = Boolean(
+    errors.firstName || errors.lastName || errors.email || errors.billingStreet || errors.billingZip || errors.billingCity
+  );
+
   const shippingCents = subtotalCents >= shipping.freeShippingFromCents ? 0 : shipping.standardCostCents;
   const taxCents = Math.round((subtotalCents + shippingCents) * 0.19);
   const totalCents = subtotalCents + shippingCents + taxCents;
 
   function handleSubmit() {
-    setError("");
-    if (!firstName || !lastName || !email || !billingStreet || !billingZip || !billingCity) {
-      setError("Bitte alle Pflichtfelder ausfüllen.");
-      return;
-    }
+    setGeneralError("");
+    setValidationStarted(true);
+
+    // Scroll to first error
+    if (errors.firstName) { refs.firstName.current?.focus(); refs.firstName.current?.scrollIntoView({ behavior: "smooth", block: "center" }); return; }
+    if (errors.lastName) { refs.lastName.current?.focus(); refs.lastName.current?.scrollIntoView({ behavior: "smooth", block: "center" }); return; }
+    if (errors.email) { refs.email.current?.focus(); refs.email.current?.scrollIntoView({ behavior: "smooth", block: "center" }); return; }
+    if (errors.billingStreet) { refs.billingStreet.current?.focus(); refs.billingStreet.current?.scrollIntoView({ behavior: "smooth", block: "center" }); return; }
+    if (errors.billingZip) { refs.billingZip.current?.focus(); refs.billingZip.current?.scrollIntoView({ behavior: "smooth", block: "center" }); return; }
+    if (errors.billingCity) { refs.billingCity.current?.focus(); refs.billingCity.current?.scrollIntoView({ behavior: "smooth", block: "center" }); return; }
+
     if (!paymentMethod) {
-      setError("Bitte eine Zahlungsmethode wählen.");
+      setGeneralError("Bitte eine Zahlungsmethode wählen.");
       return;
     }
     if (!acceptsTerms) {
-      setError("Bitte AGB und Datenschutz akzeptieren.");
+      setGeneralError("Bitte AGB und Datenschutz akzeptieren.");
       return;
     }
+
+    const fullPhone = phoneNumber.trim() ? `${phoneCountry} ${phoneNumber.trim()}` : "";
 
     startTransition(async () => {
       const result = await createOrder({
@@ -116,7 +166,7 @@ export default function KasseClient({ paymentMethods, shipping }: Props) {
           firstName,
           lastName,
           email,
-          phone,
+          phone: fullPhone,
           firmname,
           ustId,
           billingStreet,
@@ -155,10 +205,12 @@ export default function KasseClient({ paymentMethods, shipping }: Props) {
         clearCart();
         router.push(`/bestellung-erfolg?nr=${result.orderNumber}`);
       } else {
-        setError(result.error ?? "Bestellung konnte nicht gespeichert werden.");
+        setGeneralError(result.error ?? "Bestellung konnte nicht gespeichert werden.");
       }
     });
   }
+
+  const showErr = validationStarted;
 
   return (
     <section style={{ maxWidth: 1200, margin: "0 auto", padding: "40px 28px" }}>
@@ -180,22 +232,63 @@ export default function KasseClient({ paymentMethods, shipping }: Props) {
                 </select>
               </div>
               <div style={field}>
-                <label>Vorname *</label>
-                <input value={firstName} onChange={(e) => setFirstName(e.target.value)} style={input} required />
+                <label style={showErr && errors.firstName ? labelErr : undefined}>Vorname *</label>
+                <input
+                  ref={refs.firstName}
+                  value={firstName}
+                  onChange={(e) => setFirstName(e.target.value)}
+                  style={showErr && errors.firstName ? inputErr : input}
+                />
+                {showErr && errors.firstName && <span style={errMsg}>Bitte ausfüllen</span>}
               </div>
               <div style={field}>
-                <label>Nachname *</label>
-                <input value={lastName} onChange={(e) => setLastName(e.target.value)} style={input} required />
+                <label style={showErr && errors.lastName ? labelErr : undefined}>Nachname *</label>
+                <input
+                  ref={refs.lastName}
+                  value={lastName}
+                  onChange={(e) => setLastName(e.target.value)}
+                  style={showErr && errors.lastName ? inputErr : input}
+                />
+                {showErr && errors.lastName && <span style={errMsg}>Bitte ausfüllen</span>}
               </div>
             </div>
             <div style={row}>
               <div style={field}>
-                <label>E-Mail *</label>
-                <input type="email" value={email} onChange={(e) => setEmail(e.target.value)} style={input} required />
+                <label style={showErr && errors.email ? labelErr : undefined}>E-Mail *</label>
+                <input
+                  ref={refs.email}
+                  type="email"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  style={showErr && errors.email ? inputErr : input}
+                  placeholder="name@beispiel.de"
+                />
+                {showErr && errors.email === "required" && <span style={errMsg}>Bitte ausfüllen</span>}
+                {showErr && errors.email === "format" && <span style={errMsg}>Bitte gültige E-Mail-Adresse</span>}
               </div>
               <div style={field}>
                 <label>Telefon</label>
-                <input type="tel" value={phone} onChange={(e) => setPhone(e.target.value)} style={input} />
+                <div style={{ display: "flex", gap: 6 }}>
+                  <select
+                    value={phoneCountry}
+                    onChange={(e) => setPhoneCountry(e.target.value)}
+                    style={{ ...input, maxWidth: 110, flexShrink: 0 }}
+                  >
+                    {COUNTRIES.map((c) => (
+                      <option key={c.code} value={c.phone}>
+                        {c.phone} {c.code}
+                      </option>
+                    ))}
+                  </select>
+                  <input
+                    type="tel"
+                    inputMode="tel"
+                    value={phoneNumber}
+                    onChange={(e) => setPhoneNumber(e.target.value)}
+                    style={input}
+                    placeholder="160 1234567"
+                  />
+                </div>
               </div>
             </div>
             <div style={row}>
@@ -214,27 +307,42 @@ export default function KasseClient({ paymentMethods, shipping }: Props) {
           <div style={section}>
             <h3 style={sectionTitle}>2. Rechnungsadresse</h3>
             <div style={field}>
-              <label>Straße & Hausnummer *</label>
-              <input value={billingStreet} onChange={(e) => setBillingStreet(e.target.value)} style={input} required />
+              <label style={showErr && errors.billingStreet ? labelErr : undefined}>Straße & Hausnummer *</label>
+              <input
+                ref={refs.billingStreet}
+                value={billingStreet}
+                onChange={(e) => setBillingStreet(e.target.value)}
+                style={showErr && errors.billingStreet ? inputErr : input}
+              />
+              {showErr && errors.billingStreet && <span style={errMsg}>Bitte ausfüllen</span>}
             </div>
-            <div style={row}>
+            <div style={{ ...row, marginTop: 12 }}>
               <div style={{ ...field, maxWidth: 140 }}>
-                <label>PLZ *</label>
-                <input value={billingZip} onChange={(e) => setBillingZip(e.target.value)} style={input} required />
+                <label style={showErr && errors.billingZip ? labelErr : undefined}>PLZ *</label>
+                <input
+                  ref={refs.billingZip}
+                  value={billingZip}
+                  onChange={(e) => setBillingZip(e.target.value)}
+                  style={showErr && errors.billingZip ? inputErr : input}
+                />
+                {showErr && errors.billingZip && <span style={errMsg}>Bitte ausfüllen</span>}
               </div>
               <div style={field}>
-                <label>Stadt *</label>
-                <input value={billingCity} onChange={(e) => setBillingCity(e.target.value)} style={input} required />
+                <label style={showErr && errors.billingCity ? labelErr : undefined}>Stadt *</label>
+                <input
+                  ref={refs.billingCity}
+                  value={billingCity}
+                  onChange={(e) => setBillingCity(e.target.value)}
+                  style={showErr && errors.billingCity ? inputErr : input}
+                />
+                {showErr && errors.billingCity && <span style={errMsg}>Bitte ausfüllen</span>}
               </div>
-              <div style={{ ...field, maxWidth: 140 }}>
+              <div style={{ ...field, maxWidth: 180 }}>
                 <label>Land</label>
                 <select value={billingCountry} onChange={(e) => setBillingCountry(e.target.value)} style={input}>
-                  <option value="DE">Deutschland</option>
-                  <option value="AT">Österreich</option>
-                  <option value="CH">Schweiz</option>
-                  <option value="NL">Niederlande</option>
-                  <option value="BE">Belgien</option>
-                  <option value="FR">Frankreich</option>
+                  {COUNTRIES.map((c) => (
+                    <option key={c.code} value={c.code}>{c.label}</option>
+                  ))}
                 </select>
               </div>
             </div>
@@ -257,7 +365,7 @@ export default function KasseClient({ paymentMethods, shipping }: Props) {
                 <label>Straße & Hausnummer</label>
                 <input value={shippingStreet} onChange={(e) => setShippingStreet(e.target.value)} style={input} />
               </div>
-              <div style={row}>
+              <div style={{ ...row, marginTop: 12 }}>
                 <div style={{ ...field, maxWidth: 140 }}>
                   <label>PLZ</label>
                   <input value={shippingZip} onChange={(e) => setShippingZip(e.target.value)} style={input} />
@@ -266,12 +374,12 @@ export default function KasseClient({ paymentMethods, shipping }: Props) {
                   <label>Stadt</label>
                   <input value={shippingCity} onChange={(e) => setShippingCity(e.target.value)} style={input} />
                 </div>
-                <div style={{ ...field, maxWidth: 140 }}>
+                <div style={{ ...field, maxWidth: 180 }}>
                   <label>Land</label>
                   <select value={shippingCountry} onChange={(e) => setShippingCountry(e.target.value)} style={input}>
-                    <option value="DE">Deutschland</option>
-                    <option value="AT">Österreich</option>
-                    <option value="CH">Schweiz</option>
+                    {COUNTRIES.map((c) => (
+                      <option key={c.code} value={c.code}>{c.label}</option>
+                    ))}
                   </select>
                 </div>
               </div>
@@ -347,9 +455,15 @@ export default function KasseClient({ paymentMethods, shipping }: Props) {
             </label>
           </div>
 
-          {error && (
+          {generalError && (
             <div style={{ marginTop: 16, padding: 12, background: "#fee2e2", color: "#991b1b", fontSize: 13 }}>
-              {error}
+              {generalError}
+            </div>
+          )}
+
+          {showErr && hasError && !generalError && (
+            <div style={{ marginTop: 16, padding: 12, background: "#fef3c7", color: "#92400e", fontSize: 13 }}>
+              ⚠️ Bitte fülle alle rot markierten Pflichtfelder aus.
             </div>
           )}
         </div>
@@ -515,4 +629,20 @@ const input: React.CSSProperties = {
   background: "#fff",
   width: "100%",
   fontFamily: "inherit",
+};
+
+const inputErr: React.CSSProperties = {
+  ...input,
+  border: "1px solid #dc2626",
+  background: "#fef2f2",
+};
+
+const labelErr: React.CSSProperties = {
+  color: "#dc2626",
+};
+
+const errMsg: React.CSSProperties = {
+  fontSize: 11,
+  color: "#dc2626",
+  marginTop: 2,
 };
