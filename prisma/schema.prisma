@@ -218,3 +218,27 @@ model ShippingConfig {
   notes               String   @default("")
   updatedAt           DateTime @updatedAt
 }
+
+// CompanyInfo — Rechnungs- & Impressums-Daten (singleton)
+model CompanyInfo {
+  id          String   @id @default(cuid())
+  name        String   @default("INKII WORKS")
+  owner       String   @default("Sener Kirli")
+  street      String   @default("Westuferstr. 25")
+  zip         String   @default("45356")
+  city        String   @default("Essen")
+  country     String   @default("Deutschland")
+  phone       String   @default("+49 160 6767001")
+  email       String   @default("info@inkiiworks.de")
+  web         String   @default("www.inkiiworks.de")
+  ustId       String   @default("DE353055316")
+  taxNumber   String   @default("")
+  // Bank
+  bankName    String   @default("")
+  iban        String   @default("")
+  bic         String   @default("")
+  // Rechnungseinstellungen
+  taxRate     Int      @default(19) // %
+  paymentTermDays Int  @default(14)
+  updatedAt   DateTime @updatedAt
+}

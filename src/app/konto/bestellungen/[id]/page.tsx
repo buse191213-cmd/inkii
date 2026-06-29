@@ -74,6 +74,24 @@ export default async function KundenBestellungDetailPage({
               {germanDate(order.createdAt)}
             </p>
           </div>
+          <a
+            href={`/api/rechnung/${order.id}`}
+            target="_blank"
+            rel="noopener noreferrer"
+            style={{
+              padding: "10px 18px",
+              background: "#004537",
+              color: "#fff",
+              fontWeight: 600,
+              fontSize: 13,
+              textDecoration: "none",
+              display: "inline-flex",
+              alignItems: "center",
+              gap: 6,
+            }}
+          >
+            📄 Rechnung herunterladen
+          </a>
         </div>
 
         {/* TIMELINE - Status izleyici */}

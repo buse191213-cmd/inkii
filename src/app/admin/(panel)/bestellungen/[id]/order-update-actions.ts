@@ -4,25 +4,41 @@ import { db } from "@/lib/db";
 import { revalidatePath } from "next/cache";
 import { isAuthenticated } from "@/lib/auth";
 import nodemailer from "nodemailer";
+import { generateInvoicePDF, generateInvoiceNumber, type InvoiceData } from "@/lib/invoice-pdf";
+import { getCompanyInfo } from "@/lib/company-info";
 
 function isSmtpConfigured(): boolean {
   return Boolean(process.env.SMTP_HOST && process.env.SMTP_USER && process.env.SMTP_PASS);
 }
 
 function makeTransporter() {
-  return nodemailer.createTransport({
+  const port = Number(process.env.SMTP_PORT || 465);
+  const opts = {
     host: process.env.SMTP_HOST!,
-    port: Number(process.env.SMTP_PORT || 587),
-    secure: process.env.SMTP_SECURE === "true",
+    port,
+    secure: process.env.SMTP_SECURE === "true" || port === 465,
     auth: { user: process.env.SMTP_USER!, pass: process.env.SMTP_PASS! },
-  });
+    connectionTimeout: 10000,
+    greetingTimeout: 8000,
+    socketTimeout: 10000,
+    tls: { rejectUnauthorized: false },
+  };
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  return nodemailer.createTransport(opts as any);
 }
 
-async function sendMail(to: string, subject: string, html: string): Promise<void> {
+type Attachment = { filename: string; content: Buffer; contentType: string };
+
+async function sendMail(
+  to: string,
+  subject: string,
+  html: string,
+  attachments?: Attachment[]
+): Promise<void> {
   if (!isSmtpConfigured()) return;
   const transporter = makeTransporter();
   const from = process.env.SMTP_FROM || `"INKII Works" <${process.env.SMTP_USER}>`;
-  await transporter.sendMail({ from, to, subject, html });
+  await transporter.sendMail({ from, to, subject, html, attachments });
 }
 
 const STATUS_EMAILS: Record<string, { subject: string; intro: string }> = {
@@ -112,12 +128,96 @@ export async function updateOrderStatus(
             </p>
           `;
         }
+
+        // PDF Rechnung erstellen (BEZAHLT veya ABGESCHLOSSEN durumlarında ekle)
+        const attachments: Attachment[] = [];
+        const attachInvoice = newStatus === "BEZAHLT" || newStatus === "ABGESCHLOSSEN";
+        if (attachInvoice) {
+          try {
+            let invoiceNumber = order.invoiceNumber;
+            if (!invoiceNumber) {
+              invoiceNumber = generateInvoiceNumber(order.createdAt, order.orderNumber);
+              await db.order.update({ where: { id: orderId }, data: { invoiceNumber } });
+            }
+            const company = await getCompanyInfo();
+            const pdfData: InvoiceData = {
+              invoiceNumber,
+              orderNumber: order.orderNumber,
+              invoiceDate: order.paidAt || new Date(),
+              customer: {
+                salutation: order.customer.salutation,
+                firstName: order.customer.firstName,
+                lastName: order.customer.lastName,
+                firmname: order.customer.firmname,
+                ustId: order.customer.ustId,
+                email: order.customer.email,
+                phone: order.customer.phone,
+                billingStreet: order.customer.billingStreet,
+                billingZip: order.customer.billingZip,
+                billingCity: order.customer.billingCity,
+                billingCountry: order.customer.billingCountry,
+                shippingDiffers: order.customer.shippingDiffers,
+                shippingStreet: order.customer.shippingStreet,
+                shippingZip: order.customer.shippingZip,
+                shippingCity: order.customer.shippingCity,
+                shippingCountry: order.customer.shippingCountry,
+              },
+              items: order.items.map((i) => ({
+                productName: i.productName,
+                productCode: i.productCode,
+                color: i.color,
+                size: i.size,
+                quantity: i.quantity,
+                unitPriceCents: i.unitPriceCents,
+                dtfPriceCents: i.dtfPriceCents,
+                lineTotalCents: i.lineTotalCents,
+                hasDtf: i.hasDtf,
+                dtfSize: i.dtfSize,
+              })),
+              subtotalCents: order.subtotalCents,
+              shippingCents: order.shippingCents,
+              taxRate: order.taxRate,
+              taxCents: order.taxCents,
+              totalCents: order.totalCents,
+              paymentMethod: order.paymentMethod,
+              paymentStatus: "PAID",
+              paidAt: order.paidAt || new Date(),
+              company: {
+                name: company.name,
+                owner: company.owner,
+                street: company.street,
+                zip: company.zip,
+                city: company.city,
+                country: company.country,
+                phone: company.phone,
+                email: company.email,
+                web: company.web,
+                ustId: company.ustId,
+                taxNumber: company.taxNumber,
+                bankName: company.bankName,
+                iban: company.iban,
+                bic: company.bic,
+                paymentTermDays: company.paymentTermDays,
+              },
+            };
+            const pdfBuffer = await generateInvoicePDF(pdfData);
+            attachments.push({
+              filename: `Rechnung-${invoiceNumber}.pdf`,
+              content: pdfBuffer,
+              contentType: "application/pdf",
+            });
+          } catch (pdfErr) {
+            console.error("PDF Rechnung-Generierung fehlgeschlagen:", pdfErr);
+          }
+        }
+
         const html = `
           <div style="font-family: Arial, sans-serif; max-width: 600px;">
             <h2 style="color: #004537;">${emailDef.subject}</h2>
             <p>Sehr geehrte/r ${order.customer.salutation} ${order.customer.firstName} ${order.customer.lastName},</p>
             <p>${emailDef.intro}</p>
             <p><strong>Bestellnummer:</strong> ${order.orderNumber}</p>
+            ${attachments.length > 0 ? '<p style="background: #f0fdf4; padding: 10px; margin: 12px 0;"><strong>📄 Die Rechnung finden Sie als PDF im Anhang.</strong></p>' : ""}
             ${trackingHtml}
             <p style="margin-top: 24px; color: #666; font-size: 12px;">
               Bei Fragen schreiben Sie uns: <a href="mailto:info@inkiiworks.de">info@inkiiworks.de</a><br>
@@ -125,7 +225,12 @@ export async function updateOrderStatus(
             </p>
           </div>
         `;
-        await sendMail(order.customer.email, `INKII Works — ${emailDef.subject} (${order.orderNumber})`, html);
+        await sendMail(
+          order.customer.email,
+          `INKII Works — ${emailDef.subject} (${order.orderNumber})`,
+          html,
+          attachments.length > 0 ? attachments : undefined
+        );
         emailSent = true;
       } catch (e) {
         console.error("Status-Email fehlgeschlagen:", e);

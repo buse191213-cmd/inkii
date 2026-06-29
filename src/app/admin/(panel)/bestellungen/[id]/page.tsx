@@ -57,18 +57,39 @@ export default async function OrderDetailPage({
           <div className="panel" style={{ marginBottom: 16 }}>
             <div className="panel-head">
               <h3>{order.orderNumber}</h3>
-              <span
-                style={{
-                  padding: "5px 12px",
-                  background: status.bg,
-                  color: status.color,
-                  fontSize: 13,
-                  fontWeight: 700,
-                  borderRadius: 4,
-                }}
-              >
-                {status.label}
-              </span>
+              <div style={{ display: "flex", gap: 8, alignItems: "center" }}>
+                <a
+                  href={`/api/rechnung/${order.id}`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  style={{
+                    padding: "5px 12px",
+                    background: "#fff",
+                    color: "#004537",
+                    border: "1px solid #004537",
+                    fontSize: 12,
+                    fontWeight: 600,
+                    textDecoration: "none",
+                    display: "inline-flex",
+                    alignItems: "center",
+                    gap: 4,
+                  }}
+                >
+                  📄 Rechnung PDF
+                </a>
+                <span
+                  style={{
+                    padding: "5px 12px",
+                    background: status.bg,
+                    color: status.color,
+                    fontSize: 13,
+                    fontWeight: 700,
+                    borderRadius: 4,
+                  }}
+                >
+                  {status.label}
+                </span>
+              </div>
             </div>
             <div className="panel-body">
               <div style={{ display: "flex", flexWrap: "wrap", gap: 16, fontSize: 13, color: "#64748b", marginBottom: 16 }}>
