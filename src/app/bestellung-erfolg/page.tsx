@@ -1,4 +1,5 @@
 import Link from "next/link";
+import SiteShell from "@/components/SiteShell";
 
 export const metadata = {
   title: "Bestellung erfolgreich | INKII Works",
@@ -13,6 +14,7 @@ export default async function BestellungErfolgPage({ searchParams }: Props) {
   const orderNumber = params.nr ?? "";
 
   return (
+    <SiteShell>
     <section
       style={{
         maxWidth: 700,
@@ -82,5 +84,6 @@ export default async function BestellungErfolgPage({ searchParams }: Props) {
         </Link>
       </div>
     </section>
+    </SiteShell>
   );
 }

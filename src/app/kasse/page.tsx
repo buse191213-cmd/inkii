@@ -1,4 +1,5 @@
 import { db } from "@/lib/db";
+import SiteShell from "@/components/SiteShell";
 import KasseClient from "./KasseClient";
 
 export const dynamic = "force-dynamic";
@@ -16,17 +17,19 @@ export default async function KassePage() {
   const shipping = await db.shippingConfig.findFirst();
 
   return (
-    <KasseClient
-      paymentMethods={methods.map((m) => ({
-        key: m.key,
-        label: m.label,
-        description: m.description,
-      }))}
-      shipping={{
-        standardCostCents: shipping?.standardCostCents ?? 599,
-        freeShippingFromCents: shipping?.freeShippingFromCents ?? 10000,
-        carrier: shipping?.carrier ?? "DHL",
-      }}
-    />
+    <SiteShell>
+      <KasseClient
+        paymentMethods={methods.map((m) => ({
+          key: m.key,
+          label: m.label,
+          description: m.description,
+        }))}
+        shipping={{
+          standardCostCents: shipping?.standardCostCents ?? 599,
+          freeShippingFromCents: shipping?.freeShippingFromCents ?? 10000,
+          carrier: shipping?.carrier ?? "DHL",
+        }}
+      />
+    </SiteShell>
   );
 }

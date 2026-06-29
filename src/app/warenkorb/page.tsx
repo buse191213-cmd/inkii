@@ -1,3 +1,4 @@
+import SiteShell from "@/components/SiteShell";
 import WarenkorbClient from "./WarenkorbClient";
 
 export const metadata = {
@@ -5,5 +6,9 @@ export const metadata = {
 };
 
 export default function WarenkorbPage() {
-  return <WarenkorbClient />;
+  return (
+    <SiteShell>
+      <WarenkorbClient />
+    </SiteShell>
+  );
 }
