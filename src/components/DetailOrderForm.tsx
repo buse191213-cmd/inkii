@@ -3,6 +3,7 @@
 import { useState, useMemo, useEffect, useRef } from "react";
 import Link from "next/link";
 import { useMerkliste } from "@/components/MerklisteProvider";
+import { useCart } from "@/components/CartProvider";
 import { colorHex, colorLabel } from "@/lib/catalog-options";
 import type { ProductSize } from "@/lib/sizes";
 import type { PriceTier } from "@/lib/price-tiers";
@@ -43,6 +44,8 @@ export default function DetailOrderForm({
   basePriceCents,
 }: Props) {
   const { addOrUpdate, has } = useMerkliste();
+  const { addItem: addToCart } = useCart();
+  const [addedToCart, setAddedToCart] = useState(false);
   const [selectedColor, setSelectedColor] = useState<string | null>(null);
   const [qty, setQty] = useState<Record<string, number>>(() => {
     const init: Record<string, number> = {};
@@ -151,6 +154,59 @@ export default function DetailOrderForm({
       colorLabel: selectedColor ? colorLabel(selectedColor) : null,
     });
     setAdded(true);
+  }
+
+  function handleAddToCart() {
+    setErr("");
+    if (totalQty === 0) {
+      setErr("Bitte mindestens eine Menge eintragen.");
+      return;
+    }
+    if (unitCents == null || unitCents === 0) {
+      setErr("Dieser Artikel ist nur auf Anfrage verfügbar. Bitte den Merkzettel nutzen.");
+      return;
+    }
+    // Pro Größe (oder Standard) eine Cart-Position anlegen
+    if (sizes.length === 0) {
+      addToCart({
+        productId,
+        productCode,
+        productName,
+        productImage: productImage ?? "",
+        color: selectedColor ?? "",
+        size: "",
+        quantity: qty["__default"] || 0,
+        unitPriceCents: unitCents,
+        hasDtf: false,
+        dtfSize: "",
+        dtfPriceCents: 0,
+        dtfDesignUrl: "",
+      });
+    } else {
+      for (const s of sizes) {
+        const q = qty[s.name] || 0;
+        if (q > 0) {
+          const sizePrice = s.extraCents > 0 ? s.extraCents : baseCents;
+          const effective = Math.round(sizePrice * effectiveRatio);
+          addToCart({
+            productId,
+            productCode,
+            productName,
+            productImage: productImage ?? "",
+            color: selectedColor ?? "",
+            size: s.name,
+            quantity: q,
+            unitPriceCents: effective,
+            hasDtf: false,
+            dtfSize: "",
+            dtfPriceCents: 0,
+            dtfDesignUrl: "",
+          });
+        }
+      }
+    }
+    setAddedToCart(true);
+    setTimeout(() => setAddedToCart(false), 3000);
   }
 
   const alreadyOn = has(productId, selectedColor);
@@ -296,15 +352,60 @@ export default function DetailOrderForm({
         </div>
       )}
 
-      <button type="button" className="det-order-submit" onClick={handleAdd}>
-        <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" strokeWidth="2">
-          <path d="M20.84 4.61a5.5 5.5 0 00-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 00-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 000-7.78z"
-            strokeLinecap="round" strokeLinejoin="round" />
-        </svg>
-        {alreadyOn ? "Variante aktualisieren" : "Auf Merkzettel hinzufügen"}
-        {totalQty > 0 ? ` · ${totalQty} Stk` : ""}
-        {selectedColor ? ` · ${colorLabel(selectedColor)}` : ""}
-      </button>
+      {addedToCart && (
+        <div className="det-order-success-inline" style={{ background: "#dcfce7", borderColor: "#86efac" }}>
+          <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" strokeWidth="2.5">
+            <path d="M20 6L9 17l-5-5" strokeLinecap="round" strokeLinejoin="round" />
+          </svg>
+          <span>Zum Warenkorb hinzugefügt.</span>
+          <Link href="/warenkorb" className="det-order-success-link">Warenkorb öffnen →</Link>
+        </div>
+      )}
+
+      <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
+        {/* Sepete Ekle — Primary (sadece fiyat varsa) */}
+        {unitCents != null && unitCents > 0 && (
+          <button
+            type="button"
+            className="det-order-submit"
+            onClick={handleAddToCart}
+            style={{
+              background: "#004537",
+              color: "#fff",
+              border: "1px solid #004537",
+            }}
+          >
+            <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" strokeWidth="2">
+              <circle cx="9" cy="21" r="1.5" />
+              <circle cx="20" cy="21" r="1.5" />
+              <path d="M3 3h2l3 13h12l3-9H6" strokeLinecap="round" strokeLinejoin="round" />
+            </svg>
+            In den Warenkorb
+            {totalQty > 0 ? ` · ${totalQty} Stk` : ""}
+            {subtotalCents != null && subtotalCents > 0 ? ` · ${euro(subtotalCents)} €` : ""}
+          </button>
+        )}
+
+        {/* Merkzettel — Secondary (her zaman) */}
+        <button
+          type="button"
+          className="det-order-submit"
+          onClick={handleAdd}
+          style={
+            unitCents != null && unitCents > 0
+              ? { background: "transparent", color: "#004537", border: "1px solid #004537" }
+              : undefined
+          }
+        >
+          <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" strokeWidth="2">
+            <path d="M20.84 4.61a5.5 5.5 0 00-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 00-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 000-7.78z"
+              strokeLinecap="round" strokeLinejoin="round" />
+          </svg>
+          {alreadyOn ? "Variante aktualisieren" : "Auf Merkzettel · Angebot anfragen"}
+          {totalQty > 0 ? ` · ${totalQty} Stk` : ""}
+          {selectedColor ? ` · ${colorLabel(selectedColor)}` : ""}
+        </button>
+      </div>
     </div>
   );
 }

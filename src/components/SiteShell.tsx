@@ -3,6 +3,7 @@ import SiteFooter from "./SiteFooter";
 import RevealInit from "./RevealInit";
 import MobileBrandSwitcher from "./MobileBrandSwitcher";
 import { MerklisteProvider } from "./MerklisteProvider";
+import { CartProvider } from "./CartProvider";
 import { getLocale } from "@/lib/i18n-server";
 import { getDictionary } from "@/dictionaries";
 import { getActiveNavItems } from "@/lib/nav";
@@ -21,6 +22,7 @@ export default async function SiteShell({
 
   return (
     <MerklisteProvider>
+      <CartProvider>
       <SiteHeader
         locale={locale}
         nav={dict.nav}
@@ -32,6 +34,7 @@ export default async function SiteShell({
       <main>{children}</main>
       <SiteFooter t={dict.footer} cookieLabel={locale === "tr" ? "Çerez ayarları" : locale === "en" ? "Cookie settings" : "Cookie-Einstellungen"} />
       <RevealInit />
+      </CartProvider>
     </MerklisteProvider>
   );
 }
