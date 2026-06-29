@@ -2,7 +2,7 @@
 
 import { db } from "@/lib/db";
 import { revalidatePath } from "next/cache";
-import { requireAdmin } from "@/lib/auth";
+import { isAuthenticated } from "@/lib/auth";
 
 export type PaymentMethodData = {
   key: string;
@@ -132,7 +132,9 @@ export async function saveShopConfig(
   data: ShopConfigData
 ): Promise<{ ok: boolean; error?: string }> {
   try {
-    await requireAdmin();
+    if (!(await isAuthenticated())) {
+      return { ok: false, error: "Nicht autorisiert" };
+    }
     // Payment methods
     for (const m of data.paymentMethods) {
       await db.paymentMethod.update({
