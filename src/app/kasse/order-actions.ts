@@ -245,7 +245,7 @@ export async function createOrder(
           </table>
 
           <p style="margin-top: 24px;">
-            <strong>Zahlungsmethode:</strong> ${input.paymentMethod === "paypal" ? "PayPal" : input.paymentMethod === "klarna" ? "Klarna" : "Auf Rechnung"}<br>
+            <strong>Zahlungsmethode:</strong> Auf Rechnung<br>
             <strong>Lieferadresse:</strong> ${c.shippingDiffers ? `${c.shippingStreet}, ${c.shippingZip} ${c.shippingCity}` : `${c.billingStreet}, ${c.billingZip} ${c.billingCity}`}
           </p>
 
