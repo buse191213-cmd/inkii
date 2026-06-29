@@ -12,16 +12,24 @@ function germanDate(d: Date): string {
   return d.toLocaleDateString("de-DE", { day: "2-digit", month: "2-digit", year: "numeric" });
 }
 
-const STATUS_LABELS: Record<string, { label: string; color: string; bg: string }> = {
-  NEU: { label: "Neu", color: "#1d4ed8", bg: "#dbeafe" },
-  WARTEND: { label: "Wartend", color: "#92400e", bg: "#fef3c7" },
-  BEZAHLT: { label: "Bezahlt", color: "#065f46", bg: "#d1fae5" },
-  IN_PRODUKTION: { label: "In Produktion", color: "#6b21a8", bg: "#f3e8ff" },
-  VERSANDBEREIT: { label: "Versandbereit", color: "#9a3412", bg: "#fed7aa" },
-  VERSENDET: { label: "Versendet", color: "#0e7490", bg: "#cffafe" },
-  ZUGESTELLT: { label: "Zugestellt", color: "#15803d", bg: "#dcfce7" },
-  ABGESCHLOSSEN: { label: "Abgeschlossen", color: "#475569", bg: "#e2e8f0" },
-  STORNIERT: { label: "Storniert", color: "#991b1b", bg: "#fee2e2" },
+const STATUS_LABELS: Record<string, { label: string; tone: "neutral" | "warn" | "ok" | "info" | "dark" }> = {
+  NEU: { label: "Neu", tone: "info" },
+  WARTEND: { label: "Wartend", tone: "warn" },
+  BEZAHLT: { label: "Bezahlt", tone: "ok" },
+  IN_PRODUKTION: { label: "In Produktion", tone: "info" },
+  VERSANDBEREIT: { label: "Versandbereit", tone: "info" },
+  VERSENDET: { label: "Versendet", tone: "dark" },
+  ZUGESTELLT: { label: "Zugestellt", tone: "ok" },
+  ABGESCHLOSSEN: { label: "Abgeschlossen", tone: "neutral" },
+  STORNIERT: { label: "Storniert", tone: "warn" },
+};
+
+const TONE_STYLE: Record<string, { bg: string; color: string; border?: string }> = {
+  neutral: { bg: "#f5f5f5", color: "#666" },
+  info: { bg: "#fff", color: "#000", border: "1px solid #000" },
+  warn: { bg: "#fff", color: "#000", border: "1px dashed #000" },
+  ok: { bg: "#000", color: "#fff" },
+  dark: { bg: "#000", color: "#fff" },
 };
 
 export default async function KontoBestellungenPage() {
@@ -36,32 +44,110 @@ export default async function KontoBestellungenPage() {
 
   return (
     <>
-      <h2 style={{ fontSize: "1.4rem", fontWeight: 700, marginBottom: 16 }}>Alle Bestellungen ({orders.length})</h2>
+      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline", marginBottom: 28 }}>
+        <h2 style={{
+          fontSize: "1.4rem",
+          fontWeight: 300,
+          margin: 0,
+          fontFamily: "Georgia, serif",
+          fontStyle: "italic",
+          letterSpacing: "-0.01em",
+        }}>
+          Alle Bestellungen
+        </h2>
+        <span style={{
+          fontSize: 11,
+          color: "#999",
+          letterSpacing: "2px",
+          textTransform: "uppercase",
+          fontWeight: 600,
+        }}>
+          {orders.length} {orders.length === 1 ? "Bestellung" : "Bestellungen"}
+        </span>
+      </div>
 
       {orders.length === 0 ? (
-        <div style={{ background: "#f8fafc", padding: 40, textAlign: "center", border: "1px solid #e5e7eb" }}>
-          <p style={{ color: "#64748b", marginBottom: 16 }}>Noch keine Bestellungen.</p>
-          <Link href="/werbemittel" style={{ display: "inline-block", background: "#004537", color: "#fff", padding: "10px 22px", fontWeight: 600, textDecoration: "none", fontSize: 14 }}>
-            Zum Katalog →
+        <div style={{ padding: "60px 30px", textAlign: "center", border: "1px solid #e5e5e5" }}>
+          <p style={{ color: "#666", marginBottom: 20, fontSize: 14 }}>Noch keine Bestellungen.</p>
+          <Link href="/werbemittel" style={{
+            display: "inline-block",
+            background: "#000",
+            color: "#fff",
+            padding: "12px 28px",
+            fontWeight: 600,
+            textDecoration: "none",
+            fontSize: 11,
+            letterSpacing: "3px",
+            textTransform: "uppercase",
+          }}>
+            Zum Katalog
           </Link>
         </div>
       ) : (
-        <div style={{ background: "#fff", border: "1px solid #e5e7eb" }}>
-          {orders.map((o) => {
-            const status = STATUS_LABELS[o.status] || { label: o.status, color: "#475569", bg: "#f1f5f9" };
+        <div style={{ border: "1px solid #e5e5e5" }}>
+          {orders.map((o, idx) => {
+            const status = STATUS_LABELS[o.status] || { label: o.status, tone: "neutral" as const };
+            const tone = TONE_STYLE[status.tone];
             return (
-              <Link key={o.id} href={`/konto/bestellungen/${o.id}`} style={{ display: "grid", gridTemplateColumns: "1fr auto auto", gap: 14, padding: "14px 16px", borderBottom: "1px solid #f1f5f9", alignItems: "center", textDecoration: "none", color: "inherit" }}>
+              <Link
+                key={o.id}
+                href={`/konto/bestellungen/${o.id}`}
+                style={{
+                  display: "grid",
+                  gridTemplateColumns: "1fr auto auto",
+                  gap: 24,
+                  padding: "20px 22px",
+                  borderBottom: idx === orders.length - 1 ? "none" : "1px solid #e5e5e5",
+                  alignItems: "center",
+                  textDecoration: "none",
+                  color: "inherit",
+                  transition: "background 0.15s",
+                }}
+                className="order-row"
+              >
                 <div>
-                  <div style={{ fontWeight: 600, fontSize: 14, color: "#004537" }}>{o.orderNumber}</div>
-                  <div style={{ fontSize: 12, color: "#64748b", marginTop: 2 }}>{germanDate(o.createdAt)} · {o._count.items} Artikel · Zahlung: {o.paymentMethod}</div>
+                  <div style={{ fontWeight: 600, fontSize: 13, color: "#000", letterSpacing: "0.5px", marginBottom: 4 }}>
+                    {o.orderNumber}
+                  </div>
+                  <div style={{ fontSize: 12, color: "#666" }}>
+                    {germanDate(o.createdAt)} · {o._count.items} Artikel · {o.paymentMethod}
+                  </div>
                 </div>
-                <span style={{ padding: "4px 10px", background: status.bg, color: status.color, fontSize: 11, fontWeight: 600, borderRadius: 4 }}>{status.label}</span>
-                <div style={{ fontWeight: 700, fontSize: 14, textAlign: "right" }}>{euro(o.totalCents)} €</div>
+                <span
+                  style={{
+                    padding: "6px 12px",
+                    background: tone.bg,
+                    color: tone.color,
+                    border: tone.border || "none",
+                    fontSize: 10,
+                    fontWeight: 600,
+                    letterSpacing: "1.5px",
+                    textTransform: "uppercase",
+                    whiteSpace: "nowrap",
+                  }}
+                >
+                  {status.label}
+                </span>
+                <div style={{
+                  fontWeight: 600,
+                  fontSize: 15,
+                  textAlign: "right",
+                  minWidth: 90,
+                  fontFamily: "Georgia, serif",
+                }}>
+                  {euro(o.totalCents)} €
+                </div>
               </Link>
             );
           })}
         </div>
       )}
+
+      <style>{`
+        .order-row:hover {
+          background: #fafafa;
+        }
+      `}</style>
     </>
   );
 }

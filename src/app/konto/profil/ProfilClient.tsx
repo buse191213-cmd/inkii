@@ -33,7 +33,7 @@ export default function ProfilClient({ initial }: { initial: Initial }) {
         salutation, firstName, lastName, phone, firmname, ustId,
       });
       if (result.ok) {
-        setMsg({ type: "ok", text: "Profil erfolgreich gespeichert." });
+        setMsg({ type: "ok", text: "Profil gespeichert." });
         router.refresh();
         setTimeout(() => setMsg(null), 3000);
       } else {
@@ -44,55 +44,70 @@ export default function ProfilClient({ initial }: { initial: Initial }) {
 
   return (
     <>
-      <h2 style={{ fontSize: "1.4rem", fontWeight: 700, marginBottom: 16 }}>Profil bearbeiten</h2>
-      <p style={{ fontSize: 13, color: "#64748b", marginBottom: 20 }}>
-        Hier können Sie Ihre persönlichen Daten aktualisieren.
-        Die E-Mail-Adresse kann nicht geändert werden. Für Adressänderungen → "Adressen".
-      </p>
+      <div style={{ marginBottom: 28 }}>
+        <h2 style={titleStyle}>Profil bearbeiten</h2>
+        <p style={sub}>Persönliche Daten und Firmeninformationen.</p>
+      </div>
 
-      <form onSubmit={handleSubmit} noValidate style={{ background: "#fff", padding: 20, border: "1px solid #e5e7eb", display: "flex", flexDirection: "column", gap: 14 }}>
-        <div style={field}>
-          <label>E-Mail (nicht änderbar)</label>
-          <input value={initial.email} readOnly style={{ ...input, background: "#f1f5f9", color: "#64748b" }} />
-        </div>
+      <form onSubmit={handleSubmit} noValidate style={{ maxWidth: 540 }}>
+        {/* Email readonly */}
+        <Field label="E-Mail">
+          <input value={initial.email} readOnly style={{ ...input, color: "#999", cursor: "not-allowed" }} />
+          <small style={{ fontSize: 10, color: "#999", marginTop: 4, display: "block", letterSpacing: "1px" }}>NICHT ÄNDERBAR</small>
+        </Field>
 
         <div style={row}>
-          <div style={{ ...field, maxWidth: 120 }}>
-            <label>Anrede</label>
-            <select value={salutation} onChange={(e) => setSalutation(e.target.value)} style={input}>
-              <option value="Herr">Herr</option>
-              <option value="Frau">Frau</option>
-              <option value="Divers">Divers</option>
-            </select>
+          <div style={{ minWidth: 100, maxWidth: 130 }}>
+            <Field label="Anrede">
+              <select value={salutation} onChange={(e) => setSalutation(e.target.value)} style={input}>
+                <option value="Herr">Herr</option>
+                <option value="Frau">Frau</option>
+                <option value="Divers">Divers</option>
+              </select>
+            </Field>
           </div>
-          <div style={field}>
-            <label>Vorname *</label>
-            <input value={firstName} onChange={(e) => setFirstName(e.target.value)} style={input} required />
+          <div style={{ flex: 1 }}>
+            <Field label="Vorname *">
+              <input value={firstName} onChange={(e) => setFirstName(e.target.value)} style={input} required />
+            </Field>
           </div>
-          <div style={field}>
-            <label>Nachname *</label>
-            <input value={lastName} onChange={(e) => setLastName(e.target.value)} style={input} required />
+          <div style={{ flex: 1 }}>
+            <Field label="Nachname *">
+              <input value={lastName} onChange={(e) => setLastName(e.target.value)} style={input} required />
+            </Field>
           </div>
         </div>
 
-        <div style={field}>
-          <label>Telefon</label>
+        <Field label="Telefon">
           <input type="tel" value={phone} onChange={(e) => setPhone(e.target.value)} style={input} placeholder="+49 160 1234567" />
-        </div>
+        </Field>
 
         <div style={row}>
-          <div style={field}>
-            <label>Firma (optional)</label>
-            <input value={firmname} onChange={(e) => setFirmname(e.target.value)} style={input} />
+          <div style={{ flex: 1 }}>
+            <Field label="Firma">
+              <input value={firmname} onChange={(e) => setFirmname(e.target.value)} style={input} />
+            </Field>
           </div>
-          <div style={field}>
-            <label>USt-IdNr. (optional)</label>
-            <input value={ustId} onChange={(e) => setUstId(e.target.value)} style={input} placeholder="DE123456789" />
+          <div style={{ flex: 1 }}>
+            <Field label="USt-IdNr.">
+              <input value={ustId} onChange={(e) => setUstId(e.target.value)} style={input} placeholder="DE123456789" />
+            </Field>
           </div>
         </div>
 
         {msg && (
-          <div style={{ padding: 10, background: msg.type === "ok" ? "#d1fae5" : "#fee2e2", color: msg.type === "ok" ? "#065f46" : "#991b1b", fontSize: 13 }}>
+          <div style={{
+            padding: 12,
+            marginTop: 8,
+            marginBottom: 16,
+            background: msg.type === "ok" ? "#000" : "#fff",
+            color: msg.type === "ok" ? "#fff" : "#000",
+            border: msg.type === "err" ? "1px solid #000" : "none",
+            fontSize: 12,
+            letterSpacing: "1px",
+            textTransform: "uppercase",
+            fontWeight: 600,
+          }}>
             {msg.text}
           </div>
         )}
@@ -100,29 +115,65 @@ export default function ProfilClient({ initial }: { initial: Initial }) {
         <button
           type="submit"
           disabled={isPending}
-          style={{
-            background: isPending ? "#94a3b8" : "#004537",
-            color: "#fff",
-            padding: "12px 20px",
-            fontWeight: 600,
-            border: "none",
-            cursor: isPending ? "default" : "pointer",
-            alignSelf: "flex-start",
-          }}
+          style={submitBtn(isPending)}
         >
-          {isPending ? "Wird gespeichert…" : "Speichern"}
+          {isPending ? "Speichern…" : "Speichern"}
         </button>
       </form>
     </>
   );
 }
 
-const field: React.CSSProperties = { display: "flex", flexDirection: "column", gap: 4, flex: 1, minWidth: 180 };
-const row: React.CSSProperties = { display: "flex", gap: 12, flexWrap: "wrap" };
-const input: React.CSSProperties = {
-  padding: "10px 12px",
-  border: "1px solid #d1d5db",
-  fontSize: 14,
-  background: "#fff",
-  fontFamily: "inherit",
+function Field({ label, children }: { label: string; children: React.ReactNode }) {
+  return (
+    <div style={{ marginBottom: 22 }}>
+      <label style={lbl}>{label}</label>
+      {children}
+    </div>
+  );
+}
+
+const titleStyle: React.CSSProperties = {
+  fontSize: "1.4rem",
+  fontWeight: 300,
+  margin: 0,
+  marginBottom: 6,
+  fontFamily: "Georgia, serif",
+  fontStyle: "italic",
+  letterSpacing: "-0.01em",
 };
+const sub: React.CSSProperties = { fontSize: 13, color: "#666", margin: 0 };
+const lbl: React.CSSProperties = {
+  display: "block",
+  fontSize: 10,
+  fontWeight: 600,
+  color: "#000",
+  marginBottom: 6,
+  letterSpacing: "2px",
+  textTransform: "uppercase",
+};
+const input: React.CSSProperties = {
+  width: "100%",
+  padding: "10px 0 8px",
+  border: "none",
+  borderBottom: "1px solid #d0d0d0",
+  fontSize: 14,
+  background: "transparent",
+  fontFamily: "inherit",
+  borderRadius: 0,
+  outline: "none",
+  color: "#000",
+};
+const row: React.CSSProperties = { display: "flex", gap: 16, flexWrap: "wrap" };
+const submitBtn = (pending: boolean): React.CSSProperties => ({
+  background: pending ? "#666" : "#000",
+  color: "#fff",
+  padding: "13px 32px",
+  fontWeight: 500,
+  border: "none",
+  cursor: pending ? "default" : "pointer",
+  fontSize: 11,
+  letterSpacing: "3px",
+  textTransform: "uppercase",
+  transition: "all 0.15s",
+});

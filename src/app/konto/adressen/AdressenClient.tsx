@@ -52,7 +52,7 @@ export default function AdressenClient({ initial }: { initial: Initial }) {
         shippingDiffers, shippingStreet, shippingZip, shippingCity, shippingCountry,
       });
       if (result.ok) {
-        setMsg({ type: "ok", text: "Adressen gespeichert." });
+        setMsg({ type: "ok", text: "Gespeichert." });
         router.refresh();
         setTimeout(() => setMsg(null), 3000);
       } else {
@@ -63,62 +63,81 @@ export default function AdressenClient({ initial }: { initial: Initial }) {
 
   return (
     <>
-      <h2 style={{ fontSize: "1.4rem", fontWeight: 700, marginBottom: 16 }}>Adressen</h2>
-      <p style={{ fontSize: 13, color: "#64748b", marginBottom: 20 }}>
-        Verwalten Sie Ihre Rechnungs- und Lieferadresse.
-      </p>
+      <div style={{ marginBottom: 28 }}>
+        <h2 style={titleStyle}>Adressen</h2>
+        <p style={sub}>Rechnungs- und Lieferadresse verwalten.</p>
+      </div>
 
-      <form onSubmit={handleSubmit} noValidate>
-        <div style={{ background: "#fff", padding: 20, border: "1px solid #e5e7eb", marginBottom: 16 }}>
-          <h3 style={{ fontSize: 15, fontWeight: 700, marginBottom: 14 }}>Rechnungsadresse</h3>
-          <div style={field}>
-            <label>Straße & Hausnummer *</label>
-            <input value={billingStreet} onChange={(e) => setBillingStreet(e.target.value)} style={input} required />
-          </div>
-          <div style={{ ...row, marginTop: 12 }}>
-            <div style={{ ...field, maxWidth: 140 }}>
-              <label>PLZ *</label>
+      <form onSubmit={handleSubmit} noValidate style={{ maxWidth: 540 }}>
+
+        <h3 style={sectionTitle}>Rechnungsadresse</h3>
+        <Field label="Straße & Hausnummer *">
+          <input value={billingStreet} onChange={(e) => setBillingStreet(e.target.value)} style={input} required />
+        </Field>
+        <div style={row}>
+          <div style={{ minWidth: 90, maxWidth: 120 }}>
+            <Field label="PLZ *">
               <input value={billingZip} onChange={(e) => setBillingZip(e.target.value)} style={input} required />
-            </div>
-            <div style={field}>
-              <label>Stadt *</label>
+            </Field>
+          </div>
+          <div style={{ flex: 1 }}>
+            <Field label="Stadt *">
               <input value={billingCity} onChange={(e) => setBillingCity(e.target.value)} style={input} required />
-            </div>
-            <div style={{ ...field, maxWidth: 180 }}>
-              <label>Land</label>
+            </Field>
+          </div>
+          <div style={{ minWidth: 150 }}>
+            <Field label="Land">
               <select value={billingCountry} onChange={(e) => setBillingCountry(e.target.value)} style={input}>
                 {COUNTRIES.map((c) => <option key={c.code} value={c.code}>{c.label}</option>)}
               </select>
-            </div>
+            </Field>
           </div>
         </div>
 
-        <div style={{ background: "#fff", padding: 20, border: "1px solid #e5e7eb", marginBottom: 16 }}>
-          <label style={{ display: "flex", gap: 8, fontSize: 14, fontWeight: 600, cursor: "pointer", marginBottom: 14 }}>
-            <input type="checkbox" checked={shippingDiffers} onChange={(e) => setShippingDiffers(e.target.checked)} />
+        <div style={{ paddingTop: 24, marginTop: 16, borderTop: "1px solid #e5e5e5" }}>
+          <label style={{
+            display: "flex",
+            gap: 10,
+            alignItems: "center",
+            fontSize: 12,
+            fontWeight: 600,
+            cursor: "pointer",
+            letterSpacing: "1.5px",
+            textTransform: "uppercase",
+            marginBottom: shippingDiffers ? 24 : 0,
+          }}>
+            <input
+              type="checkbox"
+              checked={shippingDiffers}
+              onChange={(e) => setShippingDiffers(e.target.checked)}
+              style={{ accentColor: "#000" }}
+            />
             Abweichende Lieferadresse
           </label>
 
           {shippingDiffers && (
             <>
-              <div style={field}>
-                <label>Straße & Hausnummer</label>
+              <h3 style={sectionTitle}>Lieferadresse</h3>
+              <Field label="Straße & Hausnummer">
                 <input value={shippingStreet} onChange={(e) => setShippingStreet(e.target.value)} style={input} />
-              </div>
-              <div style={{ ...row, marginTop: 12 }}>
-                <div style={{ ...field, maxWidth: 140 }}>
-                  <label>PLZ</label>
-                  <input value={shippingZip} onChange={(e) => setShippingZip(e.target.value)} style={input} />
+              </Field>
+              <div style={row}>
+                <div style={{ minWidth: 90, maxWidth: 120 }}>
+                  <Field label="PLZ">
+                    <input value={shippingZip} onChange={(e) => setShippingZip(e.target.value)} style={input} />
+                  </Field>
                 </div>
-                <div style={field}>
-                  <label>Stadt</label>
-                  <input value={shippingCity} onChange={(e) => setShippingCity(e.target.value)} style={input} />
+                <div style={{ flex: 1 }}>
+                  <Field label="Stadt">
+                    <input value={shippingCity} onChange={(e) => setShippingCity(e.target.value)} style={input} />
+                  </Field>
                 </div>
-                <div style={{ ...field, maxWidth: 180 }}>
-                  <label>Land</label>
-                  <select value={shippingCountry} onChange={(e) => setShippingCountry(e.target.value)} style={input}>
-                    {COUNTRIES.map((c) => <option key={c.code} value={c.code}>{c.label}</option>)}
-                  </select>
+                <div style={{ minWidth: 150 }}>
+                  <Field label="Land">
+                    <select value={shippingCountry} onChange={(e) => setShippingCountry(e.target.value)} style={input}>
+                      {COUNTRIES.map((c) => <option key={c.code} value={c.code}>{c.label}</option>)}
+                    </select>
+                  </Field>
                 </div>
               </div>
             </>
@@ -126,7 +145,18 @@ export default function AdressenClient({ initial }: { initial: Initial }) {
         </div>
 
         {msg && (
-          <div style={{ padding: 10, background: msg.type === "ok" ? "#d1fae5" : "#fee2e2", color: msg.type === "ok" ? "#065f46" : "#991b1b", fontSize: 13, marginBottom: 12 }}>
+          <div style={{
+            padding: 12,
+            marginTop: 24,
+            marginBottom: 16,
+            background: msg.type === "ok" ? "#000" : "#fff",
+            color: msg.type === "ok" ? "#fff" : "#000",
+            border: msg.type === "err" ? "1px solid #000" : "none",
+            fontSize: 12,
+            letterSpacing: "1px",
+            textTransform: "uppercase",
+            fontWeight: 600,
+          }}>
             {msg.text}
           </div>
         )}
@@ -134,28 +164,73 @@ export default function AdressenClient({ initial }: { initial: Initial }) {
         <button
           type="submit"
           disabled={isPending}
-          style={{
-            background: isPending ? "#94a3b8" : "#004537",
-            color: "#fff",
-            padding: "12px 24px",
-            fontWeight: 600,
-            border: "none",
-            cursor: isPending ? "default" : "pointer",
-          }}
+          style={submitBtn(isPending)}
         >
-          {isPending ? "Wird gespeichert…" : "Adressen speichern"}
+          {isPending ? "Speichern…" : "Adressen speichern"}
         </button>
       </form>
     </>
   );
 }
 
-const field: React.CSSProperties = { display: "flex", flexDirection: "column", gap: 4, flex: 1, minWidth: 180 };
-const row: React.CSSProperties = { display: "flex", gap: 12, flexWrap: "wrap" };
-const input: React.CSSProperties = {
-  padding: "10px 12px",
-  border: "1px solid #d1d5db",
-  fontSize: 14,
-  background: "#fff",
-  fontFamily: "inherit",
+function Field({ label, children }: { label: string; children: React.ReactNode }) {
+  return (
+    <div style={{ marginBottom: 22 }}>
+      <label style={lbl}>{label}</label>
+      {children}
+    </div>
+  );
+}
+
+const titleStyle: React.CSSProperties = {
+  fontSize: "1.4rem",
+  fontWeight: 300,
+  margin: 0,
+  marginBottom: 6,
+  fontFamily: "Georgia, serif",
+  fontStyle: "italic",
+  letterSpacing: "-0.01em",
 };
+const sub: React.CSSProperties = { fontSize: 13, color: "#666", margin: 0 };
+const sectionTitle: React.CSSProperties = {
+  fontSize: 11,
+  fontWeight: 700,
+  color: "#000",
+  letterSpacing: "3px",
+  textTransform: "uppercase",
+  marginTop: 8,
+  marginBottom: 16,
+};
+const lbl: React.CSSProperties = {
+  display: "block",
+  fontSize: 10,
+  fontWeight: 600,
+  color: "#000",
+  marginBottom: 6,
+  letterSpacing: "2px",
+  textTransform: "uppercase",
+};
+const input: React.CSSProperties = {
+  width: "100%",
+  padding: "10px 0 8px",
+  border: "none",
+  borderBottom: "1px solid #d0d0d0",
+  fontSize: 14,
+  background: "transparent",
+  fontFamily: "inherit",
+  borderRadius: 0,
+  outline: "none",
+  color: "#000",
+};
+const row: React.CSSProperties = { display: "flex", gap: 16, flexWrap: "wrap" };
+const submitBtn = (pending: boolean): React.CSSProperties => ({
+  background: pending ? "#666" : "#000",
+  color: "#fff",
+  padding: "13px 32px",
+  fontWeight: 500,
+  border: "none",
+  cursor: pending ? "default" : "pointer",
+  fontSize: 11,
+  letterSpacing: "3px",
+  textTransform: "uppercase",
+});

@@ -14,15 +14,35 @@ export default async function KontoLayout({
 
   return (
     <SiteShell>
-      <section style={{ maxWidth: 1200, margin: "0 auto", padding: "40px 28px" }}>
-        <div style={{ marginBottom: 24 }}>
-          <h1 style={{ fontSize: "1.75rem", fontWeight: 700, margin: 0 }}>Mein Konto</h1>
-          <p style={{ color: "#64748b", marginTop: 4, fontSize: 14 }}>
-            Willkommen, {customer.firstName} {customer.lastName}
+      <section style={{ maxWidth: 1200, margin: "0 auto", padding: "50px 32px 80px" }}>
+
+        {/* Editorial Header */}
+        <div style={{ marginBottom: 50, paddingBottom: 28, borderBottom: "1px solid #e5e5e5" }}>
+          <p style={{
+            fontSize: 11,
+            color: "#999",
+            letterSpacing: "3px",
+            textTransform: "uppercase",
+            fontWeight: 600,
+            margin: 0,
+            marginBottom: 12,
+          }}>
+            Mein Konto
           </p>
+          <h1 style={{
+            fontSize: "2.4rem",
+            fontWeight: 300,
+            margin: 0,
+            color: "#000",
+            fontFamily: "Georgia, serif",
+            fontStyle: "italic",
+            letterSpacing: "-0.02em",
+          }}>
+            Hallo, {customer.firstName}.
+          </h1>
         </div>
 
-        <div style={{ display: "grid", gridTemplateColumns: "240px 1fr", gap: 28 }} className="konto-grid">
+        <div style={{ display: "grid", gridTemplateColumns: "220px 1fr", gap: 56 }} className="konto-grid">
           <KontoSidebar
             customerName={`${customer.firstName} ${customer.lastName}`}
             customerEmail={customer.email}
@@ -34,6 +54,7 @@ export default async function KontoLayout({
           @media (max-width: 800px) {
             .konto-grid {
               grid-template-columns: 1fr !important;
+              gap: 32px !important;
             }
           }
         `}</style>
