@@ -3,7 +3,7 @@
 import { useEffect } from "react";
 import Link from "next/link";
 import { useCart } from "./CartProvider";
-import { colorLabel } from "@/lib/catalog-options";
+import { colorLabel, colorHex } from "@/lib/catalog-options";
 
 function euro(c: number): string {
   return (c / 100).toLocaleString("de-DE", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
@@ -134,16 +134,19 @@ export default function CartDrawer({ open, onClose }: Props) {
           <>
             {/* Items scrollable */}
             <div style={{ flex: 1, overflowY: "auto", padding: "8px 20px" }}>
-              {items.map((item) => (
+              {items.map((item) => {
+                const lineUnitCents = item.unitPriceCents + item.dtfPriceCents;
+                const lineTotalCents = lineUnitCents * item.quantity;
+                const colorHexCode = item.color ? colorHex(item.color) : "";
+                return (
                 <div
                   key={item.id}
                   style={{
                     display: "grid",
-                    gridTemplateColumns: "64px 1fr auto",
+                    gridTemplateColumns: "64px 1fr",
                     gap: 12,
                     padding: "14px 0",
                     borderBottom: "1px solid #f1f5f9",
-                    alignItems: "center",
                   }}
                 >
                   <div
@@ -165,88 +168,183 @@ export default function CartDrawer({ open, onClose }: Props) {
                   </div>
 
                   <div style={{ minWidth: 0 }}>
-                    <div
-                      style={{
-                        fontWeight: 600,
-                        fontSize: 13,
-                        color: "#1f2937",
-                        overflow: "hidden",
-                        textOverflow: "ellipsis",
-                        display: "-webkit-box",
-                        WebkitLineClamp: 2,
-                        WebkitBoxOrient: "vertical",
-                      }}
-                    >
-                      {item.productName}
-                    </div>
-                    <div style={{ fontSize: 11, color: "#64748b", marginTop: 2 }}>
-                      {item.color && colorLabel(item.color)}
-                      {item.size && ` · ${item.size}`}
-                    </div>
-                    {item.hasDtf && (
-                      <div style={{ fontSize: 10, color: "#0d9488", marginTop: 2 }}>
-                        + DTF {item.dtfSize}
+                    {/* Ürün adı + sil butonu */}
+                    <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", gap: 8 }}>
+                      <div
+                        style={{
+                          fontWeight: 600,
+                          fontSize: 13,
+                          color: "#1f2937",
+                          flex: 1,
+                          minWidth: 0,
+                          overflow: "hidden",
+                          textOverflow: "ellipsis",
+                          display: "-webkit-box",
+                          WebkitLineClamp: 2,
+                          WebkitBoxOrient: "vertical",
+                        }}
+                      >
+                        {item.productName}
                       </div>
-                    )}
-                    <div style={{ display: "flex", alignItems: "center", gap: 6, marginTop: 6 }}>
-                      <button
-                        type="button"
-                        onClick={() => updateQuantity(item.id, item.quantity - 1)}
-                        style={{
-                          width: 22,
-                          height: 22,
-                          border: "1px solid #d1d5db",
-                          background: "#fff",
-                          fontSize: 12,
-                          cursor: "pointer",
-                          padding: 0,
-                        }}
-                      >
-                        −
-                      </button>
-                      <span style={{ fontSize: 12, minWidth: 22, textAlign: "center" }}>{item.quantity}</span>
-                      <button
-                        type="button"
-                        onClick={() => updateQuantity(item.id, item.quantity + 1)}
-                        style={{
-                          width: 22,
-                          height: 22,
-                          border: "1px solid #d1d5db",
-                          background: "#fff",
-                          fontSize: 12,
-                          cursor: "pointer",
-                          padding: 0,
-                        }}
-                      >
-                        +
-                      </button>
                       <button
                         type="button"
                         onClick={() => removeItem(item.id)}
+                        aria-label="Entfernen"
                         style={{
-                          marginLeft: 4,
                           background: "transparent",
                           border: "none",
-                          color: "#dc2626",
+                          color: "#94a3b8",
                           cursor: "pointer",
-                          fontSize: 11,
-                          textDecoration: "underline",
                           padding: 0,
+                          flexShrink: 0,
                         }}
                       >
-                        Entfernen
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                          <path d="M18 6L6 18M6 6l12 12" strokeLinecap="round" />
+                        </svg>
                       </button>
                     </div>
-                  </div>
 
-                  <div style={{ textAlign: "right", fontSize: 12, fontWeight: 600 }}>
-                    {item.unitPriceCents > 0 || item.dtfPriceCents > 0
-                      ? `${euro((item.unitPriceCents + item.dtfPriceCents) * item.quantity)} €`
-                      : <span style={{ color: "#64748b", fontWeight: 400, fontSize: 11 }}>auf Anfrage</span>
-                    }
+                    {/* Varyant detay badges */}
+                    <div style={{ display: "flex", flexWrap: "wrap", gap: 6, marginTop: 6, alignItems: "center" }}>
+                      {item.color && (
+                        <span
+                          style={{
+                            display: "inline-flex",
+                            alignItems: "center",
+                            gap: 5,
+                            fontSize: 11,
+                            color: "#475569",
+                            background: "#f1f5f9",
+                            padding: "3px 8px",
+                            borderRadius: 10,
+                          }}
+                        >
+                          <span
+                            style={{
+                              display: "inline-block",
+                              width: 12,
+                              height: 12,
+                              borderRadius: "50%",
+                              background: colorHexCode || "#e5e7eb",
+                              border: "1px solid #cbd5e1",
+                              flexShrink: 0,
+                            }}
+                          />
+                          {colorLabel(item.color)}
+                        </span>
+                      )}
+                      {item.size && (
+                        <span
+                          style={{
+                            fontSize: 11,
+                            fontWeight: 600,
+                            color: "#475569",
+                            background: "#f1f5f9",
+                            padding: "3px 8px",
+                            borderRadius: 10,
+                          }}
+                        >
+                          Größe: {item.size}
+                        </span>
+                      )}
+                      {item.hasDtf && (
+                        <span
+                          style={{
+                            fontSize: 11,
+                            color: "#0d9488",
+                            background: "#ccfbf1",
+                            padding: "3px 8px",
+                            borderRadius: 10,
+                          }}
+                        >
+                          + DTF {item.dtfSize}
+                        </span>
+                      )}
+                    </div>
+
+                    {/* Adet + fiyat satırı */}
+                    <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginTop: 10, gap: 10 }}>
+                      {/* Adet kontrol */}
+                      <div style={{ display: "flex", alignItems: "center", gap: 0, border: "1px solid #d1d5db" }}>
+                        <button
+                          type="button"
+                          onClick={() => updateQuantity(item.id, item.quantity - 1)}
+                          style={{
+                            width: 26,
+                            height: 26,
+                            border: "none",
+                            background: "#fff",
+                            fontSize: 14,
+                            cursor: "pointer",
+                            padding: 0,
+                            color: "#475569",
+                          }}
+                          aria-label="Weniger"
+                        >
+                          −
+                        </button>
+                        <input
+                          type="number"
+                          min={1}
+                          value={item.quantity}
+                          onChange={(e) => {
+                            const v = parseInt(e.target.value, 10);
+                            if (!isNaN(v) && v > 0) updateQuantity(item.id, v);
+                          }}
+                          style={{
+                            width: 40,
+                            height: 26,
+                            textAlign: "center",
+                            border: "none",
+                            borderLeft: "1px solid #d1d5db",
+                            borderRight: "1px solid #d1d5db",
+                            fontSize: 12,
+                            padding: 0,
+                            outline: "none",
+                          }}
+                        />
+                        <button
+                          type="button"
+                          onClick={() => updateQuantity(item.id, item.quantity + 1)}
+                          style={{
+                            width: 26,
+                            height: 26,
+                            border: "none",
+                            background: "#fff",
+                            fontSize: 14,
+                            cursor: "pointer",
+                            padding: 0,
+                            color: "#475569",
+                          }}
+                          aria-label="Mehr"
+                        >
+                          +
+                        </button>
+                      </div>
+
+                      {/* Fiyat detayı */}
+                      <div style={{ textAlign: "right" }}>
+                        {lineUnitCents > 0 ? (
+                          <>
+                            <div style={{ fontSize: 14, fontWeight: 700, color: "#1f2937" }}>
+                              {euro(lineTotalCents)} €
+                            </div>
+                            <div style={{ fontSize: 10, color: "#94a3b8", marginTop: 1 }}>
+                              {euro(lineUnitCents)} € / Stk
+                            </div>
+                          </>
+                        ) : (
+                          <div style={{ fontSize: 11, color: "#64748b", fontStyle: "italic" }}>
+                            Preis auf Anfrage
+                          </div>
+                        )}
+                      </div>
+                    </div>
                   </div>
                 </div>
-              ))}
+                );
+              })}
             </div>
 
             {/* Footer */}
