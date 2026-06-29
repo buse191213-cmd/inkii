@@ -94,12 +94,12 @@ function SiteHeaderInner({
             <button
               type="button"
               onClick={() => setCartOpen(true)}
-              className={`u-heart${(count + cartCount) > 0 ? " has-items" : ""}`}
+              className={`u-heart${cartCount > 0 ? " has-items" : ""}`}
               title="Warenkorb"
               aria-label="Warenkorb öffnen"
               style={{ background: "transparent", border: "none", cursor: "pointer", padding: 0, font: "inherit", color: "inherit" }}
             >
-              <span aria-hidden>♥</span>{(count + cartCount) > 0 && <span className="u-heart-count">{count + cartCount}</span>}
+              <span aria-hidden>♥</span>{cartCount > 0 && <span className="u-heart-count">{cartCount}</span>}
             </button>
             <LangSwitcher current={locale} />
           </div>
@@ -190,7 +190,7 @@ function SiteHeaderInner({
           }}
         >
           {t.merkzettel}
-          {(count + cartCount) > 0 ? ` (${count + cartCount})` : ""}
+          {cartCount > 0 ? ` (${cartCount})` : ""}
         </button>
         <div className="drawer-lang">
           <span>{t.language}</span>
