@@ -3,6 +3,74 @@
 import { db } from "@/lib/db";
 import { hashPassword, verifyPassword, setCustomerSession, clearCustomerSession } from "@/lib/customer-auth";
 import { redirect } from "next/navigation";
+import nodemailer from "nodemailer";
+
+function isSmtpConfigured(): boolean {
+  return Boolean(process.env.SMTP_HOST && process.env.SMTP_USER && process.env.SMTP_PASS);
+}
+
+function makeTransporter() {
+  return nodemailer.createTransport({
+    host: process.env.SMTP_HOST!,
+    port: Number(process.env.SMTP_PORT || 587),
+    secure: process.env.SMTP_SECURE === "true",
+    auth: { user: process.env.SMTP_USER!, pass: process.env.SMTP_PASS! },
+  });
+}
+
+async function sendVerificationEmail(email: string, name: string, code: string): Promise<void> {
+  if (!isSmtpConfigured()) {
+    console.warn("[mail] SMTP nicht konfiguriert — Verification Code:", code);
+    return;
+  }
+  const transporter = makeTransporter();
+  const from = process.env.SMTP_FROM || `"INKII Works" <${process.env.SMTP_USER}>`;
+  const html = `
+    <div style="font-family: Arial, sans-serif; max-width: 500px; margin: 0 auto;">
+      <div style="background: linear-gradient(135deg, #004537 0%, #006b56 100%); padding: 30px; text-align: center; color: #fff;">
+        <h1 style="margin: 0; font-size: 22px;">INKII Works</h1>
+        <p style="margin: 8px 0 0; opacity: 0.9; font-size: 13px;">E-Mail Bestätigung</p>
+      </div>
+      <div style="padding: 32px 28px; background: #fff; border: 1px solid #e5e7eb; border-top: none;">
+        <p style="font-size: 15px; color: #1f2937; margin-top: 0;">Hallo ${name},</p>
+        <p style="font-size: 14px; color: #475569; line-height: 1.6;">
+          willkommen bei INKII Works! Bitte bestätigen Sie Ihre E-Mail-Adresse mit dem folgenden Code:
+        </p>
+
+        <div style="margin: 28px 0; text-align: center;">
+          <div style="display: inline-block; background: #f0fdf4; border: 2px solid #004537; padding: 18px 36px; border-radius: 6px;">
+            <div style="font-size: 36px; font-weight: 700; color: #004537; letter-spacing: 8px; font-family: 'Courier New', monospace;">
+              ${code}
+            </div>
+          </div>
+        </div>
+
+        <p style="font-size: 13px; color: #64748b; line-height: 1.5;">
+          Der Code ist 30 Minuten gültig. Falls Sie keine Registrierung vorgenommen haben,
+          können Sie diese E-Mail ignorieren.
+        </p>
+
+        <hr style="border: none; border-top: 1px solid #e5e7eb; margin: 24px 0;">
+
+        <p style="font-size: 11px; color: #94a3b8; text-align: center; line-height: 1.5;">
+          INKII WORKS · Sener Kirli<br>
+          Westuferstr. 25 · 45356 Essen<br>
+          USt-ID: DE353055316
+        </p>
+      </div>
+    </div>
+  `;
+  await transporter.sendMail({
+    from,
+    to: email,
+    subject: "INKII Works — Ihr Bestätigungscode",
+    html,
+  });
+}
+
+function generateCode(): string {
+  return String(Math.floor(100000 + Math.random() * 900000));
+}
 
 function isValidEmail(s: string): boolean {
   return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(s.trim());
@@ -27,6 +95,9 @@ export async function loginCustomer(
   if (!verifyPassword(password, customer.password)) {
     return { ok: false, error: "E-Mail oder Passwort ungültig." };
   }
+  if (!customer.emailVerified) {
+    return { ok: false, error: "Bitte bestätigen Sie zuerst Ihre E-Mail-Adresse. Prüfen Sie Ihr Postfach." };
+  }
   await setCustomerSession(customer.id);
   return { ok: true };
 }
@@ -44,7 +115,7 @@ export async function registerCustomer(input: {
   billingZip: string;
   billingCity: string;
   billingCountry: string;
-}): Promise<AuthResult> {
+}): Promise<{ ok: true; email: string } | { ok: false; error: string }> {
   const email = input.email.trim().toLowerCase();
   if (!isValidEmail(email)) return { ok: false, error: "Bitte gültige E-Mail eingeben." };
   if (input.password.length < 6) return { ok: false, error: "Passwort muss mindestens 6 Zeichen lang sein." };
@@ -52,15 +123,17 @@ export async function registerCustomer(input: {
     return { ok: false, error: "Vor- und Nachname sind Pflicht." };
   }
 
-  // Email zaten kayıtlı mı?
   const existing = await db.customer.findUnique({ where: { email } });
-  if (existing && existing.password) {
+  if (existing && existing.password && existing.emailVerified) {
     return { ok: false, error: "Diese E-Mail ist bereits registriert. Bitte einloggen." };
   }
 
-  // Gast olarak varsa → şifre ekle, hesap'a çevir
+  const code = generateCode();
+  const expiresAt = new Date(Date.now() + 30 * 60 * 1000); // 30 Minuten
+
   if (existing) {
-    const updated = await db.customer.update({
+    // Update existing (Gast oder unverified)
+    await db.customer.update({
       where: { id: existing.id },
       data: {
         password: hashPassword(input.password),
@@ -75,31 +148,89 @@ export async function registerCustomer(input: {
         billingCity: input.billingCity,
         billingCountry: input.billingCountry,
         isGuest: false,
+        emailVerified: false,
+        verificationCode: code,
+        verificationCodeExpiresAt: expiresAt,
       },
     });
-    await setCustomerSession(updated.id);
-    return { ok: true };
+  } else {
+    await db.customer.create({
+      data: {
+        email,
+        password: hashPassword(input.password),
+        salutation: input.salutation,
+        firstName: input.firstName,
+        lastName: input.lastName,
+        phone: input.phone,
+        firmname: input.firmname,
+        ustId: input.ustId,
+        billingStreet: input.billingStreet,
+        billingZip: input.billingZip,
+        billingCity: input.billingCity,
+        billingCountry: input.billingCountry,
+        isGuest: false,
+        emailVerified: false,
+        verificationCode: code,
+        verificationCodeExpiresAt: expiresAt,
+      },
+    });
   }
 
-  // Yeni müşteri oluştur
-  const customer = await db.customer.create({
+  // Send code
+  try {
+    await sendVerificationEmail(email, `${input.firstName} ${input.lastName}`, code);
+  } catch (e) {
+    console.error("Verification mail fehlgeschlagen:", e);
+    // OK auch wenn mail fehlschlägt — kullanıcı tekrar isteyebilir
+  }
+
+  return { ok: true, email };
+}
+
+export async function verifyEmailCode(
+  email: string,
+  code: string
+): Promise<AuthResult> {
+  const customer = await db.customer.findUnique({ where: { email: email.trim().toLowerCase() } });
+  if (!customer) return { ok: false, error: "Konto nicht gefunden." };
+  if (customer.emailVerified) {
+    await setCustomerSession(customer.id);
+    return { ok: true };
+  }
+  if (!customer.verificationCode || customer.verificationCode !== code.trim()) {
+    return { ok: false, error: "Code ist falsch." };
+  }
+  if (!customer.verificationCodeExpiresAt || customer.verificationCodeExpiresAt < new Date()) {
+    return { ok: false, error: "Code ist abgelaufen. Bitte neuen Code anfordern." };
+  }
+  await db.customer.update({
+    where: { id: customer.id },
     data: {
-      email,
-      password: hashPassword(input.password),
-      salutation: input.salutation,
-      firstName: input.firstName,
-      lastName: input.lastName,
-      phone: input.phone,
-      firmname: input.firmname,
-      ustId: input.ustId,
-      billingStreet: input.billingStreet,
-      billingZip: input.billingZip,
-      billingCity: input.billingCity,
-      billingCountry: input.billingCountry,
-      isGuest: false,
+      emailVerified: true,
+      verificationCode: "",
+      verificationCodeExpiresAt: null,
     },
   });
   await setCustomerSession(customer.id);
+  return { ok: true };
+}
+
+export async function resendVerificationCode(email: string): Promise<AuthResult> {
+  const customer = await db.customer.findUnique({ where: { email: email.trim().toLowerCase() } });
+  if (!customer) return { ok: false, error: "Konto nicht gefunden." };
+  if (customer.emailVerified) return { ok: false, error: "E-Mail ist bereits bestätigt." };
+
+  const code = generateCode();
+  const expiresAt = new Date(Date.now() + 30 * 60 * 1000);
+  await db.customer.update({
+    where: { id: customer.id },
+    data: { verificationCode: code, verificationCodeExpiresAt: expiresAt },
+  });
+  try {
+    await sendVerificationEmail(customer.email, `${customer.firstName} ${customer.lastName}`, code);
+  } catch (e) {
+    return { ok: false, error: "Code konnte nicht gesendet werden." };
+  }
   return { ok: true };
 }
 

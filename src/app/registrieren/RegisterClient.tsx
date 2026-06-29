@@ -49,7 +49,7 @@ export default function RegisterClient() {
         firmname, ustId, billingStreet, billingZip, billingCity, billingCountry,
       });
       if (result.ok) {
-        router.push("/konto");
+        router.push(`/verifizieren?email=${encodeURIComponent(email)}`);
         router.refresh();
       } else {
         setError(result.error);
