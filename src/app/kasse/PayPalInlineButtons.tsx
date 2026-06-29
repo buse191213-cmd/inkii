@@ -31,9 +31,9 @@ export default function PayPalInlineButtons({
           currency: "EUR",
           intent: "capture",
           locale: "de_DE",
-          // Card butonu görünür hale gelir — PayPal hesabı zorunlu değil
+          // Sadece PayPal sarı + Kart siyah görünür
           "enable-funding": "card",
-          "disable-funding": "credit,paylater,venmo,sofort,giropay",
+          "disable-funding": "credit,paylater,venmo,sofort,giropay,bancontact,eps,ideal,mybank,p24,sepa,trustly,wechatpay,blik,mercadopago",
           components: "buttons",
         }}
       >
