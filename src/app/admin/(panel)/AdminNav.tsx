@@ -13,15 +13,26 @@ const NAV = [
     icon: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="8" height="8"/><rect x="13" y="3" width="8" height="5"/><rect x="13" y="10" width="8" height="11"/><rect x="3" y="13" width="8" height="8"/></svg>',
   },
   {
-    href: "/admin/products",
-    label: "Produkte",
-    group: "Verwaltung",
-    icon: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 7l9-4 9 4-9 4-9-4z"/><path d="M3 7v10l9 4 9-4V7"/><path d="M12 11v10"/></svg>',
+    href: "/admin/bestellungen",
+    label: "Bestellungen",
+    group: "Shop",
+    icon: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="9" cy="21" r="1.5"/><circle cx="20" cy="21" r="1.5"/><path d="M3 3h2l3 13h12l3-9H6" stroke-linecap="round" stroke-linejoin="round"/></svg>',
+  },
+  {
+    href: "/admin/kunden",
+    label: "Kunden",
+    icon: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4.4 3.6-8 8-8s8 3.6 8 8"/></svg>',
   },
   {
     href: "/admin/inquiries",
     label: "Anfragen",
     icon: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg>',
+  },
+  {
+    href: "/admin/products",
+    label: "Produkte",
+    group: "Katalog",
+    icon: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 7l9-4 9 4-9 4-9-4z"/><path d="M3 7v10l9 4 9-4V7"/><path d="M12 11v10"/></svg>',
   },
   {
     href: "/admin/categories",
