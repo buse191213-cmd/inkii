@@ -1,12 +1,15 @@
 import { getHeroVideoSrc, getMarketingVideoSrc } from "@/lib/hero-video";
 import HeroVideoManager from "./HeroVideoManager";
 import MailTestPanel from "./MailTestPanel";
+import ShopConfigManager from "./ShopConfigManager";
+import { getShopConfig } from "./shop-config-actions";
 
 export const dynamic = "force-dynamic";
 
 export default async function SettingsPage() {
   const heroVideo = await getHeroVideoSrc();
   const marketingVideo = await getMarketingVideoSrc();
+  const shopConfig = await getShopConfig();
   return (
     <>
       <p className="crumb">
@@ -15,6 +18,8 @@ export default async function SettingsPage() {
 
       <HeroVideoManager currentVideo={heroVideo} kind="hero" />
       <HeroVideoManager currentVideo={marketingVideo} kind="marketing" />
+
+      <ShopConfigManager initial={shopConfig} />
 
       <MailTestPanel defaultEmail="admin@inkii.de" />
 

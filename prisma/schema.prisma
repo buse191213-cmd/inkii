@@ -87,3 +87,130 @@ model NavSetting {
   active    Boolean @default(true)
   sortOrder Int     @default(0)
 }
+
+// ============================================================
+// SHOP / E-COMMERCE MODELLE
+// ============================================================
+
+// Kunde (Customer) — sowohl B2C als auch B2B
+model Customer {
+  id              String   @id @default(cuid())
+  email           String   @unique
+  password        String?  // optional - Gast-Checkout möglich
+  firmname        String   @default("") // B2B Firma
+  ustId           String   @default("") // USt-IdNr. (VAT)
+  salutation      String   @default("") // Herr / Frau / Divers
+  firstName       String
+  lastName        String
+  phone           String   @default("")
+  // Rechnungsadresse:
+  billingStreet   String
+  billingCity     String
+  billingZip      String
+  billingCountry  String   @default("DE")
+  // Lieferadresse (falls abweichend):
+  shippingStreet  String   @default("")
+  shippingCity    String   @default("")
+  shippingZip     String   @default("")
+  shippingCountry String   @default("DE")
+  shippingDiffers Boolean  @default(false)
+  notes           String   @default("") // Admin-Notizen
+  acceptsMarketing Boolean @default(false)
+  isGuest         Boolean  @default(true) // Gast-Checkout
+  orders          Order[]
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+}
+
+// Bestellung (Order)
+model Order {
+  id              String      @id @default(cuid())
+  orderNumber     String      @unique  // INKI-2026-00001
+  customer        Customer    @relation(fields: [customerId], references: [id])
+  customerId      String
+  status          String      @default("NEU")
+  // NEU, WARTEND, BEZAHLT, IN_PRODUKTION, VERSANDBEREIT,
+  // VERSENDET, ZUGESTELLT, ABGESCHLOSSEN, STORNIERT, RUECKERSTATTET
+  items           OrderItem[]
+  // Beträge in Cents
+  subtotalCents   Int         @default(0)
+  taxCents        Int         @default(0)
+  taxRate         Float       @default(19.0)
+  shippingCents   Int         @default(0)
+  discountCents   Int         @default(0)
+  totalCents      Int         @default(0)
+  // Zahlung
+  paymentMethod   String      @default("") // paypal, klarna, rechnung
+  paymentStatus   String      @default("PENDING") // PENDING, PAID, FAILED, REFUNDED
+  paymentRef      String      @default("") // PayPal/Klarna Transaction ID
+  paidAt          DateTime?
+  // Versand
+  shippingCarrier String      @default("") // DHL, DPD, Hermes, GLS, UPS
+  trackingNumber  String      @default("")
+  shippedAt       DateTime?
+  deliveredAt     DateTime?
+  // Notizen
+  customerNote    String      @default("") // Vom Kunden
+  adminNote       String      @default("") // Intern
+  // Rechnung
+  invoiceUrl      String      @default("") // PDF Rechnung URL
+  invoiceNumber   String      @default("")
+  createdAt       DateTime    @default(now())
+  updatedAt       DateTime    @updatedAt
+}
+
+// OrderItem — einzelne Position einer Bestellung
+model OrderItem {
+  id              String   @id @default(cuid())
+  order           Order    @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  orderId         String
+  // Produkt-Snapshot (Name & Code zum Bestellzeitpunkt)
+  productId       String
+  productName     String
+  productCode     String
+  productImage    String   @default("")
+  // Variante
+  color           String   @default("")
+  size            String   @default("")
+  quantity        Int      @default(1)
+  unitPriceCents  Int      @default(0)
+  // DTF Druck (optional)
+  hasDtf          Boolean  @default(false)
+  dtfDesignUrl    String   @default("") // Hochgeladene Design-Datei
+  dtfSize         String   @default("") // "15x15", "20x20", "30x30"
+  dtfPriceCents   Int      @default(0)
+  // Total = (unitPriceCents + dtfPriceCents) * quantity
+  lineTotalCents  Int      @default(0)
+}
+
+// Konfiguration der Zahlungsmethoden (Admin-Toggle)
+model PaymentMethod {
+  id          String   @id @default(cuid())
+  key         String   @unique  // "paypal", "klarna", "rechnung"
+  label       String              // Anzeige-Name
+  description String   @default("")
+  enabled     Boolean  @default(true)
+  sortOrder   Int      @default(0)
+  config      String   @default("{}") // JSON für API-Keys etc.
+}
+
+// DTF-Druckpreise (Admin pflegt Größen + Preise)
+model DtfPrice {
+  id         String  @id @default(cuid())
+  sizeLabel  String  @unique  // "15x15", "20x20", "30x30"
+  widthCm    Int
+  heightCm   Int
+  priceCents Int
+  enabled    Boolean @default(true)
+  sortOrder  Int     @default(0)
+}
+
+// Versand-Einstellungen
+model ShippingConfig {
+  id                  String   @id @default(cuid())
+  freeShippingFromCents Int    @default(10000) // 100€
+  standardCostCents   Int      @default(599)   // 5.99€
+  carrier             String   @default("DHL")
+  notes               String   @default("")
+  updatedAt           DateTime @updatedAt
+}
