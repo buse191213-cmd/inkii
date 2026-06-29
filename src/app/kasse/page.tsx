@@ -1,6 +1,8 @@
 import { db } from "@/lib/db";
 import SiteShell from "@/components/SiteShell";
 import { getCurrentCustomer } from "@/lib/customer-auth";
+import { isPayPalConfigured, getPayPalClientId, getPayPalMode } from "@/lib/paypal-server";
+import { isStripeConfigured } from "@/lib/stripe-server";
 import KasseClient from "./KasseClient";
 
 export const dynamic = "force-dynamic";
@@ -18,10 +20,19 @@ export default async function KassePage() {
   });
   const shipping = await db.shippingConfig.findFirst();
 
+  // Yapılandırılmamış payment provider'ları filtrele
+  const paypalReady = isPayPalConfigured();
+  const stripeReady = isStripeConfigured();
+  const filteredMethods = methods.filter((m) => {
+    if (m.key === "paypal" && !paypalReady) return false;
+    if (m.key === "klarna" && !stripeReady) return false;
+    return true;
+  });
+
   return (
     <SiteShell>
       <KasseClient
-        paymentMethods={methods.map((m) => ({
+        paymentMethods={filteredMethods.map((m) => ({
           key: m.key,
           label: m.label,
           description: m.description,
@@ -45,6 +56,8 @@ export default async function KassePage() {
           billingCountry: customer.billingCountry,
         } : null}
         isLoggedIn={Boolean(customer)}
+        paypalClientId={paypalReady ? getPayPalClientId() : ""}
+        paypalMode={getPayPalMode()}
       />
     </SiteShell>
   );

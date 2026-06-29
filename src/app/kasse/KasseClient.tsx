@@ -6,6 +6,8 @@ import { useRouter } from "next/navigation";
 import { useCart } from "@/components/CartProvider";
 import { colorLabel } from "@/lib/catalog-options";
 import { createOrder } from "./order-actions";
+import { startStripeCheckout } from "./stripe-actions";
+import PayPalCheckoutModal from "./PayPalCheckoutModal";
 
 function euro(c: number): string {
   return (c / 100).toLocaleString("de-DE", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
@@ -110,9 +112,11 @@ type Props = {
   shipping: ShippingData;
   prefill?: Prefill | null;
   isLoggedIn?: boolean;
+  paypalClientId?: string;
+  paypalMode?: "sandbox" | "live";
 };
 
-export default function KasseClient({ paymentMethods, shipping, prefill, isLoggedIn }: Props) {
+export default function KasseClient({ paymentMethods, shipping, prefill, isLoggedIn, paypalClientId, paypalMode }: Props) {
   const router = useRouter();
   const { items, subtotalCents, clearCart, isLoaded } = useCart();
   const [isPending, startTransition] = useTransition();
@@ -151,6 +155,8 @@ export default function KasseClient({ paymentMethods, shipping, prefill, isLogge
   const [shippingCountry, setShippingCountry] = useState("DE");
   // Payment + notes
   const [paymentMethod, setPaymentMethod] = useState(paymentMethods[0]?.key ?? "");
+  const [showPayPalModal, setShowPayPalModal] = useState(false);
+  const [payPalOrderId, setPayPalOrderId] = useState<string>("");
   const [customerNote, setCustomerNote] = useState("");
   const [acceptsTerms, setAcceptsTerms] = useState(false);
 
@@ -272,9 +278,27 @@ export default function KasseClient({ paymentMethods, shipping, prefill, isLogge
         totalCents,
       });
 
-      if (result.ok && result.orderNumber) {
-        clearCart();
-        router.push(`/bestellung-erfolg?nr=${result.orderNumber}`);
+      if (result.ok && result.orderId && result.orderNumber) {
+        // Ödeme yöntemine göre yönlendir
+        if (paymentMethod === "paypal") {
+          // PayPal: Modal aç, paypalClientId varsa
+          setPayPalOrderId(result.orderId);
+          setShowPayPalModal(true);
+          // sepet henüz boşaltılmıyor - capture sonrası boşalır
+        } else if (paymentMethod === "klarna") {
+          // Stripe checkout'a yönlendir
+          const stripeRes = await startStripeCheckout(result.orderId);
+          if (stripeRes.ok && stripeRes.url) {
+            clearCart();
+            window.location.href = stripeRes.url;
+          } else {
+            setGeneralError(stripeRes.error ?? "Stripe Checkout konnte nicht gestartet werden.");
+          }
+        } else {
+          // Rechnung: direkt başarı sayfası
+          clearCart();
+          router.push(`/bestellung-erfolg?nr=${result.orderNumber}`);
+        }
       } else {
         setGeneralError(result.error ?? "Bestellung konnte nicht gespeichert werden.");
       }
@@ -714,6 +738,21 @@ export default function KasseClient({ paymentMethods, shipping, prefill, isLogge
           }
         }
       `}</style>
+
+      {showPayPalModal && paypalClientId && payPalOrderId && (
+        <PayPalCheckoutModal
+          orderId={payPalOrderId}
+          amountCents={totalCents}
+          orderNumber={`INKII Bestellung`}
+          clientId={paypalClientId}
+          mode={paypalMode || "sandbox"}
+          onClose={() => setShowPayPalModal(false)}
+          onSuccess={(orderNumber) => {
+            clearCart();
+            router.push(`/bestellung-erfolg?nr=${orderNumber}`);
+          }}
+        />
+      )}
     </section>
   );
 }

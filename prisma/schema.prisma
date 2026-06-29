@@ -148,6 +148,12 @@ model Order {
   paymentStatus   String      @default("PENDING") // PENDING, PAID, FAILED, REFUNDED
   paymentRef      String      @default("") // PayPal/Klarna Transaction ID
   paidAt          DateTime?
+  // PayPal
+  paypalOrderId   String      @default("")
+  paypalCaptureId String      @default("")
+  // Stripe (Klarna)
+  stripeSessionId String      @default("")
+  stripePaymentIntentId String @default("")
   // Versand
   shippingCarrier String      @default("") // DHL, DPD, Hermes, GLS, UPS
   trackingNumber  String      @default("")

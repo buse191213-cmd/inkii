@@ -89,7 +89,7 @@ function generateOrderNumber(): string {
 
 export async function createOrder(
   input: OrderInput
-): Promise<{ ok: boolean; orderNumber?: string; error?: string }> {
+): Promise<{ ok: boolean; orderId?: string; orderNumber?: string; error?: string }> {
   try {
     const c = input.customer;
 
@@ -286,7 +286,7 @@ export async function createOrder(
       // E-mail hatası order'ı durdurmaz
     }
 
-    return { ok: true, orderNumber: order.orderNumber };
+    return { ok: true, orderId: order.id, orderNumber: order.orderNumber };
   } catch (e) {
     console.error("Order creation failed:", e);
     return {
