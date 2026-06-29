@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useRef } from "react";
 import { PayPalScriptProvider, PayPalButtons } from "@paypal/react-paypal-js";
 import { capturePayPalPayment } from "./paypal-actions";
 
@@ -22,6 +22,8 @@ export default function PayPalInlineButtons({
   const [error, setError] = useState("");
   const [processing, setProcessing] = useState(false);
   const [currentOrder, setCurrentOrder] = useState<{ orderId: string; orderNumber: string } | null>(null);
+  // Validation hatası vs gerçek PayPal hatası ayrımı için
+  const skipPayPalError = useRef(false);
 
   return (
     <div style={{ marginTop: 12 }}>
@@ -31,7 +33,6 @@ export default function PayPalInlineButtons({
           currency: "EUR",
           intent: "capture",
           locale: "de_DE",
-          // Sadece PayPal sarı + Kart siyah görünür
           "enable-funding": "card",
           "disable-funding": "credit,paylater,venmo,sofort,giropay,bancontact,eps,ideal,mybank,p24,sepa,trustly,wechatpay,blik,mercadopago",
           components: "buttons",
@@ -46,18 +47,18 @@ export default function PayPalInlineButtons({
             label: "paypal",
             height: 48,
           }}
-          // Form validate + DB'ye order yaz + PayPal'a order yarat
           createOrder={async () => {
             setError("");
+            skipPayPalError.current = false;
             try {
-              // 1) Form validate + DB Order create
               const result = await validateAndCreateOrder();
               if (!result.ok || !result.orderId || !result.orderNumber) {
-                throw new Error(result.error || "Bestellung konnte nicht erstellt werden");
+                // Form validation hatası — parent göstersin, PayPal hata göstermesin
+                skipPayPalError.current = true;
+                throw new Error(result.error || "Validation failed");
               }
               setCurrentOrder({ orderId: result.orderId, orderNumber: result.orderNumber });
 
-              // 2) PayPal Order create
               const res = await fetch("/api/paypal/create-order", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
@@ -71,8 +72,9 @@ export default function PayPalInlineButtons({
               if (!res.ok) throw new Error(data.error || "PayPal Order konnte nicht erstellt werden");
               return data.id;
             } catch (e) {
-              const msg = e instanceof Error ? e.message : "Fehler";
-              setError(msg);
+              if (!skipPayPalError.current) {
+                setError(e instanceof Error ? e.message : "Fehler");
+              }
               throw e;
             }
           }}
@@ -96,12 +98,17 @@ export default function PayPalInlineButtons({
             }
           }}
           onError={(err) => {
+            // Form validation hatasıysa PayPal hata mesajı verme
+            if (skipPayPalError.current) {
+              skipPayPalError.current = false;
+              return;
+            }
             console.error("PayPal error:", err);
             setError("PayPal-Fehler. Bitte versuchen Sie es erneut.");
             setProcessing(false);
           }}
           onCancel={() => {
-            setError("Zahlung abgebrochen.");
+            // Cancel bir hata değil, sessiz
             setProcessing(false);
           }}
         />

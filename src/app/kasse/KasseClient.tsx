@@ -130,6 +130,7 @@ export default function KasseClient({ paymentMethods, shipping, prefill, isLogge
     billingStreet: useRef<HTMLInputElement>(null),
     billingZip: useRef<HTMLInputElement>(null),
     billingCity: useRef<HTMLInputElement>(null),
+    terms: useRef<HTMLDivElement>(null),
   };
 
   // Form state — prefill from logged-in customer
@@ -222,7 +223,11 @@ export default function KasseClient({ paymentMethods, shipping, prefill, isLogge
     if (errors.billingCity) { refs.billingCity.current?.focus(); refs.billingCity.current?.scrollIntoView({ behavior: "smooth", block: "center" }); return false; }
     if (errors.shippingZip) { setGeneralError("Bitte gültige Liefer-PLZ eingeben."); return false; }
     if (!paymentMethod) { setGeneralError("Bitte eine Zahlungsmethode wählen."); return false; }
-    if (!acceptsTerms) { setGeneralError("Bitte AGB und Datenschutz akzeptieren."); return false; }
+    if (!acceptsTerms) {
+      setGeneralError("Bitte AGB und Datenschutz akzeptieren.");
+      refs.terms.current?.scrollIntoView({ behavior: "smooth", block: "center" });
+      return false;
+    }
 
     return true;
   }
@@ -594,12 +599,27 @@ export default function KasseClient({ paymentMethods, shipping, prefill, isLogge
           </div>
 
           {/* AGB */}
-          <div style={{ marginTop: 24 }}>
+          <div
+            ref={refs.terms}
+            style={{
+              marginTop: 24,
+              padding: !acceptsTerms && generalError.includes("AGB") ? 12 : 0,
+              background: !acceptsTerms && generalError.includes("AGB") ? "#fef2f2" : "transparent",
+              border: !acceptsTerms && generalError.includes("AGB") ? "2px solid #dc2626" : "none",
+              borderRadius: 4,
+              transition: "all 0.2s",
+            }}
+          >
             <label style={{ display: "flex", gap: 10, fontSize: 13, cursor: "pointer", lineHeight: 1.5 }}>
               <input
                 type="checkbox"
                 checked={acceptsTerms}
-                onChange={(e) => setAcceptsTerms(e.target.checked)}
+                onChange={(e) => {
+                  setAcceptsTerms(e.target.checked);
+                  if (e.target.checked && generalError.includes("AGB")) {
+                    setGeneralError("");
+                  }
+                }}
                 style={{ marginTop: 3, flexShrink: 0 }}
               />
               <span>
@@ -609,6 +629,11 @@ export default function KasseClient({ paymentMethods, shipping, prefill, isLogge
                 gelesen und stimme zu. *
               </span>
             </label>
+            {!acceptsTerms && generalError.includes("AGB") && (
+              <p style={{ margin: "8px 0 0 26px", fontSize: 12, color: "#991b1b", fontWeight: 600 }}>
+                ⚠ Bitte bestätigen Sie die AGB, um fortzufahren.
+              </p>
+            )}
           </div>
 
           {generalError && (
