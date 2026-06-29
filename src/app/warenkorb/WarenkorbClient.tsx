@@ -263,39 +263,72 @@ export default function WarenkorbClient() {
               Sie können ein individuelles Angebot anfragen oder direkt zur Kasse gehen.
             </p>
 
-            <Link
-              href="/kasse"
-              style={{
-                display: "block",
-                background: "#004537",
-                color: "#fff",
-                padding: "13px 16px",
-                textAlign: "center",
-                fontWeight: 600,
-                textDecoration: "none",
-                fontSize: 14,
-                marginBottom: 8,
-              }}
-            >
-              🛒 Direkt zur Kasse →
-            </Link>
+            {(() => {
+              const hasQuoteOnly = items.some((i) => i.unitPriceCents === 0);
 
-            <Link
-              href="/warenkorb/anfrage"
-              style={{
-                display: "block",
-                background: "#fff",
-                color: "#004537",
-                border: "1px solid #004537",
-                padding: "13px 16px",
-                textAlign: "center",
-                fontWeight: 600,
-                textDecoration: "none",
-                fontSize: 14,
-              }}
-            >
-              ✉️ Angebot anfragen
-            </Link>
+              return (
+                <>
+                  {hasQuoteOnly ? (
+                    <div
+                      style={{
+                        display: "block",
+                        background: "#e5e7eb",
+                        color: "#94a3b8",
+                        padding: "13px 16px",
+                        textAlign: "center",
+                        fontWeight: 600,
+                        fontSize: 14,
+                        marginBottom: 8,
+                        cursor: "not-allowed",
+                      }}
+                      title="Mindestens ein Artikel ist nur auf Anfrage"
+                    >
+                      🛒 Direkt zur Kasse (nicht möglich)
+                    </div>
+                  ) : (
+                    <Link
+                      href="/kasse"
+                      style={{
+                        display: "block",
+                        background: "#004537",
+                        color: "#fff",
+                        padding: "13px 16px",
+                        textAlign: "center",
+                        fontWeight: 600,
+                        textDecoration: "none",
+                        fontSize: 14,
+                        marginBottom: 8,
+                      }}
+                    >
+                      🛒 Direkt zur Kasse →
+                    </Link>
+                  )}
+
+                  <Link
+                    href="/warenkorb/anfrage"
+                    style={{
+                      display: "block",
+                      background: "#fff",
+                      color: "#004537",
+                      border: "1px solid #004537",
+                      padding: "13px 16px",
+                      textAlign: "center",
+                      fontWeight: 600,
+                      textDecoration: "none",
+                      fontSize: 14,
+                    }}
+                  >
+                    ✉️ Angebot anfragen
+                  </Link>
+
+                  {hasQuoteOnly && (
+                    <p style={{ fontSize: 11, color: "#92400e", marginTop: 10, padding: 8, background: "#fef3c7", lineHeight: 1.4 }}>
+                      ℹ️ Ihr Warenkorb enthält Artikel mit „Preis auf Anfrage". Bitte fragen Sie ein individuelles Angebot an.
+                    </p>
+                  )}
+                </>
+              );
+            })()}
 
             <p style={{ fontSize: 11, color: "#94a3b8", marginTop: 10, lineHeight: 1.4, textAlign: "center" }}>
               Bei Sonderwünschen, größeren Mengen oder Druckveredelung empfehlen wir „Angebot anfragen".

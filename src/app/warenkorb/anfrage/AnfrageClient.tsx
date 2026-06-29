@@ -42,7 +42,14 @@ const COUNTRIES = [
   { code: "TR", phone: "+90", label: "TR" },
 ];
 
-export default function AnfrageClient() {
+type Prefill = {
+  name: string;
+  email: string;
+  phone: string;
+  company: string;
+};
+
+export default function AnfrageClient({ prefill }: { prefill?: Prefill | null }) {
   const router = useRouter();
   const { items, subtotalCents, clearCart, isLoaded } = useCart();
   const [isPending, startTransition] = useTransition();
@@ -55,12 +62,29 @@ export default function AnfrageClient() {
     email: useRef<HTMLInputElement>(null),
   };
 
-  const [firstName, setFirstName] = useState("");
-  const [lastName, setLastName] = useState("");
-  const [email, setEmail] = useState("");
-  const [phoneCountry, setPhoneCountry] = useState("+49");
-  const [phoneNumber, setPhoneNumber] = useState("");
-  const [firmname, setFirmname] = useState("");
+  // Prefill: müşteri login ise ad/soyad/email/telefon/firma otomatik dolsun
+  const initialFirst = prefill?.name ? prefill.name.split(" ")[0] || "" : "";
+  const initialLast = prefill?.name ? prefill.name.split(" ").slice(1).join(" ") || "" : "";
+
+  // Telefonu ülke koduna ayır (örn "+49 160 1234567" → country=+49, number=160 1234567)
+  let initPhoneCountry = "+49";
+  let initPhoneNumber = "";
+  if (prefill?.phone) {
+    const match = prefill.phone.match(/^(\+\d{1,3})\s*(.*)$/);
+    if (match) {
+      initPhoneCountry = match[1];
+      initPhoneNumber = match[2].trim();
+    } else {
+      initPhoneNumber = prefill.phone;
+    }
+  }
+
+  const [firstName, setFirstName] = useState(initialFirst);
+  const [lastName, setLastName] = useState(initialLast);
+  const [email, setEmail] = useState(prefill?.email || "");
+  const [phoneCountry, setPhoneCountry] = useState(initPhoneCountry);
+  const [phoneNumber, setPhoneNumber] = useState(initPhoneNumber);
+  const [firmname, setFirmname] = useState(prefill?.company || "");
   const [message, setMessage] = useState("");
   const [accepts, setAccepts] = useState(false);
 
