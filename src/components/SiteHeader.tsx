@@ -28,6 +28,7 @@ type HeaderProps = {
   utility: Dictionary["utility"];
   marketingLogo?: string | null;
   navItems?: NavItem[];
+  customer?: { firstName: string; lastName: string } | null;
 };
 
 export default function SiteHeader(props: HeaderProps) {
@@ -45,6 +46,7 @@ function SiteHeaderInner({
   utility,
   marketingLogo,
   navItems,
+  customer,
 }: HeaderProps) {
   const pathname = usePathname();
   // INKII MARKETING sayfasında farklı nav linkleri göster
@@ -91,6 +93,23 @@ function SiteHeaderInner({
             <Link href="/nachhaltigkeit">{nav.nachhaltigkeit}</Link>
             <Link href="/bereiche">{nav.bereiche}</Link>
             <Link href="/kontakt">{nav.kontakt}</Link>
+            {customer ? (
+              <Link href="/konto" style={{ display: "inline-flex", alignItems: "center", gap: 6 }} title="Mein Konto">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden>
+                  <circle cx="12" cy="8" r="3.5"/>
+                  <path d="M4 21c0-4.4 3.6-8 8-8s8 3.6 8 8" strokeLinecap="round" />
+                </svg>
+                {customer.firstName}
+              </Link>
+            ) : (
+              <Link href="/login" style={{ display: "inline-flex", alignItems: "center", gap: 6 }}>
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden>
+                  <circle cx="12" cy="8" r="3.5"/>
+                  <path d="M4 21c0-4.4 3.6-8 8-8s8 3.6 8 8" strokeLinecap="round" />
+                </svg>
+                Anmelden
+              </Link>
+            )}
             <button
               type="button"
               onClick={() => setCartOpen(true)}

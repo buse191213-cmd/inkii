@@ -91,12 +91,28 @@ type ShippingData = {
   carrier: string;
 };
 
+type Prefill = {
+  salutation: string;
+  firstName: string;
+  lastName: string;
+  email: string;
+  phone: string;
+  firmname: string;
+  ustId: string;
+  billingStreet: string;
+  billingZip: string;
+  billingCity: string;
+  billingCountry: string;
+};
+
 type Props = {
   paymentMethods: PaymentMethod[];
   shipping: ShippingData;
+  prefill?: Prefill | null;
+  isLoggedIn?: boolean;
 };
 
-export default function KasseClient({ paymentMethods, shipping }: Props) {
+export default function KasseClient({ paymentMethods, shipping, prefill, isLoggedIn }: Props) {
   const router = useRouter();
   const { items, subtotalCents, clearCart, isLoaded } = useCart();
   const [isPending, startTransition] = useTransition();
@@ -113,20 +129,20 @@ export default function KasseClient({ paymentMethods, shipping }: Props) {
     billingCity: useRef<HTMLInputElement>(null),
   };
 
-  // Form state
-  const [salutation, setSalutation] = useState("Herr");
-  const [firstName, setFirstName] = useState("");
-  const [lastName, setLastName] = useState("");
-  const [email, setEmail] = useState("");
+  // Form state — prefill from logged-in customer
+  const [salutation, setSalutation] = useState(prefill?.salutation || "Herr");
+  const [firstName, setFirstName] = useState(prefill?.firstName || "");
+  const [lastName, setLastName] = useState(prefill?.lastName || "");
+  const [email, setEmail] = useState(prefill?.email || "");
   const [phoneCountry, setPhoneCountry] = useState("+49");
-  const [phoneNumber, setPhoneNumber] = useState("");
-  const [firmname, setFirmname] = useState("");
-  const [ustId, setUstId] = useState("");
+  const [phoneNumber, setPhoneNumber] = useState(prefill?.phone?.replace(/^\+\d+\s?/, "") || "");
+  const [firmname, setFirmname] = useState(prefill?.firmname || "");
+  const [ustId, setUstId] = useState(prefill?.ustId || "");
   // Billing
-  const [billingStreet, setBillingStreet] = useState("");
-  const [billingZip, setBillingZip] = useState("");
-  const [billingCity, setBillingCity] = useState("");
-  const [billingCountry, setBillingCountry] = useState("DE");
+  const [billingStreet, setBillingStreet] = useState(prefill?.billingStreet || "");
+  const [billingZip, setBillingZip] = useState(prefill?.billingZip || "");
+  const [billingCity, setBillingCity] = useState(prefill?.billingCity || "");
+  const [billingCountry, setBillingCountry] = useState(prefill?.billingCountry || "DE");
   // Shipping
   const [shippingDiffers, setShippingDiffers] = useState(false);
   const [shippingStreet, setShippingStreet] = useState("");
@@ -269,7 +285,38 @@ export default function KasseClient({ paymentMethods, shipping }: Props) {
 
   return (
     <section style={{ maxWidth: 1200, margin: "0 auto", padding: "40px 28px" }}>
-      <h1 style={{ fontSize: "2rem", fontWeight: 700, marginBottom: 24 }}>Kasse</h1>
+      <h1 style={{ fontSize: "2rem", fontWeight: 700, marginBottom: 12 }}>Kasse</h1>
+
+      {!isLoggedIn && (
+        <div style={{
+          background: "#f0fdf4",
+          border: "1px solid #86efac",
+          padding: "12px 16px",
+          marginBottom: 20,
+          display: "flex",
+          justifyContent: "space-between",
+          alignItems: "center",
+          flexWrap: "wrap",
+          gap: 10,
+          fontSize: 13,
+        }}>
+          <span>👤 Bereits Kunde? <a href="/login?next=/kasse" style={{ color: "#004537", fontWeight: 600, textDecoration: "underline" }}>Hier anmelden</a> für schnelleren Checkout.</span>
+          <a href="/registrieren" style={{ color: "#004537", fontWeight: 600, textDecoration: "underline" }}>Oder neu registrieren →</a>
+        </div>
+      )}
+
+      {isLoggedIn && (
+        <div style={{
+          background: "#dbeafe",
+          border: "1px solid #93c5fd",
+          padding: "10px 14px",
+          marginBottom: 20,
+          fontSize: 13,
+          color: "#1e40af",
+        }}>
+          ✓ Sie sind als <strong>{firstName} {lastName}</strong> angemeldet. Ihre Daten sind vorausgefüllt.
+        </div>
+      )}
 
       <div style={{ display: "grid", gridTemplateColumns: "1fr 360px", gap: 32 }} className="kasse-layout">
         {/* Form */}

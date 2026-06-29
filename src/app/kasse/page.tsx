@@ -1,5 +1,6 @@
 import { db } from "@/lib/db";
 import SiteShell from "@/components/SiteShell";
+import { getCurrentCustomer } from "@/lib/customer-auth";
 import KasseClient from "./KasseClient";
 
 export const dynamic = "force-dynamic";
@@ -9,6 +10,7 @@ export const metadata = {
 };
 
 export default async function KassePage() {
+  const customer = await getCurrentCustomer();
   // Sadece aktif ödeme yöntemleri
   const methods = await db.paymentMethod.findMany({
     where: { enabled: true },
@@ -29,6 +31,20 @@ export default async function KassePage() {
           freeShippingFromCents: shipping?.freeShippingFromCents ?? 10000,
           carrier: shipping?.carrier ?? "DHL",
         }}
+        prefill={customer ? {
+          salutation: customer.salutation || "Herr",
+          firstName: customer.firstName,
+          lastName: customer.lastName,
+          email: customer.email,
+          phone: customer.phone || "",
+          firmname: customer.firmname || "",
+          ustId: customer.ustId || "",
+          billingStreet: customer.billingStreet,
+          billingZip: customer.billingZip,
+          billingCity: customer.billingCity,
+          billingCountry: customer.billingCountry,
+        } : null}
+        isLoggedIn={Boolean(customer)}
       />
     </SiteShell>
   );

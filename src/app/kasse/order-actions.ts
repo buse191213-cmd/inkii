@@ -1,6 +1,7 @@
 "use server";
 
 import { db } from "@/lib/db";
+import { getCurrentCustomerId } from "@/lib/customer-auth";
 import nodemailer from "nodemailer";
 
 function isSmtpConfigured(): boolean {
@@ -92,8 +93,13 @@ export async function createOrder(
   try {
     const c = input.customer;
 
+    // 0) Login durumu — varsa müşteriye direkt bağla
+    const loggedInCustomerId = await getCurrentCustomerId();
+
     // 1) Customer'ı bul veya oluştur
-    let customer = await db.customer.findUnique({ where: { email: c.email } });
+    let customer = loggedInCustomerId
+      ? await db.customer.findUnique({ where: { id: loggedInCustomerId } })
+      : await db.customer.findUnique({ where: { email: c.email } });
     if (!customer) {
       customer = await db.customer.create({
         data: {

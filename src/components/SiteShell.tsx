@@ -8,6 +8,7 @@ import { getLocale } from "@/lib/i18n-server";
 import { getDictionary } from "@/dictionaries";
 import { getActiveNavItems } from "@/lib/nav";
 import { getHomeImage } from "@/lib/home-images";
+import { getCurrentCustomer } from "@/lib/customer-auth";
 
 /** Rahmen für alle öffentlichen Seiten: Header, Inhalt, Footer. */
 export default async function SiteShell({
@@ -19,6 +20,7 @@ export default async function SiteShell({
   const dict = getDictionary(locale);
   const navItems = await getActiveNavItems();
   const marketingLogo = await getHomeImage("marketing-logo");
+  const customer = await getCurrentCustomer();
 
   return (
     <MerklisteProvider>
@@ -30,6 +32,7 @@ export default async function SiteShell({
         utility={dict.utility}
         marketingLogo={marketingLogo}
         navItems={navItems.map((n) => ({ href: n.href, key: n.key }))}
+        customer={customer ? { firstName: customer.firstName, lastName: customer.lastName } : null}
       />
       <main>{children}</main>
       <SiteFooter t={dict.footer} cookieLabel={locale === "tr" ? "Çerez ayarları" : locale === "en" ? "Cookie settings" : "Cookie-Einstellungen"} />
