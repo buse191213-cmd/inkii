@@ -6,6 +6,7 @@ import { usePathname, useSearchParams } from "next/navigation";
 import { Suspense, useState } from "react";
 import { useMerkliste } from "./MerklisteProvider";
 import { useCart } from "./CartProvider";
+import CartDrawer from "./CartDrawer";
 import LangSwitcher from "./LangSwitcher";
 import type { Locale } from "@/lib/i18n";
 import type { Dictionary } from "@/dictionaries/types";
@@ -59,6 +60,7 @@ function SiteHeaderInner({
     ? MARKETING_NAV
     : (navItems && navItems.length > 0 ? navItems : FALLBACK_NAV);
   const [open, setOpen] = useState(false);
+  const [cartOpen, setCartOpen] = useState(false);
   const { count } = useMerkliste();
   const { itemCount: cartCount } = useCart();
   const searchParams = useSearchParams();
@@ -89,9 +91,16 @@ function SiteHeaderInner({
             <Link href="/nachhaltigkeit">{nav.nachhaltigkeit}</Link>
             <Link href="/bereiche">{nav.bereiche}</Link>
             <Link href="/kontakt">{nav.kontakt}</Link>
-            <Link href="/warenkorb" className={`u-heart${(count + cartCount) > 0 ? " has-items" : ""}`} title="Warenkorb / Anfrage" aria-label="Warenkorb">
+            <button
+              type="button"
+              onClick={() => setCartOpen(true)}
+              className={`u-heart${(count + cartCount) > 0 ? " has-items" : ""}`}
+              title="Warenkorb"
+              aria-label="Warenkorb öffnen"
+              style={{ background: "transparent", border: "none", cursor: "pointer", padding: 0, font: "inherit", color: "inherit" }}
+            >
               <span aria-hidden>♥</span>{(count + cartCount) > 0 && <span className="u-heart-count">{count + cartCount}</span>}
-            </Link>
+            </button>
             <LangSwitcher current={locale} />
           </div>
         </div>
@@ -167,15 +176,29 @@ function SiteHeaderInner({
             {nav[n.key]}
           </Link>
         ))}
-        <Link href="/warenkorb" onClick={() => setOpen(false)}>
+        <button
+          type="button"
+          onClick={() => { setOpen(false); setCartOpen(true); }}
+          style={{
+            background: "transparent",
+            border: "none",
+            padding: 0,
+            font: "inherit",
+            color: "inherit",
+            textAlign: "left",
+            cursor: "pointer",
+          }}
+        >
           {t.merkzettel}
-          {count > 0 ? ` (${count})` : ""}
-        </Link>
+          {(count + cartCount) > 0 ? ` (${count + cartCount})` : ""}
+        </button>
         <div className="drawer-lang">
           <span>{t.language}</span>
           <LangSwitcher current={locale} />
         </div>
       </div>
+
+      <CartDrawer open={cartOpen} onClose={() => setCartOpen(false)} />
     </>
   );
 }

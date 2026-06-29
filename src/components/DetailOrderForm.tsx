@@ -380,12 +380,6 @@ export default function DetailOrderForm({
           {totalQty > 0 ? ` · ${totalQty} Stk` : ""}
           {selectedColor ? ` · ${colorLabel(selectedColor)}` : ""}
         </button>
-
-        {(unitCents == null || unitCents === 0) && (
-          <p style={{ fontSize: 12, color: "#64748b", margin: "0", textAlign: "center", lineHeight: 1.5 }}>
-            ℹ️ Bei diesem Artikel erhalten Sie nach Hinzufügen ein individuelles Angebot oder Sie können direkt zur Kasse gehen.
-          </p>
-        )}
       </div>
     </div>
   );
