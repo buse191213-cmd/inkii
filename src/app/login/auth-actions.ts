@@ -11,21 +11,23 @@ function isSmtpConfigured(): boolean {
 
 function makeTransporter() {
   const port = Number(process.env.SMTP_PORT || 465);
-  return nodemailer.createTransport({
+  const opts = {
     host: process.env.SMTP_HOST!,
     port,
     secure: process.env.SMTP_SECURE === "true" || port === 465,
-    auth: { user: process.env.SMTP_USER!, pass: process.env.SMTP_PASS! },
-    // IONOS-tauglich: kurze Timeouts + neue Verbindung
+    auth: {
+      user: process.env.SMTP_USER!,
+      pass: process.env.SMTP_PASS!,
+    },
     connectionTimeout: 10000,
     greetingTimeout: 8000,
     socketTimeout: 10000,
-    pool: false,
     tls: {
       rejectUnauthorized: false,
-      minVersion: "TLSv1.2",
     },
-  });
+  };
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  return nodemailer.createTransport(opts as any);
 }
 
 async function sendVerificationEmail(email: string, name: string, code: string): Promise<{ ok: boolean; error?: string }> {
