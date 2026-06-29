@@ -185,7 +185,12 @@ export async function createOrder(
       },
     });
 
-    // 3) E-Mail bildirimleri (customer + admin)
+    // 3) E-Mail bildirimleri — sadece "rechnung" yöntemi için hemen at
+    // PayPal/Klarna: ödeme başarısı sonrası ayrı flow'da mail gider
+    if (input.paymentMethod !== "rechnung") {
+      return { ok: true, orderId: order.id, orderNumber: order.orderNumber };
+    }
+
     try {
       const itemsHtml = input.items
         .map(

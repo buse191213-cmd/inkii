@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { db } from "@/lib/db";
 import { getStripe } from "@/lib/stripe-server";
+import { sendOrderConfirmationEmail } from "@/app/kasse/confirmation-mail";
 import type Stripe from "stripe";
 
 export const dynamic = "force-dynamic";
@@ -40,6 +41,13 @@ export async function POST(req: NextRequest) {
               status: "BEZAHLT",
             },
           });
+
+          // Confirmation mail (idempotent — order.paymentStatus check zaten yapıldı)
+          try {
+            await sendOrderConfirmationEmail(order.id);
+          } catch (e) {
+            console.error("Webhook confirmation mail failed:", e);
+          }
         }
       }
     }

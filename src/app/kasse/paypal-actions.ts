@@ -2,6 +2,7 @@
 
 import { db } from "@/lib/db";
 import { capturePayPalOrder } from "@/lib/paypal-server";
+import { sendOrderConfirmationEmail } from "./confirmation-mail";
 
 export async function capturePayPalPayment(
   orderId: string,
@@ -39,6 +40,14 @@ export async function capturePayPalPayment(
         status: "BEZAHLT",
       },
     });
+
+    // E-Mail (PDF Rechnung mit dabei)
+    try {
+      await sendOrderConfirmationEmail(orderId);
+    } catch (mailErr) {
+      console.error("PayPal confirmation mail failed:", mailErr);
+      // Ödeme yine de başarılı
+    }
 
     return { ok: true };
   } catch (e) {

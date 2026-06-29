@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { db } from "@/lib/db";
 import { getStripeSession } from "@/lib/stripe-server";
+import { sendOrderConfirmationEmail } from "@/app/kasse/confirmation-mail";
 
 export const dynamic = "force-dynamic";
 
@@ -26,6 +27,8 @@ export async function GET(req: NextRequest) {
 
     if (session.payment_status === "paid" || session.status === "complete") {
       const pi = typeof session.payment_intent === "object" ? session.payment_intent : null;
+      const wasNotPaid = order.paymentStatus !== "PAID";
+
       await db.order.update({
         where: { id: orderId },
         data: {
@@ -37,9 +40,18 @@ export async function GET(req: NextRequest) {
           status: "BEZAHLT",
         },
       });
+
+      // İlk paid olduğunda mail at (webhook ile çakışmasın)
+      if (wasNotPaid) {
+        try {
+          await sendOrderConfirmationEmail(orderId);
+        } catch (e) {
+          console.error("Stripe confirmation mail failed:", e);
+        }
+      }
+
       return NextResponse.redirect(new URL(`/bestellung-erfolg?orderNumber=${order.orderNumber}`, req.url));
     } else {
-      // Ödeme tamamlanmadı
       return NextResponse.redirect(new URL("/kasse?error=payment_not_completed", req.url));
     }
   } catch (e) {
