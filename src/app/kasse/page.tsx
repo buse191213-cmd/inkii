@@ -2,7 +2,6 @@ import { db } from "@/lib/db";
 import SiteShell from "@/components/SiteShell";
 import { getCurrentCustomer } from "@/lib/customer-auth";
 import { isPayPalConfigured, getPayPalClientId, getPayPalMode } from "@/lib/paypal-server";
-import { isStripeConfigured } from "@/lib/stripe-server";
 import KasseClient from "./KasseClient";
 
 export const dynamic = "force-dynamic";
@@ -22,10 +21,11 @@ export default async function KassePage() {
 
   // Yapılandırılmamış payment provider'ları filtrele
   const paypalReady = isPayPalConfigured();
-  const stripeReady = isStripeConfigured();
   const filteredMethods = methods.filter((m) => {
+    // Sadece paypal ve rechnung
+    if (m.key !== "paypal" && m.key !== "rechnung") return false;
+    // PayPal sadece konfigüre ise göster
     if (m.key === "paypal" && !paypalReady) return false;
-    if (m.key === "klarna" && !stripeReady) return false;
     return true;
   });
 

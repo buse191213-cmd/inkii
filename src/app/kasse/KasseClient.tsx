@@ -6,7 +6,6 @@ import { useRouter } from "next/navigation";
 import { useCart } from "@/components/CartProvider";
 import { colorLabel } from "@/lib/catalog-options";
 import { createOrder } from "./order-actions";
-import { startStripeCheckout } from "./stripe-actions";
 import PayPalInlineButtons from "./PayPalInlineButtons";
 
 function euro(c: number): string {
@@ -271,7 +270,7 @@ export default function KasseClient({ paymentMethods, shipping, prefill, isLogge
     return createOrder(buildOrderInput());
   }
 
-  // Rechnung & Klarna için manuel submit
+  // Rechnung için manuel submit (PayPal kendi flow'unda)
   function handleSubmit() {
     if (!validateForm()) return;
 
@@ -279,20 +278,9 @@ export default function KasseClient({ paymentMethods, shipping, prefill, isLogge
       const result = await createOrder(buildOrderInput());
 
       if (result.ok && result.orderId && result.orderNumber) {
-        if (paymentMethod === "klarna") {
-          // Stripe checkout'a yönlendir
-          const stripeRes = await startStripeCheckout(result.orderId);
-          if (stripeRes.ok && stripeRes.url) {
-            clearCart();
-            window.location.href = stripeRes.url;
-          } else {
-            setGeneralError(stripeRes.error ?? "Stripe Checkout konnte nicht gestartet werden.");
-          }
-        } else {
-          // Rechnung: direkt başarı sayfası
-          clearCart();
-          router.push(`/bestellung-erfolg?nr=${result.orderNumber}`);
-        }
+        // Rechnung: direkt başarı sayfası
+        clearCart();
+        router.push(`/bestellung-erfolg?nr=${result.orderNumber}`);
       } else {
         setGeneralError(result.error ?? "Bestellung konnte nicht gespeichert werden.");
       }
@@ -538,11 +526,7 @@ export default function KasseClient({ paymentMethods, shipping, prefill, isLogge
               <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
                 {paymentMethods.map((m) => {
                   const active = paymentMethod === m.key;
-                  const icon = m.key === "paypal" ? "💳" :
-                              m.key === "klarna" ? "💜" :
-                              m.key === "rechnung" ? "📧" : "💰";
                   const subInfo = m.key === "paypal" ? "Mit Kreditkarte, Lastschrift oder PayPal-Konto" :
-                                 m.key === "klarna" ? "Jetzt kaufen, später bezahlen (3 Raten verfügbar)" :
                                  m.key === "rechnung" ? "Per Banküberweisung — 14 Tage Zahlungsziel" :
                                  m.description;
                   return (
@@ -567,7 +551,17 @@ export default function KasseClient({ paymentMethods, shipping, prefill, isLogge
                         onChange={() => setPaymentMethod(m.key)}
                         style={{ marginTop: 3 }}
                       />
-                      <span style={{ fontSize: 24, lineHeight: 1, marginTop: -2 }}>{icon}</span>
+                      <span style={{ display: "inline-flex", alignItems: "center", justifyContent: "center", width: 56, marginTop: 2, flexShrink: 0 }}>
+                        {m.key === "paypal" ? (
+                          // PayPal Logo (resmi marka renkleri)
+                          <svg viewBox="0 0 100 26" width="56" height="18" xmlns="http://www.w3.org/2000/svg">
+                            <text x="0" y="20" fontFamily="Arial Black, Arial, sans-serif" fontStyle="italic" fontWeight="900" fontSize="22" fill="#003087">Pay</text>
+                            <text x="42" y="20" fontFamily="Arial Black, Arial, sans-serif" fontStyle="italic" fontWeight="900" fontSize="22" fill="#009cde">Pal</text>
+                          </svg>
+                        ) : (
+                          <span style={{ fontSize: 22 }}>📧</span>
+                        )}
+                      </span>
                       <div style={{ flex: 1 }}>
                         <div style={{ fontWeight: 600, fontSize: 14, color: active ? "#004537" : "#1f2937" }}>
                           {m.label}
@@ -737,27 +731,6 @@ export default function KasseClient({ paymentMethods, shipping, prefill, isLogge
                 disabled={isPending}
               />
             </div>
-          ) : paymentMethod === "klarna" ? (
-            <button
-              type="button"
-              onClick={handleSubmit}
-              disabled={isPending || paymentMethods.length === 0}
-              style={{
-                display: "block",
-                marginTop: 20,
-                width: "100%",
-                background: isPending ? "#94a3b8" : "#ffa8c5",
-                color: "#000",
-                padding: "14px 20px",
-                textAlign: "center",
-                fontWeight: 700,
-                border: "none",
-                cursor: isPending ? "default" : "pointer",
-                fontSize: 15,
-              }}
-            >
-              {isPending ? "Wird weitergeleitet…" : "Mit Klarna bezahlen →"}
-            </button>
           ) : (
             <button
               type="button"
