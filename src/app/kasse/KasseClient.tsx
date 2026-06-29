@@ -7,7 +7,7 @@ import { useCart } from "@/components/CartProvider";
 import { colorLabel } from "@/lib/catalog-options";
 import { createOrder } from "./order-actions";
 import { startStripeCheckout } from "./stripe-actions";
-import PayPalCheckoutModal from "./PayPalCheckoutModal";
+import PayPalInlineButtons from "./PayPalInlineButtons";
 
 function euro(c: number): string {
   return (c / 100).toLocaleString("de-DE", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
@@ -155,8 +155,6 @@ export default function KasseClient({ paymentMethods, shipping, prefill, isLogge
   const [shippingCountry, setShippingCountry] = useState("DE");
   // Payment + notes
   const [paymentMethod, setPaymentMethod] = useState(paymentMethods[0]?.key ?? "");
-  const [showPayPalModal, setShowPayPalModal] = useState(false);
-  const [payPalOrderId, setPayPalOrderId] = useState<string>("");
   const [customerNote, setCustomerNote] = useState("");
   const [acceptsTerms, setAcceptsTerms] = useState(false);
 
@@ -211,81 +209,77 @@ export default function KasseClient({ paymentMethods, shipping, prefill, isLogge
   const taxCents = Math.round((subtotalCents + shippingCents) * 0.19);
   const totalCents = subtotalCents + shippingCents + taxCents;
 
-  function handleSubmit() {
+  // Form validate (returns true if valid, else handles scroll/error display)
+  function validateForm(): boolean {
     setGeneralError("");
     setValidationStarted(true);
 
-    // Scroll to first error
-    if (errors.firstName) { refs.firstName.current?.focus(); refs.firstName.current?.scrollIntoView({ behavior: "smooth", block: "center" }); return; }
-    if (errors.lastName) { refs.lastName.current?.focus(); refs.lastName.current?.scrollIntoView({ behavior: "smooth", block: "center" }); return; }
-    if (errors.email) { refs.email.current?.focus(); refs.email.current?.scrollIntoView({ behavior: "smooth", block: "center" }); return; }
-    if (errors.phone) { setGeneralError("Bitte gültige Telefonnummer eingeben."); return; }
-    if (errors.billingStreet) { refs.billingStreet.current?.focus(); refs.billingStreet.current?.scrollIntoView({ behavior: "smooth", block: "center" }); return; }
-    if (errors.billingZip) { refs.billingZip.current?.focus(); refs.billingZip.current?.scrollIntoView({ behavior: "smooth", block: "center" }); return; }
-    if (errors.billingCity) { refs.billingCity.current?.focus(); refs.billingCity.current?.scrollIntoView({ behavior: "smooth", block: "center" }); return; }
-    if (errors.shippingZip) { setGeneralError("Bitte gültige Liefer-PLZ eingeben."); return; }
+    if (errors.firstName) { refs.firstName.current?.focus(); refs.firstName.current?.scrollIntoView({ behavior: "smooth", block: "center" }); return false; }
+    if (errors.lastName) { refs.lastName.current?.focus(); refs.lastName.current?.scrollIntoView({ behavior: "smooth", block: "center" }); return false; }
+    if (errors.email) { refs.email.current?.focus(); refs.email.current?.scrollIntoView({ behavior: "smooth", block: "center" }); return false; }
+    if (errors.phone) { setGeneralError("Bitte gültige Telefonnummer eingeben."); return false; }
+    if (errors.billingStreet) { refs.billingStreet.current?.focus(); refs.billingStreet.current?.scrollIntoView({ behavior: "smooth", block: "center" }); return false; }
+    if (errors.billingZip) { refs.billingZip.current?.focus(); refs.billingZip.current?.scrollIntoView({ behavior: "smooth", block: "center" }); return false; }
+    if (errors.billingCity) { refs.billingCity.current?.focus(); refs.billingCity.current?.scrollIntoView({ behavior: "smooth", block: "center" }); return false; }
+    if (errors.shippingZip) { setGeneralError("Bitte gültige Liefer-PLZ eingeben."); return false; }
+    if (!paymentMethod) { setGeneralError("Bitte eine Zahlungsmethode wählen."); return false; }
+    if (!acceptsTerms) { setGeneralError("Bitte AGB und Datenschutz akzeptieren."); return false; }
 
-    if (!paymentMethod) {
-      setGeneralError("Bitte eine Zahlungsmethode wählen.");
-      return;
-    }
-    if (!acceptsTerms) {
-      setGeneralError("Bitte AGB und Datenschutz akzeptieren.");
-      return;
-    }
+    return true;
+  }
 
+  function buildOrderInput() {
     const fullPhone = phoneNumber.trim() ? `${phoneCountry} ${phoneNumber.trim()}` : "";
+    return {
+      customer: {
+        salutation, firstName, lastName, email, phone: fullPhone, firmname, ustId,
+        billingStreet, billingZip, billingCity, billingCountry,
+        shippingDiffers,
+        shippingStreet: shippingDiffers ? shippingStreet : "",
+        shippingZip: shippingDiffers ? shippingZip : "",
+        shippingCity: shippingDiffers ? shippingCity : "",
+        shippingCountry: shippingDiffers ? shippingCountry : "DE",
+      },
+      items: items.map((i) => ({
+        productId: i.productId,
+        productCode: i.productCode,
+        productName: i.productName,
+        productImage: i.productImage,
+        color: i.color,
+        size: i.size,
+        quantity: i.quantity,
+        unitPriceCents: i.unitPriceCents,
+        hasDtf: i.hasDtf,
+        dtfSize: i.dtfSize,
+        dtfPriceCents: i.dtfPriceCents,
+        dtfDesignUrl: i.dtfDesignUrl,
+      })),
+      paymentMethod,
+      customerNote,
+      subtotalCents,
+      shippingCents,
+      taxCents,
+      totalCents,
+    };
+  }
+
+  // PayPal Buttons için: validate + DB order create
+  async function validateAndCreateOrderForPayPal(): Promise<{ ok: boolean; orderId?: string; orderNumber?: string; error?: string }> {
+    if (!validateForm()) {
+      return { ok: false, error: generalError || "Bitte Formular ausfüllen" };
+    }
+    return createOrder(buildOrderInput());
+  }
+
+  // Rechnung & Klarna için manuel submit
+  function handleSubmit() {
+    if (!validateForm()) return;
 
     startTransition(async () => {
-      const result = await createOrder({
-        customer: {
-          salutation,
-          firstName,
-          lastName,
-          email,
-          phone: fullPhone,
-          firmname,
-          ustId,
-          billingStreet,
-          billingZip,
-          billingCity,
-          billingCountry,
-          shippingDiffers,
-          shippingStreet: shippingDiffers ? shippingStreet : "",
-          shippingZip: shippingDiffers ? shippingZip : "",
-          shippingCity: shippingDiffers ? shippingCity : "",
-          shippingCountry: shippingDiffers ? shippingCountry : "DE",
-        },
-        items: items.map((i) => ({
-          productId: i.productId,
-          productCode: i.productCode,
-          productName: i.productName,
-          productImage: i.productImage,
-          color: i.color,
-          size: i.size,
-          quantity: i.quantity,
-          unitPriceCents: i.unitPriceCents,
-          hasDtf: i.hasDtf,
-          dtfSize: i.dtfSize,
-          dtfPriceCents: i.dtfPriceCents,
-          dtfDesignUrl: i.dtfDesignUrl,
-        })),
-        paymentMethod,
-        customerNote,
-        subtotalCents,
-        shippingCents,
-        taxCents,
-        totalCents,
-      });
+      const result = await createOrder(buildOrderInput());
 
       if (result.ok && result.orderId && result.orderNumber) {
-        // Ödeme yöntemine göre yönlendir
-        if (paymentMethod === "paypal") {
-          // PayPal: Modal aç, paypalClientId varsa
-          setPayPalOrderId(result.orderId);
-          setShowPayPalModal(true);
-          // sepet henüz boşaltılmıyor - capture sonrası boşalır
-        } else if (paymentMethod === "klarna") {
+        if (paymentMethod === "klarna") {
           // Stripe checkout'a yönlendir
           const stripeRes = await startStripeCheckout(result.orderId);
           if (stripeRes.ok && stripeRes.url) {
@@ -542,33 +536,54 @@ export default function KasseClient({ paymentMethods, shipping, prefill, isLogge
               </p>
             ) : (
               <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
-                {paymentMethods.map((m) => (
-                  <label
-                    key={m.key}
-                    style={{
-                      display: "flex",
-                      alignItems: "flex-start",
-                      gap: 12,
-                      padding: 14,
-                      border: paymentMethod === m.key ? "2px solid #004537" : "1px solid #e5e7eb",
-                      background: paymentMethod === m.key ? "#f0fdf4" : "#fff",
-                      cursor: "pointer",
-                    }}
-                  >
-                    <input
-                      type="radio"
-                      name="payment"
-                      value={m.key}
-                      checked={paymentMethod === m.key}
-                      onChange={() => setPaymentMethod(m.key)}
-                      style={{ marginTop: 3 }}
-                    />
-                    <div>
-                      <div style={{ fontWeight: 600, fontSize: 14 }}>{m.label}</div>
-                      <div style={{ fontSize: 12, color: "#64748b", marginTop: 2 }}>{m.description}</div>
-                    </div>
-                  </label>
-                ))}
+                {paymentMethods.map((m) => {
+                  const active = paymentMethod === m.key;
+                  const icon = m.key === "paypal" ? "💳" :
+                              m.key === "klarna" ? "💜" :
+                              m.key === "rechnung" ? "📧" : "💰";
+                  const subInfo = m.key === "paypal" ? "Mit Kreditkarte, Lastschrift oder PayPal-Konto" :
+                                 m.key === "klarna" ? "Jetzt kaufen, später bezahlen (3 Raten verfügbar)" :
+                                 m.key === "rechnung" ? "Per Banküberweisung — 14 Tage Zahlungsziel" :
+                                 m.description;
+                  return (
+                    <label
+                      key={m.key}
+                      style={{
+                        display: "flex",
+                        alignItems: "flex-start",
+                        gap: 12,
+                        padding: 14,
+                        border: active ? "2px solid #004537" : "1px solid #e5e7eb",
+                        background: active ? "#f0fdf4" : "#fff",
+                        cursor: "pointer",
+                        transition: "all 0.15s",
+                      }}
+                    >
+                      <input
+                        type="radio"
+                        name="payment"
+                        value={m.key}
+                        checked={active}
+                        onChange={() => setPaymentMethod(m.key)}
+                        style={{ marginTop: 3 }}
+                      />
+                      <span style={{ fontSize: 24, lineHeight: 1, marginTop: -2 }}>{icon}</span>
+                      <div style={{ flex: 1 }}>
+                        <div style={{ fontWeight: 600, fontSize: 14, color: active ? "#004537" : "#1f2937" }}>
+                          {m.label}
+                        </div>
+                        <div style={{ fontSize: 12, color: "#64748b", marginTop: 3, lineHeight: 1.4 }}>
+                          {subInfo}
+                        </div>
+                        {m.key === "paypal" && active && (
+                          <div style={{ fontSize: 11, color: "#0e7490", marginTop: 6, padding: 6, background: "#ecfeff", display: "inline-block" }}>
+                            ℹ️ Kein PayPal-Konto nötig — direkt mit Karte bezahlen
+                          </div>
+                        )}
+                      </div>
+                    </label>
+                  );
+                })}
               </div>
             )}
           </div>
@@ -708,26 +723,63 @@ export default function KasseClient({ paymentMethods, shipping, prefill, isLogge
             </div>
           </div>
 
-          <button
-            type="button"
-            onClick={handleSubmit}
-            disabled={isPending || paymentMethods.length === 0}
-            style={{
-              display: "block",
-              marginTop: 20,
-              width: "100%",
-              background: isPending ? "#94a3b8" : "#004537",
-              color: "#fff",
-              padding: "14px 20px",
-              textAlign: "center",
-              fontWeight: 600,
-              border: "none",
-              cursor: isPending ? "default" : "pointer",
-              fontSize: 15,
-            }}
-          >
-            {isPending ? "Wird übermittelt…" : "Jetzt kaufen →"}
-          </button>
+          {/* Ödeme yöntemine göre buton */}
+          {paymentMethod === "paypal" && paypalClientId ? (
+            <div style={{ marginTop: 20 }}>
+              <PayPalInlineButtons
+                clientId={paypalClientId}
+                amountCents={totalCents}
+                validateAndCreateOrder={validateAndCreateOrderForPayPal}
+                onSuccess={(orderNumber) => {
+                  clearCart();
+                  router.push(`/bestellung-erfolg?nr=${orderNumber}`);
+                }}
+                disabled={isPending}
+              />
+            </div>
+          ) : paymentMethod === "klarna" ? (
+            <button
+              type="button"
+              onClick={handleSubmit}
+              disabled={isPending || paymentMethods.length === 0}
+              style={{
+                display: "block",
+                marginTop: 20,
+                width: "100%",
+                background: isPending ? "#94a3b8" : "#ffa8c5",
+                color: "#000",
+                padding: "14px 20px",
+                textAlign: "center",
+                fontWeight: 700,
+                border: "none",
+                cursor: isPending ? "default" : "pointer",
+                fontSize: 15,
+              }}
+            >
+              {isPending ? "Wird weitergeleitet…" : "Mit Klarna bezahlen →"}
+            </button>
+          ) : (
+            <button
+              type="button"
+              onClick={handleSubmit}
+              disabled={isPending || paymentMethods.length === 0}
+              style={{
+                display: "block",
+                marginTop: 20,
+                width: "100%",
+                background: isPending ? "#94a3b8" : "#004537",
+                color: "#fff",
+                padding: "14px 20px",
+                textAlign: "center",
+                fontWeight: 600,
+                border: "none",
+                cursor: isPending ? "default" : "pointer",
+                fontSize: 15,
+              }}
+            >
+              {isPending ? "Wird übermittelt…" : "Auf Rechnung bestellen →"}
+            </button>
+          )}
         </aside>
       </div>
 
@@ -738,21 +790,6 @@ export default function KasseClient({ paymentMethods, shipping, prefill, isLogge
           }
         }
       `}</style>
-
-      {showPayPalModal && paypalClientId && payPalOrderId && (
-        <PayPalCheckoutModal
-          orderId={payPalOrderId}
-          amountCents={totalCents}
-          orderNumber={`INKII Bestellung`}
-          clientId={paypalClientId}
-          mode={paypalMode || "sandbox"}
-          onClose={() => setShowPayPalModal(false)}
-          onSuccess={(orderNumber) => {
-            clearCart();
-            router.push(`/bestellung-erfolg?nr=${orderNumber}`);
-          }}
-        />
-      )}
     </section>
   );
 }
