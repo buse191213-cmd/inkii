@@ -249,15 +249,77 @@ export async function updateOrderTracking(
   orderId: string,
   carrier: string,
   trackingNumber: string
-): Promise<{ ok: boolean; error?: string }> {
+): Promise<{ ok: boolean; error?: string; statusChanged?: boolean; emailSent?: boolean }> {
   try {
     if (!(await isAuthenticated())) return { ok: false, error: "Nicht autorisiert" };
-    await db.order.update({
+
+    const order = await db.order.findUnique({
       where: { id: orderId },
-      data: { shippingCarrier: carrier, trackingNumber },
+      include: { customer: true, items: true },
     });
+    if (!order) return { ok: false, error: "Bestellung nicht gefunden" };
+
+    // Tracking numarası eklendi/değiştirildi mi?
+    const hasTracking = trackingNumber.trim().length > 0;
+    const trackingChanged = hasTracking && (
+      order.trackingNumber !== trackingNumber.trim() ||
+      order.shippingCarrier !== carrier
+    );
+
+    // Status otomatik VERSENDET'e geçilebilir mi?
+    // Sadece henüz versendet/zugestellt/abgeschlossen değilse
+    const canAutoShip = hasTracking && trackingChanged && [
+      "NEU", "WARTEND", "BEZAHLT", "IN_PRODUKTION", "VERSANDBEREIT"
+    ].includes(order.status);
+
+    const updates: Record<string, unknown> = {
+      shippingCarrier: carrier,
+      trackingNumber: trackingNumber.trim(),
+    };
+
+    if (canAutoShip) {
+      updates.status = "VERSENDET";
+      updates.shippedAt = new Date();
+    }
+
+    await db.order.update({ where: { id: orderId }, data: updates });
+
+    let emailSent = false;
+    if (canAutoShip) {
+      // VERSENDET mailini gönder (tracking dahil)
+      try {
+        const url = carrierTrackingUrl(carrier, trackingNumber.trim());
+        const html = `
+          <div style="font-family: Arial, sans-serif; max-width: 600px;">
+            <h2 style="color: #004537;">Ihre Bestellung wurde versendet</h2>
+            <p>Sehr geehrte/r ${order.customer.salutation} ${order.customer.firstName} ${order.customer.lastName},</p>
+            <p>Ihre Bestellung ist auf dem Weg zu Ihnen.</p>
+            <p><strong>Bestellnummer:</strong> ${order.orderNumber}</p>
+            <p style="background: #f0fdf4; padding: 12px; margin: 16px 0;">
+              <strong>Verfolgen Sie Ihre Sendung:</strong><br>
+              ${carrier} · ${trackingNumber.trim()}<br>
+              ${url ? `<a href="${url}" style="color: #004537;">→ Sendungsverfolgung öffnen</a>` : ""}
+            </p>
+            <p style="margin-top: 24px; color: #666; font-size: 12px;">
+              Bei Fragen schreiben Sie uns: <a href="mailto:info@inkiiworks.de">info@inkiiworks.de</a><br>
+              INKII WORKS · Sener Kirli · Westuferstr. 25 · 45356 Essen
+            </p>
+          </div>
+        `;
+        await sendMail(
+          order.customer.email,
+          `INKII Works — Ihre Bestellung wurde versendet (${order.orderNumber})`,
+          html
+        );
+        emailSent = true;
+      } catch (e) {
+        console.error("Versendet-Email fehlgeschlagen:", e);
+      }
+    }
+
     revalidatePath(`/admin/bestellungen/${orderId}`);
-    return { ok: true };
+    revalidatePath("/admin/bestellungen");
+    return { ok: true, statusChanged: canAutoShip, emailSent };
   } catch (e) {
     return { ok: false, error: e instanceof Error ? e.message : "Fehler" };
   }

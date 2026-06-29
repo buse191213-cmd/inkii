@@ -64,7 +64,12 @@ export default function OrderActionsClient({
     startTransition(async () => {
       const result = await updateOrderTracking(orderId, carrier, tracking);
       if (result.ok) {
-        notify("ok", "Versanddaten gespeichert");
+        if (result.statusChanged) {
+          notify("ok", `Versanddaten gespeichert · Status → VERSENDET${result.emailSent ? " · Kunde benachrichtigt 📧" : ""}`);
+          setStatus("VERSENDET");
+        } else {
+          notify("ok", "Versanddaten gespeichert");
+        }
         router.refresh();
       } else {
         notify("err", result.error ?? "Fehler");
@@ -108,7 +113,7 @@ export default function OrderActionsClient({
 
       {/* Kargo */}
       <div style={{ padding: 12, background: "#f8fafc", border: "1px solid #e5e7eb" }}>
-        <label style={lbl}>📦 Versanddaten (für „Versendet" Status):</label>
+        <label style={lbl}>📦 Versanddaten:</label>
         <div style={{ display: "grid", gridTemplateColumns: "160px 1fr auto", gap: 8, marginTop: 6 }}>
           <select value={carrier} onChange={(e) => setCarrier(e.target.value)} style={input}>
             {CARRIERS.map((c) => <option key={c} value={c}>{c}</option>)}
@@ -129,6 +134,9 @@ export default function OrderActionsClient({
             Speichern
           </button>
         </div>
+        <p style={{ fontSize: 11, color: "#0e7490", marginTop: 6 }}>
+          ℹ️ Beim Speichern einer Tracking-Nummer wird der Status automatisch auf <strong>VERSENDET</strong> gesetzt und der Kunde per E-Mail benachrichtigt.
+        </p>
       </div>
 
       {/* Admin Notu */}

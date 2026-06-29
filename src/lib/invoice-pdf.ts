@@ -252,12 +252,16 @@ export async function generateInvoicePDF(data: InvoiceData): Promise<Buffer> {
       doc.text(`${euro(data.taxCents)} €`, sumValueX, rowY, { width: 65, align: "right" });
       rowY += 22;
 
-      // Gesamt — büyük + yeşil
-      doc.rect(sumLabelX - 10, rowY - 5, 185, 28).fill(PRIMARY);
-      doc.fontSize(13).fillColor("#fff");
-      doc.text("Gesamtbetrag:", sumLabelX, rowY + 4, { width: 110, align: "right" });
-      doc.text(`${euro(data.totalCents)} €`, sumValueX, rowY + 4, { width: 65, align: "right" });
-      rowY += 44;
+      // Gesamt — büyük + yeşil, text dikey ortalı
+      const totalBoxTop = rowY - 4;
+      const totalBoxHeight = 30;
+      doc.rect(sumLabelX - 10, totalBoxTop, 185, totalBoxHeight).fill(PRIMARY);
+      doc.fontSize(12).fillColor("#fff");
+      // Dikey ortalama: box 30px, font 12pt (~16px), so y = top + (30-16)/2 = top + 7
+      const totalTextY = totalBoxTop + 9;
+      doc.text("Gesamtbetrag:", sumLabelX, totalTextY, { width: 110, align: "right" });
+      doc.text(`${euro(data.totalCents)} €`, sumValueX, totalTextY, { width: 65, align: "right" });
+      rowY = totalBoxTop + totalBoxHeight + 18;
 
       // ═══════════════════════════════════════════════
       // ZAHLUNGS-INFO (sadece Rechnung yöntemi için)
