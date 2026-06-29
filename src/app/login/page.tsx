@@ -1,6 +1,6 @@
 import { getCurrentCustomerId } from "@/lib/customer-auth";
 import { redirect } from "next/navigation";
-import { db } from "@/lib/db";
+import { getHomeImage } from "@/lib/home-images";
 import LoginClient from "./LoginClient";
 
 export const metadata = {
@@ -20,36 +20,27 @@ export default async function LoginPage({
   }
   const params = await searchParams;
 
-  // Slideshow için ürünleri çek (images = CSV string)
-  let slideImages: string[] = [];
+  // Textilveredelung görsellerini çek
+  const slideImages: string[] = [];
   try {
-    const products = await db.product.findMany({
-      where: {
-        status: "active",
-        NOT: { images: "" },
-      },
-      take: 8,
-      orderBy: { updatedAt: "desc" },
-      select: { images: true },
-    });
-
-    slideImages = products
-      .map((p) => p.images.split(",")[0]?.trim())
-      .filter((url): url is string => Boolean(url))
-      .slice(0, 5);
+    const keys = ["tv-hero", "tv-method-1", "tv-method-2", "tv-method-3", "tv-method-4", "tv-method-5"];
+    for (const k of keys) {
+      const img = await getHomeImage(k);
+      if (img) slideImages.push(img);
+    }
   } catch (e) {
-    console.warn("Slide images query failed:", e);
+    console.warn("Hero images query failed:", e);
   }
 
   // Fallback: DTF mockups
   if (slideImages.length === 0) {
-    slideImages = [
+    slideImages.push(
       "/dtf-engine/mockups/tshirt.png",
       "/dtf-engine/mockups/hoodie.png",
       "/dtf-engine/mockups/polo.png",
       "/dtf-engine/mockups/cap.png",
-      "/dtf-engine/mockups/bag.png",
-    ];
+      "/dtf-engine/mockups/bag.png"
+    );
   }
 
   return <LoginClient next={params.next ?? "/konto"} slideImages={slideImages} />;

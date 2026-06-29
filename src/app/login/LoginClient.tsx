@@ -18,8 +18,9 @@ export default function LoginClient({ next, slideImages }: Props) {
   const [showPwd, setShowPwd] = useState(false);
   const [error, setError] = useState("");
   const [activeSlide, setActiveSlide] = useState(0);
+  const [focusedField, setFocusedField] = useState<string | null>(null);
 
-  // Slideshow rotation every 5s
+  // Slideshow
   useEffect(() => {
     if (slideImages.length <= 1) return;
     const id = setInterval(() => {
@@ -61,7 +62,7 @@ export default function LoginClient({ next, slideImages }: Props) {
       zIndex: 100,
     }} className="login-fullscreen">
 
-      {/* ═══════════ LEFT: IMAGE SLIDESHOW ═══════════ */}
+      {/* ═══════════ LEFT: SLIDESHOW ═══════════ */}
       <div style={{
         position: "relative",
         overflow: "hidden",
@@ -86,7 +87,7 @@ export default function LoginClient({ next, slideImages }: Props) {
         <div style={{
           position: "absolute",
           inset: 0,
-          background: "linear-gradient(135deg, rgba(0,0,0,0.55) 0%, rgba(0,0,0,0.35) 50%, rgba(0,0,0,0.65) 100%)",
+          background: "linear-gradient(135deg, rgba(0,0,0,0.45) 0%, rgba(0,0,0,0.25) 50%, rgba(0,0,0,0.55) 100%)",
           pointerEvents: "none",
         }} />
 
@@ -94,7 +95,7 @@ export default function LoginClient({ next, slideImages }: Props) {
         <div style={{
           position: "absolute",
           inset: 0,
-          padding: "44px 48px",
+          padding: "40px 48px",
           display: "flex",
           flexDirection: "column",
           justifyContent: "space-between",
@@ -102,18 +103,20 @@ export default function LoginClient({ next, slideImages }: Props) {
           zIndex: 2,
         }}>
 
-          {/* Top: Brand */}
+          {/* Top: Logo */}
           <div>
-            <Link href="/" style={{
-              fontSize: 13,
-              fontWeight: 600,
-              color: "#fff",
-              textDecoration: "none",
-              letterSpacing: "4px",
-              textTransform: "uppercase",
-              display: "inline-block",
-            }}>
-              INKII Works
+            <Link href="/" style={{ display: "inline-block" }}>
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img
+                src="/inkii-works-logo.png"
+                alt="INKII Works"
+                style={{
+                  height: 48,
+                  width: "auto",
+                  filter: "brightness(0) invert(1)",
+                  opacity: 0.95,
+                }}
+              />
             </Link>
           </div>
 
@@ -157,51 +160,76 @@ export default function LoginClient({ next, slideImages }: Props) {
         </div>
       </div>
 
-      {/* ═══════════ RIGHT: LOGIN FORM ═══════════ */}
+      {/* ═══════════ RIGHT: FORM ═══════════ */}
       <div style={{
         display: "flex",
         alignItems: "center",
         justifyContent: "center",
         padding: "40px 48px",
         background: "#fff",
-        overflow: "auto",
+        overflowY: "auto",
       }} className="login-form-wrap">
-        <div style={{ width: "100%", maxWidth: 380 }}>
+        <div style={{ width: "100%", maxWidth: 360 }}>
 
           <p style={{
-            fontSize: 12,
+            fontSize: 11,
             color: "#000",
             letterSpacing: "3px",
             textTransform: "uppercase",
             fontWeight: 600,
             margin: 0,
-            marginBottom: 32,
+            marginBottom: 36,
           }}>
             Anmelden
           </p>
 
-          <form onSubmit={handleSubmit} noValidate style={{ display: "flex", flexDirection: "column", gap: 22 }}>
+          <form onSubmit={handleSubmit} noValidate style={{ display: "flex", flexDirection: "column", gap: 28 }}>
+
+            {/* Email — minimal underline */}
             <div>
-              <label style={lbl}>E-Mail</label>
+              <label style={{
+                ...lbl,
+                color: focusedField === "email" || email ? "#000" : "#999",
+              }}>
+                E-Mail
+              </label>
               <input
                 type="email"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                style={input}
-                placeholder="name@beispiel.de"
+                onFocus={() => setFocusedField("email")}
+                onBlur={() => setFocusedField(null)}
+                style={{
+                  ...input,
+                  borderBottomColor: focusedField === "email" ? "#000" : "#d0d0d0",
+                  borderBottomWidth: focusedField === "email" ? "2px" : "1px",
+                }}
                 autoFocus
                 autoComplete="email"
               />
             </div>
 
+            {/* Password — minimal underline */}
             <div>
-              <label style={lbl}>Passwort</label>
+              <label style={{
+                ...lbl,
+                color: focusedField === "password" || password ? "#000" : "#999",
+              }}>
+                Passwort
+              </label>
               <div style={{ position: "relative" }}>
                 <input
                   type={showPwd ? "text" : "password"}
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
-                  style={{ ...input, paddingRight: 40 }}
+                  onFocus={() => setFocusedField("password")}
+                  onBlur={() => setFocusedField(null)}
+                  style={{
+                    ...input,
+                    paddingRight: 36,
+                    borderBottomColor: focusedField === "password" ? "#000" : "#d0d0d0",
+                    borderBottomWidth: focusedField === "password" ? "2px" : "1px",
+                  }}
                   autoComplete="current-password"
                 />
                 <button
@@ -214,7 +242,7 @@ export default function LoginClient({ next, slideImages }: Props) {
                     background: "transparent",
                     border: "none",
                     cursor: "pointer",
-                    color: "#000",
+                    color: "#666",
                     padding: 4,
                     display: "flex",
                     alignItems: "center",
@@ -238,13 +266,14 @@ export default function LoginClient({ next, slideImages }: Props) {
 
             {error && (
               <div style={{
-                padding: "10px 0",
+                padding: "10px 0 8px",
                 color: "#000",
                 fontSize: 12,
                 borderTop: "1px solid #000",
                 display: "flex",
                 flexDirection: "column",
                 gap: 6,
+                lineHeight: 1.5,
               }}>
                 <div>⚠ {error}</div>
                 {error.includes("bestätigen") && email && (
@@ -264,11 +293,11 @@ export default function LoginClient({ next, slideImages }: Props) {
               style={{
                 background: isPending ? "#666" : "#000",
                 color: "#fff",
-                padding: "16px 16px",
+                padding: "15px 16px",
                 fontWeight: 500,
                 border: "none",
                 cursor: isPending ? "default" : "pointer",
-                fontSize: 13,
+                fontSize: 12,
                 marginTop: 8,
                 letterSpacing: "3px",
                 textTransform: "uppercase",
@@ -299,7 +328,7 @@ export default function LoginClient({ next, slideImages }: Props) {
         </div>
       </div>
 
-      {/* Mobile responsive: image hidden, only form */}
+      {/* Mobile */}
       <style jsx>{`
         @media (max-width: 880px) {
           :global(.login-fullscreen) {
@@ -316,24 +345,24 @@ export default function LoginClient({ next, slideImages }: Props) {
 
 const lbl: React.CSSProperties = {
   display: "block",
-  fontSize: 10.5,
+  fontSize: 10,
   fontWeight: 600,
-  color: "#000",
-  marginBottom: 8,
-  letterSpacing: "2px",
+  marginBottom: 6,
+  letterSpacing: "2.5px",
   textTransform: "uppercase",
+  transition: "color 0.2s",
 };
 
 const input: React.CSSProperties = {
   width: "100%",
-  padding: "10px 0",
+  padding: "10px 0 8px",
   border: "none",
-  borderBottom: "1px solid #000",
-  fontSize: 14,
+  borderBottom: "1px solid #d0d0d0",
+  fontSize: 15,
   background: "transparent",
   fontFamily: "inherit",
   borderRadius: 0,
   outline: "none",
   color: "#000",
-  transition: "border-color 0.15s",
+  transition: "border-color 0.2s, border-width 0.2s",
 };
