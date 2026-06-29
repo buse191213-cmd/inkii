@@ -42,7 +42,7 @@ export default function SicherheitClient() {
     e.preventDefault();
     setDeactivateMsg("");
     if (deactivateConfirm !== "DEAKTIVIEREN") {
-      setDeactivateMsg("Bitte geben Sie genau „DEAKTIVIEREN" zur Bestätigung ein.");
+      setDeactivateMsg('Bitte geben Sie genau „DEAKTIVIEREN" zur Bestätigung ein.');
       return;
     }
     startTransition(async () => {
