@@ -15,6 +15,57 @@ function isValidEmail(s: string): boolean {
   return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(s.trim());
 }
 
+// PLZ-Regeln pro Land (length + pattern + placeholder)
+const PLZ_RULES: Record<string, { pattern: RegExp; placeholder: string; hint: string }> = {
+  DE: { pattern: /^\d{5}$/, placeholder: "12345", hint: "5 Ziffern" },
+  AT: { pattern: /^\d{4}$/, placeholder: "1234", hint: "4 Ziffern" },
+  CH: { pattern: /^\d{4}$/, placeholder: "1234", hint: "4 Ziffern" },
+  NL: { pattern: /^\d{4}\s?[A-Z]{2}$/i, placeholder: "1234 AB", hint: "4 Ziffern + 2 Buchstaben" },
+  BE: { pattern: /^\d{4}$/, placeholder: "1234", hint: "4 Ziffern" },
+  FR: { pattern: /^\d{5}$/, placeholder: "75001", hint: "5 Ziffern" },
+  IT: { pattern: /^\d{5}$/, placeholder: "00100", hint: "5 Ziffern" },
+  ES: { pattern: /^\d{5}$/, placeholder: "28001", hint: "5 Ziffern" },
+  PL: { pattern: /^\d{2}-\d{3}$/, placeholder: "00-000", hint: "00-000 Format" },
+  TR: { pattern: /^\d{5}$/, placeholder: "34000", hint: "5 Ziffern" },
+};
+
+function plzRule(country: string) {
+  return PLZ_RULES[country] ?? PLZ_RULES.DE;
+}
+
+function isValidPlz(value: string, country: string): boolean {
+  return plzRule(country).pattern.test(value.trim());
+}
+
+// Telefon: nur Ziffern (akıllı filtreleme - / ( ) gerekirse)
+function cleanPhoneInput(s: string): string {
+  // Sadece rakam, boşluk, /, -, ()
+  return s.replace(/[^\d\s\-/()]/g, "");
+}
+
+function isValidPhone(s: string): boolean {
+  // Boş geçerli (zorunlu değil), girilen değer rakam sayısı 6-15 olmalı
+  if (!s.trim()) return true;
+  const digits = s.replace(/\D/g, "");
+  return digits.length >= 6 && digits.length <= 15;
+}
+
+// PLZ input filtering — NL hariç sadece rakam (PL için -)
+function cleanPlzInput(s: string, country: string): string {
+  if (country === "NL") {
+    return s.replace(/[^a-zA-Z0-9\s]/g, "").toUpperCase();
+  }
+  if (country === "PL") {
+    return s.replace(/[^\d-]/g, "");
+  }
+  return s.replace(/\D/g, ""); // Sadece rakam
+}
+
+// İsim/Şehir input — sayı kabul etme (harf + boşluk + tire + apostrof)
+function cleanNameInput(s: string): string {
+  return s.replace(/[^A-Za-zÄÖÜäöüßéèêàâçñşğüöıİĞÜŞÖÇ\s\-'.]/g, "");
+}
+
 const COUNTRIES = [
   { code: "DE", label: "Deutschland", phone: "+49" },
   { code: "AT", label: "Österreich", phone: "+43" },
@@ -124,12 +175,14 @@ export default function KasseClient({ paymentMethods, shipping }: Props) {
     firstName: !firstName.trim(),
     lastName: !lastName.trim(),
     email: !email.trim() ? "required" : !isValidEmail(email) ? "format" : "",
+    phone: !isValidPhone(phoneNumber) ? "format" : "",
     billingStreet: !billingStreet.trim(),
-    billingZip: !billingZip.trim(),
+    billingZip: !billingZip.trim() ? "required" : !isValidPlz(billingZip, billingCountry) ? "format" : "",
     billingCity: !billingCity.trim(),
+    shippingZip: shippingDiffers && shippingZip.trim() && !isValidPlz(shippingZip, shippingCountry) ? "format" : "",
   };
   const hasError = Boolean(
-    errors.firstName || errors.lastName || errors.email || errors.billingStreet || errors.billingZip || errors.billingCity
+    errors.firstName || errors.lastName || errors.email || errors.phone || errors.billingStreet || errors.billingZip || errors.billingCity || errors.shippingZip
   );
 
   const shippingCents = subtotalCents >= shipping.freeShippingFromCents ? 0 : shipping.standardCostCents;
@@ -144,9 +197,11 @@ export default function KasseClient({ paymentMethods, shipping }: Props) {
     if (errors.firstName) { refs.firstName.current?.focus(); refs.firstName.current?.scrollIntoView({ behavior: "smooth", block: "center" }); return; }
     if (errors.lastName) { refs.lastName.current?.focus(); refs.lastName.current?.scrollIntoView({ behavior: "smooth", block: "center" }); return; }
     if (errors.email) { refs.email.current?.focus(); refs.email.current?.scrollIntoView({ behavior: "smooth", block: "center" }); return; }
+    if (errors.phone) { setGeneralError("Bitte gültige Telefonnummer eingeben."); return; }
     if (errors.billingStreet) { refs.billingStreet.current?.focus(); refs.billingStreet.current?.scrollIntoView({ behavior: "smooth", block: "center" }); return; }
     if (errors.billingZip) { refs.billingZip.current?.focus(); refs.billingZip.current?.scrollIntoView({ behavior: "smooth", block: "center" }); return; }
     if (errors.billingCity) { refs.billingCity.current?.focus(); refs.billingCity.current?.scrollIntoView({ behavior: "smooth", block: "center" }); return; }
+    if (errors.shippingZip) { setGeneralError("Bitte gültige Liefer-PLZ eingeben."); return; }
 
     if (!paymentMethod) {
       setGeneralError("Bitte eine Zahlungsmethode wählen.");
@@ -236,7 +291,7 @@ export default function KasseClient({ paymentMethods, shipping }: Props) {
                 <input
                   ref={refs.firstName}
                   value={firstName}
-                  onChange={(e) => setFirstName(e.target.value)}
+                  onChange={(e) => setFirstName(cleanNameInput(e.target.value))}
                   style={showErr && errors.firstName ? inputErr : input}
                 />
                 {showErr && errors.firstName && <span style={errMsg}>Bitte ausfüllen</span>}
@@ -246,7 +301,7 @@ export default function KasseClient({ paymentMethods, shipping }: Props) {
                 <input
                   ref={refs.lastName}
                   value={lastName}
-                  onChange={(e) => setLastName(e.target.value)}
+                  onChange={(e) => setLastName(cleanNameInput(e.target.value))}
                   style={showErr && errors.lastName ? inputErr : input}
                 />
                 {showErr && errors.lastName && <span style={errMsg}>Bitte ausfüllen</span>}
@@ -267,7 +322,7 @@ export default function KasseClient({ paymentMethods, shipping }: Props) {
                 {showErr && errors.email === "format" && <span style={errMsg}>Bitte gültige E-Mail-Adresse</span>}
               </div>
               <div style={field}>
-                <label>Telefon</label>
+                <label style={showErr && errors.phone ? labelErr : undefined}>Telefon</label>
                 <div style={{ display: "flex", gap: 6 }}>
                   <select
                     value={phoneCountry}
@@ -282,13 +337,16 @@ export default function KasseClient({ paymentMethods, shipping }: Props) {
                   </select>
                   <input
                     type="tel"
-                    inputMode="tel"
+                    inputMode="numeric"
                     value={phoneNumber}
-                    onChange={(e) => setPhoneNumber(e.target.value)}
-                    style={input}
+                    onChange={(e) => setPhoneNumber(cleanPhoneInput(e.target.value))}
+                    style={showErr && errors.phone ? inputErr : input}
                     placeholder="160 1234567"
                   />
                 </div>
+                {showErr && errors.phone === "format" && (
+                  <span style={errMsg}>Bitte gültige Telefonnummer (6-15 Ziffern)</span>
+                )}
               </div>
             </div>
             <div style={row}>
@@ -317,22 +375,29 @@ export default function KasseClient({ paymentMethods, shipping }: Props) {
               {showErr && errors.billingStreet && <span style={errMsg}>Bitte ausfüllen</span>}
             </div>
             <div style={{ ...row, marginTop: 12 }}>
-              <div style={{ ...field, maxWidth: 140 }}>
-                <label style={showErr && errors.billingZip ? labelErr : undefined}>PLZ *</label>
+              <div style={{ ...field, maxWidth: 180 }}>
+                <label style={showErr && errors.billingZip ? labelErr : undefined}>
+                  PLZ * <small style={{ color: "#94a3b8", fontWeight: 400 }}>({plzRule(billingCountry).hint})</small>
+                </label>
                 <input
                   ref={refs.billingZip}
                   value={billingZip}
-                  onChange={(e) => setBillingZip(e.target.value)}
+                  onChange={(e) => setBillingZip(cleanPlzInput(e.target.value, billingCountry))}
                   style={showErr && errors.billingZip ? inputErr : input}
+                  placeholder={plzRule(billingCountry).placeholder}
+                  inputMode={billingCountry === "NL" ? "text" : "numeric"}
                 />
-                {showErr && errors.billingZip && <span style={errMsg}>Bitte ausfüllen</span>}
+                {showErr && errors.billingZip === "required" && <span style={errMsg}>Bitte ausfüllen</span>}
+                {showErr && errors.billingZip === "format" && (
+                  <span style={errMsg}>Format: {plzRule(billingCountry).placeholder}</span>
+                )}
               </div>
               <div style={field}>
                 <label style={showErr && errors.billingCity ? labelErr : undefined}>Stadt *</label>
                 <input
                   ref={refs.billingCity}
                   value={billingCity}
-                  onChange={(e) => setBillingCity(e.target.value)}
+                  onChange={(e) => setBillingCity(cleanNameInput(e.target.value))}
                   style={showErr && errors.billingCity ? inputErr : input}
                 />
                 {showErr && errors.billingCity && <span style={errMsg}>Bitte ausfüllen</span>}
@@ -366,13 +431,24 @@ export default function KasseClient({ paymentMethods, shipping }: Props) {
                 <input value={shippingStreet} onChange={(e) => setShippingStreet(e.target.value)} style={input} />
               </div>
               <div style={{ ...row, marginTop: 12 }}>
-                <div style={{ ...field, maxWidth: 140 }}>
-                  <label>PLZ</label>
-                  <input value={shippingZip} onChange={(e) => setShippingZip(e.target.value)} style={input} />
+                <div style={{ ...field, maxWidth: 180 }}>
+                  <label style={showErr && errors.shippingZip ? labelErr : undefined}>
+                    PLZ <small style={{ color: "#94a3b8", fontWeight: 400 }}>({plzRule(shippingCountry).hint})</small>
+                  </label>
+                  <input
+                    value={shippingZip}
+                    onChange={(e) => setShippingZip(cleanPlzInput(e.target.value, shippingCountry))}
+                    style={showErr && errors.shippingZip ? inputErr : input}
+                    placeholder={plzRule(shippingCountry).placeholder}
+                    inputMode={shippingCountry === "NL" ? "text" : "numeric"}
+                  />
+                  {showErr && errors.shippingZip === "format" && (
+                    <span style={errMsg}>Format: {plzRule(shippingCountry).placeholder}</span>
+                  )}
                 </div>
                 <div style={field}>
                   <label>Stadt</label>
-                  <input value={shippingCity} onChange={(e) => setShippingCity(e.target.value)} style={input} />
+                  <input value={shippingCity} onChange={(e) => setShippingCity(cleanNameInput(e.target.value))} style={input} />
                 </div>
                 <div style={{ ...field, maxWidth: 180 }}>
                   <label>Land</label>
