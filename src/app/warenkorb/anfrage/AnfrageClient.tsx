@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useTransition, useRef } from "react";
+import { useState, useTransition, useRef, useEffect } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useCart } from "@/components/CartProvider";
@@ -87,6 +87,27 @@ export default function AnfrageClient({ prefill }: { prefill?: Prefill | null })
   const [firmname, setFirmname] = useState(prefill?.company || "");
   const [message, setMessage] = useState("");
   const [accepts, setAccepts] = useState(false);
+
+  // Force sync prefill on mount (browser autofill veya state reset karşı garanti)
+  useEffect(() => {
+    if (!prefill) return;
+    const fn = prefill.name.split(" ")[0] || "";
+    const ln = prefill.name.split(" ").slice(1).join(" ") || "";
+    setFirstName((cur) => cur || fn);
+    setLastName((cur) => cur || ln);
+    setEmail((cur) => cur || prefill.email);
+    setFirmname((cur) => cur || prefill.company);
+    if (prefill.phone) {
+      const m = prefill.phone.match(/^(\+\d{1,3})\s*(.*)$/);
+      if (m) {
+        setPhoneCountry(m[1]);
+        setPhoneNumber((cur) => cur || m[2].trim());
+      } else {
+        setPhoneNumber((cur) => cur || prefill.phone);
+      }
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   if (!isLoaded) {
     return (

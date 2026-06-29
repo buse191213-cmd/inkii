@@ -2,6 +2,7 @@ import { getCurrentCustomer } from "@/lib/customer-auth";
 import { notFound } from "next/navigation";
 import { db } from "@/lib/db";
 import Link from "next/link";
+import ReorderButton from "./ReorderButton";
 
 export const dynamic = "force-dynamic";
 
@@ -74,24 +75,46 @@ export default async function KundenBestellungDetailPage({
               {germanDate(order.createdAt)}
             </p>
           </div>
-          <a
-            href={`/api/rechnung/${order.id}`}
-            target="_blank"
-            rel="noopener noreferrer"
-            style={{
-              padding: "10px 18px",
-              background: "#004537",
-              color: "#fff",
-              fontWeight: 600,
-              fontSize: 13,
-              textDecoration: "none",
-              display: "inline-flex",
-              alignItems: "center",
-              gap: 6,
-            }}
-          >
-            📄 Rechnung herunterladen
-          </a>
+          <div style={{ display: "flex", gap: 10, flexWrap: "wrap" }}>
+            <a
+              href={`/api/rechnung/${order.id}`}
+              target="_blank"
+              rel="noopener noreferrer"
+              style={{
+                padding: "10px 18px",
+                background: "#fff",
+                color: "#0f1a16",
+                border: "1px solid #0f1a16",
+                fontWeight: 600,
+                fontSize: 12,
+                textDecoration: "none",
+                display: "inline-flex",
+                alignItems: "center",
+                gap: 6,
+                letterSpacing: "1.5px",
+                textTransform: "uppercase",
+                borderRadius: 4,
+              }}
+            >
+              📄 Rechnung
+            </a>
+            <ReorderButton
+              items={order.items.map((i) => ({
+                productId: i.productId,
+                productCode: i.productCode,
+                productName: i.productName,
+                productImage: i.productImage,
+                color: i.color,
+                size: i.size,
+                quantity: i.quantity,
+                unitPriceCents: i.unitPriceCents,
+                hasDtf: i.hasDtf,
+                dtfSize: i.dtfSize,
+                dtfPriceCents: i.dtfPriceCents,
+                dtfDesignUrl: i.dtfDesignUrl,
+              }))}
+            />
+          </div>
         </div>
 
         {/* TIMELINE - Status izleyici */}
@@ -201,18 +224,18 @@ export default async function KundenBestellungDetailPage({
                   key={item.id}
                   style={{
                     display: "grid",
-                    gridTemplateColumns: "60px 1fr auto",
+                    gridTemplateColumns: "60px 1fr auto auto",
                     gap: 12,
-                    padding: "12px 14px",
+                    padding: "14px 14px",
                     borderBottom: "1px solid #f1f5f9",
                     alignItems: "center",
                   }}
                 >
                   {item.productImage ? (
                     // eslint-disable-next-line @next/next/no-img-element
-                    <img src={item.productImage} alt={item.productName} style={{ width: 60, height: 60, objectFit: "contain", background: "#f4f5f3" }} />
+                    <img src={item.productImage} alt={item.productName} style={{ width: 60, height: 60, objectFit: "contain", background: "#f4f5f3", borderRadius: 4 }} />
                   ) : (
-                    <div style={{ width: 60, height: 60, background: "#f4f5f3" }} />
+                    <div style={{ width: 60, height: 60, background: "#f4f5f3", borderRadius: 4 }} />
                   )}
                   <div>
                     <div style={{ fontWeight: 600, fontSize: 14 }}>{item.productName}</div>
@@ -227,7 +250,24 @@ export default async function KundenBestellungDetailPage({
                       </div>
                     )}
                   </div>
-                  <div style={{ fontWeight: 600, fontSize: 14, textAlign: "right" }}>
+                  <ReorderButton
+                    mode="single"
+                    items={[{
+                      productId: item.productId,
+                      productCode: item.productCode,
+                      productName: item.productName,
+                      productImage: item.productImage,
+                      color: item.color,
+                      size: item.size,
+                      quantity: item.quantity,
+                      unitPriceCents: item.unitPriceCents,
+                      hasDtf: item.hasDtf,
+                      dtfSize: item.dtfSize,
+                      dtfPriceCents: item.dtfPriceCents,
+                      dtfDesignUrl: item.dtfDesignUrl,
+                    }]}
+                  />
+                  <div style={{ fontWeight: 600, fontSize: 14, textAlign: "right", minWidth: 80 }}>
                     {item.lineTotalCents > 0 ? `${euro(item.lineTotalCents)} €` : "auf Anfrage"}
                   </div>
                 </div>
