@@ -81,13 +81,13 @@ export default function SicherheitClient() {
             padding: 12,
             marginTop: 8,
             marginBottom: 16,
-            background: pwdMsg.type === "ok" ? "#000" : "#fff",
-            color: pwdMsg.type === "ok" ? "#fff" : "#000",
-            border: pwdMsg.type === "err" ? "1px solid #000" : "none",
+            background: pwdMsg.type === "ok" ? "#d1fae5" : "#fee2e2",
+            color: pwdMsg.type === "ok" ? "#065f46" : "#991b1b",
             fontSize: 12,
             letterSpacing: "1px",
             textTransform: "uppercase",
-            fontWeight: 600,
+            fontWeight: 700,
+            borderRadius: 4,
           }}>
             {pwdMsg.text}
           </div>
@@ -98,9 +98,43 @@ export default function SicherheitClient() {
         </button>
       </form>
 
-      {/* Konto deaktivieren */}
-      <div style={{ maxWidth: 480, paddingTop: 40, borderTop: "2px solid #000" }}>
-        <h3 style={{ ...sectionTitle, color: "#000" }}>Konto deaktivieren</h3>
+      {/* ════ KIRMIZI: Konto deaktivieren ════ */}
+      <div style={{
+        maxWidth: 480,
+        paddingTop: 32,
+        marginTop: 8,
+        borderTop: "2px solid #dc2626",
+      }}>
+        <h3 style={{
+          fontSize: 11,
+          fontWeight: 700,
+          color: "#dc2626",
+          letterSpacing: "3px",
+          textTransform: "uppercase",
+          marginTop: 0,
+          marginBottom: 14,
+          display: "flex",
+          alignItems: "center",
+          gap: 8,
+        }}>
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2}>
+            <path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z" />
+            <line x1="12" y1="9" x2="12" y2="13" strokeLinecap="round" />
+            <line x1="12" y1="17" x2="12.01" y2="17" strokeLinecap="round" />
+          </svg>
+          Gefahrenzone
+        </h3>
+
+        <h4 style={{
+          fontSize: 15,
+          fontWeight: 600,
+          color: "#dc2626",
+          margin: 0,
+          marginBottom: 10,
+        }}>
+          Konto deaktivieren
+        </h4>
+
         <p style={{ fontSize: 13, color: "#666", marginBottom: 20, lineHeight: 1.6 }}>
           Nach der Deaktivierung können Sie sich nicht mehr anmelden.
           Bestellungen und Rechnungen bleiben aus rechtlichen Gründen erhalten.
@@ -113,14 +147,24 @@ export default function SicherheitClient() {
             onClick={() => setShowDeactivate(true)}
             style={{
               background: "transparent",
-              color: "#000",
-              padding: "13px 32px",
-              fontWeight: 600,
-              border: "1px solid #000",
+              color: "#dc2626",
+              padding: "11px 28px",
+              fontWeight: 700,
+              border: "1.5px solid #dc2626",
               fontSize: 11,
               letterSpacing: "3px",
               textTransform: "uppercase",
               cursor: "pointer",
+              borderRadius: 4,
+              transition: "all 0.15s",
+            }}
+            onMouseOver={(e) => {
+              e.currentTarget.style.background = "#dc2626";
+              e.currentTarget.style.color = "#fff";
+            }}
+            onMouseOut={(e) => {
+              e.currentTarget.style.background = "transparent";
+              e.currentTarget.style.color = "#dc2626";
             }}
           >
             Konto deaktivieren
@@ -147,20 +191,35 @@ export default function SicherheitClient() {
                 padding: 12,
                 marginTop: 8,
                 marginBottom: 16,
-                background: "#fff",
-                color: "#000",
-                border: "1px solid #000",
+                background: "#fee2e2",
+                color: "#991b1b",
                 fontSize: 12,
                 letterSpacing: "1px",
                 textTransform: "uppercase",
-                fontWeight: 600,
+                fontWeight: 700,
+                borderRadius: 4,
               }}>
                 {deactivateMsg}
               </div>
             )}
 
             <div style={{ display: "flex", gap: 8 }}>
-              <button type="submit" disabled={isPending} style={submitBtn(isPending)}>
+              <button
+                type="submit"
+                disabled={isPending}
+                style={{
+                  background: isPending ? "#a8a29e" : "#dc2626",
+                  color: "#fff",
+                  padding: "13px 28px",
+                  fontWeight: 700,
+                  border: "none",
+                  cursor: isPending ? "default" : "pointer",
+                  fontSize: 11,
+                  letterSpacing: "3px",
+                  textTransform: "uppercase",
+                  borderRadius: 4,
+                }}
+              >
                 {isPending ? "…" : "Endgültig deaktivieren"}
               </button>
               <button
@@ -170,12 +229,13 @@ export default function SicherheitClient() {
                   background: "transparent",
                   color: "#666",
                   padding: "13px 24px",
-                  fontWeight: 500,
+                  fontWeight: 600,
                   border: "1px solid #d0d0d0",
                   fontSize: 11,
                   letterSpacing: "2px",
                   textTransform: "uppercase",
                   cursor: "pointer",
+                  borderRadius: 4,
                 }}
               >
                 Abbrechen
@@ -198,19 +258,18 @@ function Field({ label, children }: { label: string; children: React.ReactNode }
 }
 
 const titleStyle: React.CSSProperties = {
-  fontSize: "1.4rem",
-  fontWeight: 300,
+  fontSize: "1.3rem",
+  fontWeight: 600,
   margin: 0,
   marginBottom: 6,
-  fontFamily: "Georgia, serif",
-  fontStyle: "italic",
+  color: "#0f1a16",
   letterSpacing: "-0.01em",
 };
 const sub: React.CSSProperties = { fontSize: 13, color: "#666", margin: 0 };
 const sectionTitle: React.CSSProperties = {
   fontSize: 11,
   fontWeight: 700,
-  color: "#000",
+  color: "#0f1a16",
   letterSpacing: "3px",
   textTransform: "uppercase",
   marginTop: 8,
@@ -219,8 +278,8 @@ const sectionTitle: React.CSSProperties = {
 const lbl: React.CSSProperties = {
   display: "block",
   fontSize: 10,
-  fontWeight: 600,
-  color: "#000",
+  fontWeight: 700,
+  color: "#0f1a16",
   marginBottom: 6,
   letterSpacing: "2px",
   textTransform: "uppercase",
@@ -235,16 +294,17 @@ const input: React.CSSProperties = {
   fontFamily: "inherit",
   borderRadius: 0,
   outline: "none",
-  color: "#000",
+  color: "#0f1a16",
 };
 const submitBtn = (pending: boolean): React.CSSProperties => ({
-  background: pending ? "#666" : "#000",
+  background: pending ? "#666" : "#0f1a16",
   color: "#fff",
   padding: "13px 32px",
-  fontWeight: 500,
+  fontWeight: 600,
   border: "none",
   cursor: pending ? "default" : "pointer",
   fontSize: 11,
   letterSpacing: "3px",
   textTransform: "uppercase",
+  borderRadius: 4,
 });

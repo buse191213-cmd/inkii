@@ -77,34 +77,42 @@ export default function KontoSidebar({ customerName, customerEmail }: { customer
   const initials = customerName.split(" ").map(s => s[0]).filter(Boolean).slice(0, 2).join("").toUpperCase();
 
   return (
-    <aside style={{
-      position: "sticky",
-      top: 100,
-      height: "fit-content",
-    }}>
-      {/* Avatar Block */}
+    <>
+      {/* Logo */}
+      <div style={{ marginBottom: 36 }}>
+        <Link href="/" style={{ display: "inline-block" }}>
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img
+            src="/inkii-works-logo.png"
+            alt="INKII Works"
+            style={{ height: 36, width: "auto" }}
+          />
+        </Link>
+      </div>
+
+      {/* Avatar + Name */}
       <div style={{
-        paddingBottom: 28,
+        paddingBottom: 24,
         borderBottom: "1px solid #e5e5e5",
-        marginBottom: 28,
+        marginBottom: 24,
       }}>
         <div style={{
-          width: 56,
-          height: 56,
+          width: 48,
+          height: 48,
           borderRadius: "50%",
-          background: "#000",
+          background: "#0f1a16",
           color: "#fff",
           display: "flex",
           alignItems: "center",
           justifyContent: "center",
           fontWeight: 600,
-          fontSize: 18,
-          letterSpacing: "1px",
-          marginBottom: 14,
+          fontSize: 15,
+          letterSpacing: "0.5px",
+          marginBottom: 12,
         }}>{initials}</div>
 
         <div style={{
-          fontSize: 11,
+          fontSize: 10,
           color: "#999",
           letterSpacing: "2px",
           textTransform: "uppercase",
@@ -114,11 +122,10 @@ export default function KontoSidebar({ customerName, customerEmail }: { customer
           Konto
         </div>
         <div style={{
-          fontWeight: 500,
-          fontSize: 15,
-          color: "#000",
+          fontWeight: 600,
+          fontSize: 14,
+          color: "#0f1a16",
           marginBottom: 2,
-          fontFamily: "Georgia, serif",
         }}>{customerName}</div>
         <div style={{
           fontSize: 12,
@@ -128,7 +135,7 @@ export default function KontoSidebar({ customerName, customerEmail }: { customer
       </div>
 
       {/* Nav */}
-      <nav style={{ display: "flex", flexDirection: "column", gap: 2 }}>
+      <nav style={{ display: "flex", flexDirection: "column", gap: 2, flex: 1 }}>
         {NAV.map((item) => {
           const active = item.href === "/konto"
             ? pathname === "/konto"
@@ -141,14 +148,15 @@ export default function KontoSidebar({ customerName, customerEmail }: { customer
                 display: "flex",
                 alignItems: "center",
                 gap: 12,
-                padding: "11px 14px",
+                padding: "10px 14px",
                 fontSize: 13,
-                color: active ? "#fff" : "#000",
+                color: active ? "#fff" : "#0f1a16",
                 fontWeight: 500,
-                background: active ? "#000" : "transparent",
+                background: active ? "#0f1a16" : "transparent",
                 textDecoration: "none",
-                letterSpacing: "0.3px",
+                letterSpacing: "0.2px",
                 transition: "all 0.15s",
+                borderRadius: 4,
               }}
               onMouseOver={(e) => {
                 if (!active) e.currentTarget.style.background = "#f5f5f5";
@@ -171,7 +179,7 @@ export default function KontoSidebar({ customerName, customerEmail }: { customer
       </nav>
 
       {/* Logout */}
-      <div style={{ marginTop: 28, paddingTop: 20, borderTop: "1px solid #e5e5e5" }}>
+      <div style={{ marginTop: 24, paddingTop: 20, borderTop: "1px solid #e5e5e5" }}>
         <button
           type="button"
           onClick={() => startTransition(() => logoutCustomer())}
@@ -179,32 +187,33 @@ export default function KontoSidebar({ customerName, customerEmail }: { customer
           style={{
             width: "100%",
             background: "transparent",
-            border: "1px solid #000",
-            color: "#000",
-            padding: "11px",
+            border: "1px solid #0f1a16",
+            color: "#0f1a16",
+            padding: "10px",
             fontWeight: 600,
             fontSize: 11,
             letterSpacing: "2.5px",
             textTransform: "uppercase",
             cursor: isPending ? "default" : "pointer",
             transition: "all 0.15s",
+            borderRadius: 4,
           }}
           onMouseOver={(e) => {
             if (!isPending) {
-              e.currentTarget.style.background = "#000";
+              e.currentTarget.style.background = "#0f1a16";
               e.currentTarget.style.color = "#fff";
             }
           }}
           onMouseOut={(e) => {
             if (!isPending) {
               e.currentTarget.style.background = "transparent";
-              e.currentTarget.style.color = "#000";
+              e.currentTarget.style.color = "#0f1a16";
             }
           }}
         >
           {isPending ? "…" : "Abmelden"}
         </button>
       </div>
-    </aside>
+    </>
   );
 }

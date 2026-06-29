@@ -68,30 +68,26 @@ export default function AdressenClient({ initial }: { initial: Initial }) {
         <p style={sub}>Rechnungs- und Lieferadresse verwalten.</p>
       </div>
 
-      <form onSubmit={handleSubmit} noValidate style={{ maxWidth: 540 }}>
+      <form onSubmit={handleSubmit} noValidate style={{ maxWidth: 600 }}>
 
         <h3 style={sectionTitle}>Rechnungsadresse</h3>
         <Field label="Straße & Hausnummer *">
           <input value={billingStreet} onChange={(e) => setBillingStreet(e.target.value)} style={input} required />
         </Field>
-        <div style={row}>
-          <div style={{ minWidth: 90, maxWidth: 120 }}>
-            <Field label="PLZ *">
-              <input value={billingZip} onChange={(e) => setBillingZip(e.target.value)} style={input} required />
-            </Field>
-          </div>
-          <div style={{ flex: 1 }}>
-            <Field label="Stadt *">
-              <input value={billingCity} onChange={(e) => setBillingCity(e.target.value)} style={input} required />
-            </Field>
-          </div>
-          <div style={{ minWidth: 150 }}>
-            <Field label="Land">
-              <select value={billingCountry} onChange={(e) => setBillingCountry(e.target.value)} style={input}>
-                {COUNTRIES.map((c) => <option key={c.code} value={c.code}>{c.label}</option>)}
-              </select>
-            </Field>
-          </div>
+
+        {/* GRID: 120px (PLZ) | 1fr (Stadt) | 180px (Land) */}
+        <div style={addressRow} className="addr-row">
+          <Field label="PLZ *">
+            <input value={billingZip} onChange={(e) => setBillingZip(e.target.value)} style={input} required />
+          </Field>
+          <Field label="Stadt *">
+            <input value={billingCity} onChange={(e) => setBillingCity(e.target.value)} style={input} required />
+          </Field>
+          <Field label="Land">
+            <select value={billingCountry} onChange={(e) => setBillingCountry(e.target.value)} style={input}>
+              {COUNTRIES.map((c) => <option key={c.code} value={c.code}>{c.label}</option>)}
+            </select>
+          </Field>
         </div>
 
         <div style={{ paddingTop: 24, marginTop: 16, borderTop: "1px solid #e5e5e5" }}>
@@ -105,12 +101,13 @@ export default function AdressenClient({ initial }: { initial: Initial }) {
             letterSpacing: "1.5px",
             textTransform: "uppercase",
             marginBottom: shippingDiffers ? 24 : 0,
+            color: "#0f1a16",
           }}>
             <input
               type="checkbox"
               checked={shippingDiffers}
               onChange={(e) => setShippingDiffers(e.target.checked)}
-              style={{ accentColor: "#000" }}
+              style={{ accentColor: "#0f1a16" }}
             />
             Abweichende Lieferadresse
           </label>
@@ -121,24 +118,18 @@ export default function AdressenClient({ initial }: { initial: Initial }) {
               <Field label="Straße & Hausnummer">
                 <input value={shippingStreet} onChange={(e) => setShippingStreet(e.target.value)} style={input} />
               </Field>
-              <div style={row}>
-                <div style={{ minWidth: 90, maxWidth: 120 }}>
-                  <Field label="PLZ">
-                    <input value={shippingZip} onChange={(e) => setShippingZip(e.target.value)} style={input} />
-                  </Field>
-                </div>
-                <div style={{ flex: 1 }}>
-                  <Field label="Stadt">
-                    <input value={shippingCity} onChange={(e) => setShippingCity(e.target.value)} style={input} />
-                  </Field>
-                </div>
-                <div style={{ minWidth: 150 }}>
-                  <Field label="Land">
-                    <select value={shippingCountry} onChange={(e) => setShippingCountry(e.target.value)} style={input}>
-                      {COUNTRIES.map((c) => <option key={c.code} value={c.code}>{c.label}</option>)}
-                    </select>
-                  </Field>
-                </div>
+              <div style={addressRow} className="addr-row">
+                <Field label="PLZ">
+                  <input value={shippingZip} onChange={(e) => setShippingZip(e.target.value)} style={input} />
+                </Field>
+                <Field label="Stadt">
+                  <input value={shippingCity} onChange={(e) => setShippingCity(e.target.value)} style={input} />
+                </Field>
+                <Field label="Land">
+                  <select value={shippingCountry} onChange={(e) => setShippingCountry(e.target.value)} style={input}>
+                    {COUNTRIES.map((c) => <option key={c.code} value={c.code}>{c.label}</option>)}
+                  </select>
+                </Field>
               </div>
             </>
           )}
@@ -149,26 +140,30 @@ export default function AdressenClient({ initial }: { initial: Initial }) {
             padding: 12,
             marginTop: 24,
             marginBottom: 16,
-            background: msg.type === "ok" ? "#000" : "#fff",
-            color: msg.type === "ok" ? "#fff" : "#000",
-            border: msg.type === "err" ? "1px solid #000" : "none",
+            background: msg.type === "ok" ? "#d1fae5" : "#fee2e2",
+            color: msg.type === "ok" ? "#065f46" : "#991b1b",
             fontSize: 12,
             letterSpacing: "1px",
             textTransform: "uppercase",
-            fontWeight: 600,
+            fontWeight: 700,
+            borderRadius: 4,
           }}>
             {msg.text}
           </div>
         )}
 
-        <button
-          type="submit"
-          disabled={isPending}
-          style={submitBtn(isPending)}
-        >
+        <button type="submit" disabled={isPending} style={submitBtn(isPending)}>
           {isPending ? "Speichern…" : "Adressen speichern"}
         </button>
       </form>
+
+      <style>{`
+        @media (max-width: 600px) {
+          .addr-row {
+            grid-template-columns: 1fr !important;
+          }
+        }
+      `}</style>
     </>
   );
 }
@@ -183,19 +178,18 @@ function Field({ label, children }: { label: string; children: React.ReactNode }
 }
 
 const titleStyle: React.CSSProperties = {
-  fontSize: "1.4rem",
-  fontWeight: 300,
+  fontSize: "1.3rem",
+  fontWeight: 600,
   margin: 0,
   marginBottom: 6,
-  fontFamily: "Georgia, serif",
-  fontStyle: "italic",
+  color: "#0f1a16",
   letterSpacing: "-0.01em",
 };
 const sub: React.CSSProperties = { fontSize: 13, color: "#666", margin: 0 };
 const sectionTitle: React.CSSProperties = {
   fontSize: 11,
   fontWeight: 700,
-  color: "#000",
+  color: "#0f1a16",
   letterSpacing: "3px",
   textTransform: "uppercase",
   marginTop: 8,
@@ -204,8 +198,8 @@ const sectionTitle: React.CSSProperties = {
 const lbl: React.CSSProperties = {
   display: "block",
   fontSize: 10,
-  fontWeight: 600,
-  color: "#000",
+  fontWeight: 700,
+  color: "#0f1a16",
   marginBottom: 6,
   letterSpacing: "2px",
   textTransform: "uppercase",
@@ -220,17 +214,22 @@ const input: React.CSSProperties = {
   fontFamily: "inherit",
   borderRadius: 0,
   outline: "none",
-  color: "#000",
+  color: "#0f1a16",
 };
-const row: React.CSSProperties = { display: "flex", gap: 16, flexWrap: "wrap" };
+const addressRow: React.CSSProperties = {
+  display: "grid",
+  gridTemplateColumns: "120px 1fr 180px",
+  gap: 16,
+};
 const submitBtn = (pending: boolean): React.CSSProperties => ({
-  background: pending ? "#666" : "#000",
+  background: pending ? "#666" : "#0f1a16",
   color: "#fff",
   padding: "13px 32px",
-  fontWeight: 500,
+  fontWeight: 600,
   border: "none",
   cursor: pending ? "default" : "pointer",
   fontSize: 11,
   letterSpacing: "3px",
   textTransform: "uppercase",
+  borderRadius: 4,
 });

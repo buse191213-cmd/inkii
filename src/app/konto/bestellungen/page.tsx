@@ -12,24 +12,16 @@ function germanDate(d: Date): string {
   return d.toLocaleDateString("de-DE", { day: "2-digit", month: "2-digit", year: "numeric" });
 }
 
-const STATUS_LABELS: Record<string, { label: string; tone: "neutral" | "warn" | "ok" | "info" | "dark" }> = {
-  NEU: { label: "Neu", tone: "info" },
-  WARTEND: { label: "Wartend", tone: "warn" },
-  BEZAHLT: { label: "Bezahlt", tone: "ok" },
-  IN_PRODUKTION: { label: "In Produktion", tone: "info" },
-  VERSANDBEREIT: { label: "Versandbereit", tone: "info" },
-  VERSENDET: { label: "Versendet", tone: "dark" },
-  ZUGESTELLT: { label: "Zugestellt", tone: "ok" },
-  ABGESCHLOSSEN: { label: "Abgeschlossen", tone: "neutral" },
-  STORNIERT: { label: "Storniert", tone: "warn" },
-};
-
-const TONE_STYLE: Record<string, { bg: string; color: string; border?: string }> = {
-  neutral: { bg: "#f5f5f5", color: "#666" },
-  info: { bg: "#fff", color: "#000", border: "1px solid #000" },
-  warn: { bg: "#fff", color: "#000", border: "1px dashed #000" },
-  ok: { bg: "#000", color: "#fff" },
-  dark: { bg: "#000", color: "#fff" },
+const STATUS: Record<string, { label: string; bg: string; color: string }> = {
+  NEU:            { label: "Neu",            bg: "#e0e7ff", color: "#3730a3" },
+  WARTEND:        { label: "Wartend",        bg: "#fef3c7", color: "#92400e" },
+  BEZAHLT:        { label: "Bezahlt",        bg: "#d1fae5", color: "#065f46" },
+  IN_PRODUKTION:  { label: "In Produktion",  bg: "#f3e8ff", color: "#6b21a8" },
+  VERSANDBEREIT:  { label: "Versandbereit",  bg: "#fed7aa", color: "#9a3412" },
+  VERSENDET:      { label: "Versendet",      bg: "#dbeafe", color: "#1e40af" },
+  ZUGESTELLT:     { label: "Zugestellt",     bg: "#d1fae5", color: "#065f46" },
+  ABGESCHLOSSEN:  { label: "Abgeschlossen",  bg: "#f1f5f9", color: "#475569" },
+  STORNIERT:      { label: "Storniert",      bg: "#fee2e2", color: "#991b1b" },
 };
 
 export default async function KontoBestellungenPage() {
@@ -46,11 +38,10 @@ export default async function KontoBestellungenPage() {
     <>
       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline", marginBottom: 28 }}>
         <h2 style={{
-          fontSize: "1.4rem",
-          fontWeight: 300,
+          fontSize: "1.3rem",
+          fontWeight: 600,
           margin: 0,
-          fontFamily: "Georgia, serif",
-          fontStyle: "italic",
+          color: "#0f1a16",
           letterSpacing: "-0.01em",
         }}>
           Alle Bestellungen
@@ -60,18 +51,18 @@ export default async function KontoBestellungenPage() {
           color: "#999",
           letterSpacing: "2px",
           textTransform: "uppercase",
-          fontWeight: 600,
+          fontWeight: 700,
         }}>
           {orders.length} {orders.length === 1 ? "Bestellung" : "Bestellungen"}
         </span>
       </div>
 
       {orders.length === 0 ? (
-        <div style={{ padding: "60px 30px", textAlign: "center", border: "1px solid #e5e5e5" }}>
+        <div style={{ padding: "60px 30px", textAlign: "center", border: "1px solid #e5e5e5", borderRadius: 4 }}>
           <p style={{ color: "#666", marginBottom: 20, fontSize: 14 }}>Noch keine Bestellungen.</p>
           <Link href="/werbemittel" style={{
             display: "inline-block",
-            background: "#000",
+            background: "#0f1a16",
             color: "#fff",
             padding: "12px 28px",
             fontWeight: 600,
@@ -79,15 +70,15 @@ export default async function KontoBestellungenPage() {
             fontSize: 11,
             letterSpacing: "3px",
             textTransform: "uppercase",
+            borderRadius: 4,
           }}>
             Zum Katalog
           </Link>
         </div>
       ) : (
-        <div style={{ border: "1px solid #e5e5e5" }}>
+        <div style={{ border: "1px solid #e5e5e5", borderRadius: 4 }}>
           {orders.map((o, idx) => {
-            const status = STATUS_LABELS[o.status] || { label: o.status, tone: "neutral" as const };
-            const tone = TONE_STYLE[status.tone];
+            const s = STATUS[o.status] || { label: o.status, bg: "#f5f5f5", color: "#666" };
             return (
               <Link
                 key={o.id}
@@ -103,38 +94,30 @@ export default async function KontoBestellungenPage() {
                   color: "inherit",
                   transition: "background 0.15s",
                 }}
-                className="order-row"
+                className="row-hover"
               >
                 <div>
-                  <div style={{ fontWeight: 600, fontSize: 13, color: "#000", letterSpacing: "0.5px", marginBottom: 4 }}>
+                  <div style={{ fontWeight: 600, fontSize: 13, color: "#0f1a16", letterSpacing: "0.3px", marginBottom: 4 }}>
                     {o.orderNumber}
                   </div>
                   <div style={{ fontSize: 12, color: "#666" }}>
                     {germanDate(o.createdAt)} · {o._count.items} Artikel · {o.paymentMethod}
                   </div>
                 </div>
-                <span
-                  style={{
-                    padding: "6px 12px",
-                    background: tone.bg,
-                    color: tone.color,
-                    border: tone.border || "none",
-                    fontSize: 10,
-                    fontWeight: 600,
-                    letterSpacing: "1.5px",
-                    textTransform: "uppercase",
-                    whiteSpace: "nowrap",
-                  }}
-                >
-                  {status.label}
-                </span>
-                <div style={{
-                  fontWeight: 600,
-                  fontSize: 15,
-                  textAlign: "right",
-                  minWidth: 90,
-                  fontFamily: "Georgia, serif",
+                <span style={{
+                  padding: "6px 12px",
+                  background: s.bg,
+                  color: s.color,
+                  fontSize: 10.5,
+                  fontWeight: 700,
+                  letterSpacing: "0.5px",
+                  textTransform: "uppercase",
+                  whiteSpace: "nowrap",
+                  borderRadius: 4,
                 }}>
+                  {s.label}
+                </span>
+                <div style={{ fontWeight: 700, fontSize: 14, textAlign: "right", minWidth: 90, color: "#0f1a16" }}>
                   {euro(o.totalCents)} €
                 </div>
               </Link>
@@ -143,11 +126,7 @@ export default async function KontoBestellungenPage() {
         </div>
       )}
 
-      <style>{`
-        .order-row:hover {
-          background: #fafafa;
-        }
-      `}</style>
+      <style>{`.row-hover:hover{background:#fafafa}`}</style>
     </>
   );
 }

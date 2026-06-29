@@ -134,12 +134,11 @@ function Field({ label, children }: { label: string; children: React.ReactNode }
 }
 
 const titleStyle: React.CSSProperties = {
-  fontSize: "1.4rem",
-  fontWeight: 300,
+  fontSize: "1.3rem",
+  fontWeight: 600,
   margin: 0,
   marginBottom: 6,
-  fontFamily: "Georgia, serif",
-  fontStyle: "italic",
+  color: "#0f1a16",
   letterSpacing: "-0.01em",
 };
 const sub: React.CSSProperties = { fontSize: 13, color: "#666", margin: 0 };
@@ -147,7 +146,7 @@ const lbl: React.CSSProperties = {
   display: "block",
   fontSize: 10,
   fontWeight: 600,
-  color: "#000",
+  color: "#0f1a16",
   marginBottom: 6,
   letterSpacing: "2px",
   textTransform: "uppercase",
@@ -162,7 +161,7 @@ const input: React.CSSProperties = {
   fontFamily: "inherit",
   borderRadius: 0,
   outline: "none",
-  color: "#000",
+  color: "#0f1a16",
 };
 const row: React.CSSProperties = { display: "flex", gap: 16, flexWrap: "wrap" };
 const submitBtn = (pending: boolean): React.CSSProperties => ({

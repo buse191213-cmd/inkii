@@ -8,30 +8,21 @@ export const dynamic = "force-dynamic";
 function euro(c: number): string {
   return (c / 100).toLocaleString("de-DE", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
 }
-
 function germanDate(d: Date): string {
   return d.toLocaleDateString("de-DE", { day: "2-digit", month: "2-digit", year: "numeric" });
 }
 
-// Status: minimal monochrome
-const STATUS_LABELS: Record<string, { label: string; tone: "neutral" | "warn" | "ok" | "info" | "dark" }> = {
-  NEU: { label: "Neu", tone: "info" },
-  WARTEND: { label: "Wartend", tone: "warn" },
-  BEZAHLT: { label: "Bezahlt", tone: "ok" },
-  IN_PRODUKTION: { label: "In Produktion", tone: "info" },
-  VERSANDBEREIT: { label: "Versandbereit", tone: "info" },
-  VERSENDET: { label: "Versendet", tone: "dark" },
-  ZUGESTELLT: { label: "Zugestellt", tone: "ok" },
-  ABGESCHLOSSEN: { label: "Abgeschlossen", tone: "neutral" },
-  STORNIERT: { label: "Storniert", tone: "warn" },
-};
-
-const TONE_STYLE: Record<string, { bg: string; color: string; border?: string }> = {
-  neutral: { bg: "#f5f5f5", color: "#666" },
-  info: { bg: "#fff", color: "#000", border: "1px solid #000" },
-  warn: { bg: "#fff", color: "#000", border: "1px dashed #000" },
-  ok: { bg: "#000", color: "#fff" },
-  dark: { bg: "#000", color: "#fff" },
+// SOFT PASTEL STATUS
+const STATUS: Record<string, { label: string; bg: string; color: string }> = {
+  NEU:            { label: "Neu",            bg: "#e0e7ff", color: "#3730a3" },
+  WARTEND:        { label: "Wartend",        bg: "#fef3c7", color: "#92400e" },
+  BEZAHLT:        { label: "Bezahlt",        bg: "#d1fae5", color: "#065f46" },
+  IN_PRODUKTION:  { label: "In Produktion",  bg: "#f3e8ff", color: "#6b21a8" },
+  VERSANDBEREIT:  { label: "Versandbereit",  bg: "#fed7aa", color: "#9a3412" },
+  VERSENDET:      { label: "Versendet",      bg: "#dbeafe", color: "#1e40af" },
+  ZUGESTELLT:     { label: "Zugestellt",     bg: "#d1fae5", color: "#065f46" },
+  ABGESCHLOSSEN:  { label: "Abgeschlossen",  bg: "#f1f5f9", color: "#475569" },
+  STORNIERT:      { label: "Storniert",      bg: "#fee2e2", color: "#991b1b" },
 };
 
 export default async function KontoUebersichtPage() {
@@ -56,44 +47,21 @@ export default async function KontoUebersichtPage() {
 
   return (
     <>
-      {/* Stats Row — Editorial */}
-      <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(160px, 1fr))", gap: 0, marginBottom: 50, border: "1px solid #e5e5e5" }}>
-        <StatCard
-          href="/konto/bestellungen"
-          label="Bestellungen"
-          value={String(totalOrders)}
-        />
-        <StatCard
-          href="/konto/anfragen"
-          label="Anfragen"
-          value={String(anfrageCount)}
-        />
-        <StatCard
-          label="Gesamtumsatz"
-          value={`${euro(totalSpent._sum.totalCents ?? 0)} €`}
-        />
-        <StatCard
-          label="Kunde seit"
-          value={germanDate(customer.createdAt)}
-        />
+      {/* Stats Row */}
+      <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(160px, 1fr))", gap: 0, marginBottom: 50, border: "1px solid #e5e5e5", borderRadius: 4 }}>
+        <StatCard href="/konto/bestellungen" label="Bestellungen" value={String(totalOrders)} />
+        <StatCard href="/konto/anfragen" label="Anfragen" value={String(anfrageCount)} />
+        <StatCard label="Gesamtumsatz" value={`${euro(totalSpent._sum.totalCents ?? 0)} €`} />
+        <StatCard label="Kunde seit" value={germanDate(customer.createdAt)} last />
       </div>
 
       {/* Bestellungen Block */}
       <div>
         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline", marginBottom: 20 }}>
-          <h2 style={{
-            fontSize: "1.4rem",
-            fontWeight: 300,
-            margin: 0,
-            fontFamily: "Georgia, serif",
-            fontStyle: "italic",
-            letterSpacing: "-0.01em",
-          }}>
-            Letzte Bestellungen
-          </h2>
+          <h2 style={titleStyle}>Letzte Bestellungen</h2>
           <Link href="/konto/bestellungen" style={{
             fontSize: 11,
-            color: "#000",
+            color: "#0f1a16",
             textDecoration: "underline",
             letterSpacing: "2px",
             textTransform: "uppercase",
@@ -104,30 +72,11 @@ export default async function KontoUebersichtPage() {
         </div>
 
         {orders.length === 0 ? (
-          <div style={{ padding: "60px 30px", textAlign: "center", border: "1px solid #e5e5e5" }}>
-            <p style={{ color: "#666", marginBottom: 20, fontSize: 14 }}>Noch keine Bestellungen.</p>
-            <Link
-              href="/werbemittel"
-              style={{
-                display: "inline-block",
-                background: "#000",
-                color: "#fff",
-                padding: "12px 28px",
-                fontWeight: 600,
-                textDecoration: "none",
-                fontSize: 11,
-                letterSpacing: "3px",
-                textTransform: "uppercase",
-              }}
-            >
-              Zum Katalog
-            </Link>
-          </div>
+          <EmptyState />
         ) : (
-          <div style={{ border: "1px solid #e5e5e5" }}>
+          <div style={{ border: "1px solid #e5e5e5", borderRadius: 4 }}>
             {orders.map((o, idx) => {
-              const status = STATUS_LABELS[o.status] || { label: o.status, tone: "neutral" as const };
-              const tone = TONE_STYLE[status.tone];
+              const s = STATUS[o.status] || { label: o.status, bg: "#f5f5f5", color: "#666" };
               return (
                 <Link
                   key={o.id}
@@ -143,38 +92,30 @@ export default async function KontoUebersichtPage() {
                     color: "inherit",
                     transition: "background 0.15s",
                   }}
-                  className="order-row"
+                  className="row-hover"
                 >
                   <div>
-                    <div style={{ fontWeight: 600, fontSize: 13, color: "#000", letterSpacing: "0.5px", marginBottom: 4 }}>
+                    <div style={{ fontWeight: 600, fontSize: 13, color: "#0f1a16", letterSpacing: "0.3px", marginBottom: 4 }}>
                       {o.orderNumber}
                     </div>
                     <div style={{ fontSize: 12, color: "#666" }}>
                       {germanDate(o.createdAt)} · {o._count.items} Artikel
                     </div>
                   </div>
-                  <span
-                    style={{
-                      padding: "5px 12px",
-                      background: tone.bg,
-                      color: tone.color,
-                      border: tone.border || "none",
-                      fontSize: 10,
-                      fontWeight: 600,
-                      letterSpacing: "1.5px",
-                      textTransform: "uppercase",
-                      whiteSpace: "nowrap",
-                    }}
-                  >
-                    {status.label}
-                  </span>
-                  <div style={{
-                    fontWeight: 600,
-                    fontSize: 15,
-                    textAlign: "right",
-                    minWidth: 90,
-                    fontFamily: "Georgia, serif",
+                  <span style={{
+                    padding: "5px 10px",
+                    background: s.bg,
+                    color: s.color,
+                    fontSize: 10.5,
+                    fontWeight: 700,
+                    letterSpacing: "0.5px",
+                    textTransform: "uppercase",
+                    whiteSpace: "nowrap",
+                    borderRadius: 4,
                   }}>
+                    {s.label}
+                  </span>
+                  <div style={{ fontWeight: 700, fontSize: 14, textAlign: "right", minWidth: 90, color: "#0f1a16" }}>
                     {euro(o.totalCents)} €
                   </div>
                 </Link>
@@ -184,20 +125,16 @@ export default async function KontoUebersichtPage() {
         )}
       </div>
 
-      <style>{`
-        .order-row:hover {
-          background: #fafafa;
-        }
-      `}</style>
+      <style>{`.row-hover:hover{background:#fafafa}`}</style>
     </>
   );
 }
 
-function StatCard({ href, label, value }: { href?: string; label: string; value: string }) {
+function StatCard({ href, label, value, last }: { href?: string; label: string; value: string; last?: boolean }) {
   const content = (
     <div style={{
       padding: "26px 22px",
-      borderRight: "1px solid #e5e5e5",
+      borderRight: last ? "none" : "1px solid #e5e5e5",
       background: "#fff",
       transition: "background 0.15s",
       cursor: href ? "pointer" : "default",
@@ -207,20 +144,19 @@ function StatCard({ href, label, value }: { href?: string; label: string; value:
       <div style={{
         fontSize: 10,
         color: "#999",
-        letterSpacing: "2.5px",
+        letterSpacing: "2px",
         textTransform: "uppercase",
-        fontWeight: 600,
-        marginBottom: 14,
+        fontWeight: 700,
+        marginBottom: 12,
       }}>
         {label}
       </div>
       <div style={{
-        fontSize: 28,
-        fontWeight: 300,
-        color: "#000",
-        fontFamily: "Georgia, serif",
+        fontSize: 24,
+        fontWeight: 700,
+        color: "#0f1a16",
         letterSpacing: "-0.02em",
-        lineHeight: 1,
+        lineHeight: 1.1,
       }}>
         {value}
       </div>
@@ -232,9 +168,39 @@ function StatCard({ href, label, value }: { href?: string; label: string; value:
         <Link href={href} style={{ textDecoration: "none", color: "inherit", display: "block" }}>
           {content}
         </Link>
-        <style>{`.stat-clickable:hover { background: #fafafa; }`}</style>
+        <style>{`.stat-clickable:hover{background:#fafafa}`}</style>
       </>
     );
   }
   return content;
 }
+
+function EmptyState() {
+  return (
+    <div style={{ padding: "60px 30px", textAlign: "center", border: "1px solid #e5e5e5", borderRadius: 4 }}>
+      <p style={{ color: "#666", marginBottom: 20, fontSize: 14 }}>Noch keine Bestellungen.</p>
+      <Link href="/werbemittel" style={{
+        display: "inline-block",
+        background: "#0f1a16",
+        color: "#fff",
+        padding: "12px 28px",
+        fontWeight: 600,
+        textDecoration: "none",
+        fontSize: 11,
+        letterSpacing: "3px",
+        textTransform: "uppercase",
+        borderRadius: 4,
+      }}>
+        Zum Katalog
+      </Link>
+    </div>
+  );
+}
+
+const titleStyle: React.CSSProperties = {
+  fontSize: "1.3rem",
+  fontWeight: 600,
+  margin: 0,
+  color: "#0f1a16",
+  letterSpacing: "-0.01em",
+};
