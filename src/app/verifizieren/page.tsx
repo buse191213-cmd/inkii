@@ -7,14 +7,15 @@ export const dynamic = "force-dynamic";
 export default async function VerifyPage({
   searchParams,
 }: {
-  searchParams: Promise<{ email?: string }>;
+  searchParams: Promise<{ email?: string; mailErr?: string }>;
 }) {
   const params = await searchParams;
   const email = params.email ?? "";
+  const mailErr = params.mailErr ?? "";
 
   return (
     <SiteShell>
-      <VerifyClient email={email} />
+      <VerifyClient email={email} mailErr={mailErr} />
     </SiteShell>
   );
 }

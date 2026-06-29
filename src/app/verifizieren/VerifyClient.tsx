@@ -5,11 +5,11 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { verifyEmailCode, resendVerificationCode } from "../login/auth-actions";
 
-export default function VerifyClient({ email }: { email: string }) {
+export default function VerifyClient({ email, mailErr }: { email: string; mailErr?: string }) {
   const router = useRouter();
   const [isPending, startTransition] = useTransition();
   const [digits, setDigits] = useState<string[]>(["", "", "", "", "", ""]);
-  const [error, setError] = useState("");
+  const [error, setError] = useState(mailErr ? `E-Mail-Versand fehlgeschlagen: ${mailErr}. Versuchen Sie "Neuen Code senden" oder kontaktieren Sie uns.` : "");
   const [resendMsg, setResendMsg] = useState("");
   const refs = useRef<(HTMLInputElement | null)[]>([]);
 

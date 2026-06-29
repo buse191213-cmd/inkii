@@ -18,54 +18,65 @@ function makeTransporter() {
   });
 }
 
-async function sendVerificationEmail(email: string, name: string, code: string): Promise<void> {
+async function sendVerificationEmail(email: string, name: string, code: string): Promise<{ ok: boolean; error?: string }> {
+  console.log(`[verify] Code für ${email}: ${code}`); // Vercel logs için
   if (!isSmtpConfigured()) {
-    console.warn("[mail] SMTP nicht konfiguriert — Verification Code:", code);
-    return;
+    const err = "SMTP nicht konfiguriert (SMTP_HOST, SMTP_USER, SMTP_PASS fehlen)";
+    console.warn("[mail]", err);
+    return { ok: false, error: err };
   }
-  const transporter = makeTransporter();
-  const from = process.env.SMTP_FROM || `"INKII Works" <${process.env.SMTP_USER}>`;
-  const html = `
-    <div style="font-family: Arial, sans-serif; max-width: 500px; margin: 0 auto;">
-      <div style="background: linear-gradient(135deg, #004537 0%, #006b56 100%); padding: 30px; text-align: center; color: #fff;">
-        <h1 style="margin: 0; font-size: 22px;">INKII Works</h1>
-        <p style="margin: 8px 0 0; opacity: 0.9; font-size: 13px;">E-Mail Bestätigung</p>
-      </div>
-      <div style="padding: 32px 28px; background: #fff; border: 1px solid #e5e7eb; border-top: none;">
-        <p style="font-size: 15px; color: #1f2937; margin-top: 0;">Hallo ${name},</p>
-        <p style="font-size: 14px; color: #475569; line-height: 1.6;">
-          willkommen bei INKII Works! Bitte bestätigen Sie Ihre E-Mail-Adresse mit dem folgenden Code:
-        </p>
+  try {
+    const transporter = makeTransporter();
+    const from = process.env.SMTP_FROM || `"INKII Works" <${process.env.SMTP_USER}>`;
+    const html = `
+      <div style="font-family: Arial, sans-serif; max-width: 500px; margin: 0 auto;">
+        <div style="background: linear-gradient(135deg, #004537 0%, #006b56 100%); padding: 30px; text-align: center; color: #fff;">
+          <h1 style="margin: 0; font-size: 22px;">INKII Works</h1>
+          <p style="margin: 8px 0 0; opacity: 0.9; font-size: 13px;">E-Mail Bestätigung</p>
+        </div>
+        <div style="padding: 32px 28px; background: #fff; border: 1px solid #e5e7eb; border-top: none;">
+          <p style="font-size: 15px; color: #1f2937; margin-top: 0;">Hallo ${name},</p>
+          <p style="font-size: 14px; color: #475569; line-height: 1.6;">
+            willkommen bei INKII Works! Bitte bestätigen Sie Ihre E-Mail-Adresse mit dem folgenden Code:
+          </p>
 
-        <div style="margin: 28px 0; text-align: center;">
-          <div style="display: inline-block; background: #f0fdf4; border: 2px solid #004537; padding: 18px 36px; border-radius: 6px;">
-            <div style="font-size: 36px; font-weight: 700; color: #004537; letter-spacing: 8px; font-family: 'Courier New', monospace;">
-              ${code}
+          <div style="margin: 28px 0; text-align: center;">
+            <div style="display: inline-block; background: #f0fdf4; border: 2px solid #004537; padding: 18px 36px; border-radius: 6px;">
+              <div style="font-size: 36px; font-weight: 700; color: #004537; letter-spacing: 8px; font-family: 'Courier New', monospace;">
+                ${code}
+              </div>
             </div>
           </div>
+
+          <p style="font-size: 13px; color: #64748b; line-height: 1.5;">
+            Der Code ist 30 Minuten gültig. Falls Sie keine Registrierung vorgenommen haben,
+            können Sie diese E-Mail ignorieren.
+          </p>
+
+          <hr style="border: none; border-top: 1px solid #e5e7eb; margin: 24px 0;">
+
+          <p style="font-size: 11px; color: #94a3b8; text-align: center; line-height: 1.5;">
+            INKII WORKS · Sener Kirli<br>
+            Westuferstr. 25 · 45356 Essen<br>
+            USt-ID: DE353055316
+          </p>
         </div>
-
-        <p style="font-size: 13px; color: #64748b; line-height: 1.5;">
-          Der Code ist 30 Minuten gültig. Falls Sie keine Registrierung vorgenommen haben,
-          können Sie diese E-Mail ignorieren.
-        </p>
-
-        <hr style="border: none; border-top: 1px solid #e5e7eb; margin: 24px 0;">
-
-        <p style="font-size: 11px; color: #94a3b8; text-align: center; line-height: 1.5;">
-          INKII WORKS · Sener Kirli<br>
-          Westuferstr. 25 · 45356 Essen<br>
-          USt-ID: DE353055316
-        </p>
       </div>
-    </div>
-  `;
-  await transporter.sendMail({
-    from,
-    to: email,
-    subject: "INKII Works — Ihr Bestätigungscode",
-    html,
-  });
+    `;
+    await transporter.sendMail({
+      from,
+      to: email,
+      subject: `INKII Works — Ihr Bestätigungscode: ${code}`,
+      html,
+      text: `Ihr Bestätigungscode: ${code}\n\nDer Code ist 30 Minuten gültig.\n\nINKII Works`,
+    });
+    console.log(`[mail] ✓ Verification email sent to ${email}`);
+    return { ok: true };
+  } catch (e) {
+    const err = e instanceof Error ? e.message : "Unbekannter SMTP-Fehler";
+    console.error(`[mail] ✗ Fehler beim Senden an ${email}:`, err);
+    return { ok: false, error: err };
+  }
 }
 
 function generateCode(): string {
@@ -115,7 +126,7 @@ export async function registerCustomer(input: {
   billingZip: string;
   billingCity: string;
   billingCountry: string;
-}): Promise<{ ok: true; email: string } | { ok: false; error: string }> {
+}): Promise<{ ok: true; email: string; mailSent: boolean; mailError?: string } | { ok: false; error: string }> {
   const email = input.email.trim().toLowerCase();
   if (!isValidEmail(email)) return { ok: false, error: "Bitte gültige E-Mail eingeben." };
   if (input.password.length < 6) return { ok: false, error: "Passwort muss mindestens 6 Zeichen lang sein." };
@@ -177,14 +188,9 @@ export async function registerCustomer(input: {
   }
 
   // Send code
-  try {
-    await sendVerificationEmail(email, `${input.firstName} ${input.lastName}`, code);
-  } catch (e) {
-    console.error("Verification mail fehlgeschlagen:", e);
-    // OK auch wenn mail fehlschlägt — kullanıcı tekrar isteyebilir
-  }
+  const mailResult = await sendVerificationEmail(email, `${input.firstName} ${input.lastName}`, code);
 
-  return { ok: true, email };
+  return { ok: true, email, mailSent: mailResult.ok, mailError: mailResult.error };
 }
 
 export async function verifyEmailCode(
@@ -226,10 +232,9 @@ export async function resendVerificationCode(email: string): Promise<AuthResult>
     where: { id: customer.id },
     data: { verificationCode: code, verificationCodeExpiresAt: expiresAt },
   });
-  try {
-    await sendVerificationEmail(customer.email, `${customer.firstName} ${customer.lastName}`, code);
-  } catch (e) {
-    return { ok: false, error: "Code konnte nicht gesendet werden." };
+  const result = await sendVerificationEmail(customer.email, `${customer.firstName} ${customer.lastName}`, code);
+  if (!result.ok) {
+    return { ok: false, error: `Code konnte nicht gesendet werden: ${result.error}` };
   }
   return { ok: true };
 }
