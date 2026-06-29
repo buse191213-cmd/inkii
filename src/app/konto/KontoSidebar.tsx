@@ -85,7 +85,11 @@ export default function KontoSidebar({ customerName, customerEmail }: { customer
           <img
             src="/inkii-works-logo.png"
             alt="INKII Works"
-            style={{ height: 36, width: "auto" }}
+            style={{
+              height: 36,
+              width: "auto",
+              filter: "brightness(0)",
+            }}
           />
         </Link>
       </div>
