@@ -100,7 +100,7 @@ export default function AdressenClient({ initial }: { initial: Initial }) {
             cursor: "pointer",
             letterSpacing: "1.5px",
             textTransform: "uppercase",
-            marginBottom: shippingDiffers ? 24 : 0,
+            marginBottom: shippingDiffers ? 24 : 28,
             color: "#0f1a16",
           }}>
             <input
@@ -152,7 +152,7 @@ export default function AdressenClient({ initial }: { initial: Initial }) {
           </div>
         )}
 
-        <button type="submit" disabled={isPending} style={submitBtn(isPending)}>
+        <button type="submit" disabled={isPending} style={{ ...submitBtn(isPending), marginTop: 12 }}>
           {isPending ? "Speichern…" : "Adressen speichern"}
         </button>
       </form>
