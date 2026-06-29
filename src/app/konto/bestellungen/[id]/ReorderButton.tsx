@@ -2,7 +2,6 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { useCart } from "@/components/CartProvider";
 
 type ReorderItem = {
   productId: string;
@@ -19,32 +18,57 @@ type ReorderItem = {
   dtfDesignUrl: string;
 };
 
+const CART_STORAGE_KEY = "inkii_cart_v1";
+
 export default function ReorderButton({ items, mode = "all" }: { items: ReorderItem[]; mode?: "all" | "single" }) {
-  const { addItem } = useCart();
   const router = useRouter();
   const [done, setDone] = useState(false);
 
   function handleReorder() {
-    items.forEach((it) => {
-      addItem({
-        productId: it.productId,
-        productCode: it.productCode,
-        productName: it.productName,
-        productImage: it.productImage,
-        color: it.color,
-        size: it.size,
-        quantity: it.quantity,
-        unitPriceCents: it.unitPriceCents,
-        hasDtf: it.hasDtf,
-        dtfSize: it.dtfSize,
-        dtfPriceCents: it.dtfPriceCents,
-        dtfDesignUrl: it.dtfDesignUrl,
+    try {
+      // localStorage direkt manipüle — CartProvider olsun olmasın çalışır
+      const stored = localStorage.getItem(CART_STORAGE_KEY);
+      let cart: ReorderItem[] = [];
+      if (stored) {
+        try {
+          cart = JSON.parse(stored);
+          if (!Array.isArray(cart)) cart = [];
+        } catch {
+          cart = [];
+        }
+      }
+
+      items.forEach((it) => {
+        const id = `${it.productId}::${it.color}::${it.size}::${it.hasDtf ? it.dtfSize : "no"}`;
+        const existingIdx = cart.findIndex((c: ReorderItem & { id?: string }) =>
+          c.productId === it.productId &&
+          c.color === it.color &&
+          c.size === it.size &&
+          (c.hasDtf ? c.dtfSize : "no") === (it.hasDtf ? it.dtfSize : "no")
+        );
+        if (existingIdx >= 0) {
+          cart[existingIdx].quantity += it.quantity;
+        } else {
+          cart.push({ ...it, ...{ id } } as ReorderItem);
+        }
       });
-    });
-    setDone(true);
-    setTimeout(() => {
-      router.push("/warenkorb");
-    }, 600);
+
+      localStorage.setItem(CART_STORAGE_KEY, JSON.stringify(cart));
+      // Event yayınla, CartProvider başka sekme açıksa güncellesin
+      window.dispatchEvent(new StorageEvent("storage", {
+        key: CART_STORAGE_KEY,
+        newValue: JSON.stringify(cart),
+      }));
+
+      setDone(true);
+      setTimeout(() => {
+        // Tam sayfa reload — CartProvider yeniden mount olur ve localStorage'ı okur
+        window.location.href = "/warenkorb";
+      }, 500);
+    } catch (e) {
+      console.error("Reorder failed:", e);
+      alert("Bestellung konnte nicht in den Warenkorb gelegt werden.");
+    }
   }
 
   if (mode === "single") {
