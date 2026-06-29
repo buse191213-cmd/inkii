@@ -117,6 +117,7 @@ model Customer {
   notes           String   @default("") // Admin-Notizen
   acceptsMarketing Boolean @default(false)
   isGuest         Boolean  @default(true) // Gast-Checkout
+  isActive        Boolean  @default(true) // Deaktivierung (soft-delete)
   orders          Order[]
   createdAt       DateTime @default(now())
   updatedAt       DateTime @updatedAt

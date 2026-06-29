@@ -21,6 +21,9 @@ export async function loginCustomer(
   if (!customer || !customer.password) {
     return { ok: false, error: "E-Mail oder Passwort ungültig." };
   }
+  if (!customer.isActive) {
+    return { ok: false, error: "Dieses Konto ist deaktiviert. Bitte kontaktieren Sie info@inkiiworks.de" };
+  }
   if (!verifyPassword(password, customer.password)) {
     return { ok: false, error: "E-Mail oder Passwort ungültig." };
   }

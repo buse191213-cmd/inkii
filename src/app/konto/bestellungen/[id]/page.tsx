@@ -1,6 +1,5 @@
-import SiteShell from "@/components/SiteShell";
 import { getCurrentCustomer } from "@/lib/customer-auth";
-import { redirect, notFound } from "next/navigation";
+import { notFound } from "next/navigation";
 import { db } from "@/lib/db";
 import Link from "next/link";
 
@@ -45,7 +44,7 @@ export default async function KundenBestellungDetailPage({
   params: Promise<{ id: string }>;
 }) {
   const customer = await getCurrentCustomer();
-  if (!customer) redirect("/login?next=/konto");
+  if (!customer) notFound();
 
   const { id } = await params;
   const order = await db.order.findUnique({
@@ -63,11 +62,10 @@ export default async function KundenBestellungDetailPage({
     : "";
 
   return (
-    <SiteShell>
-      <section style={{ maxWidth: 1000, margin: "0 auto", padding: "40px 28px" }}>
-        <Link href="/konto" style={{ color: "#64748b", fontSize: 13, textDecoration: "none" }}>
-          ← Zu meinen Bestellungen
-        </Link>
+    <>
+      <Link href="/konto/bestellungen" style={{ color: "#64748b", fontSize: 13, textDecoration: "none" }}>
+        ← Zu meinen Bestellungen
+      </Link>
 
         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", flexWrap: "wrap", gap: 12, marginTop: 16, marginBottom: 24 }}>
           <div>
@@ -287,7 +285,6 @@ export default async function KundenBestellungDetailPage({
             }
           }
         `}</style>
-      </section>
-    </SiteShell>
+    </>
   );
 }
