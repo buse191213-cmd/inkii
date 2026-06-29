@@ -6,6 +6,7 @@ import { isAuthenticated } from "@/lib/auth";
 import nodemailer from "nodemailer";
 import { generateInvoicePDF, generateInvoiceNumber, type InvoiceData } from "@/lib/invoice-pdf";
 import { getCompanyInfo } from "@/lib/company-info";
+import { renderShippedEmail, shippedEmailSubject } from "@/lib/shipped-email";
 
 function isSmtpConfigured(): boolean {
   return Boolean(process.env.SMTP_HOST && process.env.SMTP_USER && process.env.SMTP_PASS);
@@ -220,27 +221,46 @@ export async function updateOrderStatus(
           }
         }
 
-        const html = `
-          <div style="font-family: Arial, sans-serif; max-width: 600px;">
-            <h2 style="color: #004537;">${emailDef.subject}</h2>
-            <p>Sehr geehrte/r ${order.customer.salutation} ${order.customer.firstName} ${order.customer.lastName},</p>
-            <p>${emailDef.intro}</p>
-            <p><strong>Bestellnummer:</strong> ${order.orderNumber}</p>
-            ${attachments.length > 0 ? '<p style="background: #f0fdf4; padding: 10px; margin: 12px 0;"><strong>📄 Die Rechnung finden Sie als PDF im Anhang.</strong></p>' : ""}
-            ${trackingHtml}
-            <p style="margin-top: 24px; color: #666; font-size: 12px;">
-              Bei Fragen schreiben Sie uns: <a href="mailto:info@inkiiworks.de">info@inkiiworks.de</a><br>
-              INKII WORKS · Sener Kirli · Westuferstr. 25 · 45356 Essen
-            </p>
-          </div>
-        `;
-        await sendMail(
-          order.customer.email,
-          `INKII Works — ${emailDef.subject} (${order.orderNumber})`,
-          html,
-          attachments.length > 0 ? attachments : undefined
-        );
-        emailSent = true;
+        // VERSENDET: özel premium template kullan
+        if (newStatus === "VERSENDET" && order.trackingNumber && order.shippingCarrier) {
+          const shippedHtml = renderShippedEmail({
+            customerSalutation: order.customer.salutation,
+            customerFirstName: order.customer.firstName,
+            customerLastName: order.customer.lastName,
+            orderNumber: order.orderNumber,
+            carrier: order.shippingCarrier,
+            trackingNumber: order.trackingNumber,
+          });
+          await sendMail(
+            order.customer.email,
+            shippedEmailSubject(order.orderNumber),
+            shippedHtml,
+            undefined
+          );
+          emailSent = true;
+        } else {
+          // Andere Status: einfache Template
+          const html = `
+            <div style="font-family: Arial, sans-serif; max-width: 600px;">
+              <h2 style="color: #004537;">${emailDef.subject}</h2>
+              <p>Sehr geehrte/r ${order.customer.salutation} ${order.customer.firstName} ${order.customer.lastName},</p>
+              <p>${emailDef.intro}</p>
+              <p><strong>Bestellnummer:</strong> ${order.orderNumber}</p>
+              ${attachments.length > 0 ? '<p style="background: #f0fdf4; padding: 10px; margin: 12px 0;"><strong>📄 Die Rechnung finden Sie als PDF im Anhang.</strong></p>' : ""}
+              <p style="margin-top: 24px; color: #666; font-size: 12px;">
+                Bei Fragen schreiben Sie uns: <a href="mailto:info@inkiiworks.de">info@inkiiworks.de</a><br>
+                INKII WORKS · Sener Kirli · Westuferstr. 25 · 45356 Essen
+              </p>
+            </div>
+          `;
+          await sendMail(
+            order.customer.email,
+            `INKII Works — ${emailDef.subject} (${order.orderNumber})`,
+            html,
+            attachments.length > 0 ? attachments : undefined
+          );
+          emailSent = true;
+        }
       } catch (e) {
         console.error("Status-Email fehlgeschlagen:", e);
       }
@@ -296,29 +316,19 @@ export async function updateOrderTracking(
 
     let emailSent = false;
     if (canAutoShip) {
-      // VERSENDET mailini gönder (tracking dahil)
+      // VERSENDET mailini gönder (premium template)
       try {
-        const url = carrierTrackingUrl(carrier, trackingNumber.trim());
-        const html = `
-          <div style="font-family: Arial, sans-serif; max-width: 600px;">
-            <h2 style="color: #004537;">Ihre Bestellung wurde versendet</h2>
-            <p>Sehr geehrte/r ${order.customer.salutation} ${order.customer.firstName} ${order.customer.lastName},</p>
-            <p>Ihre Bestellung ist auf dem Weg zu Ihnen.</p>
-            <p><strong>Bestellnummer:</strong> ${order.orderNumber}</p>
-            <p style="background: #f0fdf4; padding: 12px; margin: 16px 0;">
-              <strong>Verfolgen Sie Ihre Sendung:</strong><br>
-              ${carrier} · ${trackingNumber.trim()}<br>
-              ${url ? `<a href="${url}" style="color: #004537;">→ Sendungsverfolgung öffnen</a>` : ""}
-            </p>
-            <p style="margin-top: 24px; color: #666; font-size: 12px;">
-              Bei Fragen schreiben Sie uns: <a href="mailto:info@inkiiworks.de">info@inkiiworks.de</a><br>
-              INKII WORKS · Sener Kirli · Westuferstr. 25 · 45356 Essen
-            </p>
-          </div>
-        `;
+        const html = renderShippedEmail({
+          customerSalutation: order.customer.salutation,
+          customerFirstName: order.customer.firstName,
+          customerLastName: order.customer.lastName,
+          orderNumber: order.orderNumber,
+          carrier,
+          trackingNumber: trackingNumber.trim(),
+        });
         await sendMail(
           order.customer.email,
-          `INKII Works — Ihre Bestellung wurde versendet (${order.orderNumber})`,
+          shippedEmailSubject(order.orderNumber),
           html
         );
         emailSent = true;
