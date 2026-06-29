@@ -176,7 +176,7 @@ export function renderShippedEmail(p: ShippedMailParams): string {
     <p style="margin:0;font-size:12px;color:#64748b;line-height:1.6;">
       <strong style="color:#004537;">INKII WORKS</strong> · Sener Kirli<br>
       Westuferstr. 25 · 45356 Essen<br>
-      <span style="color:#94a3b8;">Made in Germany 🇩🇪 · USt-IdNr: DE353055316</span>
+      <span style="color:#94a3b8;">USt-IdNr: DE353055316</span>
     </p>
   </div>
 
