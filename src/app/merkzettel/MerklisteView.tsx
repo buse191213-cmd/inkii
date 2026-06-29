@@ -6,12 +6,21 @@ import { useMerkliste } from "@/components/MerklisteProvider";
 import { submitMerklisteInquiry } from "./actions";
 import type { Dictionary } from "@/dictionaries/types";
 
+type Prefill = {
+  name: string;
+  email: string;
+  phone: string;
+  company: string;
+};
+
 export default function MerklisteView({
   t,
   common,
+  prefill,
 }: {
   t: Dictionary["merkzettel"];
   common: Dictionary["common"];
+  prefill?: Prefill | null;
 }) {
   const { items, mounted, setQty, remove, clear } = useMerkliste();
   const [pending, setPending] = useState(false);
@@ -157,20 +166,20 @@ export default function MerklisteView({
             )} />
             <div className="field">
               <label htmlFor="m-name">{t.fName}</label>
-              <input id="m-name" name="name" type="text" required placeholder={t.phName} />
+              <input id="m-name" name="name" type="text" required placeholder={t.phName} defaultValue={prefill?.name ?? ""} />
             </div>
             <div className="field">
               <label htmlFor="m-email">{t.fEmail}</label>
-              <input id="m-email" name="email" type="email" required placeholder={t.phEmail} />
+              <input id="m-email" name="email" type="email" required placeholder={t.phEmail} defaultValue={prefill?.email ?? ""} />
             </div>
             <div className="field-row">
               <div className="field">
                 <label htmlFor="m-phone">{t.fPhone}</label>
-                <input id="m-phone" name="phone" type="tel" placeholder={common.optional} />
+                <input id="m-phone" name="phone" type="tel" placeholder={common.optional} defaultValue={prefill?.phone ?? ""} />
               </div>
               <div className="field">
                 <label htmlFor="m-company">{t.fCompany}</label>
-                <input id="m-company" name="company" type="text" placeholder={common.optional} />
+                <input id="m-company" name="company" type="text" placeholder={common.optional} defaultValue={prefill?.company ?? ""} />
               </div>
             </div>
             <div className="field">
