@@ -68,7 +68,7 @@ export default function AdressenClient({ initial }: { initial: Initial }) {
         Verwalten Sie Ihre Rechnungs- und Lieferadresse.
       </p>
 
-      <form onSubmit={handleSubmit}>
+      <form onSubmit={handleSubmit} noValidate>
         <div style={{ background: "#fff", padding: 20, border: "1px solid #e5e7eb", marginBottom: 16 }}>
           <h3 style={{ fontSize: 15, fontWeight: 700, marginBottom: 14 }}>Rechnungsadresse</h3>
           <div style={field}>

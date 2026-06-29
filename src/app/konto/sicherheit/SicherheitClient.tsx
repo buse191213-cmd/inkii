@@ -62,6 +62,7 @@ export default function SicherheitClient() {
       {/* Passwort ändern */}
       <form
         onSubmit={handlePasswordChange}
+        noValidate
         style={{ background: "#fff", padding: 20, border: "1px solid #e5e7eb", marginBottom: 20 }}
       >
         <h3 style={{ fontSize: 15, fontWeight: 700, marginBottom: 4 }}>Passwort ändern</h3>
@@ -133,7 +134,7 @@ export default function SicherheitClient() {
             Konto deaktivieren
           </button>
         ) : (
-          <form onSubmit={handleDeactivate} style={{ display: "flex", flexDirection: "column", gap: 12 }}>
+          <form onSubmit={handleDeactivate} noValidate style={{ display: "flex", flexDirection: "column", gap: 12 }}>
             <div style={field}>
               <label style={{ color: "#991b1b" }}>Aktuelles Passwort zur Bestätigung</label>
               <input type="password" value={deactivatePwd} onChange={(e) => setDeactivatePwd(e.target.value)} style={input} required />

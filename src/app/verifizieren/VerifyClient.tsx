@@ -133,7 +133,7 @@ export default function VerifyClient({ email, mailErr }: { email: string; mailEr
           </p>
         </div>
 
-        <form onSubmit={handleSubmit} style={{ padding: "32px 36px" }}>
+        <form onSubmit={handleSubmit} noValidate style={{ padding: "32px 36px" }}>
           {/* 6 Digit Inputs */}
           <div style={{ display: "flex", gap: 10, justifyContent: "center", marginBottom: 18 }}>
             {digits.map((d, i) => (

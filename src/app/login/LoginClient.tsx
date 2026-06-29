@@ -76,7 +76,7 @@ export default function LoginClient({ next }: { next: string }) {
         </div>
 
         {/* Form */}
-        <form onSubmit={handleSubmit} style={{ padding: "32px 36px 28px" }}>
+        <form onSubmit={handleSubmit} noValidate style={{ padding: "32px 36px 28px" }}>
           <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
             <div>
               <label style={lbl}>E-Mail</label>

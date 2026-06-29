@@ -50,7 +50,7 @@ export default function ProfilClient({ initial }: { initial: Initial }) {
         Die E-Mail-Adresse kann nicht geändert werden. Für Adressänderungen → "Adressen".
       </p>
 
-      <form onSubmit={handleSubmit} style={{ background: "#fff", padding: 20, border: "1px solid #e5e7eb", display: "flex", flexDirection: "column", gap: 14 }}>
+      <form onSubmit={handleSubmit} noValidate style={{ background: "#fff", padding: 20, border: "1px solid #e5e7eb", display: "flex", flexDirection: "column", gap: 14 }}>
         <div style={field}>
           <label>E-Mail (nicht änderbar)</label>
           <input value={initial.email} readOnly style={{ ...input, background: "#f1f5f9", color: "#64748b" }} />

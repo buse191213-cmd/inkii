@@ -67,7 +67,7 @@ export default function RegisterClient() {
         Registrieren Sie sich, um Ihre Bestellungen zu verfolgen, Wiederbestellungen schnell zu erstellen und Rechnungen einzusehen.
       </p>
 
-      <form onSubmit={handleSubmit} style={{ display: "flex", flexDirection: "column", gap: 14 }}>
+      <form onSubmit={handleSubmit} noValidate style={{ display: "flex", flexDirection: "column", gap: 14 }}>
         {/* Login Daten */}
         <h3 style={sectionH}>Zugangsdaten</h3>
         <div style={field}>
