@@ -18,6 +18,7 @@ export type CatalogProduct = {
   icon: string;
   images: string[];
   priceCents: number | null;
+  hasTiers?: boolean; // Staffelpreise var mı (true ise "ab" prefix göster)
   stock: number;
   isNew: boolean;
   isEco: boolean;
@@ -26,7 +27,7 @@ export type CatalogProduct = {
   categorySlug: string;
   visiblePages: string[];
   cardFit?: string;
-  cardCrop?: string; // JSON: {"zoom":1.2,"x":0,"y":-15}
+  cardCrop?: string;
 };
 
 export type CatalogCategory = { slug: string; name: string; count: number };
@@ -314,9 +315,17 @@ export default function CatalogClient({
 
                   <div className="mm-card-name">{p.name}</div>
                   <div className="mm-card-price">
-                    {SHOW_PRICES
-                      ? (hasPrice ? <>Ab {formatPrice(p.priceCents)}</> : "Preis auf Anfrage")
-                      : "Preis auf Anfrage"}
+                    {SHOW_PRICES && hasPrice ? (
+                      <span style={{ fontSize: 13, fontWeight: 600, color: "#0f1a16" }}>
+                        {p.hasTiers && <span style={{ fontSize: 10, color: "#94a3b8", fontWeight: 500, marginRight: 3, textTransform: "uppercase", letterSpacing: "0.5px" }}>ab</span>}
+                        {formatPrice(p.priceCents)}
+                        <span style={{ fontSize: 10, color: "#94a3b8", marginLeft: 3 }}>/ Stk</span>
+                      </span>
+                    ) : (
+                      <span style={{ fontSize: 12, color: "#94a3b8", fontStyle: "italic" }}>
+                        Preis auf Anfrage
+                      </span>
+                    )}
                   </div>
                 </Link>
 
