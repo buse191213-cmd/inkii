@@ -130,7 +130,7 @@ export function localBusinessSchema(): Json {
     "@type": ["LocalBusiness", "PrintShop"],
     "@id": `${COMPANY.url}#localbusiness`,
     name: COMPANY.name,
-    url: COMPANY.url,
+    // url Organization'da zaten var — burada @id yeterli (LocalBusiness için)
     description: COMPANY.description,
   };
 
