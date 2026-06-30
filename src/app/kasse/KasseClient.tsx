@@ -785,6 +785,7 @@ export default function KasseClient({ paymentMethods, shipping, prefill, isLogge
         @media (max-width: 800px) {
           :global(.kasse-layout) {
             grid-template-columns: 1fr !important;
+            gap: 20px !important;
           }
         }
       `}</style>
@@ -820,9 +821,9 @@ const field: React.CSSProperties = {
 };
 
 const input: React.CSSProperties = {
-  padding: "10px 12px",
+  padding: "11px 12px",
   border: "1px solid #d1d5db",
-  fontSize: 14,
+  fontSize: 16, // 16px iOS auto-zoom önler
   background: "#fff",
   width: "100%",
   fontFamily: "inherit",

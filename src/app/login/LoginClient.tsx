@@ -19,8 +19,9 @@ export default function LoginClient({ next, slideImages }: Props) {
   const [error, setError] = useState("");
   const [activeSlide, setActiveSlide] = useState(0);
   const [focusedField, setFocusedField] = useState<string | null>(null);
+  const [isMobile, setIsMobile] = useState(false);
 
-  // Slideshow
+  // Slideshow rotation
   useEffect(() => {
     if (slideImages.length <= 1) return;
     const id = setInterval(() => {
@@ -29,14 +30,23 @@ export default function LoginClient({ next, slideImages }: Props) {
     return () => clearInterval(id);
   }, [slideImages.length]);
 
-  // Lock body scroll
+  // Detect mobile (handles dynamic resize)
   useEffect(() => {
+    const check = () => setIsMobile(window.innerWidth < 880);
+    check();
+    window.addEventListener("resize", check);
+    return () => window.removeEventListener("resize", check);
+  }, []);
+
+  // Body scroll lock SADECE desktop'ta — mobilde klavye için scroll lazım
+  useEffect(() => {
+    if (isMobile) return;
     const original = document.body.style.overflow;
     document.body.style.overflow = "hidden";
     return () => {
       document.body.style.overflow = original;
     };
-  }, []);
+  }, [isMobile]);
 
   function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
@@ -52,124 +62,147 @@ export default function LoginClient({ next, slideImages }: Props) {
     });
   }
 
+  // Desktop: fixed fullscreen split
+  // Mobile: normal flow, full-height, single column
+  const containerStyle: React.CSSProperties = isMobile
+    ? {
+        minHeight: "100vh",
+        background: "#fff",
+        display: "flex",
+        flexDirection: "column",
+      }
+    : {
+        position: "fixed",
+        inset: 0,
+        display: "grid",
+        gridTemplateColumns: "1fr 1fr",
+        background: "#fff",
+        zIndex: 100,
+      };
+
   return (
-    <div style={{
-      position: "fixed",
-      inset: 0,
-      display: "grid",
-      gridTemplateColumns: "1fr 1fr",
-      background: "#fff",
-      zIndex: 100,
-    }} className="login-fullscreen">
+    <div style={containerStyle}>
 
-      {/* ═══════════ LEFT: SLIDESHOW ═══════════ */}
-      <div style={{
-        position: "relative",
-        overflow: "hidden",
-        background: "#000",
-      }} className="login-slideshow">
-
-        {/* Slides */}
-        {slideImages.map((src, i) => (
-          <div
-            key={src + i}
-            style={{
-              position: "absolute",
-              inset: 0,
-              opacity: activeSlide === i ? 1 : 0,
-              transition: "opacity 1.5s ease-in-out",
-              background: `#000 url('${src}') center/cover no-repeat`,
-            }}
-          />
-        ))}
-
-        {/* Dark overlay for legibility */}
+      {/* LEFT: SLIDESHOW — Desktop only */}
+      {!isMobile && (
         <div style={{
-          position: "absolute",
-          inset: 0,
-          background: "linear-gradient(135deg, rgba(0,0,0,0.45) 0%, rgba(0,0,0,0.25) 50%, rgba(0,0,0,0.55) 100%)",
-          pointerEvents: "none",
-        }} />
-
-        {/* Content overlay */}
-        <div style={{
-          position: "absolute",
-          inset: 0,
-          padding: "40px 48px",
-          display: "flex",
-          flexDirection: "column",
-          justifyContent: "space-between",
-          color: "#fff",
-          zIndex: 2,
+          position: "relative",
+          overflow: "hidden",
+          background: "#000",
         }}>
+          {slideImages.map((src, i) => (
+            <div
+              key={src + i}
+              style={{
+                position: "absolute",
+                inset: 0,
+                opacity: activeSlide === i ? 1 : 0,
+                transition: "opacity 1.5s ease-in-out",
+                background: `#000 url('${src}') center/cover no-repeat`,
+              }}
+            />
+          ))}
 
-          {/* Top: Logo */}
-          <div>
-            <Link href="/" style={{ display: "inline-block" }}>
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img
-                src="/inkii-works-logo.png"
-                alt="INKII Works"
-                style={{
-                  height: 48,
-                  width: "auto",
-                  filter: "brightness(0) invert(1)",
-                  opacity: 0.95,
-                }}
-              />
-            </Link>
-          </div>
+          <div style={{
+            position: "absolute",
+            inset: 0,
+            background: "linear-gradient(135deg, rgba(0,0,0,0.45) 0%, rgba(0,0,0,0.25) 50%, rgba(0,0,0,0.55) 100%)",
+            pointerEvents: "none",
+          }} />
 
-          {/* Center: Headline */}
-          <div>
-            <h1 style={{
-              fontSize: "clamp(2.6rem, 5vw, 4.5rem)",
-              fontWeight: 300,
-              lineHeight: 1.05,
-              letterSpacing: "-0.03em",
-              margin: 0,
-              fontFamily: "Georgia, 'Times New Roman', serif",
-              fontStyle: "italic",
-            }}>
-              Willkommen<br />
-              zurück.
-            </h1>
-          </div>
-
-          {/* Bottom: Slide dots */}
-          <div style={{ display: "flex", gap: 8, alignItems: "center" }}>
-            {slideImages.map((_, i) => (
-              <button
-                key={i}
-                type="button"
-                onClick={() => setActiveSlide(i)}
-                style={{
-                  width: activeSlide === i ? 24 : 6,
-                  height: 6,
-                  borderRadius: 3,
-                  background: activeSlide === i ? "#fff" : "rgba(255,255,255,0.4)",
-                  border: "none",
-                  cursor: "pointer",
-                  padding: 0,
-                  transition: "all 0.3s",
-                }}
-                aria-label={`Slide ${i + 1}`}
-              />
-            ))}
+          <div style={{
+            position: "absolute",
+            inset: 0,
+            padding: "40px 48px",
+            display: "flex",
+            flexDirection: "column",
+            justifyContent: "space-between",
+            color: "#fff",
+            zIndex: 2,
+          }}>
+            <div>
+              <Link href="/" style={{ display: "inline-block" }}>
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img
+                  src="/inkii-works-logo.png"
+                  alt="INKII Works"
+                  style={{ height: 48, width: "auto", filter: "brightness(0) invert(1)", opacity: 0.95 }}
+                />
+              </Link>
+            </div>
+            <div>
+              <h1 style={{
+                fontSize: "clamp(2.6rem, 5vw, 4.5rem)",
+                fontWeight: 300,
+                lineHeight: 1.05,
+                letterSpacing: "-0.03em",
+                margin: 0,
+                fontFamily: "Georgia, 'Times New Roman', serif",
+                fontStyle: "italic",
+              }}>
+                Willkommen<br />
+                zurück.
+              </h1>
+            </div>
+            <div style={{ display: "flex", gap: 8, alignItems: "center" }}>
+              {slideImages.map((_, i) => (
+                <button
+                  key={i}
+                  type="button"
+                  onClick={() => setActiveSlide(i)}
+                  style={{
+                    width: activeSlide === i ? 24 : 6,
+                    height: 6,
+                    borderRadius: 3,
+                    background: activeSlide === i ? "#fff" : "rgba(255,255,255,0.4)",
+                    border: "none",
+                    cursor: "pointer",
+                    padding: 0,
+                    transition: "all 0.3s",
+                  }}
+                  aria-label={`Slide ${i + 1}`}
+                />
+              ))}
+            </div>
           </div>
         </div>
-      </div>
+      )}
 
-      {/* ═══════════ RIGHT: FORM ═══════════ */}
+      {/* RIGHT (Desktop) / MAIN (Mobile): FORM */}
       <div style={{
         display: "flex",
         alignItems: "center",
         justifyContent: "center",
-        padding: "40px 48px",
+        padding: isMobile ? "32px 24px" : "40px 48px",
         background: "#fff",
-        overflowY: "auto",
-      }} className="login-form-wrap">
+        overflowY: isMobile ? "visible" : "auto",
+        flex: isMobile ? 1 : "auto",
+      }}>
         <div style={{ width: "100%", maxWidth: 360 }}>
+
+          {/* Mobile: small logo at top */}
+          {isMobile && (
+            <div style={{ marginBottom: 28, textAlign: "center" }}>
+              <Link href="/" style={{ display: "inline-block" }}>
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img
+                  src="/inkii-works-logo.png"
+                  alt="INKII Works"
+                  style={{ height: 36, width: "auto", filter: "brightness(0)" }}
+                />
+              </Link>
+              <h1 style={{
+                fontSize: "1.8rem",
+                fontWeight: 300,
+                margin: "20px 0 0",
+                fontFamily: "Georgia, serif",
+                fontStyle: "italic",
+                color: "#000",
+              }}>
+                Willkommen zurück.
+              </h1>
+            </div>
+          )}
 
           <p style={{
             fontSize: 11,
@@ -179,13 +212,12 @@ export default function LoginClient({ next, slideImages }: Props) {
             fontWeight: 600,
             margin: 0,
             marginBottom: 36,
+            textAlign: isMobile ? "center" : "left",
           }}>
             Anmelden
           </p>
 
           <form onSubmit={handleSubmit} noValidate style={{ display: "flex", flexDirection: "column", gap: 28 }}>
-
-            {/* Email — minimal underline */}
             <div>
               <label style={{
                 ...lbl,
@@ -204,12 +236,12 @@ export default function LoginClient({ next, slideImages }: Props) {
                   borderBottomColor: focusedField === "email" ? "#000" : "#d0d0d0",
                   borderBottomWidth: focusedField === "email" ? "2px" : "1px",
                 }}
-                autoFocus
+                placeholder="name@beispiel.de"
                 autoComplete="email"
+                inputMode="email"
               />
             </div>
 
-            {/* Password — minimal underline */}
             <div>
               <label style={{
                 ...lbl,
@@ -303,14 +335,11 @@ export default function LoginClient({ next, slideImages }: Props) {
                 textTransform: "uppercase",
                 transition: "all 0.15s",
               }}
-              onMouseOver={(e) => { if (!isPending) e.currentTarget.style.background = "#333"; }}
-              onMouseOut={(e) => { if (!isPending) e.currentTarget.style.background = "#000"; }}
             >
               {isPending ? "Wird angemeldet…" : "Anmelden"}
             </button>
           </form>
 
-          {/* Bottom Links */}
           <div style={{ marginTop: 36, paddingTop: 20, borderTop: "1px solid #e5e5e5" }}>
             <p style={{ fontSize: 12, color: "#666", margin: 0, textAlign: "center", letterSpacing: "0.3px" }}>
               Noch kein Konto?{" "}
@@ -327,18 +356,6 @@ export default function LoginClient({ next, slideImages }: Props) {
           </div>
         </div>
       </div>
-
-      {/* Mobile */}
-      <style jsx>{`
-        @media (max-width: 880px) {
-          :global(.login-fullscreen) {
-            grid-template-columns: 1fr !important;
-          }
-          :global(.login-slideshow) {
-            display: none !important;
-          }
-        }
-      `}</style>
     </div>
   );
 }
@@ -358,7 +375,7 @@ const input: React.CSSProperties = {
   padding: "10px 0 8px",
   border: "none",
   borderBottom: "1px solid #d0d0d0",
-  fontSize: 15,
+  fontSize: 16, // 16px iOS auto-zoom önler
   background: "transparent",
   fontFamily: "inherit",
   borderRadius: 0,

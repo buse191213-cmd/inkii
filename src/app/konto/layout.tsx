@@ -12,40 +12,20 @@ export default async function KontoLayout({
   if (!customer.isActive) redirect("/konto/deaktiviert");
 
   return (
-    <div style={{
-      position: "fixed",
-      inset: 0,
-      display: "grid",
-      gridTemplateColumns: "260px 1fr",
-      background: "#fff",
-      zIndex: 50,
-    }} className="konto-shell">
-
-      {/* SOL: Sabit Sidebar */}
-      <aside style={{
-        background: "#fff",
-        borderRight: "1px solid #e5e5e5",
-        overflowY: "auto",
-        padding: "32px 24px",
-        display: "flex",
-        flexDirection: "column",
-        height: "100vh",
-      }} className="konto-side">
+    <div className="konto-shell">
+      {/* SOL: Sidebar — Desktop'ta sticky, mobilde üstte */}
+      <aside className="konto-side">
         <KontoSidebar
           customerName={`${customer.firstName} ${customer.lastName}`}
           customerEmail={customer.email}
         />
       </aside>
 
-      {/* SAĞ: Scroll içerik */}
-      <main style={{
-        overflowY: "auto",
-        height: "100vh",
-      }} className="konto-main">
-        <div style={{ maxWidth: 980, margin: "0 auto", padding: "50px 48px 80px" }}>
-
+      {/* SAĞ: Main Content */}
+      <main className="konto-main">
+        <div className="konto-content">
           {/* Editorial Header */}
-          <div style={{ marginBottom: 50, paddingBottom: 24, borderBottom: "1px solid #e5e5e5" }}>
+          <div style={{ marginBottom: 36, paddingBottom: 20, borderBottom: "1px solid #e5e5e5" }}>
             <p style={{
               fontSize: 11,
               color: "#999",
@@ -58,7 +38,7 @@ export default async function KontoLayout({
               Mein Konto
             </p>
             <h1 style={{
-              fontSize: "2.2rem",
+              fontSize: "2rem",
               fontWeight: 600,
               margin: 0,
               color: "#0f1a16",
@@ -73,15 +53,55 @@ export default async function KontoLayout({
       </main>
 
       <style>{`
+        .konto-shell {
+          position: fixed;
+          inset: 0;
+          display: grid;
+          grid-template-columns: 260px 1fr;
+          background: #fff;
+          z-index: 50;
+        }
+        .konto-side {
+          background: #fff;
+          border-right: 1px solid #e5e5e5;
+          overflow-y: auto;
+          padding: 32px 24px;
+          display: flex;
+          flex-direction: column;
+          height: 100vh;
+        }
+        .konto-main {
+          overflow-y: auto;
+          height: 100vh;
+        }
+        .konto-content {
+          max-width: 980px;
+          margin: 0 auto;
+          padding: 48px 40px 80px;
+        }
+
+        /* Mobile */
         @media (max-width: 800px) {
           .konto-shell {
-            grid-template-columns: 1fr !important;
+            position: static;
+            inset: auto;
+            display: block;
+            min-height: 100vh;
           }
           .konto-side {
-            display: none !important;
+            position: relative;
+            border-right: none;
+            border-bottom: 1px solid #e5e5e5;
+            height: auto;
+            padding: 20px 20px 12px;
+            overflow-y: visible;
           }
           .konto-main {
-            height: 100vh !important;
+            overflow-y: visible;
+            height: auto;
+          }
+          .konto-content {
+            padding: 28px 20px 60px;
           }
         }
       `}</style>

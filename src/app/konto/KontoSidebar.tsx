@@ -79,7 +79,7 @@ export default function KontoSidebar({ customerName, customerEmail }: { customer
   return (
     <>
       {/* Logo */}
-      <div style={{ marginBottom: 36 }}>
+      <div style={{ marginBottom: 24 }} className="konto-logo">
         <Link href="/" style={{ display: "inline-block" }}>
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img
@@ -94,8 +94,8 @@ export default function KontoSidebar({ customerName, customerEmail }: { customer
         </Link>
       </div>
 
-      {/* Avatar + Name */}
-      <div style={{
+      {/* Avatar + Name — Hidden on mobile (saves space) */}
+      <div className="konto-user-block" style={{
         paddingBottom: 24,
         borderBottom: "1px solid #e5e5e5",
         marginBottom: 24,
@@ -138,8 +138,8 @@ export default function KontoSidebar({ customerName, customerEmail }: { customer
         }}>{customerEmail}</div>
       </div>
 
-      {/* Nav */}
-      <nav style={{ display: "flex", flexDirection: "column", gap: 2, flex: 1 }}>
+      {/* Nav — Vertical desktop, horizontal scroll mobile */}
+      <nav className="konto-nav" style={{ display: "flex", flexDirection: "column", gap: 2, flex: 1 }}>
         {NAV.map((item) => {
           const active = item.href === "/konto"
             ? pathname === "/konto"
@@ -148,6 +148,7 @@ export default function KontoSidebar({ customerName, customerEmail }: { customer
             <Link
               key={item.href}
               href={item.href}
+              className={active ? "konto-nav-link active" : "konto-nav-link"}
               style={{
                 display: "flex",
                 alignItems: "center",
@@ -161,12 +162,7 @@ export default function KontoSidebar({ customerName, customerEmail }: { customer
                 letterSpacing: "0.2px",
                 transition: "all 0.15s",
                 borderRadius: 4,
-              }}
-              onMouseOver={(e) => {
-                if (!active) e.currentTarget.style.background = "#f5f5f5";
-              }}
-              onMouseOut={(e) => {
-                if (!active) e.currentTarget.style.background = "transparent";
+                whiteSpace: "nowrap",
               }}
             >
               <span style={{
@@ -183,7 +179,7 @@ export default function KontoSidebar({ customerName, customerEmail }: { customer
       </nav>
 
       {/* Logout */}
-      <div style={{ marginTop: 24, paddingTop: 20, borderTop: "1px solid #e5e5e5" }}>
+      <div className="konto-logout" style={{ marginTop: 24, paddingTop: 20, borderTop: "1px solid #e5e5e5" }}>
         <button
           type="button"
           onClick={() => startTransition(() => logoutCustomer())}
@@ -202,22 +198,43 @@ export default function KontoSidebar({ customerName, customerEmail }: { customer
             transition: "all 0.15s",
             borderRadius: 4,
           }}
-          onMouseOver={(e) => {
-            if (!isPending) {
-              e.currentTarget.style.background = "#0f1a16";
-              e.currentTarget.style.color = "#fff";
-            }
-          }}
-          onMouseOut={(e) => {
-            if (!isPending) {
-              e.currentTarget.style.background = "transparent";
-              e.currentTarget.style.color = "#0f1a16";
-            }
-          }}
         >
           {isPending ? "…" : "Abmelden"}
         </button>
       </div>
+
+      <style>{`
+        .konto-nav-link:hover:not(.active) {
+          background: #f5f5f5 !important;
+        }
+        @media (max-width: 800px) {
+          .konto-user-block {
+            display: none !important;
+          }
+          .konto-logo {
+            text-align: center;
+            margin-bottom: 16 !important;
+          }
+          .konto-nav {
+            flex-direction: row !important;
+            overflow-x: auto;
+            -webkit-overflow-scrolling: touch;
+            gap: 6px !important;
+            padding-bottom: 8px;
+            margin: 0 -20px;
+            padding-left: 20px;
+            padding-right: 20px;
+          }
+          .konto-nav-link {
+            padding: 8px 14px !important;
+            font-size: 12px !important;
+            flex-shrink: 0;
+          }
+          .konto-logout {
+            display: none;
+          }
+        }
+      `}</style>
     </>
   );
 }
