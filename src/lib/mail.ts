@@ -11,11 +11,11 @@
 //   SMTP_PASS=...
 //   SMTP_FROM="INKII Works <info@inkiiworks.de>"
 //   MAIL_ADMIN=info@inkiiworks.de
-//   SITE_URL=https://inkii.vercel.app   (optional; default ist diese URL)
+//   SITE_URL=https://www.inkiiworks.de   (optional; default ist diese URL)
 
 import nodemailer from "nodemailer";
 
-const SITE_URL = process.env.SITE_URL || "https://inkii.vercel.app";
+const SITE_URL = process.env.SITE_URL || "https://www.inkiiworks.de";
 const LOGO_URL = `${SITE_URL}/inkii-logo.png`;
 
 export type InquiryItem = {
