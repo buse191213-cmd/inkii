@@ -4,13 +4,39 @@ import type { Metadata } from "next";
 import { getHomeImage } from "@/lib/home-images";
 import { getLocale } from "@/lib/i18n-server";
 import { getDictionary } from "@/dictionaries";
+import { serviceSchema } from "@/lib/schema";
+import JsonLd from "@/components/JsonLd";
 
 export const revalidate = 60;
 
 export const metadata: Metadata = {
-  title: "Textilveredelung | INKII Works",
-  description: "Siebdruck, Stickerei, DTF-Druck, Flockdruck und Patches — alle Veredelungsmethoden im Überblick.",
+  title: "Textildruck & Bestickung Essen — DTF, Siebdruck, Stickerei | INKII Works",
+  description: "Professioneller Textildruck und Bestickung in Essen ✓ DTF-Druck ab 1 Stück ✓ Siebdruck ✓ Maschinenstickerei ✓ Flock & Flex ✓ Lieferung in 5-10 Tagen | INKII Works Ruhrgebiet",
+  keywords: [
+    "Textildruck Essen",
+    "Bestickung Essen",
+    "Textilveredelung Essen",
+    "DTF-Druck Essen",
+    "Siebdruck Essen",
+    "Stickerei Essen",
+    "T-Shirt bedrucken Essen",
+    "Workwear Bestickung",
+    "Textildruck Ruhrgebiet",
+    "Bestickung NRW",
+    "Firmenkleidung bedrucken",
+    "Arbeitskleidung Stickerei",
+    "Textildruck Bottrop",
+    "Textildruck Mülheim",
+    "Textildruck Gelsenkirchen",
+  ],
   alternates: { canonical: "/bereiche/textilveredelung" },
+  openGraph: {
+    title: "Textildruck & Bestickung in Essen | INKII Works",
+    description: "Premium Textilveredelung im Ruhrgebiet — DTF-Druck, Siebdruck, Maschinenstickerei ab 1 Stück. Beratung & Mustererstellung kostenlos.",
+    type: "website",
+    locale: "de_DE",
+    images: ["/og-default.png"],
+  },
 };
 
 export default async function TextilveredelungDetailPage() {
@@ -28,6 +54,12 @@ export default async function TextilveredelungDetailPage() {
 
   return (
     <SiteShell>
+      <JsonLd data={serviceSchema({
+        name: "Textildruck & Bestickung Essen",
+        description: "Professionelle Textilveredelung mit DTF-Druck, Siebdruck, Maschinenstickerei, Flock und Flex in Essen und im gesamten Ruhrgebiet. Schon ab 1 Stück.",
+        url: "/bereiche/textilveredelung",
+        category: "Textilveredelung",
+      })} />
       <section
         className="mm-page-hero"
         style={heroImg ? { backgroundImage: `url(${heroImg})` } : undefined}
