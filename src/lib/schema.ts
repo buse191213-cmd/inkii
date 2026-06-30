@@ -18,6 +18,12 @@ export function organizationSchema(): Json {
     description: COMPANY.description,
   };
 
+  // Alternative Namen (für SEO-Match wenn man INKII oder Inkii Works googelt)
+  const altNames = (COMPANY as { alternateName?: string[] }).alternateName;
+  if (altNames && altNames.length > 0) {
+    org.alternateName = altNames;
+  }
+
   if (COMPANY.legalName) org.legalName = COMPANY.legalName;
   if (COMPANY.logo) org.logo = abs(COMPANY.logo);
 

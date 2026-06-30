@@ -6,14 +6,17 @@ import { SITE_URL } from "./site";
  */
 export const COMPANY = {
   // Anzeigename der Marke
-  name: "INKII",
+  name: "INKII Works",
+
+  // Alternative Namen für SEO
+  alternateName: ["INKII", "Inkii Works", "INKIIWORKS"],
 
   // Vollstaendiger rechtlicher Name
   legalName: "INKII Works - Inh. Sener Kirli",
 
   // Kurzbeschreibung
   description:
-    "Textilveredelung, Werbeartikel, Fahrzeugbeschriftung, Webdesign und Marketing aus einer Hand in Essen.",
+    "INKII Works aus Essen: Textilveredelung, Werbeartikel, Fahrzeugbeschriftung, Webdesign und Marketing aus einer Hand. DTF-Druck, Stickerei und individuelle Werbemittel für Unternehmen in NRW.",
 
   url: SITE_URL,
 
