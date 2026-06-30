@@ -376,12 +376,16 @@ footer.site ul a:hover{color:var(--leaf)}
   .cart-pill{padding:7px 12px}
 }
 @media(max-width:760px){
-  .utility{display:none}
+  /* utility bar VISIBLE on mobile so cart icon + login are accessible */
+  .utility{display:block}
+  .utility-inner{padding:0 12px;height:36px}
+  .utility .u-right{gap:10px;font-size:.7rem}
+  /* hide language text on mobile, keep flag/dropdown */
+  .utility .u-lang-label{display:none}
   body.is-home header.site,
-  body:has(.hero-full) header.site{top:0}
+  body:has(.hero-full) header.site{top:36px}
   nav.main{display:none}.burger{display:flex}
   .head-actions .icon-btn{display:none}
-  .utility .u-right{gap:14px}
   .feat-grid,.method-grid,.stat-band,.team-grid,.field-row{grid-template-columns:1fr}
   .cat-grid{grid-template-columns:repeat(2,1fr)}
   .cat-card{min-height:240px}.cat-card .c-art{height:96px}.cat-card .c-art-img{height:96px}

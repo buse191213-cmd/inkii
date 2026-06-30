@@ -54,11 +54,6 @@ export default function ReorderButton({ items, mode = "all" }: { items: ReorderI
       });
 
       localStorage.setItem(CART_STORAGE_KEY, JSON.stringify(cart));
-      // Event yayınla, CartProvider başka sekme açıksa güncellesin
-      window.dispatchEvent(new StorageEvent("storage", {
-        key: CART_STORAGE_KEY,
-        newValue: JSON.stringify(cart),
-      }));
 
       setDone(true);
       setTimeout(() => {

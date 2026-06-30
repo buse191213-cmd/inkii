@@ -208,9 +208,31 @@ function SiteHeaderInner({
             cursor: "pointer",
           }}
         >
-          {t.merkzettel}
+          🛒 Warenkorb
           {cartCount > 0 ? ` (${cartCount})` : ""}
         </button>
+
+        {/* Login / Account in mobile drawer */}
+        <div style={{ marginTop: 16, paddingTop: 16, borderTop: "1px solid rgba(255,255,255,0.15)" }}>
+          {customer ? (
+            <Link
+              href="/konto"
+              onClick={() => setOpen(false)}
+              style={{ display: "flex", alignItems: "center", gap: 8, color: "inherit", textDecoration: "none" }}
+            >
+              👤 {customer.firstName} — Mein Konto
+            </Link>
+          ) : (
+            <Link
+              href="/login"
+              onClick={() => setOpen(false)}
+              style={{ display: "flex", alignItems: "center", gap: 8, color: "inherit", textDecoration: "none", fontWeight: 600 }}
+            >
+              🔑 Anmelden
+            </Link>
+          )}
+        </div>
+
         <div className="drawer-lang">
           <span>{t.language}</span>
           <LangSwitcher current={locale} />
