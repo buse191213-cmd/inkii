@@ -2,6 +2,7 @@
 
 import { db } from "@/lib/db";
 import { getCurrentCustomerId } from "@/lib/customer-auth";
+import { getCompanyInfo } from "@/lib/company-info";
 import nodemailer from "nodemailer";
 
 function isSmtpConfigured(): boolean {
@@ -192,6 +193,7 @@ export async function createOrder(
     }
 
     try {
+      const company = await getCompanyInfo();
       const itemsHtml = input.items
         .map(
           (i) => `
@@ -251,9 +253,45 @@ export async function createOrder(
 
           ${
             input.paymentMethod === "rechnung"
-              ? `<p style="background: #fef3c7; padding: 12px; margin-top: 16px;">
-                  <strong>Auf Rechnung:</strong> Die Zahlung erfolgt per Banküberweisung nach Erhalt der Ware. Sie erhalten in Kürze eine separate Rechnung.
-                </p>`
+              ? `
+                <div style="margin-top: 28px; padding: 20px; border: 2px solid #004537; background: #f0fdf4;">
+                  <h3 style="margin: 0 0 12px 0; color: #004537; font-size: 16px;">💳 Zahlung per Banküberweisung</h3>
+                  <p style="margin: 0 0 16px 0; font-size: 14px; color: #1f2937;">
+                    Bitte überweisen Sie den Gesamtbetrag von <strong>${euro(input.totalCents)} €</strong> innerhalb von <strong>${company.paymentTermDays || 14} Tagen</strong> auf folgendes Konto:
+                  </p>
+                  <table style="width: 100%; font-size: 14px; border-collapse: collapse;">
+                    ${company.bankName ? `
+                    <tr>
+                      <td style="padding: 6px 0; color: #666; width: 130px;">Bank:</td>
+                      <td style="padding: 6px 0; font-weight: 600;">${company.bankName}</td>
+                    </tr>` : ""}
+                    <tr>
+                      <td style="padding: 6px 0; color: #666;">Kontoinhaber:</td>
+                      <td style="padding: 6px 0; font-weight: 600;">${company.name}${company.owner ? ` (${company.owner})` : ""}</td>
+                    </tr>
+                    ${company.iban ? `
+                    <tr>
+                      <td style="padding: 6px 0; color: #666;">IBAN:</td>
+                      <td style="padding: 6px 0; font-family: 'Courier New', monospace; font-weight: 700; font-size: 15px;">${company.iban}</td>
+                    </tr>` : ""}
+                    ${company.bic ? `
+                    <tr>
+                      <td style="padding: 6px 0; color: #666;">BIC:</td>
+                      <td style="padding: 6px 0; font-family: 'Courier New', monospace; font-weight: 600;">${company.bic}</td>
+                    </tr>` : ""}
+                    <tr style="border-top: 1px dashed #004537;">
+                      <td style="padding: 10px 0 6px 0; color: #666;">Verwendungszweck:</td>
+                      <td style="padding: 10px 0 6px 0; font-family: 'Courier New', monospace; font-weight: 700; color: #004537;">${orderNumber}</td>
+                    </tr>
+                    <tr>
+                      <td style="padding: 6px 0; color: #666;">Betrag:</td>
+                      <td style="padding: 6px 0; font-weight: 700; font-size: 16px; color: #004537;">${euro(input.totalCents)} €</td>
+                    </tr>
+                  </table>
+                  <p style="margin: 16px 0 0 0; font-size: 12px; color: #475569; line-height: 1.5;">
+                    ⚠️ <strong>Wichtig:</strong> Bitte geben Sie unbedingt die Bestellnummer <strong>${orderNumber}</strong> als Verwendungszweck an, damit wir Ihre Zahlung schnell zuordnen können.
+                  </p>
+                </div>`
               : `<p style="background: #f0fdf4; padding: 12px; margin-top: 16px;">
                   Sie erhalten eine separate E-Mail mit der Zahlungsabwicklung.
                 </p>`
