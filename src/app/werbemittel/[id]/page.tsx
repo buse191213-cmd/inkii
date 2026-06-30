@@ -95,7 +95,6 @@ export default async function ProductDetailPage({
   const images = split(product.images);
   const colors = split(product.colors);
   const materials = split(product.material);
-  const hasPrice = product.priceCents != null;
   const tiers = parsePriceTiers(product.priceTiers);
   const sizesList = parseSizes(product.sizes);
 
@@ -148,6 +147,85 @@ export default async function ProductDetailPage({
             <div className="mm-detail-info">
               <h1 className="mm-detail-h1">{product.name}</h1>
               {product.subtitle && <p className="mm-detail-sub">{product.subtitle}</p>}
+
+              {/* FIYAT — ürün başlığı altında her zaman görünür */}
+              {(() => {
+                // Tiered varsa en düşük fiyat, yoksa basePrice
+                const lowestTierCents = tiers.length > 0
+                  ? Math.min(...tiers.map((t) => t.cents))
+                  : null;
+                const displayCents = lowestTierCents ?? product.priceCents;
+                const showFromPrefix = tiers.length > 0; // "ab" ekle eğer tiered varsa
+
+                if (displayCents == null || displayCents === 0) {
+                  return (
+                    <div style={{
+                      display: "flex",
+                      alignItems: "baseline",
+                      gap: 10,
+                      marginTop: 14,
+                      marginBottom: 4,
+                    }}>
+                      <span style={{
+                        fontSize: "1.6rem",
+                        fontWeight: 700,
+                        color: "#0f1a16",
+                        letterSpacing: "-0.01em",
+                      }}>
+                        Preis auf Anfrage
+                      </span>
+                    </div>
+                  );
+                }
+
+                const euroVal = (displayCents / 100).toLocaleString("de-DE", {
+                  minimumFractionDigits: 2,
+                  maximumFractionDigits: 2,
+                });
+
+                return (
+                  <div style={{
+                    display: "flex",
+                    alignItems: "baseline",
+                    gap: 10,
+                    marginTop: 14,
+                    marginBottom: 4,
+                    flexWrap: "wrap",
+                  }}>
+                    {showFromPrefix && (
+                      <span style={{
+                        fontSize: 13,
+                        color: "#64748b",
+                        fontWeight: 500,
+                        textTransform: "uppercase",
+                        letterSpacing: "1px",
+                      }}>
+                        ab
+                      </span>
+                    )}
+                    <span style={{
+                      fontSize: "2rem",
+                      fontWeight: 800,
+                      color: "#0f1a16",
+                      letterSpacing: "-0.02em",
+                      lineHeight: 1,
+                    }}>
+                      €{euroVal}
+                    </span>
+                    <span style={{
+                      fontSize: 13,
+                      color: "#64748b",
+                      fontWeight: 500,
+                    }}>
+                      / Stück
+                    </span>
+                  </div>
+                );
+              })()}
+              <p style={{ fontSize: 11, color: "#94a3b8", marginTop: 2, marginBottom: 16 }}>
+                Alle Preise zzgl. MwSt. und Versand
+              </p>
+
               <p className="mm-detail-meta">
                 Produktionszeit: <strong>Auf Anfrage</strong> · exkl. Versand
               </p>
