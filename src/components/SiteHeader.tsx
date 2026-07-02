@@ -203,74 +203,118 @@ function SiteHeaderInner({
           </Link>
         ))}
 
-        <button
-          type="button"
-          onClick={() => { setOpen(false); setCartOpen(true); }}
-          style={{
-            background: "transparent",
-            border: "none",
-            padding: 0,
-            font: "inherit",
-            color: "inherit",
-            textAlign: "left",
-            cursor: "pointer",
-          }}
-        >
-          🛒 Warenkorb
-          {cartCount > 0 ? ` (${cartCount})` : ""}
-        </button>
+        {/* Warenkorb + Anmelden — alt alta grup */}
+        <div style={{ marginTop: 20, paddingTop: 16, borderTop: "1px solid #f0f0ec", display: "flex", flexDirection: "column", gap: 12 }}>
+          <button
+            type="button"
+            onClick={() => { setOpen(false); setCartOpen(true); }}
+            style={{
+              background: "#0f1a16",
+              color: "#fff",
+              border: "none",
+              padding: "14px 18px",
+              fontSize: 14,
+              fontWeight: 600,
+              letterSpacing: "0.5px",
+              cursor: "pointer",
+              display: "flex",
+              alignItems: "center",
+              gap: 10,
+              textAlign: "left",
+              borderRadius: 4,
+            }}
+          >
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" aria-hidden>
+              <circle cx="9" cy="21" r="1"/>
+              <circle cx="20" cy="21" r="1"/>
+              <path d="M1 1h4l2.68 13.39a2 2 0 002 1.61h9.72a2 2 0 002-1.61L23 6H6" strokeLinecap="round" strokeLinejoin="round"/>
+            </svg>
+            Warenkorb{cartCount > 0 ? ` (${cartCount})` : ""}
+          </button>
 
-        {/* Secondary nav — küçük linkler */}
-        <div style={{ marginTop: 20, paddingTop: 16, borderTop: "1px solid rgba(255,255,255,0.15)", display: "flex", flexDirection: "column", gap: 10 }}>
+          {customer ? (
+            <Link
+              href="/konto"
+              onClick={() => setOpen(false)}
+              style={{
+                background: "transparent",
+                color: "#0f1a16",
+                border: "1px solid #0f1a16",
+                padding: "13px 18px",
+                fontSize: 14,
+                fontWeight: 600,
+                letterSpacing: "0.5px",
+                textDecoration: "none",
+                display: "flex",
+                alignItems: "center",
+                gap: 10,
+                borderRadius: 4,
+              }}
+            >
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" aria-hidden>
+                <circle cx="12" cy="8" r="3.5"/>
+                <path d="M4 21c0-4.4 3.6-8 8-8s8 3.6 8 8" strokeLinecap="round" />
+              </svg>
+              {customer.firstName} — Mein Konto
+            </Link>
+          ) : (
+            <Link
+              href="/login"
+              onClick={() => setOpen(false)}
+              style={{
+                background: "transparent",
+                color: "#0f1a16",
+                border: "1px solid #0f1a16",
+                padding: "13px 18px",
+                fontSize: 14,
+                fontWeight: 600,
+                letterSpacing: "0.5px",
+                textDecoration: "none",
+                display: "flex",
+                alignItems: "center",
+                gap: 10,
+                borderRadius: 4,
+              }}
+            >
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" aria-hidden>
+                <circle cx="12" cy="8" r="3.5"/>
+                <path d="M4 21c0-4.4 3.6-8 8-8s8 3.6 8 8" strokeLinecap="round" />
+              </svg>
+              Anmelden / Registrieren
+            </Link>
+          )}
+        </div>
+
+        {/* Secondary nav — küçük linkler (KOYU renk) */}
+        <div style={{ marginTop: 24, paddingTop: 16, borderTop: "1px solid #f0f0ec", display: "flex", flexDirection: "column", gap: 12 }}>
           <Link
             href="/ueber-uns"
             onClick={() => setOpen(false)}
-            style={{ color: "rgba(255,255,255,0.75)", textDecoration: "none", fontSize: 13, letterSpacing: "0.3px" }}
+            style={{ color: "#5a6660", textDecoration: "none", fontSize: 13, letterSpacing: "0.3px" }}
           >
             Über Uns
           </Link>
           <Link
             href="/nachhaltigkeit"
             onClick={() => setOpen(false)}
-            style={{ color: "rgba(255,255,255,0.75)", textDecoration: "none", fontSize: 13, letterSpacing: "0.3px" }}
+            style={{ color: "#5a6660", textDecoration: "none", fontSize: 13, letterSpacing: "0.3px" }}
           >
             Nachhaltigkeit
           </Link>
           <Link
             href="/bereiche"
             onClick={() => setOpen(false)}
-            style={{ color: "rgba(255,255,255,0.75)", textDecoration: "none", fontSize: 13, letterSpacing: "0.3px" }}
+            style={{ color: "#5a6660", textDecoration: "none", fontSize: 13, letterSpacing: "0.3px" }}
           >
             Bereiche
           </Link>
           <Link
             href="/kontakt"
             onClick={() => setOpen(false)}
-            style={{ color: "rgba(255,255,255,0.75)", textDecoration: "none", fontSize: 13, letterSpacing: "0.3px" }}
+            style={{ color: "#5a6660", textDecoration: "none", fontSize: 13, letterSpacing: "0.3px" }}
           >
             Kontakt
           </Link>
-        </div>
-
-        {/* Login / Account in mobile drawer */}
-        <div style={{ marginTop: 20, paddingTop: 16, borderTop: "1px solid rgba(255,255,255,0.15)" }}>
-          {customer ? (
-            <Link
-              href="/konto"
-              onClick={() => setOpen(false)}
-              style={{ display: "flex", alignItems: "center", gap: 8, color: "inherit", textDecoration: "none" }}
-            >
-              👤 {customer.firstName} — Mein Konto
-            </Link>
-          ) : (
-            <Link
-              href="/login"
-              onClick={() => setOpen(false)}
-              style={{ display: "flex", alignItems: "center", gap: 8, color: "inherit", textDecoration: "none", fontWeight: 600 }}
-            >
-              🔑 Anmelden
-            </Link>
-          )}
         </div>
 
         <div className="drawer-lang">
