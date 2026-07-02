@@ -376,10 +376,12 @@ footer.site ul a:hover{color:var(--leaf)}
   .cart-pill{padding:7px 12px}
 }
 @media(max-width:760px){
-  /* utility bar VISIBLE on mobile so cart icon + login are accessible */
+  /* utility bar VISIBLE on mobile but SIMPLIFIED — only cart + language */
   .utility{display:block}
   .utility-inner{padding:0 12px;height:36px}
-  .utility .u-right{gap:10px;font-size:.7rem}
+  .utility .u-right{gap:12px;font-size:.7rem;justify-content:flex-end}
+  /* Hide all links (Über Uns, Nachhaltigkeit, Bereiche, Kontakt, Anmelden) — they're in drawer */
+  .utility .u-right > a{display:none}
   /* hide language text on mobile, keep flag/dropdown */
   .utility .u-lang-label{display:none}
   body.is-home header.site,

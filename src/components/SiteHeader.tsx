@@ -195,11 +195,14 @@ function SiteHeaderInner({
         <button className="close" aria-label="×" onClick={() => setOpen(false)}>
           ✕
         </button>
+
+        {/* Ana Kategoriler */}
         {NAV.map((n) => (
           <Link key={n.href} href={n.href} onClick={() => setOpen(false)}>
             {nav[n.key]}
           </Link>
         ))}
+
         <button
           type="button"
           onClick={() => { setOpen(false); setCartOpen(true); }}
@@ -217,8 +220,40 @@ function SiteHeaderInner({
           {cartCount > 0 ? ` (${cartCount})` : ""}
         </button>
 
+        {/* Secondary nav — küçük linkler */}
+        <div style={{ marginTop: 20, paddingTop: 16, borderTop: "1px solid rgba(255,255,255,0.15)", display: "flex", flexDirection: "column", gap: 10 }}>
+          <Link
+            href="/ueber-uns"
+            onClick={() => setOpen(false)}
+            style={{ color: "rgba(255,255,255,0.75)", textDecoration: "none", fontSize: 13, letterSpacing: "0.3px" }}
+          >
+            Über Uns
+          </Link>
+          <Link
+            href="/nachhaltigkeit"
+            onClick={() => setOpen(false)}
+            style={{ color: "rgba(255,255,255,0.75)", textDecoration: "none", fontSize: 13, letterSpacing: "0.3px" }}
+          >
+            Nachhaltigkeit
+          </Link>
+          <Link
+            href="/bereiche"
+            onClick={() => setOpen(false)}
+            style={{ color: "rgba(255,255,255,0.75)", textDecoration: "none", fontSize: 13, letterSpacing: "0.3px" }}
+          >
+            Bereiche
+          </Link>
+          <Link
+            href="/kontakt"
+            onClick={() => setOpen(false)}
+            style={{ color: "rgba(255,255,255,0.75)", textDecoration: "none", fontSize: 13, letterSpacing: "0.3px" }}
+          >
+            Kontakt
+          </Link>
+        </div>
+
         {/* Login / Account in mobile drawer */}
-        <div style={{ marginTop: 16, paddingTop: 16, borderTop: "1px solid rgba(255,255,255,0.15)" }}>
+        <div style={{ marginTop: 20, paddingTop: 16, borderTop: "1px solid rgba(255,255,255,0.15)" }}>
           {customer ? (
             <Link
               href="/konto"
