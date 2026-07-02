@@ -153,9 +153,7 @@ export default async function BestellungErfolgPage({ searchParams }: Props) {
             Nächste Schritte
           </h3>
           <ol style={{ paddingLeft: 20, fontSize: 13, lineHeight: 1.8, color: "#475569", margin: 0 }}>
-            <li>Wir prüfen Ihre Bestellung und ggf. Designs.</li>
             <li>Sie erhalten eine Bestätigung mit Produktions- und Lieferzeitraum.</li>
-            {showBankDetails && <li>Nach Zahlungseingang starten wir mit der Produktion.</li>}
             <li>Nach Fertigstellung wird Ihre Bestellung versendet, mit Tracking-Information.</li>
           </ol>
         </div>

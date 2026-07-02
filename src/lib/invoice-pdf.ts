@@ -76,23 +76,45 @@ const TEXT = "#1f2937";
 const MUTED = "#64748b";
 const LIGHT = "#94a3b8";
 
-// Logo Buffer (cached)
+// Logo Buffer (cached) — Vercel serverless için hem file hem URL fallback
 let logoBuffer: Buffer | null = null;
-function getLogoBuffer(): Buffer | null {
+async function getLogoBuffer(): Promise<Buffer | null> {
   if (logoBuffer) return logoBuffer;
+
+  // 1) Önce file system dene (localhost/dev)
+  const paths = [
+    path.join(process.cwd(), "public", "inkii-logo.png"),
+    path.join(process.cwd(), ".next", "server", "public", "inkii-logo.png"),
+    path.resolve("./public/inkii-logo.png"),
+  ];
+  for (const p of paths) {
+    try {
+      if (fs.existsSync(p)) {
+        logoBuffer = fs.readFileSync(p);
+        return logoBuffer;
+      }
+    } catch { /* devam */ }
+  }
+
+  // 2) Fallback: URL'den indir (Vercel production)
   try {
-    const logoPath = path.join(process.cwd(), "public", "inkii-logo.png");
-    if (fs.existsSync(logoPath)) {
-      logoBuffer = fs.readFileSync(logoPath);
+    const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://www.inkiiworks.de";
+    const response = await fetch(`${siteUrl}/inkii-logo.png`);
+    if (response.ok) {
+      const arrayBuffer = await response.arrayBuffer();
+      logoBuffer = Buffer.from(arrayBuffer);
       return logoBuffer;
     }
   } catch (e) {
-    console.warn("Logo konnte nicht geladen werden:", e);
+    console.warn("Logo URL'den indirilemedi:", e);
   }
+
   return null;
 }
 
 export async function generateInvoicePDF(data: InvoiceData): Promise<Buffer> {
+  const logo = await getLogoBuffer(); // await BEFORE promise
+
   return new Promise((resolve, reject) => {
     try {
       const COMPANY = data.company;
@@ -114,13 +136,12 @@ export async function generateInvoicePDF(data: InvoiceData): Promise<Buffer> {
       // ═══════════════════════════════════════════════
       // HEADER: Logo (sol) + RECHNUNG (sağ)
       // ═══════════════════════════════════════════════
-      const logo = getLogoBuffer();
       if (logo) {
         try {
-          // Logo: 50,40 konumunda, height 50px (oran korur)
+          // Logo: 50,45 konumunda, height 50px (oran korur)
           doc.image(logo, 50, 45, { height: 50 });
         } catch (e) {
-          // Logo render edilemezse text fallback
+          console.warn("Logo PDF'e eklenemedi:", e);
           doc.fontSize(22).fillColor(PRIMARY).text(COMPANY.name, 50, 50);
         }
       } else {

@@ -336,8 +336,13 @@ export default function CatalogClient({
                     toggle({ id: p.id, code: p.code, name: p.name, image: p.images[0] ?? null })
                   }
                   aria-label={merkt ? c.gemerkt : c.merken}
+                  title={merkt ? "Aus Merkzettel entfernen" : "Zum Merkzettel hinzufügen"}
                 >
-                  {merkt ? "♥" : "♡"}
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill={merkt ? "currentColor" : "none"} stroke="currentColor" strokeWidth="1.8" aria-hidden="true">
+                    <circle cx="9" cy="21" r="1"/>
+                    <circle cx="20" cy="21" r="1"/>
+                    <path d="M1 1h4l2.68 13.39a2 2 0 002 1.61h9.72a2 2 0 002-1.61L23 6H6" strokeLinecap="round" strokeLinejoin="round"/>
+                  </svg>
                 </button>
               </article>
             );

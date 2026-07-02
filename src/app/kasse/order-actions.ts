@@ -82,10 +82,28 @@ function euro(c: number): string {
   return (c / 100).toLocaleString("de-DE", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
 }
 
-function generateOrderNumber(): string {
-  const year = new Date().getFullYear();
-  const random = Math.floor(10000 + Math.random() * 90000);
-  return `INKI-${year}-${random}`;
+async function generateOrderNumber(): Promise<string> {
+  const yearShort = String(new Date().getFullYear()).slice(-2); // "26"
+  const prefix = `INKI${yearShort}-`;
+
+  // Bu yıl için en son sipariş numarasını bul
+  const lastOrder = await db.order.findFirst({
+    where: { orderNumber: { startsWith: prefix } },
+    orderBy: { orderNumber: "desc" },
+    select: { orderNumber: true },
+  });
+
+  let nextNum = 10000;
+  if (lastOrder?.orderNumber) {
+    // "INKI26-10042" → 10042
+    const parts = lastOrder.orderNumber.split("-");
+    const lastNum = parseInt(parts[1] || "0", 10);
+    if (!isNaN(lastNum) && lastNum >= 10000) {
+      nextNum = lastNum + 1;
+    }
+  }
+
+  return `${prefix}${nextNum}`;
 }
 
 export async function createOrder(
@@ -148,7 +166,7 @@ export async function createOrder(
     }
 
     // 2) Order oluştur
-    const orderNumber = generateOrderNumber();
+    const orderNumber = await generateOrderNumber();
 
     // Status: Rechnung → WARTEND, anderen → NEU (PayPal/Klarna sonra ödeyince BEZAHLT olur)
     const initialStatus = input.paymentMethod === "rechnung" ? "WARTEND" : "NEU";
