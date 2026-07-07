@@ -2,7 +2,7 @@ import Link from "next/link";
 import Image from "next/image";
 import type { Dictionary } from "@/dictionaries/types";
 import CookieSettingsLink from "@/components/CookieSettingsLink";
-import FooterBrandSwitch from "@/components/FooterBrandSwitch";
+import FooterDesignLink from "@/components/FooterDesignLink";
 
 export default function SiteFooter({
   t,
@@ -22,8 +22,8 @@ export default function SiteFooter({
             </div>
             <p>{t.tagline}</p>
 
-            {/* Marka geçiş — logonun altında, minimal ve premium */}
-            <FooterBrandSwitch />
+            {/* Design Upload — Minimal, tıklayınca modal açar */}
+            <FooterDesignLink />
           </div>
           <div>
             <h4>{t.colLeistungen}</h4>

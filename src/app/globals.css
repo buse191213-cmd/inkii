@@ -349,44 +349,55 @@ footer.site{background:var(--paper);border-top:1px solid var(--line);color:var(-
 .foot-brand .logo{color:var(--ink);margin-bottom:16px}
 .foot-brand p{line-height:1.65;font-size:.95rem;max-width:300px}
 
-/* Marka geçiş — footer'da logonun altında, minimal & premium */
-.foot-brand-switch{
-  display:inline-flex;align-items:center;gap:12px;
-  margin-top:22px;padding:10px 0;
-  text-decoration:none;color:var(--ink);
-  transition:opacity .25s ease;
-  position:relative;
+/* Footer Design Upload — minimal, premium, tıklanır kart */
+.foot-design-link{
+  display:inline-flex;align-items:center;gap:14px;
+  margin-top:22px;padding:14px 18px;
+  background:transparent;
+  border:1px solid var(--line);
+  border-radius:4px;
+  color:var(--ink);
+  text-align:left;
+  cursor:pointer;
+  font-family:inherit;
+  transition:all .25s cubic-bezier(.4,0,.2,1);
+  max-width:320px;
 }
-.foot-brand-switch:hover{opacity:.65}
-.foot-brand-switch .fbs-line{
-  width:26px;height:1px;background:var(--ink);flex-shrink:0;opacity:.4;
-  transition:width .3s cubic-bezier(.4,0,.2,1),opacity .3s;
+.foot-design-link:hover{
+  background:var(--ink);color:#fff;
+  border-color:var(--ink);
+  transform:translateY(-1px);
+  box-shadow:0 6px 18px rgba(0,0,0,.08);
 }
-.foot-brand-switch:hover .fbs-line{width:40px;opacity:.8}
-.foot-brand-switch .fbs-labels{display:flex;flex-direction:column;gap:2px}
-.foot-brand-switch .fbs-hint{
-  font-size:.68rem;text-transform:uppercase;letter-spacing:.2em;
-  color:var(--muted);font-weight:500;opacity:.75;
+.foot-design-link .fdl-icon{
+  display:inline-flex;align-items:center;justify-content:center;
+  width:36px;height:36px;flex-shrink:0;
+  border:1px solid var(--line);border-radius:50%;
+  color:var(--ink);
+  transition:all .25s;
 }
-.foot-brand-switch .fbs-name{
-  font-family:var(--display);font-size:1.15rem;font-weight:700;
-  letter-spacing:.02em;color:var(--ink);
-  display:inline-flex;align-items:center;gap:8px;
+.foot-design-link:hover .fdl-icon{
+  background:#fff;color:var(--ink);border-color:#fff;
 }
-.foot-brand-switch .fbs-name em{
-  font-style:italic;font-weight:400;color:var(--muted);
-  font-family:Georgia,'Times New Roman',serif;
+.foot-design-link .fdl-text{
+  display:flex;flex-direction:column;gap:2px;flex:1;min-width:0;
 }
-.foot-brand-switch .fbs-arrow{
-  font-size:1rem;opacity:.5;transition:transform .25s ease,opacity .25s;
-  margin-left:2px;
+.foot-design-link .fdl-title{
+  font-size:.92rem;font-weight:600;letter-spacing:.01em;line-height:1.2;
 }
-.foot-brand-switch:hover .fbs-arrow{transform:translateX(4px);opacity:1}
-/* Mobil */
+.foot-design-link .fdl-hint{
+  font-size:.7rem;color:var(--muted);letter-spacing:.05em;
+  transition:color .25s;
+}
+.foot-design-link:hover .fdl-hint{color:rgba(255,255,255,.75)}
+.foot-design-link .fdl-arrow{
+  font-size:1.1rem;opacity:.4;transition:all .25s;flex-shrink:0;
+}
+.foot-design-link:hover .fdl-arrow{opacity:1;transform:translateX(3px)}
 @media(max-width:760px){
-  .foot-brand-switch{margin-top:18px}
-  .foot-brand-switch .fbs-name{font-size:1.05rem}
-  .foot-brand-switch .fbs-hint{font-size:.62rem}
+  .foot-design-link{padding:12px 14px;gap:10px;max-width:none;width:100%}
+  .foot-design-link .fdl-title{font-size:.85rem}
+  .foot-design-link .fdl-hint{font-size:.65rem}
 }
 footer.site h4{color:var(--ink);font-family:var(--display);font-size:1.05rem;margin-bottom:16px}
 footer.site ul{list-style:none;display:flex;flex-direction:column;gap:10px}
