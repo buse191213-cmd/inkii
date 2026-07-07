@@ -2,6 +2,7 @@ import Link from "next/link";
 import Image from "next/image";
 import type { Dictionary } from "@/dictionaries/types";
 import CookieSettingsLink from "@/components/CookieSettingsLink";
+import FooterBrandSwitch from "@/components/FooterBrandSwitch";
 
 export default function SiteFooter({
   t,
@@ -20,6 +21,9 @@ export default function SiteFooter({
               <Image src="/inkii-logo.png" alt="INKII WORKS" width={200} height={60} priority />
             </div>
             <p>{t.tagline}</p>
+
+            {/* Marka geçiş — logonun altında, minimal ve premium */}
+            <FooterBrandSwitch />
           </div>
           <div>
             <h4>{t.colLeistungen}</h4>
