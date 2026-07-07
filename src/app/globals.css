@@ -3856,7 +3856,7 @@ body:has(.hero-full) .brand-marketing .brand-label{
 /* === Global brand switcher — WhatsApp butonunun ALTINDA sağ altta, sabit === */
 .home-brand-switcher{
   position:fixed !important;
-  bottom:22px !important;       /* Sayfanın en altı — WhatsApp yukarıda kalır */
+  bottom:70px !important;       /* Kayan yazı (24+30px) üstünde */
   right:22px !important;
   top:auto !important;
   left:auto !important;
@@ -3873,20 +3873,20 @@ body:has(.hero-full) .brand-marketing .brand-label{
   pointer-events:auto !important;
 }
 @media(max-width:760px){
-  .home-brand-switcher{bottom:16px !important;right:16px !important;padding:5px 10px !important}
+  .home-brand-switcher{bottom:58px !important;right:16px !important;padding:5px 10px !important}
   .home-brand-switcher .mbs-img{width:66px !important;max-width:66px !important}
 }
-/* WhatsApp butonu switcher'ın ÜSTÜNDE dursun */
-.wa-fab{bottom:90px !important}
+/* WhatsApp butonu switcher'ın 30px üstünde (orantılı) */
+.wa-fab{bottom:140px !important}
 @media(max-width:760px){
-  .wa-fab{bottom:78px !important}
+  .wa-fab{bottom:120px !important}
 }
 /* Cookie banner açıksa ikisi de yukarı kaysın */
-body:has(.cookie-banner) .home-brand-switcher{bottom:120px !important}
-body:has(.cookie-banner) .wa-fab{bottom:188px !important}
+body:has(.cookie-banner) .home-brand-switcher{bottom:168px !important}
+body:has(.cookie-banner) .wa-fab{bottom:238px !important}
 @media(max-width:760px){
-  body:has(.cookie-banner) .home-brand-switcher{bottom:110px !important}
-  body:has(.cookie-banner) .wa-fab{bottom:172px !important}
+  body:has(.cookie-banner) .home-brand-switcher{bottom:150px !important}
+  body:has(.cookie-banner) .wa-fab{bottom:212px !important}
 }
 .home-brand-switcher:hover,
 .home-brand-switcher:active{
