@@ -13,7 +13,7 @@ import { SHOW_TIERS } from "@/lib/feature-flags";
 import { getLocale } from "@/lib/i18n-server";
 import { getDictionary } from "@/dictionaries";
 import DetailOrderForm from "@/components/DetailOrderForm";
-import DesignerLauncher from "@/components/DesignerLauncher";
+import ProductCustomizer from "@/components/ProductCustomizer";
 import ProductDetailTabs, { type DetailTab } from "@/components/ProductDetailTabs";
 import { CARE_SYMBOLS } from "@/lib/care-symbols";
 
@@ -269,9 +269,14 @@ export default async function ProductDetailPage({
                 return <ProductDetailTabs tabs={tabs} />;
               })()}
 
-              {/* Eigenes Design hochladen — DETAILS altında */}
-              <DesignerLauncher productName={product.name} productCode={product.code} />
-
+              {/* Eigenes Design hochladen — ProductCustomizer (ön/arka + drag/resize) */}
+              {images.length > 0 && (
+                <ProductCustomizer
+                  productName={product.name}
+                  frontImage={images[0]}
+                  backImage={images[1]}
+                />
+              )}
               {/* Sipariş formu */}
               <DetailOrderForm
                 productId={product.id}
