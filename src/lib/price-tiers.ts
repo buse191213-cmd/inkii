@@ -35,11 +35,19 @@ export function stringifyPriceTiers(tiers: PriceTier[]): string {
   return JSON.stringify(cleaned);
 }
 
-/** Ersparnis in % gegenüber dem höchsten (= ersten) Stückpreis.
- *  Rückgabe als ganze Zahl, z. B. 12 für "Spart 12%". */
-export function tierDiscountPercent(tiers: PriceTier[], tier: PriceTier): number {
-  if (tiers.length === 0) return 0;
-  const basePrice = tiers[0].cents;
+/** Ersparnis in % gegenüber dem Basispreis (priceCents) oder dem ersten Tier.
+ *  Rückgabe als ganze Zahl, z. B. 12 für "Spart 12%".
+ *  @param basePriceCents Optional: Wenn gesetzt, wird das als Basis genommen
+ *                        (Admin's "Preis (€)"). Sonst wird der erste Tier verwendet. */
+export function tierDiscountPercent(
+  tiers: PriceTier[],
+  tier: PriceTier,
+  basePriceCents?: number | null
+): number {
+  // Öncelik: basePriceCents (Preis € Feld) > ilk tier
+  const basePrice = (basePriceCents && basePriceCents > 0)
+    ? basePriceCents
+    : (tiers.length > 0 ? tiers[0].cents : 0);
   if (basePrice <= 0) return 0;
   const diff = basePrice - tier.cents;
   if (diff <= 0) return 0;

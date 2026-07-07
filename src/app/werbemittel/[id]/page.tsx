@@ -293,7 +293,7 @@ export default async function ProductDetailPage({
                   <div className="mm-tiers-list">
                     {tiers.map((t, i) => {
                       const total = t.qty * t.cents;
-                      const discount = tierDiscountPercent(tiers, t);
+                      const discount = tierDiscountPercent(tiers, t, product.priceCents);
                       const totalEuro = (total / 100).toLocaleString("de-DE", {
                         minimumFractionDigits: 2,
                         maximumFractionDigits: 2,
