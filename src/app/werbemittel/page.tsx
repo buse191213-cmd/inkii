@@ -35,16 +35,6 @@ export default async function WerbemittelPage() {
   ]);
 
   const products: CatalogProduct[] = dbProducts.map((p) => {
-    // Tier'larda gerçek staffel var mı kontrol et (en az 2 farklı fiyat seviyesi)
-    let hasTiers = false;
-    try {
-      const tiersRaw = (p as { priceTiers?: string }).priceTiers;
-      if (tiersRaw) {
-        const tiers = JSON.parse(tiersRaw);
-        hasTiers = Array.isArray(tiers) && tiers.length >= 2;
-      }
-    } catch { /* ignore */ }
-
     return {
     id: p.id,
     code: p.code,
@@ -55,7 +45,6 @@ export default async function WerbemittelPage() {
       ? String(p.images).split(",").map((s: string) => s.trim()).filter(Boolean)
       : [],
     priceCents: p.priceCents,
-    hasTiers,
     stock: p.stock,
     isNew: p.isNew,
     isEco: p.isEco,

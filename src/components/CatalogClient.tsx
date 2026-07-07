@@ -18,7 +18,6 @@ export type CatalogProduct = {
   icon: string;
   images: string[];
   priceCents: number | null;
-  hasTiers?: boolean; // Staffelpreise var mı (true ise "ab" prefix göster)
   stock: number;
   isNew: boolean;
   isEco: boolean;
@@ -317,7 +316,6 @@ export default function CatalogClient({
                   <div className="mm-card-price">
                     {SHOW_PRICES && hasPrice ? (
                       <span style={{ fontSize: 13, fontWeight: 600, color: "#0f1a16" }}>
-                        {p.hasTiers && <span style={{ fontSize: 10, color: "#94a3b8", fontWeight: 500, marginRight: 3, textTransform: "uppercase", letterSpacing: "0.5px" }}>ab</span>}
                         {formatPrice(p.priceCents)}
                         <span style={{ fontSize: 10, color: "#94a3b8", marginLeft: 3 }}>/ Stk</span>
                       </span>

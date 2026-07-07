@@ -150,12 +150,14 @@ export default async function ProductDetailPage({
 
               {/* FIYAT — ürün başlığı altında her zaman görünür */}
               {(() => {
-                // Tiered varsa en düşük fiyat, yoksa basePrice
+                // priceCents varsa onu kullan (kullanıcının admin'de girdiği ana fiyat)
+                // yoksa tier'ların minimumunu göster
                 const lowestTierCents = tiers.length > 0
                   ? Math.min(...tiers.map((t) => t.cents))
                   : null;
-                const displayCents = lowestTierCents ?? product.priceCents;
-                const showFromPrefix = tiers.length > 0; // "ab" ekle eğer tiered varsa
+                const displayCents = product.priceCents ?? lowestTierCents;
+                // "ab" prefix SADECE priceCents yoksa ve tier'lar varsa göster
+                const showFromPrefix = product.priceCents == null && tiers.length > 0;
 
                 if (displayCents == null || displayCents === 0) {
                   return (
