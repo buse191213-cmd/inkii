@@ -7,6 +7,7 @@ import { organizationSchema, localBusinessSchema } from "@/lib/schema";
 import JsonLd from "@/components/JsonLd";
 import CookieBanner from "@/components/CookieBanner";
 import WhatsAppButton from "@/components/WhatsAppButton";
+import GlobalBrandSwitcher from "@/components/GlobalBrandSwitcher";
 import { COMPANY } from "@/lib/company";
 import "./globals.css";
 
@@ -102,6 +103,7 @@ export default async function RootLayout({
       <body>
         {children}
         <CookieBanner dict={d.cookie} />
+        <GlobalBrandSwitcher />
         <WhatsAppButton phone={COMPANY.phone} message={waMsg} label={waLabel} />
         <JsonLd data={organizationSchema()} />
         <JsonLd data={localBusinessSchema()} />
