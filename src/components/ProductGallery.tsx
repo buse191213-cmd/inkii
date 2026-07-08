@@ -12,7 +12,10 @@ function resolveUrl(rel: string, allImages: string[]): string {
 }
 
 type Placement = {
-  imageDataUrl: string;
+  imageDataUrl: string;      // Aktif olarak gösterilen (orijinal veya bg-removed)
+  originalImageDataUrl: string; // Kullanıcının yüklediği orijinal
+  processedImageDataUrl?: string; // Bg-removed version (cached)
+  bgRemoved: boolean;
   imageAspect: number;
   x: number;    // %
   y: number;    // %
@@ -20,7 +23,7 @@ type Placement = {
   rotation: number;
 };
 
-const EMPTY: Omit<Placement, "imageDataUrl" | "imageAspect"> = {
+const EMPTY: Omit<Placement, "imageDataUrl" | "originalImageDataUrl" | "imageAspect" | "bgRemoved"> = {
   x: 50, y: 47, width: 30, rotation: 0,
 };
 
@@ -33,9 +36,45 @@ const PRINT_AREA = {
 };
 
 /**
+ * Beyaz arka planı transparan yapar (client-side, canvas ile).
+ * En etkili: beyaz zeminli logolar için. Karmaşık arka planlar için sınırlı.
+ */
+async function removeWhiteBackground(dataUrl: string, threshold = 230): Promise<string> {
+  return new Promise((resolve, reject) => {
+    const img = new window.Image();
+    img.crossOrigin = "anonymous";
+    img.onload = () => {
+      const canvas = document.createElement("canvas");
+      canvas.width = img.width;
+      canvas.height = img.height;
+      const ctx = canvas.getContext("2d");
+      if (!ctx) { reject(new Error("Canvas error")); return; }
+      ctx.drawImage(img, 0, 0);
+      try {
+        const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+        const data = imageData.data;
+        for (let i = 0; i < data.length; i += 4) {
+          const r = data[i], g = data[i + 1], b = data[i + 2];
+          // Neredeyse beyaz pikselleri şeffaflaştır (yumuşak geçiş)
+          if (r > threshold && g > threshold && b > threshold) {
+            const brightness = (r + g + b) / 3;
+            const alphaRatio = Math.max(0, (255 - brightness) / (255 - threshold));
+            data[i + 3] = Math.round(255 * alphaRatio);
+          }
+        }
+        ctx.putImageData(imageData, 0, 0);
+        resolve(canvas.toDataURL("image/png"));
+      } catch (err) {
+        reject(err);
+      }
+    };
+    img.onerror = () => reject(new Error("Image load error"));
+    img.src = dataUrl;
+  });
+}
+
+/**
  * Design'ın boyutunu ve konumunu print area içinde kısıtla.
- * width % (canvas width'e göre), aspect = img w/h.
- * Canvas kare olduğu için: height_percent = width_percent / aspect
  */
 function clampToPrintArea(x: number, y: number, width: number, aspect: number) {
   const height = width / aspect;
@@ -178,7 +217,6 @@ export default function ProductGallery({
       const img = new Image();
       img.onload = () => {
         const aspect = img.width / img.height;
-        // Print area'nın ortasına yerleştir
         const centerX = (PRINT_AREA.left + PRINT_AREA.right) / 2;
         const centerY = (PRINT_AREA.top + PRINT_AREA.bottom) / 2;
         const clamped = clampToPrintArea(centerX, centerY, EMPTY.width, aspect);
@@ -186,6 +224,8 @@ export default function ProductGallery({
           ...prev,
           [side]: {
             imageDataUrl: dataUrl,
+            originalImageDataUrl: dataUrl,
+            bgRemoved: false,
             imageAspect: aspect,
             x: clamped.x,
             y: clamped.y,
@@ -275,6 +315,48 @@ export default function ProductGallery({
     setDesigns((prev) => ({ ...prev, [side]: null }));
   };
 
+  const [bgProcessing, setBgProcessing] = useState(false);
+  const handleToggleBg = async () => {
+    if (!currentDesign || bgProcessing) return;
+
+    if (currentDesign.bgRemoved) {
+      // Geri: orijinale dön
+      setDesigns((prev) => ({
+        ...prev,
+        [side]: prev[side]
+          ? { ...prev[side]!, imageDataUrl: prev[side]!.originalImageDataUrl, bgRemoved: false }
+          : null,
+      }));
+    } else {
+      // Cache varsa direkt kullan
+      if (currentDesign.processedImageDataUrl) {
+        setDesigns((prev) => ({
+          ...prev,
+          [side]: prev[side]
+            ? { ...prev[side]!, imageDataUrl: prev[side]!.processedImageDataUrl!, bgRemoved: true }
+            : null,
+        }));
+        return;
+      }
+      // İşle
+      setBgProcessing(true);
+      try {
+        const processed = await removeWhiteBackground(currentDesign.originalImageDataUrl);
+        setDesigns((prev) => ({
+          ...prev,
+          [side]: prev[side]
+            ? { ...prev[side]!, imageDataUrl: processed, processedImageDataUrl: processed, bgRemoved: true }
+            : null,
+        }));
+      } catch (err) {
+        console.error("Bg removal failed:", err);
+        alert("Hintergrund konnte nicht entfernt werden. Bitte versuchen Sie ein anderes Bild.");
+      } finally {
+        setBgProcessing(false);
+      }
+    }
+  };
+
   if (currentImages.length === 0 && (!colors || colors.length === 0)) {
     return (
       <div className="gallery">
@@ -287,54 +369,6 @@ export default function ProductGallery({
 
   return (
     <div className="gallery">
-      {/* Side Tabs — Merchery style with design preview */}
-      <div className="gal-tabs">
-        <button
-          type="button"
-          className={`gal-tab${side === "front" ? " active" : ""}`}
-          onClick={() => setSide("front")}
-        >
-          <span className="gal-tab-content">
-            <span className="gal-tab-icon">◐</span>
-            <span className="gal-tab-label">Vorderseite</span>
-          </span>
-          {designs.front ? (
-            <span className="gal-tab-thumb" title="Aktuelles Design">
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img src={designs.front.imageDataUrl} alt="Design Vorderseite" />
-              <span className="gal-tab-thumb-check">✓</span>
-            </span>
-          ) : (
-            <span className="gal-tab-empty">+</span>
-          )}
-        </button>
-        <button
-          type="button"
-          className={`gal-tab${side === "back" ? " active" : ""}${!hasBack ? " disabled" : ""}`}
-          onClick={() => hasBack && setSide("back")}
-          disabled={!hasBack}
-          title={!hasBack ? "Kein Rückseiten-Bild verfügbar" : undefined}
-        >
-          <span className="gal-tab-content">
-            <span className="gal-tab-icon">◑</span>
-            <span className="gal-tab-label">Rückseite</span>
-          </span>
-          {hasBack ? (
-            designs.back ? (
-              <span className="gal-tab-thumb" title="Aktuelles Design">
-                {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img src={designs.back.imageDataUrl} alt="Design Rückseite" />
-                <span className="gal-tab-thumb-check">✓</span>
-              </span>
-            ) : (
-              <span className="gal-tab-empty">+</span>
-            )
-          ) : (
-            <span className="gal-tab-lock" title="Kein Rückseiten-Bild">🔒</span>
-          )}
-        </button>
-      </div>
-
       {totalDesigns > 0 && (
         <div className="gal-status">
           <span className="gal-status-icon">✓</span>
@@ -421,6 +455,26 @@ export default function ProductGallery({
           <div className="gal-controls">
             <button type="button" className="gal-ctrl-btn" onClick={() => handleRotate(-15)} title="Nach links drehen">↺</button>
             <button type="button" className="gal-ctrl-btn" onClick={() => handleRotate(15)} title="Nach rechts drehen">↻</button>
+            <div className="gal-ctrl-sep" />
+            <button
+              type="button"
+              className={`gal-ctrl-btn gal-ctrl-bg${currentDesign.bgRemoved ? " active" : ""}${bgProcessing ? " loading" : ""}`}
+              onClick={handleToggleBg}
+              disabled={bgProcessing}
+              title={currentDesign.bgRemoved ? "Original wiederherstellen" : "Hintergrund entfernen (KI)"}
+            >
+              {bgProcessing ? (
+                <span className="gal-ctrl-spinner" />
+              ) : (
+                <>
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+                    <path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83"/>
+                  </svg>
+                  <span className="gal-ctrl-bg-label">BG</span>
+                </>
+              )}
+            </button>
+            <div className="gal-ctrl-sep" />
             <button type="button" className="gal-ctrl-btn" onClick={() => fileInputRef.current?.click()} title="Anderes Design">
               <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                 <path d="M17 8l-5-5-5 5"/><path d="M12 3v12"/><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
@@ -483,118 +537,6 @@ export default function ProductGallery({
       )}
 
       <style jsx>{`
-        .gal-tabs {
-          display: flex;
-          gap: 8px;
-          margin-bottom: 10px;
-        }
-        .gal-tab {
-          flex: 1;
-          background: #fff;
-          border: 1px solid #e3e6df;
-          padding: 8px 10px;
-          cursor: pointer;
-          border-radius: 6px;
-          display: flex;
-          align-items: center;
-          justify-content: space-between;
-          gap: 10px;
-          transition: all 0.15s;
-          position: relative;
-          font-family: inherit;
-        }
-        .gal-tab:hover:not(.disabled):not(.active) {
-          border-color: #0f1a16;
-          transform: translateY(-1px);
-          box-shadow: 0 4px 10px rgba(0,0,0,0.06);
-        }
-        .gal-tab.active {
-          background: #0f1a16;
-          color: #fff;
-          border-color: #0f1a16;
-          box-shadow: 0 4px 10px rgba(0,0,0,0.12);
-        }
-        .gal-tab.disabled {
-          opacity: 0.5;
-          cursor: not-allowed;
-          background: #fafbf9;
-        }
-        .gal-tab-content {
-          display: flex;
-          align-items: center;
-          gap: 8px;
-          text-align: left;
-          font-size: 0.85rem;
-          font-weight: 600;
-          color: inherit;
-        }
-        .gal-tab-icon { font-size: 1.1rem; opacity: 0.75; }
-        .gal-tab-label { letter-spacing: 0.3px; }
-        .gal-tab-thumb {
-          position: relative;
-          width: 42px;
-          height: 42px;
-          background: #f4f5f1;
-          border: 1px solid #e3e6df;
-          border-radius: 4px;
-          overflow: hidden;
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          flex-shrink: 0;
-        }
-        .gal-tab.active .gal-tab-thumb {
-          background: rgba(255,255,255,0.1);
-          border-color: rgba(255,255,255,0.3);
-        }
-        .gal-tab-thumb img {
-          max-width: 100%;
-          max-height: 100%;
-          object-fit: contain;
-          padding: 3px;
-        }
-        .gal-tab-thumb-check {
-          position: absolute;
-          top: -4px;
-          right: -4px;
-          background: #10b981;
-          color: #fff;
-          width: 14px;
-          height: 14px;
-          border-radius: 50%;
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          font-size: 0.55rem;
-          font-weight: 700;
-          border: 2px solid #fff;
-        }
-        .gal-tab.active .gal-tab-thumb-check {
-          border-color: #0f1a16;
-        }
-        .gal-tab-empty {
-          width: 42px;
-          height: 42px;
-          background: #fafbf9;
-          border: 1px dashed #c9ced2;
-          border-radius: 4px;
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          font-size: 1.2rem;
-          color: #9ca3af;
-          font-weight: 400;
-          flex-shrink: 0;
-        }
-        .gal-tab.active .gal-tab-empty {
-          background: rgba(255,255,255,0.1);
-          border-color: rgba(255,255,255,0.4);
-          color: rgba(255,255,255,0.6);
-        }
-        .gal-tab-lock {
-          font-size: 0.9rem;
-          opacity: 0.7;
-        }
         /* Print area — logo bu alan içinde kalmalı */
         .gal-print-area {
           position: absolute;
@@ -739,6 +681,47 @@ export default function ProductGallery({
         }
         .gal-ctrl-btn:hover {
           background: rgba(255,255,255,0.15);
+        }
+        .gal-ctrl-sep {
+          width: 1px;
+          height: 20px;
+          background: rgba(255,255,255,0.2);
+          margin: 0 2px;
+        }
+        .gal-ctrl-bg {
+          padding: 0 10px;
+          gap: 4px;
+          min-width: auto;
+          width: auto !important;
+          display: inline-flex;
+        }
+        .gal-ctrl-bg.active {
+          background: #5e8470;
+          color: #fff;
+        }
+        .gal-ctrl-bg.active:hover {
+          background: #4a6a5a;
+        }
+        .gal-ctrl-bg.loading {
+          opacity: 0.7;
+          cursor: wait;
+        }
+        .gal-ctrl-bg-label {
+          font-size: 0.65rem;
+          font-weight: 700;
+          letter-spacing: 0.5px;
+        }
+        .gal-ctrl-spinner {
+          width: 14px;
+          height: 14px;
+          border: 2px solid rgba(255,255,255,0.3);
+          border-top-color: #fff;
+          border-radius: 50%;
+          animation: gal-spin 0.7s linear infinite;
+          display: inline-block;
+        }
+        @keyframes gal-spin {
+          to { transform: rotate(360deg); }
         }
         .gal-upload-cta {
           position: absolute;
