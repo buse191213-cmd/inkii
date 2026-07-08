@@ -68,11 +68,14 @@ function getRealSize(widthPercent: number, aspect: number) {
 }
 
 /**
- * Beyaz/açık arka planı transparan yapar (client-side canvas).
- * threshold: bu değerin ÜSTÜNDEKİ RGB tam beyaz kabul edilir → transparan.
- * Daha düşük değer = daha agresif temizlik (gri alanlar da gider).
+ * Görselin arka planını kaldırır — SADECE gerçek arka planı,
+ * logo içindeki beyaz alanları korur.
+ *
+ * Algoritma: 4 kenardan flood-fill. Kenardan başlayarak bağlı olan
+ * açık renkli pikseller = arka plan → şeffaflaştır.
+ * Logo'nun içindeki izole beyazlar (bağlı olmadığı için) korunur.
  */
-async function removeWhiteBackground(dataUrl: string, threshold = 200): Promise<string> {
+async function removeWhiteBackground(dataUrl: string, threshold = 235): Promise<string> {
   return new Promise((resolve, reject) => {
     const img = new window.Image();
     img.onload = () => {
@@ -83,20 +86,127 @@ async function removeWhiteBackground(dataUrl: string, threshold = 200): Promise<
         const ctx = canvas.getContext("2d");
         if (!ctx) { reject(new Error("Canvas context error")); return; }
         ctx.drawImage(img, 0, 0);
+
         const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
         const data = imageData.data;
-        for (let i = 0; i < data.length; i += 4) {
+        const w = canvas.width;
+        const h = canvas.height;
+        const total = w * h;
+
+        // Bir pikselin "arka plan" olarak sayılıp sayılmayacağı
+        const isBg = (idx: number): boolean => {
+          const i = idx * 4;
           const r = data[i], g = data[i + 1], b = data[i + 2];
-          // Beyaz veya çok açık renkli pikselleri şeffaflaştır
+          // Ortalama parlaklık AND düşük renk farkı (gri/beyaz benzeri)
+          const min = Math.min(r, g, b);
           const brightness = (r + g + b) / 3;
-          if (brightness > threshold) {
-            // Yumuşak alfa geçişi (kenar aliasing için)
-            const range = 255 - threshold;
-            const above = brightness - threshold;
-            const ratio = 1 - Math.min(above / range, 1);
-            data[i + 3] = Math.round(255 * ratio);
+          return brightness > threshold && min > threshold - 25;
+        };
+
+        // Ziyaret edilen pikseller
+        const visited = new Uint8Array(total);
+        // Queue (index array + cursor — shift() yavaş olduğu için)
+        const queue = new Int32Array(total);
+        let queueEnd = 0;
+        let queueStart = 0;
+
+        // 4 kenarı seed olarak ekle
+        for (let x = 0; x < w; x++) {
+          // Üst kenar
+          if (isBg(x) && !visited[x]) {
+            visited[x] = 1;
+            queue[queueEnd++] = x;
+          }
+          // Alt kenar
+          const bottomIdx = (h - 1) * w + x;
+          if (isBg(bottomIdx) && !visited[bottomIdx]) {
+            visited[bottomIdx] = 1;
+            queue[queueEnd++] = bottomIdx;
           }
         }
+        for (let y = 0; y < h; y++) {
+          // Sol kenar
+          const leftIdx = y * w;
+          if (isBg(leftIdx) && !visited[leftIdx]) {
+            visited[leftIdx] = 1;
+            queue[queueEnd++] = leftIdx;
+          }
+          // Sağ kenar
+          const rightIdx = y * w + (w - 1);
+          if (isBg(rightIdx) && !visited[rightIdx]) {
+            visited[rightIdx] = 1;
+            queue[queueEnd++] = rightIdx;
+          }
+        }
+
+        // BFS flood-fill
+        while (queueStart < queueEnd) {
+          const p = queue[queueStart++];
+          const x = p % w;
+          const y = (p / w) | 0;
+
+          // 4 komşu
+          if (x > 0) {
+            const n = p - 1;
+            if (!visited[n] && isBg(n)) {
+              visited[n] = 1;
+              queue[queueEnd++] = n;
+            }
+          }
+          if (x < w - 1) {
+            const n = p + 1;
+            if (!visited[n] && isBg(n)) {
+              visited[n] = 1;
+              queue[queueEnd++] = n;
+            }
+          }
+          if (y > 0) {
+            const n = p - w;
+            if (!visited[n] && isBg(n)) {
+              visited[n] = 1;
+              queue[queueEnd++] = n;
+            }
+          }
+          if (y < h - 1) {
+            const n = p + w;
+            if (!visited[n] && isBg(n)) {
+              visited[n] = 1;
+              queue[queueEnd++] = n;
+            }
+          }
+        }
+
+        // Ziyaret edilenleri transparan yap (yumuşak kenarlarla)
+        for (let i = 0; i < total; i++) {
+          if (visited[i]) {
+            data[i * 4 + 3] = 0;
+          }
+        }
+
+        // Edge softening: sınır piksellerini yumuşat (aliasing önlemi)
+        // Ziyaret edilmeyen bir pikselin en az bir komşusu ziyaret edildiyse,
+        // parlaklığına göre yarı-şeffaf yap
+        for (let y = 1; y < h - 1; y++) {
+          for (let x = 1; x < w - 1; x++) {
+            const p = y * w + x;
+            if (visited[p]) continue;
+            const i = p * 4;
+            const r = data[i], g = data[i + 1], b = data[i + 2];
+            const brightness = (r + g + b) / 3;
+            // Sadece açık pikseller için
+            if (brightness < 200) continue;
+            // Komşu ziyaret edildi mi?
+            const anyNeighborBg =
+              visited[p - 1] || visited[p + 1] ||
+              visited[p - w] || visited[p + w];
+            if (anyNeighborBg) {
+              // Alpha'yı azalt (yumuşak geçiş)
+              const softAlpha = Math.round(((255 - brightness) / (255 - 200)) * 255);
+              data[i + 3] = Math.max(0, Math.min(data[i + 3], softAlpha));
+            }
+          }
+        }
+
         ctx.putImageData(imageData, 0, 0);
         resolve(canvas.toDataURL("image/png"));
       } catch (err) {
