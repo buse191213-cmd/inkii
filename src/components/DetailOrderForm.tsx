@@ -213,6 +213,13 @@ export default function DetailOrderForm({
 
     // TEK cart item — bedenler sepette girilecek
     const availableSizes = sizes.map((s) => s.name);
+    // Beden özel fiyatları (extraCents > 0 olanlar): {"2XL": 2500}
+    const sizePrices: Record<string, number> = {};
+    for (const s of sizes) {
+      if (s.extraCents && s.extraCents > 0) {
+        sizePrices[s.name] = s.extraCents;
+      }
+    }
     addToCart({
       productId,
       productCode,
@@ -224,6 +231,7 @@ export default function DetailOrderForm({
       unitPriceCents: priceCents,
       minOrderQty,
       availableSizes: availableSizes.length > 0 ? availableSizes : undefined,
+      sizePrices: Object.keys(sizePrices).length > 0 ? sizePrices : undefined,
       sizeBreakdown: undefined, // sepette doldurulacak
       hasDtf: transferEnabled && transferSidesCount > 0,
       dtfSize: dtfSizeLabel,

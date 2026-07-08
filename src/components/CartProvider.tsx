@@ -18,9 +18,10 @@ export type CartItem = {
   color: string;
   size: string;
   quantity: number;
-  unitPriceCents: number; // 0 = "Preis auf Anfrage"
+  unitPriceCents: number; // 0 = "Preis auf Anfrage" — Staffel/base fiyat (beden fiyatı boşsa bu kullanılır)
   minOrderQty?: number; // Mindestbestellmenge
   availableSizes?: string[]; // Ürünün mevcut bedenleri: ["XS","S","M",...]
+  sizePrices?: Record<string, number>; // Beden bazlı özel fiyat (0/boş = unitPriceCents kullan): {"2XL": 2500}
   sizeBreakdown?: Record<string, number>; // Beden dağılımı: {S:5, M:10, L:10}
   // DTF eklemeleri
   hasDtf: boolean;
@@ -28,6 +29,32 @@ export type CartItem = {
   dtfPriceCents: number;
   dtfDesignUrl: string;
 };
+
+/**
+ * Bir cart kaleminin toplam fiyatını hesaplar.
+ * Beden dağılımı varsa: her beden kendi fiyatından (yoksa unitPriceCents'ten).
+ * Transfer (dtf) her adet için eklenir.
+ */
+export function cartItemTotalCents(item: CartItem): number {
+  const transferPerUnit = item.dtfPriceCents || 0;
+
+  // Beden dağılımı + beden fiyatları varsa: beden bazlı hesapla
+  if (item.sizeBreakdown && Object.keys(item.sizeBreakdown).length > 0) {
+    let total = 0;
+    for (const [size, qty] of Object.entries(item.sizeBreakdown)) {
+      const n = qty || 0;
+      if (n <= 0) continue;
+      // Beden özel fiyatı varsa onu, yoksa base unitPriceCents kullan
+      const sizePrice = item.sizePrices?.[size];
+      const unit = (sizePrice && sizePrice > 0) ? sizePrice : item.unitPriceCents;
+      total += (unit + transferPerUnit) * n;
+    }
+    return total;
+  }
+
+  // Beden yoksa: normal hesap
+  return (item.unitPriceCents + transferPerUnit) * item.quantity;
+}
 
 type CartContextValue = {
   items: CartItem[];
@@ -120,7 +147,7 @@ export function CartProvider({ children }: { children: ReactNode }) {
 
   const itemCount = items.reduce((sum, i) => sum + i.quantity, 0);
   const subtotalCents = items.reduce(
-    (sum, i) => sum + (i.unitPriceCents + i.dtfPriceCents) * i.quantity,
+    (sum, i) => sum + cartItemTotalCents(i),
     0
   );
 

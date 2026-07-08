@@ -8,12 +8,14 @@ type Props = {
   sizeBreakdown: Record<string, number>;
   quantity: number;
   minOrderQty: number;
+  sizePrices?: Record<string, number>;
+  basePriceCents: number;
 };
 
 /**
  * Sepette beden dağıtımı — Merchery tarzı.
  * Kullanıcı toplam adedi bedenlere dağıtır (S:5, M:10, L:10...).
- * Toplam, quantity ile senkronize; minimum kontrolü yapar.
+ * Beden özel fiyatı varsa gösterir, yoksa base (Staffel) fiyat.
  */
 export default function CartSizeDistributor({
   itemId,
@@ -21,6 +23,8 @@ export default function CartSizeDistributor({
   sizeBreakdown,
   quantity,
   minOrderQty,
+  sizePrices,
+  basePriceCents,
 }: Props) {
   const { updateSizeBreakdown } = useCart();
 
@@ -31,6 +35,10 @@ export default function CartSizeDistributor({
   function setSize(size: string, value: number) {
     const next = { ...sizeBreakdown, [size]: Math.max(0, value) };
     updateSizeBreakdown(itemId, next);
+  }
+
+  function euro(c: number): string {
+    return (c / 100).toLocaleString("de-DE", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
   }
 
   return (
@@ -45,21 +53,31 @@ export default function CartSizeDistributor({
       </div>
 
       <div className="csd-grid">
-        {availableSizes.map((size) => (
-          <div key={size} className="csd-cell">
-            <span className="csd-size-label">{size}</span>
-            <input
-              type="number"
-              inputMode="numeric"
-              min="0"
-              step="1"
-              value={sizeBreakdown[size] || ""}
-              onChange={(e) => setSize(size, parseInt(e.target.value || "0", 10))}
-              placeholder="0"
-              className="csd-input"
-            />
-          </div>
-        ))}
+        {availableSizes.map((size) => {
+          const specialPrice = sizePrices?.[size];
+          const effectivePrice = (specialPrice && specialPrice > 0) ? specialPrice : basePriceCents;
+          const isSpecial = Boolean(specialPrice && specialPrice > 0);
+          return (
+            <div key={size} className="csd-cell">
+              <span className="csd-size-label">{size}</span>
+              <input
+                type="number"
+                inputMode="numeric"
+                min="0"
+                step="1"
+                value={sizeBreakdown[size] || ""}
+                onChange={(e) => setSize(size, parseInt(e.target.value || "0", 10))}
+                placeholder="0"
+                className="csd-input"
+              />
+              {effectivePrice > 0 && (
+                <span className={`csd-price${isSpecial ? " special" : ""}`}>
+                  {euro(effectivePrice)} €
+                </span>
+              )}
+            </div>
+          );
+        })}
       </div>
 
       {belowMin && (
@@ -146,6 +164,15 @@ export default function CartSizeDistributor({
         .csd-input:focus {
           outline: none;
           border-color: #004537;
+        }
+        .csd-price {
+          font-size: 0.68rem;
+          color: #5a6660;
+          font-weight: 600;
+          margin-top: 1px;
+        }
+        .csd-price.special {
+          color: #b45309;
         }
         .csd-warn {
           display: flex;

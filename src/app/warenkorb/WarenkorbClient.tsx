@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useCart } from "@/components/CartProvider";
+import { useCart, cartItemTotalCents } from "@/components/CartProvider";
 import CartSizeDistributor from "@/components/CartSizeDistributor";
 import { colorLabel } from "@/lib/catalog-options";
 
@@ -155,6 +155,8 @@ export default function WarenkorbClient() {
                       sizeBreakdown={item.sizeBreakdown || {}}
                       quantity={item.quantity}
                       minOrderQty={item.minOrderQty || 1}
+                      sizePrices={item.sizePrices}
+                      basePriceCents={item.unitPriceCents}
                     />
                     <button
                       type="button"
@@ -238,10 +240,12 @@ export default function WarenkorbClient() {
 
               <div style={{ textAlign: "right" }}>
                 <div style={{ fontWeight: 600, fontSize: 15 }}>
-                  {euro((item.unitPriceCents + item.dtfPriceCents) * item.quantity)} €
+                  {euro(cartItemTotalCents(item))} €
                 </div>
                 <div style={{ fontSize: 11, color: "#64748b", marginTop: 2 }}>
-                  {euro(item.unitPriceCents + item.dtfPriceCents)} € / Stk
+                  {item.sizePrices && Object.keys(item.sizePrices).length > 0
+                    ? "inkl. Größenaufpreis"
+                    : `${euro(item.unitPriceCents + item.dtfPriceCents)} € / Stk`}
                 </div>
               </div>
             </div>

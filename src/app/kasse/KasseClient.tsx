@@ -3,7 +3,7 @@
 import { useState, useTransition, useRef } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useCart } from "@/components/CartProvider";
+import { useCart, cartItemTotalCents } from "@/components/CartProvider";
 import { colorLabel } from "@/lib/catalog-options";
 import { createOrder } from "./order-actions";
 import PayPalInlineButtons from "./PayPalInlineButtons";
@@ -734,7 +734,7 @@ export default function KasseClient({ paymentMethods, shipping, prefill, isLogge
                   })()}
                 </div>
                 <div style={{ fontWeight: 600, fontSize: 12, flexShrink: 0 }}>
-                  {euro((item.unitPriceCents + item.dtfPriceCents) * item.quantity)} €
+                  {euro(cartItemTotalCents(item))} €
                 </div>
               </div>
             ))}

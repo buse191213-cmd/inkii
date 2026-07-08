@@ -2,7 +2,7 @@
 
 import { useEffect } from "react";
 import Link from "next/link";
-import { useCart } from "./CartProvider";
+import { useCart, cartItemTotalCents } from "./CartProvider";
 import { colorLabel, colorHex } from "@/lib/catalog-options";
 
 function euro(c: number): string {
@@ -136,7 +136,7 @@ export default function CartDrawer({ open, onClose }: Props) {
             <div style={{ flex: 1, overflowY: "auto", padding: "8px 20px" }}>
               {items.map((item) => {
                 const lineUnitCents = item.unitPriceCents + item.dtfPriceCents;
-                const lineTotalCents = lineUnitCents * item.quantity;
+                const lineTotalCents = cartItemTotalCents(item);
                 const colorHexCode = item.color ? colorHex(item.color) : "";
                 return (
                 <div
