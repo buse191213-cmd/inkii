@@ -405,51 +405,36 @@ export default function CartDrawer({ open, onClose }: Props) {
                   display: "block",
                   background: "#004537",
                   color: "#fff",
-                  padding: "12px 16px",
+                  padding: "13px 16px",
                   textAlign: "center",
                   fontWeight: 600,
                   textDecoration: "none",
                   fontSize: 14,
                   marginBottom: 8,
+                  borderRadius: 8,
                 }}
               >
-                Warenkorb ansehen →
+                🛒 Warenkorb anzeigen →
               </Link>
 
-              <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 8 }}>
-                <Link
-                  href="/kasse"
-                  onClick={onClose}
-                  style={{
-                    background: "#fff",
-                    color: "#004537",
-                    border: "1px solid #004537",
-                    padding: "10px 12px",
-                    textAlign: "center",
-                    fontWeight: 600,
-                    textDecoration: "none",
-                    fontSize: 12,
-                  }}
-                >
-                  🛒 Zur Kasse
-                </Link>
-                <Link
-                  href="/warenkorb/anfrage"
-                  onClick={onClose}
-                  style={{
-                    background: "#fff",
-                    color: "#004537",
-                    border: "1px solid #004537",
-                    padding: "10px 12px",
-                    textAlign: "center",
-                    fontWeight: 600,
-                    textDecoration: "none",
-                    fontSize: 12,
-                  }}
-                >
-                  ✉️ Anfragen
-                </Link>
-              </div>
+              <Link
+                href="/warenkorb/anfrage"
+                onClick={onClose}
+                style={{
+                  display: "block",
+                  background: "#fff",
+                  color: "#004537",
+                  border: "1px solid #004537",
+                  padding: "11px 12px",
+                  textAlign: "center",
+                  fontWeight: 600,
+                  textDecoration: "none",
+                  fontSize: 13,
+                  borderRadius: 8,
+                }}
+              >
+                ✉️ Angebot anfragen
+              </Link>
             </div>
           </>
         )}

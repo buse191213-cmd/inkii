@@ -261,20 +261,33 @@ export default function KasseClient({ paymentMethods, shipping, prefill, isLogge
         shippingCity: shippingDiffers ? shippingCity : "",
         shippingCountry: shippingDiffers ? shippingCountry : "DE",
       },
-      items: items.map((i) => ({
-        productId: i.productId,
-        productCode: i.productCode,
-        productName: i.productName,
-        productImage: i.productImage,
-        color: i.color,
-        size: i.size,
-        quantity: i.quantity,
-        unitPriceCents: i.unitPriceCents,
-        hasDtf: i.hasDtf,
-        dtfSize: i.dtfSize,
-        dtfPriceCents: i.dtfPriceCents,
-        dtfDesignUrl: i.dtfDesignUrl,
-      })),
+      items: items.map((i) => {
+        // Beden dağılımını okunabilir string yap: "S: 5, M: 10, L: 10"
+        const sizeBreakdownStr = i.sizeBreakdown && Object.keys(i.sizeBreakdown).length > 0
+          ? Object.entries(i.sizeBreakdown)
+              .filter(([, n]) => (n || 0) > 0)
+              .map(([s, n]) => `${s}: ${n}`)
+              .join(", ")
+          : "";
+        // Bu kalemin GERÇEK toplam fiyatı (ratio + beden + transfer dahil)
+        const lineTotalCents = cartItemTotalCents(i);
+        // Ortalama birim fiyat (order kaydı için)
+        const avgUnitCents = i.quantity > 0 ? Math.round(lineTotalCents / i.quantity) : i.unitPriceCents;
+        return {
+          productId: i.productId,
+          productCode: i.productCode,
+          productName: i.productName,
+          productImage: i.productImage,
+          color: i.color,
+          size: sizeBreakdownStr || i.size,
+          quantity: i.quantity,
+          unitPriceCents: avgUnitCents - (i.dtfPriceCents || 0), // dtf hariç birim (order mantığı için)
+          hasDtf: i.hasDtf,
+          dtfSize: i.dtfSize,
+          dtfPriceCents: i.dtfPriceCents,
+          dtfDesignUrl: i.dtfDesignUrl,
+        };
+      }),
       paymentMethod,
       customerNote,
       subtotalCents,
