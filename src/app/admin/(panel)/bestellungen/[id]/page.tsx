@@ -151,24 +151,25 @@ export default async function OrderDetailPage({
                               front?: string | null; back?: string | null;
                               frontSize?: { widthCm: number; heightCm: number } | null;
                               backSize?: { widthCm: number; heightCm: number } | null;
+                              frontMockup?: string | null; backMockup?: string | null;
                             } = {};
                             try { d = JSON.parse(item.dtfDesignUrl); } catch { /* ignore */ }
-                            const thumbs: Array<{ label: string; url: string; size?: { widthCm: number; heightCm: number } | null; file: string }> = [];
-                            if (d.front) thumbs.push({ label: "Vorderseite", url: d.front, size: d.frontSize, file: `${item.productCode}-vorne.png` });
-                            if (d.back) thumbs.push({ label: "Rückseite", url: d.back, size: d.backSize, file: `${item.productCode}-hinten.png` });
+                            const thumbs: Array<{ label: string; logo: string; mockup?: string | null; size?: { widthCm: number; heightCm: number } | null; file: string }> = [];
+                            if (d.front) thumbs.push({ label: "Vorderseite", logo: d.front, mockup: d.frontMockup, size: d.frontSize, file: `${item.productCode}-vorne.png` });
+                            if (d.back) thumbs.push({ label: "Rückseite", logo: d.back, mockup: d.backMockup, size: d.backSize, file: `${item.productCode}-hinten.png` });
                             if (thumbs.length === 0) return null;
                             return (
                               <div style={{ display: "flex", gap: 12, marginTop: 8, flexWrap: "wrap" }}>
                                 {thumbs.map((t, i) => (
                                   <div key={i} style={{ textAlign: "center" }}>
                                     <div style={{
-                                      width: 88, height: 88,
-                                      border: "1px solid #d1fae5", borderRadius: 8,
-                                      background: "#f0fdf4", display: "flex",
+                                      width: 100, height: 100,
+                                      border: "1px solid #e3e6df", borderRadius: 8,
+                                      background: "#fff", display: "flex",
                                       alignItems: "center", justifyContent: "center", overflow: "hidden",
                                     }}>
                                       {/* eslint-disable-next-line @next/next/no-img-element */}
-                                      <img src={t.url} alt={t.label} style={{ maxWidth: "100%", maxHeight: "100%", objectFit: "contain", padding: 4 }} />
+                                      <img src={t.mockup || t.logo} alt={t.label} style={{ maxWidth: "100%", maxHeight: "100%", objectFit: "contain" }} />
                                     </div>
                                     <div style={{ fontSize: 10, fontWeight: 700, color: "#065f46", marginTop: 3 }}>{t.label}</div>
                                     {t.size && (
@@ -177,14 +178,14 @@ export default async function OrderDetailPage({
                                       </div>
                                     )}
                                     <a
-                                      href={t.url}
+                                      href={t.logo}
                                       download={t.file}
                                       style={{
                                         display: "inline-block", marginTop: 4, fontSize: 10,
                                         color: "#004537", fontWeight: 700, textDecoration: "underline",
                                       }}
                                     >
-                                      ⬇ Herunterladen
+                                      ⬇ Logo (Druckdatei)
                                     </a>
                                   </div>
                                 ))}

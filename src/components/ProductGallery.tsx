@@ -68,6 +68,73 @@ function getRealSize(widthPercent: number, aspect: number) {
 }
 
 /**
+ * Mockup üretir: ürün görseli + design'ı birleştirip PNG dataURL döner.
+ * Sepet/sipariş önizlemesi için kullanılır (logonun ürün üzerinde nereye
+ * konumlandığını gösterir).
+ */
+async function generateMockupDataUrl(
+  productImageSrc: string,
+  design: { imageDataUrl: string; x: number; y: number; width: number; imageAspect: number; rotation: number } | null,
+  outSize = 600
+): Promise<string | null> {
+  try {
+    if (!productImageSrc) return null;
+    const productImg = await new Promise<HTMLImageElement>((resolve, reject) => {
+      const im = new window.Image();
+      im.crossOrigin = "anonymous";
+      im.onload = () => resolve(im);
+      im.onerror = () => reject(new Error("Ürün görseli yüklenemedi"));
+      im.src = productImageSrc;
+    });
+
+    const canvas = document.createElement("canvas");
+    canvas.width = outSize;
+    canvas.height = outSize;
+    const ctx = canvas.getContext("2d");
+    if (!ctx) return null;
+
+    ctx.fillStyle = "#ffffff";
+    ctx.fillRect(0, 0, outSize, outSize);
+
+    // Ürün contain
+    const prodAspect = productImg.width / productImg.height;
+    let pw = outSize, ph = outSize, px = 0, py = 0;
+    if (prodAspect > 1) {
+      ph = outSize / prodAspect;
+      py = (outSize - ph) / 2;
+    } else {
+      pw = outSize * prodAspect;
+      px = (outSize - pw) / 2;
+    }
+    ctx.drawImage(productImg, px, py, pw, ph);
+
+    // Design
+    if (design) {
+      const designImg = await new Promise<HTMLImageElement>((resolve, reject) => {
+        const im = new window.Image();
+        im.onload = () => resolve(im);
+        im.onerror = () => reject(new Error("Design yüklenemedi"));
+        im.src = design.imageDataUrl;
+      });
+      const dw = (design.width / 100) * outSize;
+      const dh = dw / design.imageAspect;
+      const dx = (design.x / 100) * outSize;
+      const dy = (design.y / 100) * outSize;
+      ctx.save();
+      ctx.translate(dx, dy);
+      ctx.rotate((design.rotation * Math.PI) / 180);
+      ctx.drawImage(designImg, -dw / 2, -dh / 2, dw, dh);
+      ctx.restore();
+    }
+
+    return canvas.toDataURL("image/jpeg", 0.8);
+  } catch (err) {
+    console.error("[Mockup] generation failed:", err);
+    return null;
+  }
+}
+
+/**
  * Görselin arka planını kaldırır — SADECE gerçek arka planı,
  * logo içindeki beyaz alanları korur.
  *
@@ -294,17 +361,36 @@ export default function ProductGallery({
     return () => window.removeEventListener("product-color-change", onColor as EventListener);
   }, []);
 
-  // Dış component'ler için design'ları broadcast et
+  // Dış component'ler için design'ları + mockup'ları broadcast et
   useEffect(() => {
-    const frontSize = designs.front ? getRealSize(designs.front.width, designs.front.imageAspect) : null;
-    const backSize = designs.back ? getRealSize(designs.back.width, designs.back.imageAspect) : null;
-    const detail = {
-      front: designs.front ? { imageDataUrl: designs.front.imageDataUrl, sizeCm: frontSize } : null,
-      back: designs.back ? { imageDataUrl: designs.back.imageDataUrl, sizeCm: backSize } : null,
-      hasBack,
-    };
-    window.dispatchEvent(new CustomEvent("designs-updated", { detail }));
-  }, [designs, hasBack]);
+    let cancelled = false;
+    async function build() {
+      const frontSize = designs.front ? getRealSize(designs.front.width, designs.front.imageAspect) : null;
+      const backSize = designs.back ? getRealSize(designs.back.width, designs.back.imageAspect) : null;
+
+      // Mockup'lar (logo ürün üzerinde) — sepet önizlemesi için
+      const frontMockup = designs.front
+        ? await generateMockupDataUrl(frontImage, designs.front)
+        : null;
+      const backMockup = designs.back && backImage
+        ? await generateMockupDataUrl(backImage, designs.back)
+        : null;
+
+      if (cancelled) return;
+      const detail = {
+        front: designs.front
+          ? { imageDataUrl: designs.front.imageDataUrl, sizeCm: frontSize, mockupDataUrl: frontMockup }
+          : null,
+        back: designs.back
+          ? { imageDataUrl: designs.back.imageDataUrl, sizeCm: backSize, mockupDataUrl: backMockup }
+          : null,
+        hasBack,
+      };
+      window.dispatchEvent(new CustomEvent("designs-updated", { detail }));
+    }
+    build();
+    return () => { cancelled = true; };
+  }, [designs, hasBack, frontImage, backImage]);
 
   // Dış component'ten upload açma isteği
   useEffect(() => {

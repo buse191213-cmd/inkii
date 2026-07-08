@@ -82,20 +82,25 @@ export default function DetailOrderForm({
   // Galeriden gelen design'lar (Vorderseite/Rückseite)
   const [designs, setDesigns] = useState<{ front: boolean; back: boolean }>({ front: false, back: false });
   const [designUrls, setDesignUrls] = useState<{ front: string | null; back: string | null }>({ front: null, back: null });
+  const [designMockups, setDesignMockups] = useState<{ front: string | null; back: string | null }>({ front: null, back: null });
   const [designSizes, setDesignSizes] = useState<{ front: { widthCm: number; heightCm: number } | null; back: { widthCm: number; heightCm: number } | null }>({ front: null, back: null });
 
   // Galeriden design güncellemelerini dinle
   useEffect(() => {
     function onDesigns(e: Event) {
       const ce = e as CustomEvent<{
-        front: { imageDataUrl: string; sizeCm?: { widthCm: number; heightCm: number } } | null;
-        back: { imageDataUrl: string; sizeCm?: { widthCm: number; heightCm: number } } | null;
+        front: { imageDataUrl: string; sizeCm?: { widthCm: number; heightCm: number }; mockupDataUrl?: string | null } | null;
+        back: { imageDataUrl: string; sizeCm?: { widthCm: number; heightCm: number }; mockupDataUrl?: string | null } | null;
       }>;
       if (ce.detail) {
         setDesigns({ front: !!ce.detail.front, back: !!ce.detail.back });
         setDesignUrls({
           front: ce.detail.front?.imageDataUrl || null,
           back: ce.detail.back?.imageDataUrl || null,
+        });
+        setDesignMockups({
+          front: ce.detail.front?.mockupDataUrl || null,
+          back: ce.detail.back?.mockupDataUrl || null,
         });
         setDesignSizes({
           front: ce.detail.front?.sizeCm || null,
@@ -212,6 +217,8 @@ export default function DetailOrderForm({
           back: designUrls.back,
           frontSize: designSizes.front,
           backSize: designSizes.back,
+          frontMockup: designMockups.front,
+          backMockup: designMockups.back,
         })
       : "";
 

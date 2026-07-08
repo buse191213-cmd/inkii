@@ -110,7 +110,13 @@ export function CartProvider({ children }: { children: ReactNode }) {
       const raw = localStorage.getItem(STORAGE_KEY);
       if (raw) {
         const parsed = JSON.parse(raw);
-        if (Array.isArray(parsed)) setItems(parsed);
+        if (Array.isArray(parsed)) {
+          // __TOO_LARGE__ işaretli design'ları temizle (bozuk veri)
+          const cleaned = parsed.map((i: CartItem) =>
+            i.dtfDesignUrl === "__TOO_LARGE__" ? { ...i, dtfDesignUrl: "" } : i
+          );
+          setItems(cleaned);
+        }
       }
     } catch {
       /* ignore */
@@ -126,8 +132,16 @@ export function CartProvider({ children }: { children: ReactNode }) {
       localStorage.setItem(STORAGE_KEY, JSON.stringify(items));
       // Broadcast event so badge updates across components
       window.dispatchEvent(new CustomEvent("inkii-cart-update"));
-    } catch {
-      /* ignore */
+    } catch (err) {
+      // QuotaExceeded — design base64'leri çok büyük olabilir.
+      // Design verilerini çıkarıp tekrar dene (sepet yapısı korunur).
+      try {
+        const slim = items.map((i) => ({ ...i, dtfDesignUrl: i.dtfDesignUrl ? "__TOO_LARGE__" : "" }));
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(slim));
+        window.dispatchEvent(new CustomEvent("inkii-cart-update"));
+      } catch {
+        console.warn("[Cart] localStorage quota exceeded, cart not persisted", err);
+      }
     }
   }, [items, isLoaded]);
 

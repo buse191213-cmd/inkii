@@ -118,33 +118,35 @@ export default function WarenkorbClient() {
                       + Transfer (DTF) {item.dtfSize && `· ${item.dtfSize}`} — {euro(item.dtfPriceCents)} € / Stk
                     </div>
                     {(() => {
-                      // dtfDesignUrl = JSON {front, back, frontSize, backSize}
+                      // dtfDesignUrl = JSON {front, back, frontSize, backSize, frontMockup, backMockup}
                       let designs: {
                         front?: string | null; back?: string | null;
                         frontSize?: { widthCm: number; heightCm: number } | null;
                         backSize?: { widthCm: number; heightCm: number } | null;
+                        frontMockup?: string | null; backMockup?: string | null;
                       } = {};
                       try {
                         if (item.dtfDesignUrl) designs = JSON.parse(item.dtfDesignUrl);
                       } catch { /* ignore */ }
                       const thumbs: Array<{ label: string; url: string; size?: { widthCm: number; heightCm: number } | null }> = [];
-                      if (designs.front) thumbs.push({ label: "Vorne", url: designs.front, size: designs.frontSize });
-                      if (designs.back) thumbs.push({ label: "Hinten", url: designs.back, size: designs.backSize });
+                      // Mockup varsa onu göster (logo ürün üzerinde), yoksa logo
+                      if (designs.front) thumbs.push({ label: "Vorne", url: designs.frontMockup || designs.front, size: designs.frontSize });
+                      if (designs.back) thumbs.push({ label: "Hinten", url: designs.backMockup || designs.back, size: designs.backSize });
                       if (thumbs.length === 0) return null;
                       return (
                         <div style={{ display: "flex", gap: 12, marginTop: 8 }}>
                           {thumbs.map((t, i) => (
                             <div key={i} style={{ textAlign: "center" }}>
                               <div style={{
-                                width: 72, height: 72,
-                                border: "1px solid #d1fae5",
+                                width: 96, height: 96,
+                                border: "1px solid #e3e6df",
                                 borderRadius: 8,
-                                background: "#f0fdf4",
+                                background: "#fff",
                                 display: "flex", alignItems: "center", justifyContent: "center",
                                 overflow: "hidden",
                               }}>
                                 {/* eslint-disable-next-line @next/next/no-img-element */}
-                                <img src={t.url} alt={t.label} style={{ maxWidth: "100%", maxHeight: "100%", objectFit: "contain", padding: 4 }} />
+                                <img src={t.url} alt={t.label} style={{ maxWidth: "100%", maxHeight: "100%", objectFit: "contain" }} />
                               </div>
                               <div style={{ fontSize: 11, color: "#065f46", marginTop: 3, fontWeight: 700 }}>{t.label}</div>
                               {t.size && (

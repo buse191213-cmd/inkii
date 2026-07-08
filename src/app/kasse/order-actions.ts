@@ -223,17 +223,19 @@ export async function createOrder(
                   front?: string | null; back?: string | null;
                   frontSize?: { widthCm: number; heightCm: number } | null;
                   backSize?: { widthCm: number; heightCm: number } | null;
+                  frontMockup?: string | null; backMockup?: string | null;
                 };
-                const buildThumb = (url: string, label: string, size?: { widthCm: number; heightCm: number } | null, filename?: string) => {
+                const buildThumb = (logoUrl: string, mockupUrl: string | null | undefined, label: string, size?: { widthCm: number; heightCm: number } | null, filename?: string) => {
+                  const preview = mockupUrl || logoUrl; // mockup varsa göster
                   const sizeStr = size
                     ? `<br><span style="font-size:9px;color:#5a6660;">${size.widthCm.toLocaleString("de-DE")} × ${size.heightCm.toLocaleString("de-DE")} cm</span>`
                     : "";
-                  const dl = `<br><a href="${url}" download="${filename || "design.png"}" style="font-size:9px;color:#004537;font-weight:700;">⬇ Herunterladen</a>`;
-                  return `<div style="display:inline-block;text-align:center;margin-right:12px;vertical-align:top;"><img src="${url}" alt="${label}" style="width:80px;height:80px;object-fit:contain;border:1px solid #d1fae5;border-radius:6px;background:#f0fdf4;" /><br><span style="font-size:10px;color:#065f46;font-weight:600;">${label}</span>${sizeStr}${dl}</div>`;
+                  const dl = `<br><a href="${logoUrl}" download="${filename || "design.png"}" style="font-size:9px;color:#004537;font-weight:700;">⬇ Logo herunterladen</a>`;
+                  return `<div style="display:inline-block;text-align:center;margin-right:12px;vertical-align:top;"><img src="${preview}" alt="${label}" style="width:90px;height:90px;object-fit:contain;border:1px solid #e3e6df;border-radius:6px;background:#fff;" /><br><span style="font-size:10px;color:#065f46;font-weight:600;">${label}</span>${sizeStr}${dl}</div>`;
                 };
                 const thumbs: string[] = [];
-                if (d.front) thumbs.push(buildThumb(d.front, "Vorderseite", d.frontSize, `${i.productCode}-vorne.png`));
-                if (d.back) thumbs.push(buildThumb(d.back, "Rückseite", d.backSize, `${i.productCode}-hinten.png`));
+                if (d.front) thumbs.push(buildThumb(d.front, d.frontMockup, "Vorderseite", d.frontSize, `${i.productCode}-vorne.png`));
+                if (d.back) thumbs.push(buildThumb(d.back, d.backMockup, "Rückseite", d.backSize, `${i.productCode}-hinten.png`));
                 if (thumbs.length > 0) {
                   designImgs = `<div style="margin-top:10px;">${thumbs.join("")}</div>`;
                 }
