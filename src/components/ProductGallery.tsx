@@ -24,12 +24,12 @@ const EMPTY: Omit<Placement, "imageDataUrl" | "imageAspect"> = {
   x: 50, y: 47, width: 30, rotation: 0,
 };
 
-// Print area — logo bu alanın dışına çıkamaz (% cinsinden)
+// Print area — logo bu alanın dışına çıkamaz (% cinsinden) - dar ve kare
 const PRINT_AREA = {
-  left: 28,
-  top: 22,
-  right: 72,
-  bottom: 72,
+  left: 33,
+  top: 24,
+  right: 67,
+  bottom: 68,
 };
 
 /**
@@ -91,6 +91,7 @@ export default function ProductGallery({
   const canvasRef = useRef<HTMLDivElement>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const dragRef = useRef<{ x: number; y: number; startVal: number; startVal2: number; mode: "move" | "resize" | null }>({ x: 0, y: 0, startVal: 0, startVal2: 0, mode: null });
+  const [atBoundary, setAtBoundary] = useState(false);
 
   const currentImages = useMemo(() => {
     if (activeColor && colorImages) {
@@ -129,6 +130,29 @@ export default function ProductGallery({
     window.addEventListener("product-color-change", onColor as EventListener);
     return () => window.removeEventListener("product-color-change", onColor as EventListener);
   }, []);
+
+  // Dış component'ler için design'ları broadcast et
+  useEffect(() => {
+    const detail = {
+      front: designs.front ? { imageDataUrl: designs.front.imageDataUrl } : null,
+      back: designs.back ? { imageDataUrl: designs.back.imageDataUrl } : null,
+      hasBack,
+    };
+    window.dispatchEvent(new CustomEvent("designs-updated", { detail }));
+  }, [designs, hasBack]);
+
+  // Dış component'ten upload açma isteği
+  useEffect(() => {
+    function onUploadRequest(e: Event) {
+      const ce = e as CustomEvent<{ side: Side }>;
+      const requestedSide = ce.detail?.side || "front";
+      if (requestedSide === "back" && !hasBack) return;
+      setSide(requestedSide);
+      setTimeout(() => fileInputRef.current?.click(), 60);
+    }
+    window.addEventListener("design-upload-request", onUploadRequest as EventListener);
+    return () => window.removeEventListener("design-upload-request", onUploadRequest as EventListener);
+  }, [hasBack]);
 
   // Auto-switch to front if back is not available
   useEffect(() => {
@@ -206,19 +230,24 @@ export default function ProductGallery({
         const rawX = start.startVal + dx;
         const rawY = start.startVal2 + dy;
         const clamped = clampToPrintArea(rawX, rawY, currentDesign.width, currentDesign.imageAspect);
+        // Sınıra dayandığı zaman feedback
+        const isAtBound = Math.abs(clamped.x - rawX) > 0.5 || Math.abs(clamped.y - rawY) > 0.5;
+        if (isAtBound !== atBoundary) setAtBoundary(isAtBound);
         setDesigns((prev) => ({
           ...prev,
           [side]: prev[side] ? { ...prev[side]!, x: clamped.x, y: clamped.y } : null,
         }));
       } else if (start.mode === "resize") {
         const rawWidth = Math.max(8, start.startVal2 + (dx + dy) / 2);
-        // Boyut değişince pozisyonu da tekrar kontrol et
         const clamped = clampToPrintArea(
           currentDesign.x,
           currentDesign.y,
           rawWidth,
           currentDesign.imageAspect
         );
+        // Size sınırlandıysa boundary vurgusu
+        const isAtBound = Math.abs(clamped.width - rawWidth) > 0.5;
+        if (isAtBound !== atBoundary) setAtBoundary(isAtBound);
         setDesigns((prev) => ({
           ...prev,
           [side]: prev[side] ? { ...prev[side]!, x: clamped.x, y: clamped.y, width: clamped.width } : null,
@@ -230,6 +259,7 @@ export default function ProductGallery({
 
   const handlePointerUp = useCallback((e: React.PointerEvent) => {
     dragRef.current.mode = null;
+    setAtBoundary(false);
     try { (e.currentTarget as HTMLElement).releasePointerCapture(e.pointerId); } catch {}
   }, []);
 
@@ -333,7 +363,7 @@ export default function ProductGallery({
         {/* Print area — logo bu alan içinde kalmalı */}
         {activeImage && (
           <div
-            className={`gal-print-area${currentDesign ? " has-design" : ""}`}
+            className={`gal-print-area${currentDesign ? " has-design" : ""}${atBoundary ? " at-boundary" : ""}`}
             style={{
               left: `${PRINT_AREA.left}%`,
               top: `${PRINT_AREA.top}%`,
@@ -571,11 +601,23 @@ export default function ProductGallery({
           border: 1.5px dashed rgba(94, 132, 112, 0.4);
           border-radius: 2px;
           pointer-events: none;
-          transition: opacity 0.2s, border-color 0.2s;
+          transition: opacity 0.2s, border-color 0.2s, box-shadow 0.15s, background 0.15s;
           z-index: 3;
         }
         .gal-print-area.has-design {
           border-color: rgba(94, 132, 112, 0.65);
+        }
+        .gal-print-area.at-boundary {
+          border-color: rgba(94, 132, 112, 0.95);
+          border-style: solid;
+          border-width: 2px;
+          box-shadow: 0 0 0 3px rgba(94, 132, 112, 0.15), inset 0 0 20px rgba(94, 132, 112, 0.08);
+          animation: pulse-boundary 0.4s ease-in-out;
+        }
+        @keyframes pulse-boundary {
+          0% { transform: scale(1); }
+          40% { transform: scale(1.005); }
+          100% { transform: scale(1); }
         }
         .gal-print-label {
           position: absolute;

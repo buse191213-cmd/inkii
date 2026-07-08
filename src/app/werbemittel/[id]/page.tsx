@@ -3,6 +3,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import SiteShell from "@/components/SiteShell";
 import ProductGallery from "@/components/ProductGallery";
+import DesignUploadTabs from "@/components/DesignUploadTabs";
 import MerkenButton from "@/components/MerkenButton";
 import { db } from "@/lib/db";
 import { formatPrice, formatNumber } from "@/lib/format";
@@ -230,6 +231,9 @@ export default async function ProductDetailPage({
               <p className="mm-detail-meta">
                 Produktionszeit: <strong>Auf Anfrage</strong> · exkl. Versand
               </p>
+
+              {/* Ihr Design hochladen — Fiyat ile Details arasında sekme görünümü */}
+              <DesignUploadTabs />
 
               {/* ÜBERSICHT + DETAILS tabs yan yana */}
               {(() => {
