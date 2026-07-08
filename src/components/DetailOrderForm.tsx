@@ -205,6 +205,14 @@ export default function DetailOrderForm({
     // HAM base fiyat (priceCents) — ratio uygulanmadan. Sepet dinamik hesaplar.
     const rawBaseCents = basePriceCents ?? unitCents ?? 0;
 
+    // Transfer bilgisi (design + fiyat)
+    const dtfSizeLabel = transferEnabled && transferSidesCount > 0
+      ? [designs.front ? "Vorne" : null, designs.back ? "Hinten" : null].filter(Boolean).join(" + ")
+      : "";
+    const dtfDesignCombined = transferEnabled
+      ? JSON.stringify({ front: designUrls.front, back: designUrls.back })
+      : "";
+
     // TEK cart item — bedenler sepette girilecek
     const availableSizes = sizes.map((s) => s.name);
     // Beden HAM özel fiyatları (extraCents > 0 olanlar): {"2XL": 2500}
