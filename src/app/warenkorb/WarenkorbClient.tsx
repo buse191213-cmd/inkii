@@ -108,8 +108,41 @@ export default function WarenkorbClient() {
                   {item.size && ` · ${item.size}`}
                 </div>
                 {item.hasDtf && (
-                  <div style={{ fontSize: 12, color: "#0d9488", marginTop: 4 }}>
-                    + DTF Druck ({item.dtfSize}) — {euro(item.dtfPriceCents)} € / Stk
+                  <div style={{ marginTop: 6 }}>
+                    <div style={{ fontSize: 12, color: "#0d9488", fontWeight: 600 }}>
+                      + Transfer (DTF) {item.dtfSize && `· ${item.dtfSize}`} — {euro(item.dtfPriceCents)} € / Stk
+                    </div>
+                    {(() => {
+                      // dtfDesignUrl = JSON {front, back}
+                      let designs: { front?: string | null; back?: string | null } = {};
+                      try {
+                        if (item.dtfDesignUrl) designs = JSON.parse(item.dtfDesignUrl);
+                      } catch { /* ignore */ }
+                      const thumbs: Array<{ label: string; url: string }> = [];
+                      if (designs.front) thumbs.push({ label: "Vorne", url: designs.front });
+                      if (designs.back) thumbs.push({ label: "Hinten", url: designs.back });
+                      if (thumbs.length === 0) return null;
+                      return (
+                        <div style={{ display: "flex", gap: 8, marginTop: 6 }}>
+                          {thumbs.map((t, i) => (
+                            <div key={i} style={{ textAlign: "center" }}>
+                              <div style={{
+                                width: 44, height: 44,
+                                border: "1px solid #d1fae5",
+                                borderRadius: 6,
+                                background: "#f0fdf4",
+                                display: "flex", alignItems: "center", justifyContent: "center",
+                                overflow: "hidden",
+                              }}>
+                                {/* eslint-disable-next-line @next/next/no-img-element */}
+                                <img src={t.url} alt={t.label} style={{ maxWidth: "100%", maxHeight: "100%", objectFit: "contain", padding: 2 }} />
+                              </div>
+                              <div style={{ fontSize: 10, color: "#065f46", marginTop: 2, fontWeight: 600 }}>{t.label}</div>
+                            </div>
+                          ))}
+                        </div>
+                      );
+                    })()}
                   </div>
                 )}
                 <div style={{ display: "flex", alignItems: "center", gap: 8, marginTop: 10 }}>

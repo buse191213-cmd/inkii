@@ -258,7 +258,7 @@ export default function CartDrawer({ open, onClose }: Props) {
                             borderRadius: 10,
                           }}
                         >
-                          + DTF {item.dtfSize}
+                          + Transfer{item.dtfSize ? ` (${item.dtfSize})` : ""}
                         </span>
                       )}
                     </div>

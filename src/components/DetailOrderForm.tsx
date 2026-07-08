@@ -453,7 +453,7 @@ export default function DetailOrderForm({
       <div className="det-order-summary">
         <div className="det-summary-row">
           <span className="det-summary-lbl">Produktionszeit:</span>
-          <span className="det-summary-val">13 Werktage</span>
+          <span className="det-summary-val">5–10 Werktage</span>
         </div>
         <div className="det-summary-row det-summary-total">
           <span className="det-summary-lbl">Gesamt:</span>
