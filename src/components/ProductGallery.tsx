@@ -23,6 +23,15 @@ const EMPTY: Omit<Placement, "imageDataUrl" | "imageAspect"> = {
   x: 50, y: 50, width: 30, rotation: 0,
 };
 
+function getSideLabel(index: number, total: number): string {
+  if (total === 1) return "Vorderseite";
+  if (total === 2) return index === 0 ? "Vorderseite" : "Rückseite";
+  // 3+ görsel varsa
+  if (index === 0) return "Vorderseite";
+  if (index === 1) return "Rückseite";
+  return `Ansicht ${index + 1}`;
+}
+
 export default function ProductGallery({
   images,
   colorImages,
@@ -187,7 +196,7 @@ export default function ProductGallery({
       <div className="gal-toolbar">
         <div className="gal-toolbar-hint">
           <span className="gal-toolbar-icon" aria-hidden>✧</span>
-          <span>Ihr Design darauf platzieren</span>
+          <span>Vorder- und Rückseite unabhängig personalisierbar</span>
         </div>
         {totalDesigns > 0 && (
           <div className="gal-badge">{totalDesigns} Design{totalDesigns > 1 ? "s" : ""} ✓</div>
@@ -284,6 +293,14 @@ export default function ProductGallery({
         />
       </div>
 
+      {/* Aktif tarafın etiketi */}
+      {currentImages.length > 1 && (
+        <div className="gal-side-label">
+          <span>{getSideLabel(active, currentImages.length)}</span>
+          {currentDesign && <span className="gal-side-check">Design ✓</span>}
+        </div>
+      )}
+
       {currentImages.length > 1 && (
         <div className="gallery-thumbs">
           {currentImages.map((url, i) => (
@@ -291,11 +308,13 @@ export default function ProductGallery({
               key={url}
               className={`gallery-thumb${i === active ? " active" : ""}${designs[i] ? " has-design" : ""}`}
               onClick={() => setActive(i)}
-              aria-label={`Bild ${i + 1}`}
+              aria-label={`${getSideLabel(i, currentImages.length)}`}
+              title={getSideLabel(i, currentImages.length)}
             >
               {/* eslint-disable-next-line @next/next/no-img-element */}
               <img src={url} alt="" />
               {designs[i] && <span className="thumb-check" aria-hidden>✓</span>}
+              <span className="thumb-label">{getSideLabel(i, currentImages.length)}</span>
             </button>
           ))}
         </div>
@@ -448,6 +467,47 @@ export default function ProductGallery({
           font-weight: 700;
         }
         .gallery-thumb.has-design { position: relative; }
+        .thumb-label {
+          position: absolute;
+          bottom: 3px;
+          left: 50%;
+          transform: translateX(-50%);
+          background: rgba(15,26,22,0.85);
+          color: #fff;
+          font-size: 0.58rem;
+          font-weight: 600;
+          padding: 2px 6px;
+          border-radius: 2px;
+          letter-spacing: 0.3px;
+          white-space: nowrap;
+          text-transform: uppercase;
+          backdrop-filter: blur(3px);
+          pointer-events: none;
+        }
+        .gallery-thumb.active .thumb-label {
+          background: #0f1a16;
+        }
+        .gal-side-label {
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+          margin: 8px 0 4px;
+          padding: 0 4px;
+          font-size: 0.78rem;
+          font-weight: 700;
+          color: #0f1a16;
+          letter-spacing: 0.5px;
+          text-transform: uppercase;
+        }
+        .gal-side-check {
+          background: #d1fae5;
+          color: #065f46;
+          padding: 3px 9px;
+          border-radius: 999px;
+          font-size: 0.65rem;
+          font-weight: 700;
+          letter-spacing: 0.4px;
+        }
       `}</style>
     </div>
   );
