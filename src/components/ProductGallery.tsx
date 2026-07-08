@@ -885,9 +885,17 @@ export default function ProductGallery({
             </Link>
             <a
               href="mailto:info@inkiiworks.de?subject=Anfrage%20R%C3%BCckseiten-Druck&body=Hallo%20INKII%20Works%2C%0A%0Aich%20m%C3%B6chte%20die%20R%C3%BCckseite%20eines%20Produkts%20bedrucken%20lassen.%20Bitte%20senden%20Sie%20mir%20ein%20Angebot.%0A%0AProdukt%3A%20%0AMenge%3A%20%0A%0AVielen%20Dank%21"
-              className="gal-contact-btn wa"
+              className="gal-contact-btn mail"
             >
               E-Mail schreiben
+            </a>
+            <a
+              href="https://wa.me/491606767001?text=Hallo%20INKII%20Works%2C%20ich%20m%C3%B6chte%20die%20R%C3%BCckseite%20eines%20Produkts%20bedrucken%20lassen%20und%20h%C3%A4tte%20gerne%20ein%20Angebot."
+              target="_blank"
+              rel="noopener noreferrer"
+              className="gal-contact-btn wa"
+            >
+              WhatsApp
             </a>
           </div>
         </div>
@@ -1288,10 +1296,14 @@ export default function ProductGallery({
           background: #0f1a16;
           color: #fff;
         }
-        .gal-contact-btn.wa {
+        .gal-contact-btn.mail {
           background: #fff;
           color: #004537;
           border: 1px solid #004537;
+        }
+        .gal-contact-btn.wa {
+          background: #25d366;
+          color: #fff;
         }
         @media (max-width: 640px) {
           .gal-status-detail { margin-left: 0; width: 100%; }
