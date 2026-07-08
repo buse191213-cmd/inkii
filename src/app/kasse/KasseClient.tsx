@@ -7,6 +7,7 @@ import CheckoutSteps from "@/components/CheckoutSteps";
 import { colorLabel } from "@/lib/catalog-options";
 import { createOrder } from "./order-actions";
 import PayPalInlineButtons from "./PayPalInlineButtons";
+import type { Dictionary } from "@/dictionaries/types";
 
 function euro(c: number): string {
   return (c / 100).toLocaleString("de-DE", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
@@ -113,9 +114,11 @@ type Props = {
   isLoggedIn?: boolean;
   paypalClientId?: string;
   paypalMode?: "sandbox" | "live";
+  t: Dictionary["checkout"];
+  tCart: Dictionary["cart"];
 };
 
-export default function KasseClient({ paymentMethods, shipping, prefill, isLoggedIn, paypalClientId, paypalMode }: Props) {
+export default function KasseClient({ paymentMethods, shipping, prefill, isLoggedIn, paypalClientId, paypalMode, t, tCart }: Props) {
   const { items, subtotalCents, clearCart, isLoaded } = useCart();
   const [isPending, startTransition] = useTransition();
   const [generalError, setGeneralError] = useState<string>("");
@@ -161,7 +164,7 @@ export default function KasseClient({ paymentMethods, shipping, prefill, isLogge
   if (!isLoaded) {
     return (
       <section style={{ maxWidth: 1200, margin: "0 auto", padding: "60px 28px" }}>
-        <p>Laden…</p>
+        <p>{t.loading}</p>
       </section>
     );
   }
@@ -174,7 +177,7 @@ export default function KasseClient({ paymentMethods, shipping, prefill, isLogge
           border: "3px solid #e5e7eb", borderTopColor: "#004537",
           borderRadius: "50%", animation: "kasse-spin 0.8s linear infinite",
         }} />
-        <p style={{ color: "#5a6660", fontSize: 15 }}>Ihre Bestellung wird verarbeitet…</p>
+        <p style={{ color: "#5a6660", fontSize: 15 }}>{t.processing}</p>
         <style>{`@keyframes kasse-spin { to { transform: rotate(360deg); } }`}</style>
       </section>
     );
@@ -183,9 +186,9 @@ export default function KasseClient({ paymentMethods, shipping, prefill, isLogge
   if (items.length === 0) {
     return (
       <section style={{ maxWidth: 800, margin: "0 auto", padding: "80px 28px", textAlign: "center" }}>
-        <h1 style={{ fontSize: "2rem", fontWeight: 700, marginBottom: 16 }}>Kasse</h1>
+        <h1 style={{ fontSize: "2rem", fontWeight: 700, marginBottom: 16 }}>{t.title}</h1>
         <p style={{ color: "#64748b", marginBottom: 32 }}>
-          Ihr Warenkorb ist leer.
+          {t.empty}
         </p>
         <Link
           href="/werbemittel"
@@ -198,7 +201,7 @@ export default function KasseClient({ paymentMethods, shipping, prefill, isLogge
             textDecoration: "none",
           }}
         >
-          Zum Katalog →
+          {tCart.toCatalog}
         </Link>
       </section>
     );
@@ -240,21 +243,21 @@ export default function KasseClient({ paymentMethods, shipping, prefill, isLogge
       return false;
     });
     if (sizeIssue) {
-      setGeneralError(`Bitte verteilen Sie im Warenkorb bei „${sizeIssue.productName}" alle Größen, bevor Sie bestellen.`);
+      setGeneralError(t.errors.distributeSizes);
       return false;
     }
 
     if (errors.firstName) { refs.firstName.current?.focus(); refs.firstName.current?.scrollIntoView({ behavior: "smooth", block: "center" }); return false; }
     if (errors.lastName) { refs.lastName.current?.focus(); refs.lastName.current?.scrollIntoView({ behavior: "smooth", block: "center" }); return false; }
     if (errors.email) { refs.email.current?.focus(); refs.email.current?.scrollIntoView({ behavior: "smooth", block: "center" }); return false; }
-    if (errors.phone) { setGeneralError("Bitte gültige Telefonnummer eingeben."); return false; }
+    if (errors.phone) { setGeneralError(t.errors.invalidPhone); return false; }
     if (errors.billingStreet) { refs.billingStreet.current?.focus(); refs.billingStreet.current?.scrollIntoView({ behavior: "smooth", block: "center" }); return false; }
     if (errors.billingZip) { refs.billingZip.current?.focus(); refs.billingZip.current?.scrollIntoView({ behavior: "smooth", block: "center" }); return false; }
     if (errors.billingCity) { refs.billingCity.current?.focus(); refs.billingCity.current?.scrollIntoView({ behavior: "smooth", block: "center" }); return false; }
-    if (errors.shippingZip) { setGeneralError("Bitte gültige Liefer-PLZ eingeben."); return false; }
-    if (!paymentMethod) { setGeneralError("Bitte eine Zahlungsmethode wählen."); return false; }
+    if (errors.shippingZip) { setGeneralError(t.errors.invalidZip); return false; }
+    if (!paymentMethod) { setGeneralError(t.errors.selectPayment); return false; }
     if (!acceptsTerms) {
-      setGeneralError("Bitte AGB und Datenschutz akzeptieren.");
+      setGeneralError(t.errors.acceptTerms);
       refs.terms.current?.scrollIntoView({ behavior: "smooth", block: "center" });
       return false;
     }
@@ -329,7 +332,7 @@ export default function KasseClient({ paymentMethods, shipping, prefill, isLogge
   // PayPal Buttons için: validate + DB order create
   async function validateAndCreateOrderForPayPal(): Promise<{ ok: boolean; orderId?: string; orderNumber?: string; error?: string }> {
     if (!validateForm()) {
-      return { ok: false, error: generalError || "Bitte Formular ausfüllen" };
+      return { ok: false, error: generalError || t.errors.fillForm };
     }
     return createOrder(buildOrderInput());
   }
@@ -347,7 +350,7 @@ export default function KasseClient({ paymentMethods, shipping, prefill, isLogge
         clearCart();
         window.location.href = `/bestellung-erfolg?nr=${result.orderNumber}`;
       } else {
-        setGeneralError(result.error ?? "Bestellung konnte nicht gespeichert werden.");
+        setGeneralError(result.error ?? t.errors.orderFailed);
       }
     });
   }
@@ -356,8 +359,8 @@ export default function KasseClient({ paymentMethods, shipping, prefill, isLogge
 
   return (
     <section style={{ maxWidth: 1200, margin: "0 auto", padding: "40px 28px" }}>
-      <CheckoutSteps current="zahlung" isLoggedIn={isLoggedIn} />
-      <h1 style={{ fontSize: "2rem", fontWeight: 700, marginBottom: 12 }}>Kasse</h1>
+      <CheckoutSteps current="zahlung" isLoggedIn={isLoggedIn} labels={t.steps} />
+      <h1 style={{ fontSize: "2rem", fontWeight: 700, marginBottom: 12 }}>{t.title}</h1>
 
       {!isLoggedIn && (
         <div style={{
@@ -372,8 +375,8 @@ export default function KasseClient({ paymentMethods, shipping, prefill, isLogge
           gap: 10,
           fontSize: 13,
         }}>
-          <span>👤 Bereits Kunde? <a href="/login?next=/kasse" style={{ color: "#004537", fontWeight: 600, textDecoration: "underline" }}>Hier anmelden</a> für schnelleren Checkout.</span>
-          <a href="/registrieren" style={{ color: "#004537", fontWeight: 600, textDecoration: "underline" }}>Oder neu registrieren →</a>
+          <span>👤 {t.alreadyCustomer} <a href="/login?next=/kasse" style={{ color: "#004537", fontWeight: 600, textDecoration: "underline" }}>{t.loginHere}</a> {t.fasterCheckout}</span>
+          <a href="/registrieren" style={{ color: "#004537", fontWeight: 600, textDecoration: "underline" }}>{t.orRegister}</a>
         </div>
       )}
 
@@ -386,7 +389,7 @@ export default function KasseClient({ paymentMethods, shipping, prefill, isLogge
           fontSize: 13,
           color: "#1e40af",
         }}>
-          ✓ Sie sind als <strong>{firstName} {lastName}</strong> angemeldet. Ihre Daten sind vorausgefüllt.
+          ✓ {t.loggedInAs} <strong>{firstName} {lastName}</strong>. {t.dataPrefilled}
         </div>
       )}
 
@@ -395,40 +398,40 @@ export default function KasseClient({ paymentMethods, shipping, prefill, isLogge
         <div>
           {/* Kontakt */}
           <div style={section}>
-            <h3 style={sectionTitle}>1. Kontakt</h3>
+            <h3 style={sectionTitle}>1. {t.form.contact}</h3>
             <div style={row}>
               <div style={{ ...field, maxWidth: 120 }}>
-                <label>Anrede</label>
+                <label>{t.form.salutation}</label>
                 <select value={salutation} onChange={(e) => setSalutation(e.target.value)} style={input}>
-                  <option value="Herr">Herr</option>
-                  <option value="Frau">Frau</option>
-                  <option value="Divers">Divers</option>
+                  <option value="Herr">{t.form.herr}</option>
+                  <option value="Frau">{t.form.frau}</option>
+                  <option value="Divers">{t.form.divers}</option>
                 </select>
               </div>
               <div style={field}>
-                <label style={showErr && errors.firstName ? labelErr : undefined}>Vorname *</label>
+                <label style={showErr && errors.firstName ? labelErr : undefined}>{t.form.firstName} *</label>
                 <input
                   ref={refs.firstName}
                   value={firstName}
                   onChange={(e) => setFirstName(cleanNameInput(e.target.value))}
                   style={showErr && errors.firstName ? inputErr : input}
                 />
-                {showErr && errors.firstName && <span style={errMsg}>Bitte ausfüllen</span>}
+                {showErr && errors.firstName && <span style={errMsg}>{t.form.required}</span>}
               </div>
               <div style={field}>
-                <label style={showErr && errors.lastName ? labelErr : undefined}>Nachname *</label>
+                <label style={showErr && errors.lastName ? labelErr : undefined}>{t.form.lastName} *</label>
                 <input
                   ref={refs.lastName}
                   value={lastName}
                   onChange={(e) => setLastName(cleanNameInput(e.target.value))}
                   style={showErr && errors.lastName ? inputErr : input}
                 />
-                {showErr && errors.lastName && <span style={errMsg}>Bitte ausfüllen</span>}
+                {showErr && errors.lastName && <span style={errMsg}>{t.form.required}</span>}
               </div>
             </div>
             <div style={row}>
               <div style={field}>
-                <label style={showErr && errors.email ? labelErr : undefined}>E-Mail *</label>
+                <label style={showErr && errors.email ? labelErr : undefined}>{t.form.email} *</label>
                 <input
                   ref={refs.email}
                   type="email"
@@ -437,11 +440,11 @@ export default function KasseClient({ paymentMethods, shipping, prefill, isLogge
                   style={showErr && errors.email ? inputErr : input}
                   placeholder="name@beispiel.de"
                 />
-                {showErr && errors.email === "required" && <span style={errMsg}>Bitte ausfüllen</span>}
-                {showErr && errors.email === "format" && <span style={errMsg}>Bitte gültige E-Mail-Adresse</span>}
+                {showErr && errors.email === "required" && <span style={errMsg}>{t.form.required}</span>}
+                {showErr && errors.email === "format" && <span style={errMsg}>{t.form.invalidEmail}</span>}
               </div>
               <div style={field}>
-                <label style={showErr && errors.phone ? labelErr : undefined}>Telefon</label>
+                <label style={showErr && errors.phone ? labelErr : undefined}>{t.form.phone}</label>
                 <div style={{ display: "flex", gap: 6 }}>
                   <select
                     value={phoneCountry}
@@ -464,17 +467,17 @@ export default function KasseClient({ paymentMethods, shipping, prefill, isLogge
                   />
                 </div>
                 {showErr && errors.phone === "format" && (
-                  <span style={errMsg}>Bitte gültige Telefonnummer (6-15 Ziffern)</span>
+                  <span style={errMsg}>{t.form.invalidPhone}</span>
                 )}
               </div>
             </div>
             <div style={row}>
               <div style={field}>
-                <label>Firma (optional)</label>
+                <label>{t.form.companyOpt}</label>
                 <input value={firmname} onChange={(e) => setFirmname(e.target.value)} style={input} />
               </div>
               <div style={field}>
-                <label>USt-IdNr. (optional)</label>
+                <label>{t.form.ustId}</label>
                 <input value={ustId} onChange={(e) => setUstId(e.target.value)} style={input} placeholder="DE123456789" />
               </div>
             </div>
@@ -482,16 +485,16 @@ export default function KasseClient({ paymentMethods, shipping, prefill, isLogge
 
           {/* Rechnungsadresse */}
           <div style={section}>
-            <h3 style={sectionTitle}>2. Rechnungsadresse</h3>
+            <h3 style={sectionTitle}>2. {t.form.billingAddress}</h3>
             <div style={field}>
-              <label style={showErr && errors.billingStreet ? labelErr : undefined}>Straße & Hausnummer *</label>
+              <label style={showErr && errors.billingStreet ? labelErr : undefined}>{t.form.street} *</label>
               <input
                 ref={refs.billingStreet}
                 value={billingStreet}
                 onChange={(e) => setBillingStreet(e.target.value)}
                 style={showErr && errors.billingStreet ? inputErr : input}
               />
-              {showErr && errors.billingStreet && <span style={errMsg}>Bitte ausfüllen</span>}
+              {showErr && errors.billingStreet && <span style={errMsg}>{t.form.required}</span>}
             </div>
             <div style={{ ...row, marginTop: 12 }}>
               <div style={{ ...field, maxWidth: 180 }}>
@@ -506,7 +509,7 @@ export default function KasseClient({ paymentMethods, shipping, prefill, isLogge
                   placeholder={plzRule(billingCountry).placeholder}
                   inputMode={billingCountry === "NL" ? "text" : "numeric"}
                 />
-                {showErr && errors.billingZip === "required" && <span style={errMsg}>Bitte ausfüllen</span>}
+                {showErr && errors.billingZip === "required" && <span style={errMsg}>{t.form.required}</span>}
                 {showErr && errors.billingZip === "format" && (
                   <span style={errMsg}>Format: {plzRule(billingCountry).placeholder}</span>
                 )}
@@ -519,10 +522,10 @@ export default function KasseClient({ paymentMethods, shipping, prefill, isLogge
                   onChange={(e) => setBillingCity(cleanNameInput(e.target.value))}
                   style={showErr && errors.billingCity ? inputErr : input}
                 />
-                {showErr && errors.billingCity && <span style={errMsg}>Bitte ausfüllen</span>}
+                {showErr && errors.billingCity && <span style={errMsg}>{t.form.required}</span>}
               </div>
               <div style={{ ...field, maxWidth: 180 }}>
-                <label>Land</label>
+                <label>{t.form.country}</label>
                 <select value={billingCountry} onChange={(e) => setBillingCountry(e.target.value)} style={input}>
                   {COUNTRIES.map((c) => (
                     <option key={c.code} value={c.code}>{c.label}</option>
@@ -537,14 +540,14 @@ export default function KasseClient({ paymentMethods, shipping, prefill, isLogge
                 checked={shippingDiffers}
                 onChange={(e) => setShippingDiffers(e.target.checked)}
               />
-              Lieferadresse abweichend
+              {t.form.shippingDiffers}
             </label>
           </div>
 
           {/* Lieferadresse */}
           {shippingDiffers && (
             <div style={section}>
-              <h3 style={sectionTitle}>3. Lieferadresse</h3>
+              <h3 style={sectionTitle}>3. {t.form.shippingAddress}</h3>
               <div style={field}>
                 <label>Straße & Hausnummer</label>
                 <input value={shippingStreet} onChange={(e) => setShippingStreet(e.target.value)} style={input} />
@@ -566,11 +569,11 @@ export default function KasseClient({ paymentMethods, shipping, prefill, isLogge
                   )}
                 </div>
                 <div style={field}>
-                  <label>Stadt</label>
+                  <label>{t.form.city}</label>
                   <input value={shippingCity} onChange={(e) => setShippingCity(cleanNameInput(e.target.value))} style={input} />
                 </div>
                 <div style={{ ...field, maxWidth: 180 }}>
-                  <label>Land</label>
+                  <label>{t.form.country}</label>
                   <select value={shippingCountry} onChange={(e) => setShippingCountry(e.target.value)} style={input}>
                     {COUNTRIES.map((c) => (
                       <option key={c.code} value={c.code}>{c.label}</option>
@@ -583,7 +586,7 @@ export default function KasseClient({ paymentMethods, shipping, prefill, isLogge
 
           {/* Zahlungsmethode */}
           <div style={section}>
-            <h3 style={sectionTitle}>{shippingDiffers ? "4." : "3."} Zahlungsmethode</h3>
+            <h3 style={sectionTitle}>{shippingDiffers ? "4." : "3."} {t.form.paymentMethod}</h3>
             {paymentMethods.length === 0 ? (
               <p style={{ color: "#dc2626", fontSize: 14 }}>
                 Aktuell sind keine Zahlungsmethoden verfügbar. Bitte kontaktieren Sie uns.
@@ -637,7 +640,7 @@ export default function KasseClient({ paymentMethods, shipping, prefill, isLogge
                         </div>
                         {m.key === "paypal" && active && (
                           <div style={{ fontSize: 11, color: "#0e7490", marginTop: 6, padding: 6, background: "#ecfeff", display: "inline-block" }}>
-                            ℹ️ Kein PayPal-Konto nötig — direkt mit Karte bezahlen
+                            ℹ️ {t.form.noPaypalNeeded}
                           </div>
                         )}
                       </div>
@@ -650,11 +653,11 @@ export default function KasseClient({ paymentMethods, shipping, prefill, isLogge
 
           {/* Notes */}
           <div style={section}>
-            <h3 style={sectionTitle}>{shippingDiffers ? "5." : "4."} Anmerkungen (optional)</h3>
+            <h3 style={sectionTitle}>{shippingDiffers ? "5." : "4."} {t.form.notesOpt}</h3>
             <textarea
               value={customerNote}
               onChange={(e) => setCustomerNote(e.target.value)}
-              placeholder="Z.B. Wunschtermin, besondere Hinweise…"
+              placeholder={t.form.notesPlaceholder}
               style={{ ...input, minHeight: 80, fontFamily: "inherit", resize: "vertical" }}
             />
           </div>
@@ -664,9 +667,9 @@ export default function KasseClient({ paymentMethods, shipping, prefill, isLogge
             ref={refs.terms}
             style={{
               marginTop: 24,
-              padding: !acceptsTerms && generalError.includes("AGB") ? 12 : 0,
-              background: !acceptsTerms && generalError.includes("AGB") ? "#fef2f2" : "transparent",
-              border: !acceptsTerms && generalError.includes("AGB") ? "2px solid #dc2626" : "none",
+              padding: !acceptsTerms && validationStarted ? 12 : 0,
+              background: !acceptsTerms && validationStarted ? "#fef2f2" : "transparent",
+              border: !acceptsTerms && validationStarted ? "2px solid #dc2626" : "none",
               borderRadius: 4,
               transition: "all 0.2s",
             }}
@@ -677,22 +680,21 @@ export default function KasseClient({ paymentMethods, shipping, prefill, isLogge
                 checked={acceptsTerms}
                 onChange={(e) => {
                   setAcceptsTerms(e.target.checked);
-                  if (e.target.checked && generalError.includes("AGB")) {
+                  if (e.target.checked && !acceptsTerms && validationStarted) {
                     setGeneralError("");
                   }
                 }}
                 style={{ marginTop: 3, flexShrink: 0 }}
               />
               <span>
-                Ich habe die <Link href="/kontakt" style={{ color: "#004537", textDecoration: "underline" }}>AGB</Link>,{" "}
-                <Link href="/datenschutz" style={{ color: "#004537", textDecoration: "underline" }}>Datenschutzerklärung</Link> und{" "}
-                <Link href="/widerrufsbelehrung" style={{ color: "#004537", textDecoration: "underline" }}>Widerrufsbelehrung</Link>{" "}
-                gelesen und stimme zu. *
+                {t.form.acceptTerms1} <Link href="/kontakt" style={{ color: "#004537", textDecoration: "underline" }}>{t.form.agb}</Link>,{" "}
+                <Link href="/datenschutz" style={{ color: "#004537", textDecoration: "underline" }}>{t.form.privacy}</Link>{" "}
+                {t.form.acceptTerms2} *
               </span>
             </label>
-            {!acceptsTerms && generalError.includes("AGB") && (
+            {!acceptsTerms && validationStarted && (
               <p style={{ margin: "8px 0 0 26px", fontSize: 12, color: "#991b1b", fontWeight: 600 }}>
-                ⚠ Bitte bestätigen Sie die AGB, um fortzufahren.
+                ⚠ {t.form.confirmTerms}
               </p>
             )}
           </div>
@@ -721,7 +723,7 @@ export default function KasseClient({ paymentMethods, shipping, prefill, isLogge
             alignSelf: "start",
           }}
         >
-          <h3 style={{ fontWeight: 700, fontSize: 18, marginBottom: 16 }}>Ihre Bestellung</h3>
+          <h3 style={{ fontWeight: 700, fontSize: 18, marginBottom: 16 }}>{t.form.yourOrder}</h3>
 
           <div style={{ marginBottom: 16, maxHeight: 240, overflowY: "auto" }}>
             {items.map((item) => (
@@ -802,15 +804,15 @@ export default function KasseClient({ paymentMethods, shipping, prefill, isLogge
 
           <div style={{ display: "flex", flexDirection: "column", gap: 6, fontSize: 14 }}>
             <div style={{ display: "flex", justifyContent: "space-between" }}>
-              <span>Zwischensumme</span>
+              <span>{tCart.zwischensumme}</span>
               <span>{euro(subtotalCents)} €</span>
             </div>
             <div style={{ display: "flex", justifyContent: "space-between" }}>
-              <span>Versand {shippingCents === 0 && <small style={{ color: "#0d9488" }}>(kostenlos)</small>}</span>
+              <span>{tCart.shipping} {shippingCents === 0 && <small style={{ color: "#0d9488" }}>({tCart.free})</small>}</span>
               <span>{euro(shippingCents)} €</span>
             </div>
             <div style={{ display: "flex", justifyContent: "space-between", color: "#64748b" }}>
-              <span>davon MwSt. 19%</span>
+              <span>{tCart.davonMwst}</span>
               <span>{euro(taxCents)} €</span>
             </div>
             <div
@@ -824,7 +826,7 @@ export default function KasseClient({ paymentMethods, shipping, prefill, isLogge
                 fontSize: 17,
               }}
             >
-              <span>Gesamt</span>
+              <span>{tCart.gesamt}</span>
               <span>{euro(totalCents)} €</span>
             </div>
           </div>
@@ -863,7 +865,7 @@ export default function KasseClient({ paymentMethods, shipping, prefill, isLogge
                 fontSize: 15,
               }}
             >
-              {isPending ? "Wird übermittelt…" : "Auf Rechnung bestellen →"}
+              {isPending ? t.form.processing2 : `${t.form.orderNow} →`}
             </button>
           )}
         </aside>

@@ -2,6 +2,8 @@ import { db } from "@/lib/db";
 import SiteShell from "@/components/SiteShell";
 import { getCurrentCustomer } from "@/lib/customer-auth";
 import { isPayPalConfigured, getPayPalClientId, getPayPalMode } from "@/lib/paypal-server";
+import { getLocale } from "@/lib/i18n-server";
+import { getDictionary } from "@/dictionaries";
 import KasseClient from "./KasseClient";
 
 export const dynamic = "force-dynamic";
@@ -12,6 +14,8 @@ export const metadata = {
 
 export default async function KassePage() {
   const customer = await getCurrentCustomer();
+  const locale = await getLocale();
+  const dict = getDictionary(locale);
   // Sadece aktif ödeme yöntemleri
   const methods = await db.paymentMethod.findMany({
     where: { enabled: true },
@@ -58,6 +62,8 @@ export default async function KassePage() {
         isLoggedIn={Boolean(customer)}
         paypalClientId={paypalReady ? getPayPalClientId() : ""}
         paypalMode={getPayPalMode()}
+        t={dict.checkout}
+        tCart={dict.cart}
       />
     </SiteShell>
   );
