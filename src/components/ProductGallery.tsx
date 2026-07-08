@@ -876,20 +876,18 @@ export default function ProductGallery({
           <div className="gal-contact-body">
             <div className="gal-contact-title">Rückseiten-Druck gewünscht?</div>
             <div className="gal-contact-text">
-              Kein Problem — kontaktieren Sie uns für individuelle Anfragen und wir kümmern uns um die Rückseite Ihrer Bestellung.
+              Kein Problem — senden Sie uns eine Anfrage und wir erstellen Ihnen ein individuelles Angebot für den Rückseiten-Druck.
             </div>
           </div>
           <div className="gal-contact-actions">
             <Link href="/kontakt" className="gal-contact-btn primary">
-              Kontakt aufnehmen →
+              Anfrage senden →
             </Link>
             <a
-              href="https://wa.me/491606767001?text=Hallo%20INKII%20Works%2C%20ich%20m%C3%B6chte%20die%20R%C3%BCckseite%20eines%20Produkts%20bedrucken%20lassen."
-              target="_blank"
-              rel="noopener noreferrer"
+              href="mailto:info@inkiiworks.de?subject=Anfrage%20R%C3%BCckseiten-Druck&body=Hallo%20INKII%20Works%2C%0A%0Aich%20m%C3%B6chte%20die%20R%C3%BCckseite%20eines%20Produkts%20bedrucken%20lassen.%20Bitte%20senden%20Sie%20mir%20ein%20Angebot.%0A%0AProdukt%3A%20%0AMenge%3A%20%0A%0AVielen%20Dank%21"
               className="gal-contact-btn wa"
             >
-              WhatsApp
+              E-Mail schreiben
             </a>
           </div>
         </div>
@@ -1291,8 +1289,9 @@ export default function ProductGallery({
           color: #fff;
         }
         .gal-contact-btn.wa {
-          background: #25d366;
-          color: #fff;
+          background: #fff;
+          color: #004537;
+          border: 1px solid #004537;
         }
         @media (max-width: 640px) {
           .gal-status-detail { margin-left: 0; width: 100%; }
