@@ -12,24 +12,15 @@ export type PaymentMethodData = {
   sortOrder: number;
 };
 
-export type DtfPriceData = {
-  id: string;
-  sizeLabel: string;
-  widthCm: number;
-  heightCm: number;
-  priceCents: number;
-  enabled: boolean;
-};
-
 export type ShippingData = {
   standardCostCents: number;
   freeShippingFromCents: number;
   carrier: string;
+  transferPriceCents: number;
 };
 
 export type ShopConfigData = {
   paymentMethods: PaymentMethodData[];
-  dtfPrices: DtfPriceData[];
   shipping: ShippingData;
 };
 
@@ -58,19 +49,11 @@ const DEFAULT_PAYMENT_METHODS: PaymentMethodData[] = [
   },
 ];
 
-const DEFAULT_DTF_SIZES = [
-  { sizeLabel: "10x10", widthCm: 10, heightCm: 10, priceCents: 200 },
-  { sizeLabel: "15x15", widthCm: 15, heightCm: 15, priceCents: 300 },
-  { sizeLabel: "20x20", widthCm: 20, heightCm: 20, priceCents: 420 },
-  { sizeLabel: "25x25", widthCm: 25, heightCm: 25, priceCents: 520 },
-  { sizeLabel: "30x30", widthCm: 30, heightCm: 30, priceCents: 600 },
-  { sizeLabel: "A3 (30x42)", widthCm: 30, heightCm: 42, priceCents: 800 },
-];
-
 const DEFAULT_SHIPPING: ShippingData = {
   standardCostCents: 599,
   freeShippingFromCents: 10000,
   carrier: "DHL",
+  transferPriceCents: 900,
 };
 
 export async function getShopConfig(): Promise<ShopConfigData> {
@@ -83,24 +66,13 @@ export async function getShopConfig(): Promise<ShopConfigData> {
     });
   }
 
-  // 2) DTF prices — fehlende anlegen
-  for (const d of DEFAULT_DTF_SIZES) {
-    const existing = await db.dtfPrice.findUnique({ where: { sizeLabel: d.sizeLabel } });
-    if (!existing) {
-      await db.dtfPrice.create({ data: d });
-    }
-  }
-
-  // 3) Shipping config — singleton
+  // 2) Shipping config — singleton
   let shipping = await db.shippingConfig.findFirst();
   if (!shipping) {
     shipping = await db.shippingConfig.create({ data: DEFAULT_SHIPPING });
   }
 
   const paymentMethods = await db.paymentMethod.findMany({
-    orderBy: { sortOrder: "asc" },
-  });
-  const dtfPrices = await db.dtfPrice.findMany({
     orderBy: { sortOrder: "asc" },
   });
 
@@ -112,18 +84,11 @@ export async function getShopConfig(): Promise<ShopConfigData> {
       enabled: m.enabled,
       sortOrder: m.sortOrder,
     })),
-    dtfPrices: dtfPrices.map((p) => ({
-      id: p.id,
-      sizeLabel: p.sizeLabel,
-      widthCm: p.widthCm,
-      heightCm: p.heightCm,
-      priceCents: p.priceCents,
-      enabled: p.enabled,
-    })),
     shipping: {
       standardCostCents: shipping.standardCostCents,
       freeShippingFromCents: shipping.freeShippingFromCents,
       carrier: shipping.carrier,
+      transferPriceCents: shipping.transferPriceCents ?? 900,
     },
   };
 }
@@ -142,14 +107,7 @@ export async function saveShopConfig(
         data: { enabled: m.enabled },
       });
     }
-    // DTF prices
-    for (const p of data.dtfPrices) {
-      await db.dtfPrice.update({
-        where: { id: p.id },
-        data: { priceCents: p.priceCents, enabled: p.enabled },
-      });
-    }
-    // Shipping
+    // Shipping + Transfer
     const ship = await db.shippingConfig.findFirst();
     if (ship) {
       await db.shippingConfig.update({
@@ -158,6 +116,7 @@ export async function saveShopConfig(
           standardCostCents: data.shipping.standardCostCents,
           freeShippingFromCents: data.shipping.freeShippingFromCents,
           carrier: data.shipping.carrier,
+          transferPriceCents: data.shipping.transferPriceCents,
         },
       });
     }

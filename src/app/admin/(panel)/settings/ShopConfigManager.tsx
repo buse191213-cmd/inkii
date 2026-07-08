@@ -12,7 +12,6 @@ type Props = {
 
 export default function ShopConfigManager({ initial }: Props) {
   const [paymentMethods, setPaymentMethods] = useState(initial.paymentMethods);
-  const [dtfPrices, setDtfPrices] = useState(initial.dtfPrices);
   const [shipping, setShipping] = useState(initial.shipping);
   const [isPending, startTransition] = useTransition();
   const [message, setMessage] = useState<string>("");
@@ -21,7 +20,6 @@ export default function ShopConfigManager({ initial }: Props) {
     startTransition(async () => {
       const result = await saveShopConfig({
         paymentMethods,
-        dtfPrices,
         shipping,
       });
       if (result.ok) {
@@ -36,12 +34,6 @@ export default function ShopConfigManager({ initial }: Props) {
   function togglePayment(key: string) {
     setPaymentMethods((cur) =>
       cur.map((m) => (m.key === key ? { ...m, enabled: !m.enabled } : m))
-    );
-  }
-
-  function updateDtfPrice(id: string, field: "priceCents" | "enabled", value: number | boolean) {
-    setDtfPrices((cur) =>
-      cur.map((p) => (p.id === id ? { ...p, [field]: value } : p))
     );
   }
 
@@ -101,51 +93,55 @@ export default function ShopConfigManager({ initial }: Props) {
           ))}
         </div>
 
-        {/* === DTF FIYATLAR === */}
+        {/* === DTF TRANSFER FİYATI === */}
         <h4 style={{ margin: "0 0 12px", fontSize: "0.95rem", fontWeight: 700 }}>
-          DTF-Druckpreise
+          DTF-Transfer Preis
         </h4>
         <p className="form-note" style={{ marginTop: 0 }}>
-          Preise pro Druckgröße. Werden bei Bestellungen mit DTF-Druck automatisch berechnet.
+          Fester Preis pro bedruckter Seite (Vorderseite / Rückseite). Wird im Produkt-Customizer automatisch berechnet: Vorne + Hinten = 2 × Preis.
         </p>
         <div style={{ display: "flex", flexDirection: "column", gap: 8, marginBottom: 24 }}>
-          {dtfPrices.map((p) => (
-            <div
-              key={p.id}
-              style={{
-                display: "grid",
-                gridTemplateColumns: "120px 1fr 100px 80px",
-                gap: 10,
-                alignItems: "center",
-                padding: "10px 14px",
-                border: "1px solid #e5e7eb",
-                background: "#fff",
-              }}
-            >
-              <div style={{ fontWeight: 600, fontSize: 14 }}>{p.sizeLabel}</div>
-              <div style={{ fontSize: 12, color: "#64748b" }}>
-                {p.widthCm} × {p.heightCm} cm
+          <div
+            style={{
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "space-between",
+              padding: "16px 18px",
+              border: "1.5px solid #004537",
+              background: "#f0fdf4",
+              borderRadius: 8,
+            }}
+          >
+            <div>
+              <div style={{ fontWeight: 700, fontSize: 15, color: "#0f1a16" }}>
+                Transfer (DTF-Druck)
               </div>
-              <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
-                <input
-                  type="number"
-                  step="0.01"
-                  value={(p.priceCents / 100).toFixed(2)}
-                  onChange={(e) => updateDtfPrice(p.id, "priceCents", Math.round(parseFloat(e.target.value || "0") * 100))}
-                  style={{ width: 70 }}
-                />
-                <span style={{ fontSize: 13, color: "#64748b" }}>€</span>
+              <div style={{ fontSize: 12, color: "#5a6660", marginTop: 3 }}>
+                Preis pro Seite — Kunde zahlt dies für Vorder- und/oder Rückseite
               </div>
-              <label style={{ display: "flex", alignItems: "center", gap: 6, fontSize: 12, cursor: "pointer" }}>
-                <input
-                  type="checkbox"
-                  checked={p.enabled}
-                  onChange={(e) => updateDtfPrice(p.id, "enabled", e.target.checked)}
-                />
-                Aktiv
-              </label>
             </div>
-          ))}
+            <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+              <span style={{ fontSize: 13, color: "#64748b", fontWeight: 500 }}>€</span>
+              <input
+                type="number"
+                step="0.01"
+                min="0"
+                value={(shipping.transferPriceCents / 100).toFixed(2)}
+                onChange={(e) =>
+                  setShipping({
+                    ...shipping,
+                    transferPriceCents: Math.round(parseFloat(e.target.value || "0") * 100),
+                  })
+                }
+                style={{ width: 90, fontSize: 16, fontWeight: 700, textAlign: "right" }}
+              />
+              <span style={{ fontSize: 12, color: "#5a6660" }}>/ Seite</span>
+            </div>
+          </div>
+          <div style={{ fontSize: 12, color: "#5a6660", padding: "0 4px", display: "flex", gap: 16 }}>
+            <span>💡 Nur Vorne: <b>{(shipping.transferPriceCents / 100).toFixed(2)} €</b></span>
+            <span>Vorne + Hinten: <b>{((shipping.transferPriceCents * 2) / 100).toFixed(2)} €</b></span>
+          </div>
         </div>
 
         {/* === VERSAND === */}

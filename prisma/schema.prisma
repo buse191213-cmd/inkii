@@ -222,6 +222,7 @@ model ShippingConfig {
   standardCostCents   Int      @default(599)   // 5.99€
   carrier             String   @default("DHL")
   notes               String   @default("")
+  transferPriceCents  Int      @default(900)   // DTF Transfer pro Seite (9€)
   updatedAt           DateTime @updatedAt
 }
 

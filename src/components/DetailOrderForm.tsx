@@ -17,6 +17,7 @@ type Props = {
   sizes: ProductSize[];
   tiers: PriceTier[];
   basePriceCents: number | null;
+  transferPriceCents?: number;
 };
 
 function euro(c: number): string {
@@ -34,7 +35,6 @@ function findTier(tiers: PriceTier[], qty: number): PriceTier | null {
 }
 
 // Transfer (DTF) fiyatı — sabit, taraf başına
-const TRANSFER_PRICE_CENTS = 900; // 9,00 € pro Seite (Vorder-/Rückseite)
 
 export default function DetailOrderForm({
   productId,
@@ -45,6 +45,7 @@ export default function DetailOrderForm({
   sizes,
   tiers,
   basePriceCents,
+  transferPriceCents = 900,
 }: Props) {
   const { addOrUpdate, has } = useMerkliste();
   const { addItem: addToCart } = useCart();
@@ -88,7 +89,7 @@ export default function DetailOrderForm({
 
   // Transfer maliyeti: her taraf için 9€
   const transferSidesCount = (designs.front ? 1 : 0) + (designs.back ? 1 : 0);
-  const transferCostCents = transferEnabled ? transferSidesCount * TRANSFER_PRICE_CENTS : 0;
+  const transferCostCents = transferEnabled ? transferSidesCount * transferPriceCents : 0;
 
   // Galery'deki renk butonlarından gelen event'i dinle - state'i güncelle
   useEffect(() => {
@@ -361,7 +362,7 @@ export default function DetailOrderForm({
           <span className="det-transfer-title">Personalisierungstechnik auswählen</span>
           {transferSidesCount > 0 && (
             <span className="det-transfer-badge">
-              {transferSidesCount} × {euro(TRANSFER_PRICE_CENTS)} €
+              {transferSidesCount} × {euro(transferPriceCents)} €
             </span>
           )}
         </div>
@@ -380,7 +381,7 @@ export default function DetailOrderForm({
               Transfer <span className="det-transfer-tech">(DTF-Druck)</span>
             </span>
             <span className="det-transfer-desc">
-              Hochwertiger Textiltransfer · {euro(TRANSFER_PRICE_CENTS)} € pro Seite
+              Hochwertiger Textiltransfer · {euro(transferPriceCents)} € pro Seite
             </span>
           </span>
         </label>
@@ -402,7 +403,7 @@ export default function DetailOrderForm({
                       <span className="det-transfer-side-dot" />
                       Vorderseite
                     </span>
-                    <span className="det-transfer-side-price">{euro(TRANSFER_PRICE_CENTS)} €</span>
+                    <span className="det-transfer-side-price">{euro(transferPriceCents)} €</span>
                   </div>
                 )}
                 {designs.back && (
@@ -411,7 +412,7 @@ export default function DetailOrderForm({
                       <span className="det-transfer-side-dot" />
                       Rückseite
                     </span>
-                    <span className="det-transfer-side-price">{euro(TRANSFER_PRICE_CENTS)} €</span>
+                    <span className="det-transfer-side-price">{euro(transferPriceCents)} €</span>
                   </div>
                 )}
                 <div className="det-transfer-side-row det-transfer-side-total">

@@ -16,6 +16,7 @@ import { getDictionary } from "@/dictionaries";
 import DetailOrderForm from "@/components/DetailOrderForm";
 import ProductDetailTabs, { type DetailTab } from "@/components/ProductDetailTabs";
 import { CARE_SYMBOLS } from "@/lib/care-symbols";
+import { getShopConfig } from "@/app/admin/(panel)/settings/shop-config-actions";
 
 export const dynamic = "force-dynamic";
 
@@ -97,6 +98,8 @@ export default async function ProductDetailPage({
   const materials = split(product.material);
   const tiers = parsePriceTiers(product.priceTiers);
   const sizesList = parseSizes(product.sizes);
+  const shopConfig = await getShopConfig();
+  const transferPriceCents = shopConfig.shipping.transferPriceCents ?? 900;
 
   // Renk başına görseller (JSON: { "weiß": ["url1","url2"], "schwarz": ["url3"] })
   let colorImages: Record<string, string[]> = {};
@@ -282,6 +285,7 @@ export default async function ProductDetailPage({
                 sizes={sizesList}
                 tiers={tiers}
                 basePriceCents={product.priceCents}
+                transferPriceCents={transferPriceCents}
               />
 
               {/* Mengenstaffel-Tabelle (eski yeri: Material altında) */}
