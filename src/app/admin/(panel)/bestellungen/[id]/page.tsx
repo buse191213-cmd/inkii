@@ -154,16 +154,16 @@ export default async function OrderDetailPage({
                               frontMockup?: string | null; backMockup?: string | null;
                             } = {};
                             try { d = JSON.parse(item.dtfDesignUrl); } catch { /* ignore */ }
-                            const thumbs: Array<{ label: string; logo: string; mockup?: string | null; size?: { widthCm: number; heightCm: number } | null; file: string }> = [];
-                            if (d.front) thumbs.push({ label: "Vorderseite", logo: d.front, mockup: d.frontMockup, size: d.frontSize, file: `${item.productCode}-vorne.png` });
-                            if (d.back) thumbs.push({ label: "Rückseite", logo: d.back, mockup: d.backMockup, size: d.backSize, file: `${item.productCode}-hinten.png` });
+                            const thumbs: Array<{ label: string; logo: string; mockup?: string | null; size?: { widthCm: number; heightCm: number } | null; logoFile: string; mockupFile: string }> = [];
+                            if (d.front) thumbs.push({ label: "Vorderseite", logo: d.front, mockup: d.frontMockup, size: d.frontSize, logoFile: `${item.productCode}-vorne-logo.png`, mockupFile: `${item.productCode}-vorne-mockup.jpg` });
+                            if (d.back) thumbs.push({ label: "Rückseite", logo: d.back, mockup: d.backMockup, size: d.backSize, logoFile: `${item.productCode}-hinten-logo.png`, mockupFile: `${item.productCode}-hinten-mockup.jpg` });
                             if (thumbs.length === 0) return null;
                             return (
-                              <div style={{ display: "flex", gap: 12, marginTop: 8, flexWrap: "wrap" }}>
+                              <div style={{ display: "flex", gap: 14, marginTop: 8, flexWrap: "wrap" }}>
                                 {thumbs.map((t, i) => (
-                                  <div key={i} style={{ textAlign: "center" }}>
+                                  <div key={i} style={{ textAlign: "center", minWidth: 110 }}>
                                     <div style={{
-                                      width: 100, height: 100,
+                                      width: 110, height: 110,
                                       border: "1px solid #e3e6df", borderRadius: 8,
                                       background: "#fff", display: "flex",
                                       alignItems: "center", justifyContent: "center", overflow: "hidden",
@@ -171,22 +171,38 @@ export default async function OrderDetailPage({
                                       {/* eslint-disable-next-line @next/next/no-img-element */}
                                       <img src={t.mockup || t.logo} alt={t.label} style={{ maxWidth: "100%", maxHeight: "100%", objectFit: "contain" }} />
                                     </div>
-                                    <div style={{ fontSize: 10, fontWeight: 700, color: "#065f46", marginTop: 3 }}>{t.label}</div>
+                                    <div style={{ fontSize: 11, fontWeight: 700, color: "#065f46", marginTop: 4 }}>{t.label}</div>
                                     {t.size && (
                                       <div style={{ fontSize: 10, color: "#5a6660" }}>
                                         {t.size.widthCm.toLocaleString("de-DE")} × {t.size.heightCm.toLocaleString("de-DE")} cm
                                       </div>
                                     )}
-                                    <a
-                                      href={t.logo}
-                                      download={t.file}
-                                      style={{
-                                        display: "inline-block", marginTop: 4, fontSize: 10,
-                                        color: "#004537", fontWeight: 700, textDecoration: "underline",
-                                      }}
-                                    >
-                                      ⬇ Logo (Druckdatei)
-                                    </a>
+                                    <div style={{ display: "flex", flexDirection: "column", gap: 3, marginTop: 5 }}>
+                                      <a
+                                        href={t.logo}
+                                        download={t.logoFile}
+                                        style={{
+                                          fontSize: 10, color: "#fff", background: "#004537",
+                                          fontWeight: 700, textDecoration: "none",
+                                          padding: "5px 8px", borderRadius: 5,
+                                        }}
+                                      >
+                                        ⬇ Logo (Druck)
+                                      </a>
+                                      {t.mockup && (
+                                        <a
+                                          href={t.mockup}
+                                          download={t.mockupFile}
+                                          style={{
+                                            fontSize: 10, color: "#004537", background: "#fff",
+                                            border: "1px solid #004537", fontWeight: 700,
+                                            textDecoration: "none", padding: "5px 8px", borderRadius: 5,
+                                          }}
+                                        >
+                                          ⬇ Mockup
+                                        </a>
+                                      )}
+                                    </div>
                                   </div>
                                 ))}
                               </div>
