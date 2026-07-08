@@ -21,8 +21,49 @@ type Placement = {
 };
 
 const EMPTY: Omit<Placement, "imageDataUrl" | "imageAspect"> = {
-  x: 50, y: 50, width: 30, rotation: 0,
+  x: 50, y: 47, width: 30, rotation: 0,
 };
+
+// Print area — logo bu alanın dışına çıkamaz (% cinsinden)
+const PRINT_AREA = {
+  left: 28,
+  top: 22,
+  right: 72,
+  bottom: 72,
+};
+
+/**
+ * Design'ın boyutunu ve konumunu print area içinde kısıtla.
+ * width % (canvas width'e göre), aspect = img w/h.
+ * Canvas kare olduğu için: height_percent = width_percent / aspect
+ */
+function clampToPrintArea(x: number, y: number, width: number, aspect: number) {
+  const height = width / aspect;
+  const halfW = width / 2;
+  const halfH = height / 2;
+
+  // Boyut zaten print area'yı aşıyorsa küçült
+  const maxWidth = PRINT_AREA.right - PRINT_AREA.left;
+  const maxHeight = PRINT_AREA.bottom - PRINT_AREA.top;
+  let clampedWidth = width;
+  if (width > maxWidth) clampedWidth = maxWidth;
+  const clampedHeight = clampedWidth / aspect;
+  if (clampedHeight > maxHeight) clampedWidth = maxHeight * aspect;
+
+  const finalHalfW = clampedWidth / 2;
+  const finalHalfH = (clampedWidth / aspect) / 2;
+
+  const xMin = PRINT_AREA.left + finalHalfW;
+  const xMax = PRINT_AREA.right - finalHalfW;
+  const yMin = PRINT_AREA.top + finalHalfH;
+  const yMax = PRINT_AREA.bottom - finalHalfH;
+
+  return {
+    x: Math.max(xMin, Math.min(xMax, x)),
+    y: Math.max(yMin, Math.min(yMax, y)),
+    width: clampedWidth,
+  };
+}
 
 type Side = "front" | "back";
 
@@ -113,9 +154,20 @@ export default function ProductGallery({
       const img = new Image();
       img.onload = () => {
         const aspect = img.width / img.height;
+        // Print area'nın ortasına yerleştir
+        const centerX = (PRINT_AREA.left + PRINT_AREA.right) / 2;
+        const centerY = (PRINT_AREA.top + PRINT_AREA.bottom) / 2;
+        const clamped = clampToPrintArea(centerX, centerY, EMPTY.width, aspect);
         setDesigns((prev) => ({
           ...prev,
-          [side]: { ...EMPTY, imageDataUrl: dataUrl, imageAspect: aspect },
+          [side]: {
+            imageDataUrl: dataUrl,
+            imageAspect: aspect,
+            x: clamped.x,
+            y: clamped.y,
+            width: clamped.width,
+            rotation: 0,
+          },
         }));
       };
       img.src = dataUrl;
@@ -151,17 +203,25 @@ export default function ProductGallery({
       const dy = ((e.clientY - start.y) / canvas.height) * 100;
 
       if (start.mode === "move") {
-        const newX = Math.max(5, Math.min(95, start.startVal + dx));
-        const newY = Math.max(5, Math.min(95, start.startVal2 + dy));
+        const rawX = start.startVal + dx;
+        const rawY = start.startVal2 + dy;
+        const clamped = clampToPrintArea(rawX, rawY, currentDesign.width, currentDesign.imageAspect);
         setDesigns((prev) => ({
           ...prev,
-          [side]: prev[side] ? { ...prev[side]!, x: newX, y: newY } : null,
+          [side]: prev[side] ? { ...prev[side]!, x: clamped.x, y: clamped.y } : null,
         }));
       } else if (start.mode === "resize") {
-        const newWidth = Math.max(8, Math.min(80, start.startVal2 + (dx + dy) / 2));
+        const rawWidth = Math.max(8, start.startVal2 + (dx + dy) / 2);
+        // Boyut değişince pozisyonu da tekrar kontrol et
+        const clamped = clampToPrintArea(
+          currentDesign.x,
+          currentDesign.y,
+          rawWidth,
+          currentDesign.imageAspect
+        );
         setDesigns((prev) => ({
           ...prev,
-          [side]: prev[side] ? { ...prev[side]!, width: newWidth } : null,
+          [side]: prev[side] ? { ...prev[side]!, x: clamped.x, y: clamped.y, width: clamped.width } : null,
         }));
       }
     },
@@ -197,16 +257,26 @@ export default function ProductGallery({
 
   return (
     <div className="gallery">
-      {/* Side Tabs — Merchery style */}
+      {/* Side Tabs — Merchery style with design preview */}
       <div className="gal-tabs">
         <button
           type="button"
           className={`gal-tab${side === "front" ? " active" : ""}`}
           onClick={() => setSide("front")}
         >
-          <span className="gal-tab-icon">◐</span>
-          <span className="gal-tab-label">Vorderseite</span>
-          {designs.front && <span className="gal-tab-check">✓</span>}
+          <span className="gal-tab-content">
+            <span className="gal-tab-icon">◐</span>
+            <span className="gal-tab-label">Vorderseite</span>
+          </span>
+          {designs.front ? (
+            <span className="gal-tab-thumb" title="Aktuelles Design">
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img src={designs.front.imageDataUrl} alt="Design Vorderseite" />
+              <span className="gal-tab-thumb-check">✓</span>
+            </span>
+          ) : (
+            <span className="gal-tab-empty">+</span>
+          )}
         </button>
         <button
           type="button"
@@ -215,10 +285,23 @@ export default function ProductGallery({
           disabled={!hasBack}
           title={!hasBack ? "Kein Rückseiten-Bild verfügbar" : undefined}
         >
-          <span className="gal-tab-icon">◑</span>
-          <span className="gal-tab-label">Rückseite</span>
-          {designs.back && <span className="gal-tab-check">✓</span>}
-          {!hasBack && <span className="gal-tab-lock">🔒</span>}
+          <span className="gal-tab-content">
+            <span className="gal-tab-icon">◑</span>
+            <span className="gal-tab-label">Rückseite</span>
+          </span>
+          {hasBack ? (
+            designs.back ? (
+              <span className="gal-tab-thumb" title="Aktuelles Design">
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img src={designs.back.imageDataUrl} alt="Design Rückseite" />
+                <span className="gal-tab-thumb-check">✓</span>
+              </span>
+            ) : (
+              <span className="gal-tab-empty">+</span>
+            )
+          ) : (
+            <span className="gal-tab-lock" title="Kein Rückseiten-Bild">🔒</span>
+          )}
         </button>
       </div>
 
@@ -245,6 +328,22 @@ export default function ProductGallery({
           <img src={activeImage} alt={`${name} — ${side === "front" ? "Vorderseite" : "Rückseite"}`} draggable={false} />
         ) : (
           <div className="gallery-empty"><ProductIcon name={iconName} /></div>
+        )}
+
+        {/* Print area — logo bu alan içinde kalmalı */}
+        {activeImage && (
+          <div
+            className={`gal-print-area${currentDesign ? " has-design" : ""}`}
+            style={{
+              left: `${PRINT_AREA.left}%`,
+              top: `${PRINT_AREA.top}%`,
+              width: `${PRINT_AREA.right - PRINT_AREA.left}%`,
+              height: `${PRINT_AREA.bottom - PRINT_AREA.top}%`,
+            }}
+            aria-hidden
+          >
+            <span className="gal-print-label">Druckbereich</span>
+          </div>
         )}
 
         {/* Design overlay */}
@@ -356,60 +455,141 @@ export default function ProductGallery({
       <style jsx>{`
         .gal-tabs {
           display: flex;
-          gap: 6px;
+          gap: 8px;
           margin-bottom: 10px;
-          background: #fafbf9;
-          padding: 4px;
-          border-radius: 6px;
-          border: 1px solid #e3e6df;
         }
         .gal-tab {
           flex: 1;
-          background: transparent;
-          border: none;
-          padding: 10px 12px;
-          font-size: 0.9rem;
-          font-weight: 600;
-          color: #5a6660;
+          background: #fff;
+          border: 1px solid #e3e6df;
+          padding: 8px 10px;
           cursor: pointer;
-          border-radius: 4px;
+          border-radius: 6px;
           display: flex;
           align-items: center;
-          justify-content: center;
-          gap: 8px;
+          justify-content: space-between;
+          gap: 10px;
           transition: all 0.15s;
-          letter-spacing: 0.2px;
           position: relative;
+          font-family: inherit;
         }
         .gal-tab:hover:not(.disabled):not(.active) {
-          background: #fff;
-          color: #0f1a16;
+          border-color: #0f1a16;
+          transform: translateY(-1px);
+          box-shadow: 0 4px 10px rgba(0,0,0,0.06);
         }
         .gal-tab.active {
           background: #0f1a16;
           color: #fff;
-          box-shadow: 0 2px 6px rgba(0,0,0,0.12);
+          border-color: #0f1a16;
+          box-shadow: 0 4px 10px rgba(0,0,0,0.12);
         }
         .gal-tab.disabled {
           opacity: 0.5;
           cursor: not-allowed;
+          background: #fafbf9;
+        }
+        .gal-tab-content {
+          display: flex;
+          align-items: center;
+          gap: 8px;
+          text-align: left;
+          font-size: 0.85rem;
+          font-weight: 600;
+          color: inherit;
         }
         .gal-tab-icon { font-size: 1.1rem; opacity: 0.75; }
-        .gal-tab-label { letter-spacing: 0.5px; }
-        .gal-tab-check {
+        .gal-tab-label { letter-spacing: 0.3px; }
+        .gal-tab-thumb {
+          position: relative;
+          width: 42px;
+          height: 42px;
+          background: #f4f5f1;
+          border: 1px solid #e3e6df;
+          border-radius: 4px;
+          overflow: hidden;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          flex-shrink: 0;
+        }
+        .gal-tab.active .gal-tab-thumb {
+          background: rgba(255,255,255,0.1);
+          border-color: rgba(255,255,255,0.3);
+        }
+        .gal-tab-thumb img {
+          max-width: 100%;
+          max-height: 100%;
+          object-fit: contain;
+          padding: 3px;
+        }
+        .gal-tab-thumb-check {
+          position: absolute;
+          top: -4px;
+          right: -4px;
           background: #10b981;
           color: #fff;
-          font-size: 0.55rem;
-          width: 16px;
-          height: 16px;
+          width: 14px;
+          height: 14px;
           border-radius: 50%;
           display: flex;
           align-items: center;
           justify-content: center;
+          font-size: 0.55rem;
           font-weight: 700;
-          margin-left: 4px;
+          border: 2px solid #fff;
         }
-        .gal-tab-lock { font-size: 0.7rem; opacity: 0.7; margin-left: 4px; }
+        .gal-tab.active .gal-tab-thumb-check {
+          border-color: #0f1a16;
+        }
+        .gal-tab-empty {
+          width: 42px;
+          height: 42px;
+          background: #fafbf9;
+          border: 1px dashed #c9ced2;
+          border-radius: 4px;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          font-size: 1.2rem;
+          color: #9ca3af;
+          font-weight: 400;
+          flex-shrink: 0;
+        }
+        .gal-tab.active .gal-tab-empty {
+          background: rgba(255,255,255,0.1);
+          border-color: rgba(255,255,255,0.4);
+          color: rgba(255,255,255,0.6);
+        }
+        .gal-tab-lock {
+          font-size: 0.9rem;
+          opacity: 0.7;
+        }
+        /* Print area — logo bu alan içinde kalmalı */
+        .gal-print-area {
+          position: absolute;
+          border: 1.5px dashed rgba(94, 132, 112, 0.4);
+          border-radius: 2px;
+          pointer-events: none;
+          transition: opacity 0.2s, border-color 0.2s;
+          z-index: 3;
+        }
+        .gal-print-area.has-design {
+          border-color: rgba(94, 132, 112, 0.65);
+        }
+        .gal-print-label {
+          position: absolute;
+          top: -20px;
+          left: 0;
+          font-size: 0.6rem;
+          font-weight: 700;
+          color: rgba(94, 132, 112, 0.85);
+          text-transform: uppercase;
+          letter-spacing: 0.15em;
+          background: #fff;
+          padding: 2px 6px;
+          border-radius: 2px;
+        }
         .gal-status {
           display: flex;
           align-items: center;
