@@ -383,8 +383,7 @@ export default function DetailOrderForm({
           </div>
           {transferCostCents > 0 && (
             <div className="det-staffel-transfer-note">
-              inkl. {euro(transferCostCents)} € Transfer / Stück
-              ({[designs.front ? "Vorne" : null, designs.back ? "Hinten" : null].filter(Boolean).join(" + ")})
+              Preise inkl. Transfer ({[designs.front ? "Vorne" : null, designs.back ? "Hinten" : null].filter(Boolean).join(" + ")})
             </div>
           )}
         </div>
@@ -394,11 +393,6 @@ export default function DetailOrderForm({
       <div className="det-transfer">
         <div className="det-transfer-head">
           <span className="det-transfer-title">Personalisierungstechnik auswählen</span>
-          {transferSidesCount > 0 && (
-            <span className="det-transfer-badge">
-              {transferSidesCount} × {euro(transferPriceCents)} €
-            </span>
-          )}
         </div>
 
         <label className={`det-transfer-option${transferEnabled ? " active" : ""}`}>
@@ -415,7 +409,7 @@ export default function DetailOrderForm({
               Transfer <span className="det-transfer-tech">(DTF-Druck)</span>
             </span>
             <span className="det-transfer-desc">
-              Hochwertiger Textiltransfer · {euro(transferPriceCents)} € pro Seite
+              Hochwertiger Textiltransfer für langlebige Motive
             </span>
           </span>
         </label>
@@ -437,7 +431,7 @@ export default function DetailOrderForm({
                       <span className="det-transfer-side-dot" />
                       Vorderseite
                     </span>
-                    <span className="det-transfer-side-price">{euro(transferPriceCents)} €</span>
+                    <span className="det-transfer-side-check" aria-hidden>✓</span>
                   </div>
                 )}
                 {designs.back && (
@@ -446,13 +440,9 @@ export default function DetailOrderForm({
                       <span className="det-transfer-side-dot" />
                       Rückseite
                     </span>
-                    <span className="det-transfer-side-price">{euro(transferPriceCents)} €</span>
+                    <span className="det-transfer-side-check" aria-hidden>✓</span>
                   </div>
                 )}
-                <div className="det-transfer-side-row det-transfer-side-total">
-                  <span>Transfer gesamt (pro Stück)</span>
-                  <span>{euro(transferCostCents)} €</span>
-                </div>
               </>
             )}
           </div>
@@ -465,14 +455,27 @@ export default function DetailOrderForm({
           <span className="det-order-total-lbl">Gesamtmenge</span>
           <span className="det-order-total-val">{totalQty} Stück</span>
         </div>
-        {subtotalCents != null && totalQty > 0 && (
-          <div>
-            <span className="det-order-total-lbl">Voraussichtl. Summe</span>
-            <span className="det-order-total-val">
-              €{euro(subtotalCents + transferCostCents * totalQty)}
-            </span>
-          </div>
-        )}
+        {subtotalCents != null && totalQty > 0 && (() => {
+          const nettoCents = subtotalCents + transferCostCents * totalQty;
+          const mwstCents = Math.round(nettoCents * 0.19);
+          const bruttoCents = nettoCents + mwstCents;
+          return (
+            <div className="det-order-total-price">
+              <div className="det-order-price-row">
+                <span className="det-order-price-lbl">Netto</span>
+                <span className="det-order-price-val">€{euro(nettoCents)}</span>
+              </div>
+              <div className="det-order-price-row det-order-price-mwst">
+                <span className="det-order-price-lbl">zzgl. 19% MwSt.</span>
+                <span className="det-order-price-val">€{euro(mwstCents)}</span>
+              </div>
+              <div className="det-order-price-row det-order-price-brutto">
+                <span className="det-order-price-lbl">Gesamt (inkl. MwSt.)</span>
+                <span className="det-order-price-val">€{euro(bruttoCents)}</span>
+              </div>
+            </div>
+          );
+        })()}
       </div>
 
       {/* Anmerkungen */}

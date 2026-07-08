@@ -158,8 +158,8 @@ export default async function ProductDetailPage({
                   ? Math.min(...tiers.map((t) => t.cents))
                   : null;
                 const displayCents = product.priceCents ?? lowestTierCents;
-                // "ab" prefix SADECE priceCents yoksa ve tier'lar varsa göster
-                const showFromPrefix = product.priceCents == null && tiers.length > 0;
+                // "ab" prefix — Mengenstaffel varsa (fiyat adete göre düşer) göster
+                const showFromPrefix = tiers.length > 0;
 
                 if (displayCents == null || displayCents === 0) {
                   return (
@@ -227,17 +227,14 @@ export default async function ProductDetailPage({
                 );
               })()}
               <p style={{ fontSize: 11, color: "#94a3b8", marginTop: 2, marginBottom: 16 }}>
-                Alle Preise zzgl. MwSt. und Versand
+                Alle Preise zzgl. gesetzl. MwSt. und Versand
               </p>
 
               <p className="mm-detail-meta">
                 Produktionszeit: <strong>Auf Anfrage</strong> · exkl. Versand
               </p>
 
-              {/* Ihr Design hochladen — Fiyat ile Details arasında sekme görünümü */}
-              <DesignUploadTabs />
-
-              {/* ÜBERSICHT + DETAILS tabs yan yana */}
+              {/* ÜBERSICHT + DETAILS tabs yan yana — fiyatın hemen altında */}
               {(() => {
                 const tabs: DetailTab[] = [];
                 if (product.description) {
@@ -273,6 +270,9 @@ export default async function ProductDetailPage({
 
                 return <ProductDetailTabs tabs={tabs} />;
               })()}
+
+              {/* Ihr Design hochladen — Details'ten sonra, sipariş formundan önce */}
+              <DesignUploadTabs />
 
               {/* Sipariş formu */}
               <DetailOrderForm
