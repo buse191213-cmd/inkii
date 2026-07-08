@@ -326,7 +326,7 @@ export default function KasseClient({ paymentMethods, shipping, prefill, isLogge
 
   return (
     <section style={{ maxWidth: 1200, margin: "0 auto", padding: "40px 28px" }}>
-      <CheckoutSteps current={isLoggedIn ? "versand" : "anmelden"} isLoggedIn={isLoggedIn} />
+      <CheckoutSteps current="zahlung" isLoggedIn={isLoggedIn} />
       <h1 style={{ fontSize: "2rem", fontWeight: 700, marginBottom: 12 }}>Kasse</h1>
 
       {!isLoggedIn && (

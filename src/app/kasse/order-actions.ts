@@ -215,16 +215,27 @@ export async function createOrder(
       const itemsHtml = input.items
         .map(
           (i) => {
-            // Design görüntülerini çıkar (JSON {front, back})
+            // Design görüntülerini çıkar (JSON {front, back, frontSize, backSize})
             let designImgs = "";
             if (i.hasDtf && i.dtfDesignUrl) {
               try {
-                const d = JSON.parse(i.dtfDesignUrl) as { front?: string | null; back?: string | null };
+                const d = JSON.parse(i.dtfDesignUrl) as {
+                  front?: string | null; back?: string | null;
+                  frontSize?: { widthCm: number; heightCm: number } | null;
+                  backSize?: { widthCm: number; heightCm: number } | null;
+                };
+                const buildThumb = (url: string, label: string, size?: { widthCm: number; heightCm: number } | null, filename?: string) => {
+                  const sizeStr = size
+                    ? `<br><span style="font-size:9px;color:#5a6660;">${size.widthCm.toLocaleString("de-DE")} × ${size.heightCm.toLocaleString("de-DE")} cm</span>`
+                    : "";
+                  const dl = `<br><a href="${url}" download="${filename || "design.png"}" style="font-size:9px;color:#004537;font-weight:700;">⬇ Herunterladen</a>`;
+                  return `<div style="display:inline-block;text-align:center;margin-right:12px;vertical-align:top;"><img src="${url}" alt="${label}" style="width:80px;height:80px;object-fit:contain;border:1px solid #d1fae5;border-radius:6px;background:#f0fdf4;" /><br><span style="font-size:10px;color:#065f46;font-weight:600;">${label}</span>${sizeStr}${dl}</div>`;
+                };
                 const thumbs: string[] = [];
-                if (d.front) thumbs.push(`<div style="display:inline-block;text-align:center;margin-right:8px;"><img src="${d.front}" alt="Vorne" style="width:60px;height:60px;object-fit:contain;border:1px solid #d1fae5;border-radius:6px;background:#f0fdf4;" /><br><span style="font-size:10px;color:#065f46;font-weight:600;">Vorne</span></div>`);
-                if (d.back) thumbs.push(`<div style="display:inline-block;text-align:center;"><img src="${d.back}" alt="Hinten" style="width:60px;height:60px;object-fit:contain;border:1px solid #d1fae5;border-radius:6px;background:#f0fdf4;" /><br><span style="font-size:10px;color:#065f46;font-weight:600;">Hinten</span></div>`);
+                if (d.front) thumbs.push(buildThumb(d.front, "Vorderseite", d.frontSize, `${i.productCode}-vorne.png`));
+                if (d.back) thumbs.push(buildThumb(d.back, "Rückseite", d.backSize, `${i.productCode}-hinten.png`));
                 if (thumbs.length > 0) {
-                  designImgs = `<div style="margin-top:8px;">${thumbs.join("")}</div>`;
+                  designImgs = `<div style="margin-top:10px;">${thumbs.join("")}</div>`;
                 }
               } catch { /* ignore */ }
             }

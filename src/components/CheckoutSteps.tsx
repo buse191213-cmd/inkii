@@ -11,13 +11,12 @@ type Step = { key: string; label: string };
 const ALL_STEPS: Step[] = [
   { key: "warenkorb", label: "Warenkorb" },
   { key: "anmelden", label: "Anmelden" },
-  { key: "versand", label: "Versand" },
-  { key: "pruefung", label: "Überprüfung" },
   { key: "zahlung", label: "Zahlung" },
+  { key: "bestaetigung", label: "Bestätigung" },
 ];
 
 type Props = {
-  current: "warenkorb" | "anmelden" | "versand" | "pruefung" | "zahlung";
+  current: "warenkorb" | "anmelden" | "zahlung" | "bestaetigung";
   isLoggedIn?: boolean;
 };
 

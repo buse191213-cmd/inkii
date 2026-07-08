@@ -143,9 +143,54 @@ export default async function OrderDetailPage({
                           </div>
                           {item.hasDtf && (
                             <div style={{ fontSize: 11, color: "#0d9488", marginTop: 2 }}>
-                              + DTF {item.dtfSize} ({euro(item.dtfPriceCents)} €)
+                              + Transfer{item.dtfSize ? ` (${item.dtfSize})` : ""} ({euro(item.dtfPriceCents)} €)
                             </div>
                           )}
+                          {item.hasDtf && item.dtfDesignUrl && (() => {
+                            let d: {
+                              front?: string | null; back?: string | null;
+                              frontSize?: { widthCm: number; heightCm: number } | null;
+                              backSize?: { widthCm: number; heightCm: number } | null;
+                            } = {};
+                            try { d = JSON.parse(item.dtfDesignUrl); } catch { /* ignore */ }
+                            const thumbs: Array<{ label: string; url: string; size?: { widthCm: number; heightCm: number } | null; file: string }> = [];
+                            if (d.front) thumbs.push({ label: "Vorderseite", url: d.front, size: d.frontSize, file: `${item.productCode}-vorne.png` });
+                            if (d.back) thumbs.push({ label: "Rückseite", url: d.back, size: d.backSize, file: `${item.productCode}-hinten.png` });
+                            if (thumbs.length === 0) return null;
+                            return (
+                              <div style={{ display: "flex", gap: 12, marginTop: 8, flexWrap: "wrap" }}>
+                                {thumbs.map((t, i) => (
+                                  <div key={i} style={{ textAlign: "center" }}>
+                                    <div style={{
+                                      width: 88, height: 88,
+                                      border: "1px solid #d1fae5", borderRadius: 8,
+                                      background: "#f0fdf4", display: "flex",
+                                      alignItems: "center", justifyContent: "center", overflow: "hidden",
+                                    }}>
+                                      {/* eslint-disable-next-line @next/next/no-img-element */}
+                                      <img src={t.url} alt={t.label} style={{ maxWidth: "100%", maxHeight: "100%", objectFit: "contain", padding: 4 }} />
+                                    </div>
+                                    <div style={{ fontSize: 10, fontWeight: 700, color: "#065f46", marginTop: 3 }}>{t.label}</div>
+                                    {t.size && (
+                                      <div style={{ fontSize: 10, color: "#5a6660" }}>
+                                        {t.size.widthCm.toLocaleString("de-DE")} × {t.size.heightCm.toLocaleString("de-DE")} cm
+                                      </div>
+                                    )}
+                                    <a
+                                      href={t.url}
+                                      download={t.file}
+                                      style={{
+                                        display: "inline-block", marginTop: 4, fontSize: 10,
+                                        color: "#004537", fontWeight: 700, textDecoration: "underline",
+                                      }}
+                                    >
+                                      ⬇ Herunterladen
+                                    </a>
+                                  </div>
+                                ))}
+                              </div>
+                            );
+                          })()}
                         </div>
                       </td>
                       <td style={{ ...td, textAlign: "right" }}>{item.quantity}</td>
