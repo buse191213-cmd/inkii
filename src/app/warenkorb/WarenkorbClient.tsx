@@ -61,7 +61,7 @@ export default function WarenkorbClient({ t, tSteps }: Props) {
   }
 
   return (
-    <section style={{ maxWidth: 1200, margin: "0 auto", padding: "40px 28px" }}>
+    <section className="cart-section" style={{ maxWidth: 1200, margin: "0 auto", padding: "40px 28px" }}>
       <CheckoutSteps current="warenkorb" labels={tSteps} />
       <h1 style={{ fontSize: "2rem", fontWeight: 700, marginBottom: 24 }}>
         {t.title} <span style={{ color: "#64748b", fontWeight: 400, fontSize: "1.2rem" }}>({items.length})</span>
@@ -73,6 +73,7 @@ export default function WarenkorbClient({ t, tSteps }: Props) {
           {items.map((item) => (
             <div
               key={item.id}
+              className="cart-item-row"
               style={{
                 display: "grid",
                 gridTemplateColumns: "160px 1fr auto",
@@ -83,6 +84,7 @@ export default function WarenkorbClient({ t, tSteps }: Props) {
               }}
             >
               <div
+                className="cart-item-img"
                 style={{
                   width: 160,
                   height: 160,
@@ -268,7 +270,7 @@ export default function WarenkorbClient({ t, tSteps }: Props) {
                 )}
               </div>
 
-              <div style={{ textAlign: "right" }}>
+              <div className="cart-item-price" style={{ textAlign: "right" }}>
                 <div style={{ fontWeight: 600, fontSize: 15 }}>
                   {euro(cartItemTotalCents(item))} €
                 </div>
@@ -489,6 +491,30 @@ export default function WarenkorbClient({ t, tSteps }: Props) {
         @media (max-width: 800px) {
           :global(.cart-layout) {
             grid-template-columns: 1fr !important;
+          }
+        }
+        @media (max-width: 600px) {
+          :global(.cart-section) {
+            padding: 24px 14px !important;
+          }
+          :global(.cart-item-row) {
+            grid-template-columns: 100px 1fr !important;
+            gap: 14px !important;
+            padding: 16px 0 !important;
+          }
+          :global(.cart-item-img) {
+            width: 100px !important;
+            height: 100px !important;
+          }
+          :global(.cart-item-price) {
+            grid-column: 1 / -1 !important;
+            text-align: left !important;
+            display: flex !important;
+            justify-content: space-between !important;
+            align-items: baseline !important;
+            padding-top: 8px !important;
+            border-top: 1px dashed #e5e7eb;
+            margin-top: 4px;
           }
         }
       `}</style>
