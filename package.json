@@ -17,7 +17,6 @@
   "dependencies": {
     "@paypal/react-paypal-js": "^8.8.1",
     "@prisma/client": "^6.19.3",
-    "@imgly/background-removal": "^1.5.5",
     "@tiptap/extension-link": "^3.23.5",
     "@tiptap/react": "^3.23.5",
     "@tiptap/starter-kit": "^3.23.5",

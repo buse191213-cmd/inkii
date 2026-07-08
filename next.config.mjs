@@ -7,17 +7,9 @@ const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const nextConfig = {
   reactStrictMode: true,
   outputFileTracingRoot: __dirname,
-  serverExternalPackages: ["sharp", "potrace", "imagetracerjs", "archiver", "pdfkit", "@imgly/background-removal", "onnxruntime-web"],
+  serverExternalPackages: ["sharp", "potrace", "imagetracerjs", "archiver", "pdfkit"],
   experimental: {
     serverActions: { bodySizeLimit: "20mb" },
-  },
-  // WASM ve worker desteği için (onnxruntime-web ve @imgly için)
-  webpack: (config, { isServer }) => {
-    config.experiments = { ...config.experiments, asyncWebAssembly: true, layers: true };
-    if (!isServer) {
-      config.resolve.fallback = { ...config.resolve.fallback, fs: false, path: false, crypto: false };
-    }
-    return config;
   },
   // next/image için Vercel Blob domain'i izin ver
   images: {

@@ -79,38 +79,121 @@ function getRealSize(widthPercent: number, aspect: number) {
  * Gerçek AI ile arka plan kaldırma (@imgly/background-removal).
  * Dynamic import ile lazy-load: ilk kullanımda ~40MB model indirilir, sonra cache.
  */
+/**
+ * Arka plan kaldırma — kenar-örneklemeli flood-fill.
+ * Logo içindeki beyazları korur, sadece dışarıdan bağlı arka planı temizler.
+ * @imgly denendi ama onnxruntime uyumsuzlukları nedeniyle stabil değildi.
+ */
 async function removeWhiteBackground(dataUrl: string): Promise<string> {
-  try {
-    // Dynamic import (bundle'a eklenmez, sadece kullanıldığında yüklenir)
-    const { removeBackground } = await import("@imgly/background-removal");
+  return new Promise((resolve, reject) => {
+    const img = new window.Image();
+    img.onload = () => {
+      try {
+        const canvas = document.createElement("canvas");
+        canvas.width = img.width;
+        canvas.height = img.height;
+        const ctx = canvas.getContext("2d", { willReadFrequently: true });
+        if (!ctx) { reject(new Error("Canvas context error")); return; }
+        ctx.drawImage(img, 0, 0);
 
-    // dataUrl -> Blob
-    const response = await fetch(dataUrl);
-    const inputBlob = await response.blob();
+        const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+        const data = imageData.data;
+        const w = canvas.width;
+        const h = canvas.height;
+        const total = w * h;
 
-    console.log("[BG Remove] AI model wird geladen (erstmalig ~40MB, dann cached)...");
+        // Köşe piksellerinden arka plan referans rengini al (ortalama)
+        const corners = [
+          0,                    // sol üst
+          (w - 1),              // sağ üst
+          (h - 1) * w,          // sol alt
+          (h - 1) * w + (w - 1),// sağ alt
+        ];
+        let refR = 0, refG = 0, refB = 0;
+        for (const c of corners) {
+          refR += data[c * 4];
+          refG += data[c * 4 + 1];
+          refB += data[c * 4 + 2];
+        }
+        refR /= 4; refG /= 4; refB /= 4;
 
-    // AI ile arka plan kaldır
-    const resultBlob = await removeBackground(inputBlob, {
-      output: {
-        format: "image/png",
-        quality: 0.9,
-      },
-    });
+        console.log(`[BG Remove] Referans arka plan rengi: rgb(${refR.toFixed(0)}, ${refG.toFixed(0)}, ${refB.toFixed(0)})`);
 
-    console.log("[BG Remove] AI process complete");
+        // Renk mesafesi toleransı — referans renge yakın olan pikseller arka plan
+        const TOLERANCE = 45;
+        const colorDist = (idx: number): number => {
+          const i = idx * 4;
+          const dr = data[i] - refR;
+          const dg = data[i + 1] - refG;
+          const db = data[i + 2] - refB;
+          return Math.sqrt(dr * dr + dg * dg + db * db);
+        };
 
-    // Blob -> dataUrl
-    return await new Promise<string>((resolve, reject) => {
-      const reader = new FileReader();
-      reader.onload = () => resolve(reader.result as string);
-      reader.onerror = () => reject(new Error("Blob konvertierung fehlgeschlagen"));
-      reader.readAsDataURL(resultBlob);
-    });
-  } catch (err) {
-    console.error("[BG Remove] Error:", err);
-    throw err;
-  }
+        const isBg = (idx: number): boolean => colorDist(idx) < TOLERANCE;
+
+        const visited = new Uint8Array(total);
+        const queue = new Int32Array(total);
+        let queueEnd = 0;
+        let queueStart = 0;
+
+        // Kenar seed'leri
+        for (let x = 0; x < w; x++) {
+          if (isBg(x) && !visited[x]) { visited[x] = 1; queue[queueEnd++] = x; }
+          const b = (h - 1) * w + x;
+          if (isBg(b) && !visited[b]) { visited[b] = 1; queue[queueEnd++] = b; }
+        }
+        for (let y = 0; y < h; y++) {
+          const l = y * w;
+          if (isBg(l) && !visited[l]) { visited[l] = 1; queue[queueEnd++] = l; }
+          const r = y * w + (w - 1);
+          if (isBg(r) && !visited[r]) { visited[r] = 1; queue[queueEnd++] = r; }
+        }
+
+        // BFS flood-fill
+        while (queueStart < queueEnd) {
+          const p = queue[queueStart++];
+          const x = p % w;
+          const y = (p / w) | 0;
+          if (x > 0) { const n = p - 1; if (!visited[n] && isBg(n)) { visited[n] = 1; queue[queueEnd++] = n; } }
+          if (x < w - 1) { const n = p + 1; if (!visited[n] && isBg(n)) { visited[n] = 1; queue[queueEnd++] = n; } }
+          if (y > 0) { const n = p - w; if (!visited[n] && isBg(n)) { visited[n] = 1; queue[queueEnd++] = n; } }
+          if (y < h - 1) { const n = p + w; if (!visited[n] && isBg(n)) { visited[n] = 1; queue[queueEnd++] = n; } }
+        }
+
+        console.log(`[BG Remove] ${queueEnd} / ${total} piksel arka plan (${((queueEnd / total) * 100).toFixed(1)}%)`);
+
+        // Transparanlaştır
+        for (let i = 0; i < total; i++) {
+          if (visited[i]) data[i * 4 + 3] = 0;
+        }
+
+        // Kenar yumuşatma — sınırdaki yarı-arka plan pikselleri
+        for (let y = 1; y < h - 1; y++) {
+          for (let x = 1; x < w - 1; x++) {
+            const p = y * w + x;
+            if (visited[p]) continue;
+            const anyBg = visited[p - 1] || visited[p + 1] || visited[p - w] || visited[p + w];
+            if (anyBg) {
+              const dist = colorDist(p);
+              // Referansa yakınsa (ama tam eşik altında) → kısmi şeffaf
+              if (dist < TOLERANCE * 1.8) {
+                const ratio = Math.min(dist / (TOLERANCE * 1.8), 1);
+                data[p * 4 + 3] = Math.round(data[p * 4 + 3] * ratio);
+              }
+            }
+          }
+        }
+
+        ctx.putImageData(imageData, 0, 0);
+        resolve(canvas.toDataURL("image/png"));
+      } catch (err) {
+        console.error("[BG Remove] Error:", err);
+        reject(err);
+      }
+    };
+    img.onerror = () => reject(new Error("Image konnte nicht geladen werden"));
+    img.src = dataUrl;
+  });
 }
 
 /**
