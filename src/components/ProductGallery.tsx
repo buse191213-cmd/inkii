@@ -29,10 +29,10 @@ const EMPTY: Omit<Placement, "imageDataUrl" | "originalImageDataUrl" | "imageAsp
 
 // Print area — logo bu alanın dışına çıkamaz (% cinsinden) - dar ve kare
 const PRINT_AREA = {
-  left: 33,
-  top: 24,
-  right: 67,
-  bottom: 68,
+  left: 29,
+  top: 20,
+  right: 71,
+  bottom: 71,
 };
 
 /**
@@ -131,6 +131,7 @@ export default function ProductGallery({
   const fileInputRef = useRef<HTMLInputElement>(null);
   const dragRef = useRef<{ x: number; y: number; startVal: number; startVal2: number; mode: "move" | "resize" | null }>({ x: 0, y: 0, startVal: 0, startVal2: 0, mode: null });
   const [atBoundary, setAtBoundary] = useState(false);
+  const [isDragging, setIsDragging] = useState(false);
 
   const currentImages = useMemo(() => {
     if (activeColor && colorImages) {
@@ -253,6 +254,7 @@ export default function ProductGallery({
         startVal2: mode === "move" ? currentDesign.y : currentDesign.width,
         mode,
       };
+      setIsDragging(true);
     },
     [currentDesign]
   );
@@ -300,6 +302,7 @@ export default function ProductGallery({
   const handlePointerUp = useCallback((e: React.PointerEvent) => {
     dragRef.current.mode = null;
     setAtBoundary(false);
+    setIsDragging(false);
     try { (e.currentTarget as HTMLElement).releasePointerCapture(e.pointerId); } catch {}
   }, []);
 
@@ -397,7 +400,7 @@ export default function ProductGallery({
         {/* Print area — logo bu alan içinde kalmalı */}
         {activeImage && (
           <div
-            className={`gal-print-area${currentDesign ? " has-design" : ""}${atBoundary ? " at-boundary" : ""}`}
+            className={`gal-print-area${currentDesign ? " has-design" : ""}${atBoundary ? " at-boundary" : ""}${isDragging ? " is-dragging" : ""}`}
             style={{
               left: `${PRINT_AREA.left}%`,
               top: `${PRINT_AREA.top}%`,
@@ -407,6 +410,7 @@ export default function ProductGallery({
             aria-hidden
           >
             <span className="gal-print-label">Druckbereich</span>
+            <div className="gal-print-grid" aria-hidden />
           </div>
         )}
 
@@ -561,6 +565,48 @@ export default function ProductGallery({
           40% { transform: scale(1.005); }
           100% { transform: scale(1); }
         }
+        /* Grid overlay — sadece sürüklerken görünür */
+        .gal-print-grid {
+          position: absolute;
+          inset: 0;
+          opacity: 0;
+          pointer-events: none;
+          background-image:
+            linear-gradient(rgba(94, 132, 112, 0.35) 1px, transparent 1px),
+            linear-gradient(90deg, rgba(94, 132, 112, 0.35) 1px, transparent 1px);
+          background-size: 12% 12%;
+          background-position: 0 0;
+          transition: opacity 0.15s;
+        }
+        .gal-print-area.is-dragging .gal-print-grid {
+          opacity: 1;
+        }
+        /* Merkez çizgileri — kılavuz */
+        .gal-print-area.is-dragging::before,
+        .gal-print-area.is-dragging::after {
+          content: "";
+          position: absolute;
+          background: rgba(94, 132, 112, 0.55);
+          pointer-events: none;
+        }
+        .gal-print-area.is-dragging::before {
+          left: 50%;
+          top: 8%;
+          bottom: 8%;
+          width: 1px;
+          transform: translateX(-0.5px);
+        }
+        .gal-print-area.is-dragging::after {
+          top: 50%;
+          left: 8%;
+          right: 8%;
+          height: 1px;
+          transform: translateY(-0.5px);
+        }
+        .gal-print-area.is-dragging {
+          border-color: rgba(94, 132, 112, 0.7);
+          background: rgba(94, 132, 112, 0.04);
+        }
         .gal-print-label {
           position: absolute;
           top: -20px;
@@ -617,10 +663,13 @@ export default function ProductGallery({
           user-select: none;
           touch-action: none;
           z-index: 5;
+          outline: 1.5px dashed rgba(15, 26, 22, 0.35);
+          outline-offset: 2px;
+          transition: outline-color 0.15s, outline-width 0.15s;
         }
         .gal-design-layer:hover {
-          outline: 2px solid #5e8470;
-          outline-offset: 2px;
+          outline-color: rgba(94, 132, 112, 0.8);
+          outline-width: 2px;
         }
         .gal-design-img {
           width: 100%;
@@ -630,8 +679,8 @@ export default function ProductGallery({
         }
         .gal-handle {
           position: absolute;
-          width: 22px;
-          height: 22px;
+          width: 26px;
+          height: 26px;
           background: #0f1a16;
           color: #fff;
           border: 2px solid #fff;
@@ -640,16 +689,27 @@ export default function ProductGallery({
           align-items: center;
           justify-content: center;
           padding: 0;
-          font-size: 0.7rem;
-          box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+          font-size: 0.75rem;
+          box-shadow: 0 3px 8px rgba(0,0,0,0.35);
           cursor: nwse-resize;
+          z-index: 10;
         }
-        .gal-handle-br { bottom: -11px; right: -11px; }
+        .gal-handle-br {
+          bottom: -13px;
+          right: -13px;
+        }
         .gal-handle-remove {
-          top: -11px;
-          right: -11px;
+          top: -13px;
+          right: -13px;
           background: #dc2626;
           cursor: pointer;
+          font-size: 0.85rem;
+          font-weight: 700;
+          transition: background 0.15s, transform 0.15s;
+        }
+        .gal-handle-remove:hover {
+          background: #b91c1c;
+          transform: scale(1.1);
         }
         .gal-controls {
           position: absolute;
