@@ -75,7 +75,7 @@ function getRealSize(widthPercent: number, aspect: number) {
  * açık renkli pikseller = arka plan → şeffaflaştır.
  * Logo'nun içindeki izole beyazlar (bağlı olmadığı için) korunur.
  */
-async function removeWhiteBackground(dataUrl: string, threshold = 235): Promise<string> {
+async function removeWhiteBackground(dataUrl: string): Promise<string> {
   return new Promise((resolve, reject) => {
     const img = new window.Image();
     img.onload = () => {
@@ -93,31 +93,73 @@ async function removeWhiteBackground(dataUrl: string, threshold = 235): Promise<
         const h = canvas.height;
         const total = w * h;
 
+        // 4 KENARDAN örnekleyerek arka plan rengini/parlaklığını tespit et
+        // Bu adaptive threshold — kullanıcının logosuna göre otomatik ayarlanır
+        let edgeBrightSum = 0;
+        let edgeSampleCount = 0;
+        let edgeMinBrightness = 255;
+
+        const sampleEdge = (idx: number) => {
+          const i = idx * 4;
+          const r = data[i], g = data[i + 1], b = data[i + 2];
+          const brightness = (r + g + b) / 3;
+          edgeBrightSum += brightness;
+          edgeSampleCount++;
+          if (brightness < edgeMinBrightness) edgeMinBrightness = brightness;
+        };
+
+        // Üst ve alt kenar
+        for (let x = 0; x < w; x++) {
+          sampleEdge(x);              // top
+          sampleEdge((h - 1) * w + x); // bottom
+        }
+        // Sol ve sağ kenar
+        for (let y = 0; y < h; y++) {
+          sampleEdge(y * w);          // left
+          sampleEdge(y * w + (w - 1)); // right
+        }
+
+        const edgeAvg = edgeBrightSum / edgeSampleCount;
+
+        // Threshold: kenarların ortalamasından 30 aşağı, ama minimum 180
+        // Eğer kenarlar zaten çok açıksa (255 gibi) → threshold 225 civarı
+        // Eğer kenarlar orta parlaklıksa → daha agresif
+        const threshold = Math.max(180, Math.min(240, edgeAvg - 25));
+
+        console.log(`[BG Remove] Edge avg: ${edgeAvg.toFixed(1)}, min: ${edgeMinBrightness}, threshold: ${threshold.toFixed(1)}`);
+
+        // Eğer kenarlar zaten koyu ise (< 150), muhtemelen transparant PNG,
+        // arka plan yok — hiçbir şey yapma
+        if (edgeAvg < 150) {
+          console.log("[BG Remove] Edge avg too low, no bg to remove");
+          resolve(dataUrl);
+          return;
+        }
+
         // Bir pikselin "arka plan" olarak sayılıp sayılmayacağı
         const isBg = (idx: number): boolean => {
           const i = idx * 4;
           const r = data[i], g = data[i + 1], b = data[i + 2];
-          // Ortalama parlaklık AND düşük renk farkı (gri/beyaz benzeri)
-          const min = Math.min(r, g, b);
           const brightness = (r + g + b) / 3;
-          return brightness > threshold && min > threshold - 25;
+          // Renk saturasyonu düşük (gri/beyaz) VE parlak
+          const maxC = Math.max(r, g, b);
+          const minC = Math.min(r, g, b);
+          const saturation = maxC > 0 ? (maxC - minC) / maxC : 0;
+          return brightness > threshold && saturation < 0.15;
         };
 
         // Ziyaret edilen pikseller
         const visited = new Uint8Array(total);
-        // Queue (index array + cursor — shift() yavaş olduğu için)
         const queue = new Int32Array(total);
         let queueEnd = 0;
         let queueStart = 0;
 
-        // 4 kenarı seed olarak ekle
+        // 4 kenardaki tüm arka plan pikselleri seed
         for (let x = 0; x < w; x++) {
-          // Üst kenar
           if (isBg(x) && !visited[x]) {
             visited[x] = 1;
             queue[queueEnd++] = x;
           }
-          // Alt kenar
           const bottomIdx = (h - 1) * w + x;
           if (isBg(bottomIdx) && !visited[bottomIdx]) {
             visited[bottomIdx] = 1;
@@ -125,13 +167,11 @@ async function removeWhiteBackground(dataUrl: string, threshold = 235): Promise<
           }
         }
         for (let y = 0; y < h; y++) {
-          // Sol kenar
           const leftIdx = y * w;
           if (isBg(leftIdx) && !visited[leftIdx]) {
             visited[leftIdx] = 1;
             queue[queueEnd++] = leftIdx;
           }
-          // Sağ kenar
           const rightIdx = y * w + (w - 1);
           if (isBg(rightIdx) && !visited[rightIdx]) {
             visited[rightIdx] = 1;
@@ -139,13 +179,14 @@ async function removeWhiteBackground(dataUrl: string, threshold = 235): Promise<
           }
         }
 
+        console.log(`[BG Remove] Initial seeds: ${queueEnd}`);
+
         // BFS flood-fill
         while (queueStart < queueEnd) {
           const p = queue[queueStart++];
           const x = p % w;
           const y = (p / w) | 0;
 
-          // 4 komşu
           if (x > 0) {
             const n = p - 1;
             if (!visited[n] && isBg(n)) {
@@ -176,16 +217,16 @@ async function removeWhiteBackground(dataUrl: string, threshold = 235): Promise<
           }
         }
 
-        // Ziyaret edilenleri transparan yap (yumuşak kenarlarla)
+        console.log(`[BG Remove] Total pixels marked as bg: ${queueEnd} / ${total} (${((queueEnd / total) * 100).toFixed(1)}%)`);
+
+        // Ziyaret edilenleri transparan yap
         for (let i = 0; i < total; i++) {
           if (visited[i]) {
             data[i * 4 + 3] = 0;
           }
         }
 
-        // Edge softening: sınır piksellerini yumuşat (aliasing önlemi)
-        // Ziyaret edilmeyen bir pikselin en az bir komşusu ziyaret edildiyse,
-        // parlaklığına göre yarı-şeffaf yap
+        // Edge softening: sınırdaki logo pikselleri için yumuşak alfa
         for (let y = 1; y < h - 1; y++) {
           for (let x = 1; x < w - 1; x++) {
             const p = y * w + x;
@@ -193,16 +234,16 @@ async function removeWhiteBackground(dataUrl: string, threshold = 235): Promise<
             const i = p * 4;
             const r = data[i], g = data[i + 1], b = data[i + 2];
             const brightness = (r + g + b) / 3;
-            // Sadece açık pikseller için
-            if (brightness < 200) continue;
-            // Komşu ziyaret edildi mi?
+            if (brightness < threshold - 30) continue;
+
             const anyNeighborBg =
               visited[p - 1] || visited[p + 1] ||
               visited[p - w] || visited[p + w];
             if (anyNeighborBg) {
-              // Alpha'yı azalt (yumuşak geçiş)
-              const softAlpha = Math.round(((255 - brightness) / (255 - 200)) * 255);
-              data[i + 3] = Math.max(0, Math.min(data[i + 3], softAlpha));
+              const range = threshold - (threshold - 30);
+              const above = brightness - (threshold - 30);
+              const softAlpha = Math.round(255 * (1 - Math.min(above / range, 1)));
+              data[i + 3] = Math.min(data[i + 3], softAlpha);
             }
           }
         }
@@ -719,14 +760,23 @@ export default function ProductGallery({
         /* Print area — logo bu alan içinde kalmalı */
         .gal-print-area {
           position: absolute;
-          border: 1.5px dashed rgba(94, 132, 112, 0.4);
+          border: 1.5px dashed rgba(94, 132, 112, 0.55);
           border-radius: 2px;
           pointer-events: none;
-          transition: opacity 0.2s, border-color 0.2s, box-shadow 0.15s, background 0.15s;
+          opacity: 0;
+          transition: opacity 0.25s ease, border-color 0.2s, box-shadow 0.15s, background 0.15s;
           z-index: 3;
         }
+        /* Görsel ekli iken görünür */
         .gal-print-area.has-design {
-          border-color: rgba(94, 132, 112, 0.65);
+          opacity: 1;
+        }
+        /* Canvas üzerinde hover — her zaman görünür */
+        .gallery-main:hover .gal-print-area {
+          opacity: 1;
+        }
+        .gal-print-area.has-design {
+          border-color: rgba(94, 132, 112, 0.75);
         }
         .gal-print-area.at-boundary {
           border-color: rgba(94, 132, 112, 0.95);
