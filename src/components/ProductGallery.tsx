@@ -35,6 +35,38 @@ const PRINT_AREA = {
   bottom: 71,
 };
 
+// Print area'nın gerçek dünya boyutları (cm) — T-shirt için standart
+// Vorderseite / Rückseite genelde 30x40 cm (A3 boyutu civarı)
+const PRINT_AREA_REAL_CM = {
+  width: 30,   // cm
+  height: 40,  // cm
+};
+
+/**
+ * Design'ın gerçek dünya boyutunu hesapla (cm).
+ * currentDesign.width canvas'a göre %, biz print_area'ya oranlayıp cm'e çeviriyoruz.
+ */
+function getRealSize(widthPercent: number, aspect: number) {
+  const paW = PRINT_AREA.right - PRINT_AREA.left; // print area width %
+  const paH = PRINT_AREA.bottom - PRINT_AREA.top; // print area height %
+
+  // Logo canvas'a göre widthPercent → print_area'ya göre kaç %
+  const widthOfPrintArea = (widthPercent / paW) * 100; // 0-100 arasında
+
+  // Logo cm'i
+  const widthCm = (widthOfPrintArea / 100) * PRINT_AREA_REAL_CM.width;
+
+  // Logo yükseklik (canvas'a göre)
+  const heightPercent = widthPercent / aspect;
+  const heightOfPrintArea = (heightPercent / paH) * 100;
+  const heightCm = (heightOfPrintArea / 100) * PRINT_AREA_REAL_CM.height;
+
+  return {
+    widthCm: Math.round(widthCm * 10) / 10,
+    heightCm: Math.round(heightCm * 10) / 10,
+  };
+}
+
 /**
  * Beyaz arka planı transparan yapar (client-side, canvas ile).
  * En etkili: beyaz zeminli logolar için. Karmaşık arka planlar için sınırlı.
@@ -460,6 +492,25 @@ export default function ProductGallery({
             <button type="button" className="gal-ctrl-btn" onClick={() => handleRotate(-15)} title="Nach links drehen">↺</button>
             <button type="button" className="gal-ctrl-btn" onClick={() => handleRotate(15)} title="Nach rechts drehen">↻</button>
             <div className="gal-ctrl-sep" />
+            {(() => {
+              const size = getRealSize(currentDesign.width, currentDesign.imageAspect);
+              return (
+                <div className="gal-ctrl-size" title="Größe im echten Druck">
+                  <span className="gal-ctrl-size-item">
+                    <span className="gal-ctrl-size-label">B</span>
+                    <span className="gal-ctrl-size-val">{size.widthCm.toLocaleString("de-DE")}</span>
+                    <span className="gal-ctrl-size-unit">cm</span>
+                  </span>
+                  <span className="gal-ctrl-size-sep">×</span>
+                  <span className="gal-ctrl-size-item">
+                    <span className="gal-ctrl-size-label">H</span>
+                    <span className="gal-ctrl-size-val">{size.heightCm.toLocaleString("de-DE")}</span>
+                    <span className="gal-ctrl-size-unit">cm</span>
+                  </span>
+                </div>
+              );
+            })()}
+            <div className="gal-ctrl-sep" />
             <button
               type="button"
               className={`gal-ctrl-btn gal-ctrl-bg${currentDesign.bgRemoved ? " active" : ""}${bgProcessing ? " loading" : ""}`}
@@ -565,23 +616,26 @@ export default function ProductGallery({
           40% { transform: scale(1.005); }
           100% { transform: scale(1); }
         }
-        /* Grid overlay — sadece sürüklerken görünür */
+        /* Grid overlay — sürüklerken veya üstüne gelince görünür */
         .gal-print-grid {
           position: absolute;
           inset: 0;
           opacity: 0;
           pointer-events: none;
           background-image:
-            linear-gradient(rgba(94, 132, 112, 0.35) 1px, transparent 1px),
-            linear-gradient(90deg, rgba(94, 132, 112, 0.35) 1px, transparent 1px);
+            linear-gradient(rgba(94, 132, 112, 0.28) 1px, transparent 1px),
+            linear-gradient(90deg, rgba(94, 132, 112, 0.28) 1px, transparent 1px);
           background-size: 12% 12%;
           background-position: 0 0;
           transition: opacity 0.15s;
         }
-        .gal-print-area.is-dragging .gal-print-grid {
+        /* Design layer'in üzerine gelince grid görünür */
+        .gal-design-layer:hover ~ .gal-print-area .gal-print-grid,
+        .gal-print-area.is-dragging .gal-print-grid,
+        .gal-print-area.has-design:hover .gal-print-grid {
           opacity: 1;
         }
-        /* Merkez çizgileri — kılavuz */
+        /* Merkez çizgileri — kılavuz (dragging'de) */
         .gal-print-area.is-dragging::before,
         .gal-print-area.is-dragging::after {
           content: "";
@@ -606,6 +660,10 @@ export default function ProductGallery({
         .gal-print-area.is-dragging {
           border-color: rgba(94, 132, 112, 0.7);
           background: rgba(94, 132, 112, 0.04);
+        }
+        /* Hover — pointer-events kapalı olduğu için canvas hover ile göster */
+        .gallery-main:hover .gal-print-area.has-design .gal-print-grid {
+          opacity: 0.75;
         }
         .gal-print-label {
           position: absolute;
@@ -770,6 +828,41 @@ export default function ProductGallery({
           font-size: 0.65rem;
           font-weight: 700;
           letter-spacing: 0.5px;
+        }
+        .gal-ctrl-size {
+          display: inline-flex;
+          align-items: center;
+          gap: 6px;
+          color: #fff;
+          font-size: 0.72rem;
+          padding: 0 6px;
+          white-space: nowrap;
+          font-variant-numeric: tabular-nums;
+        }
+        .gal-ctrl-size-item {
+          display: inline-flex;
+          align-items: baseline;
+          gap: 3px;
+        }
+        .gal-ctrl-size-label {
+          font-size: 0.6rem;
+          opacity: 0.5;
+          letter-spacing: 0.3px;
+          text-transform: uppercase;
+          font-weight: 700;
+        }
+        .gal-ctrl-size-val {
+          font-weight: 700;
+          font-size: 0.78rem;
+        }
+        .gal-ctrl-size-unit {
+          font-size: 0.58rem;
+          opacity: 0.55;
+          margin-left: 1px;
+        }
+        .gal-ctrl-size-sep {
+          opacity: 0.35;
+          font-weight: 300;
         }
         .gal-ctrl-spinner {
           width: 14px;
