@@ -1,6 +1,8 @@
 import { getCurrentCustomer } from "@/lib/customer-auth";
 import { db } from "@/lib/db";
 import Link from "next/link";
+import { getLocale } from "@/lib/i18n-server";
+import { getDictionary } from "@/dictionaries";
 
 export const metadata = { title: "Bestellungen | Mein Konto" };
 export const dynamic = "force-dynamic";
@@ -12,21 +14,24 @@ function germanDate(d: Date): string {
   return d.toLocaleDateString("de-DE", { day: "2-digit", month: "2-digit", year: "numeric" });
 }
 
-const STATUS: Record<string, { label: string; bg: string; color: string }> = {
-  NEU:            { label: "Neu",            bg: "#e0e7ff", color: "#3730a3" },
-  WARTEND:        { label: "Wartend",        bg: "#fef3c7", color: "#92400e" },
-  BEZAHLT:        { label: "Bezahlt",        bg: "#d1fae5", color: "#065f46" },
-  IN_PRODUKTION:  { label: "In Produktion",  bg: "#f3e8ff", color: "#6b21a8" },
-  VERSANDBEREIT:  { label: "Versandbereit",  bg: "#fed7aa", color: "#9a3412" },
-  VERSENDET:      { label: "Versendet",      bg: "#dbeafe", color: "#1e40af" },
-  ZUGESTELLT:     { label: "Zugestellt",     bg: "#d1fae5", color: "#065f46" },
-  ABGESCHLOSSEN:  { label: "Abgeschlossen",  bg: "#f1f5f9", color: "#475569" },
-  STORNIERT:      { label: "Storniert",      bg: "#fee2e2", color: "#991b1b" },
+const STATUS_COLORS: Record<string, { bg: string; color: string; key: string }> = {
+  NEU:            { bg: "#e0e7ff", color: "#3730a3", key: "neu" },
+  WARTEND:        { bg: "#fef3c7", color: "#92400e", key: "wartend" },
+  BEZAHLT:        { bg: "#d1fae5", color: "#065f46", key: "bezahlt" },
+  IN_PRODUKTION:  { bg: "#f3e8ff", color: "#6b21a8", key: "inProduktion" },
+  VERSANDBEREIT:  { bg: "#fed7aa", color: "#9a3412", key: "versandbereit" },
+  VERSENDET:      { bg: "#dbeafe", color: "#1e40af", key: "versendet" },
+  ZUGESTELLT:     { bg: "#d1fae5", color: "#065f46", key: "zugestellt" },
+  ABGESCHLOSSEN:  { bg: "#f1f5f9", color: "#475569", key: "abgeschlossen" },
+  STORNIERT:      { bg: "#fee2e2", color: "#991b1b", key: "storniert" },
 };
 
 export default async function KontoBestellungenPage() {
   const customer = await getCurrentCustomer();
   if (!customer) return null;
+
+  const locale = await getLocale();
+  const tk = getDictionary(locale).konto;
 
   const orders = await db.order.findMany({
     where: { customerId: customer.id },
@@ -53,13 +58,13 @@ export default async function KontoBestellungenPage() {
           textTransform: "uppercase",
           fontWeight: 700,
         }}>
-          {orders.length} {orders.length === 1 ? "Bestellung" : "Bestellungen"}
+          {orders.length} {orders.length === 1 ? tk.bestellungSg : tk.bestellungPl}
         </span>
       </div>
 
       {orders.length === 0 ? (
         <div style={{ padding: "60px 30px", textAlign: "center", border: "1px solid #e5e5e5", borderRadius: 4 }}>
-          <p style={{ color: "#666", marginBottom: 20, fontSize: 14 }}>Noch keine Bestellungen.</p>
+          <p style={{ color: "#666", marginBottom: 20, fontSize: 14 }}>{tk.keineBestellungen}</p>
           <Link href="/werbemittel" style={{
             display: "inline-block",
             background: "#0f1a16",
@@ -78,7 +83,7 @@ export default async function KontoBestellungenPage() {
       ) : (
         <div style={{ border: "1px solid #e5e5e5", borderRadius: 4 }}>
           {orders.map((o, idx) => {
-            const s = STATUS[o.status] || { label: o.status, bg: "#f5f5f5", color: "#666" };
+            const sc = STATUS_COLORS[o.status]; const s = sc ? { label: tk.status[sc.key as keyof typeof tk.status], bg: sc.bg, color: sc.color } : { label: o.status, bg: "#f5f5f5", color: "#666" };
             return (
               <Link
                 key={o.id}
@@ -101,7 +106,7 @@ export default async function KontoBestellungenPage() {
                     {o.orderNumber}
                   </div>
                   <div style={{ fontSize: 12, color: "#666" }}>
-                    {germanDate(o.createdAt)} · {o._count.items} Artikel · {o.paymentMethod}
+                    {germanDate(o.createdAt)} · {o._count.items} {tk.artikel} · {o.paymentMethod}
                   </div>
                 </div>
                 <span style={{

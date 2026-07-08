@@ -736,6 +736,12 @@ const de: Dictionary = {
     letzteBestellungen: "Letzte Bestellungen",
     keineBestellungen: "Noch keine Bestellungen.",
     alleAnzeigen: "Alle anzeigen →",
+    bestellungSg: "Bestellung",
+    bestellungPl: "Bestellungen",
+    artikel: "Artikel",
+    keineAnfragen: "Noch keine Anfragen.",
+    anfrageSg: "Anfrage",
+    anfragePl: "Anfragen",
     status: {
       neu: "Neu", wartend: "Wartend", bezahlt: "Bezahlt", inProduktion: "In Produktion",
       versandbereit: "Versandbereit", versendet: "Versendet", zugestellt: "Zugestellt",

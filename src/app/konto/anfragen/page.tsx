@@ -1,6 +1,8 @@
 import { getCurrentCustomer } from "@/lib/customer-auth";
 import { db } from "@/lib/db";
 import Link from "next/link";
+import { getLocale } from "@/lib/i18n-server";
+import { getDictionary } from "@/dictionaries";
 
 export const metadata = { title: "Anfragen | Mein Konto" };
 export const dynamic = "force-dynamic";
@@ -9,15 +11,18 @@ function germanDate(d: Date): string {
   return d.toLocaleDateString("de-DE", { day: "2-digit", month: "2-digit", year: "numeric" });
 }
 
-const STATUS: Record<string, { label: string; bg: string; color: string }> = {
-  new:      { label: "Neu",            bg: "#e0e7ff", color: "#3730a3" },
-  progress: { label: "In Bearbeitung", bg: "#fef3c7", color: "#92400e" },
-  done:     { label: "Erledigt",       bg: "#d1fae5", color: "#065f46" },
+const ANFRAGE_STATUS: Record<string, { bg: string; color: string; de: string; tr: string; en: string }> = {
+  new:      { bg: "#e0e7ff", color: "#3730a3", de: "Neu", tr: "Yeni", en: "New" },
+  progress: { bg: "#fef3c7", color: "#92400e", de: "In Bearbeitung", tr: "İşlemde", en: "In progress" },
+  done:     { bg: "#d1fae5", color: "#065f46", de: "Erledigt", tr: "Tamamlandı", en: "Done" },
 };
 
 export default async function KontoAnfragenPage() {
   const customer = await getCurrentCustomer();
   if (!customer) return null;
+
+  const locale = await getLocale();
+  const tk = getDictionary(locale).konto;
 
   const inquiries = await db.inquiry.findMany({
     where: { email: customer.email },
@@ -34,7 +39,7 @@ export default async function KontoAnfragenPage() {
           color: "#0f1a16",
           letterSpacing: "-0.01em",
         }}>
-          Anfragen
+          {tk.nav.anfragen}
         </h2>
         <span style={{
           fontSize: 11,
@@ -43,13 +48,13 @@ export default async function KontoAnfragenPage() {
           textTransform: "uppercase",
           fontWeight: 700,
         }}>
-          {inquiries.length} {inquiries.length === 1 ? "Anfrage" : "Anfragen"}
+          {inquiries.length} {inquiries.length === 1 ? tk.anfrageSg : tk.anfragePl}
         </span>
       </div>
 
       {inquiries.length === 0 ? (
         <div style={{ padding: "60px 30px", textAlign: "center", border: "1px solid #e5e5e5", borderRadius: 4 }}>
-          <p style={{ color: "#666", marginBottom: 20, fontSize: 14 }}>Noch keine Anfragen.</p>
+          <p style={{ color: "#666", marginBottom: 20, fontSize: 14 }}>{tk.keineAnfragen}</p>
           <Link href="/werbemittel" style={{
             display: "inline-block",
             background: "#0f1a16",
@@ -68,7 +73,7 @@ export default async function KontoAnfragenPage() {
       ) : (
         <div style={{ border: "1px solid #e5e5e5", borderRadius: 4 }}>
           {inquiries.map((i, idx) => {
-            const s = STATUS[i.status] || STATUS.new;
+            const sc = ANFRAGE_STATUS[i.status] || ANFRAGE_STATUS.new; const s = { label: locale === "tr" ? sc.tr : locale === "en" ? sc.en : sc.de, bg: sc.bg, color: sc.color };
             return (
               <div
                 key={i.id}

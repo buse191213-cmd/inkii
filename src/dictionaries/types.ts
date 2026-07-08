@@ -588,6 +588,12 @@ export type Dictionary = {
     letzteBestellungen: string;
     keineBestellungen: string;
     alleAnzeigen: string;
+    bestellungSg: string;
+    bestellungPl: string;
+    artikel: string;
+    keineAnfragen: string;
+    anfrageSg: string;
+    anfragePl: string;
     status: {
       neu: string; wartend: string; bezahlt: string; inProduktion: string;
       versandbereit: string; versendet: string; zugestellt: string;

@@ -736,6 +736,12 @@ const en: Dictionary = {
     letzteBestellungen: "Recent orders",
     keineBestellungen: "No orders yet.",
     alleAnzeigen: "Show all →",
+    bestellungSg: "order",
+    bestellungPl: "orders",
+    artikel: "items",
+    keineAnfragen: "No inquiries yet.",
+    anfrageSg: "inquiry",
+    anfragePl: "inquiries",
     status: {
       neu: "New", wartend: "Pending", bezahlt: "Paid", inProduktion: "In production",
       versandbereit: "Ready to ship", versendet: "Shipped", zugestellt: "Delivered",

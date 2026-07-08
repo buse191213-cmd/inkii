@@ -736,6 +736,12 @@ const tr: Dictionary = {
     letzteBestellungen: "Son siparişler",
     keineBestellungen: "Henüz sipariş yok.",
     alleAnzeigen: "Tümünü göster →",
+    bestellungSg: "sipariş",
+    bestellungPl: "sipariş",
+    artikel: "ürün",
+    keineAnfragen: "Henüz talep yok.",
+    anfrageSg: "talep",
+    anfragePl: "talep",
     status: {
       neu: "Yeni", wartend: "Bekliyor", bezahlt: "Ödendi", inProduktion: "Üretimde",
       versandbereit: "Sevkiyata hazır", versendet: "Gönderildi", zugestellt: "Teslim edildi",

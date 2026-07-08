@@ -78,7 +78,7 @@ export default async function KontoUebersichtPage() {
         </div>
 
         {orders.length === 0 ? (
-          <EmptyState />
+          <EmptyState tk={tk} toCatalog={locale === "tr" ? "Kataloğa git" : locale === "en" ? "To catalog" : "Zum Katalog"} />
         ) : (
           <div style={{ border: "1px solid #e5e5e5", borderRadius: 4 }}>
             {orders.map((o, idx) => {
@@ -181,7 +181,7 @@ function StatCard({ href, label, value, last }: { href?: string; label: string; 
   return content;
 }
 
-function EmptyState() {
+function EmptyState({ tk, toCatalog }: { tk: { keineBestellungen: string }; toCatalog: string }) {
   return (
     <div style={{ padding: "60px 30px", textAlign: "center", border: "1px solid #e5e5e5", borderRadius: 4 }}>
       <p style={{ color: "#666", marginBottom: 20, fontSize: 14 }}>{tk.keineBestellungen}</p>
@@ -197,7 +197,7 @@ function EmptyState() {
         textTransform: "uppercase",
         borderRadius: 4,
       }}>
-        Zum Katalog
+        {toCatalog}
       </Link>
     </div>
   );
