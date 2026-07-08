@@ -23,8 +23,10 @@ export default function WarenkorbClient() {
   }
 
   const shippingCents = subtotalCents >= FREE_FROM ? 0 : SHIPPING_COST;
-  const taxCents = Math.round((subtotalCents + shippingCents) * 0.19);
-  const totalCents = subtotalCents + shippingCents + taxCents;
+  // Fiyatlar KDV DAHİL — total = subtotal + shipping (KDV zaten içinde)
+  const totalCents = subtotalCents + shippingCents;
+  // KDV içerden hesaplanır (brutto / 1.19 * 0.19)
+  const taxCents = Math.round(totalCents - totalCents / 1.19);
 
   if (items.length === 0) {
     return (

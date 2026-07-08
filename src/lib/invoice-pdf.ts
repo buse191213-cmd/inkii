@@ -269,7 +269,7 @@ export async function generateInvoicePDF(data: InvoiceData): Promise<Buffer> {
       doc.text(`${euro(data.shippingCents)} €`, sumValueX, rowY, { width: 65, align: "right" });
       rowY += 18;
 
-      doc.fillColor(MUTED).text(`zzgl. MwSt. ${data.taxRate}%:`, sumLabelX, rowY, { width: 110, align: "right" });
+      doc.fillColor(MUTED).text(`davon MwSt. ${data.taxRate}%:`, sumLabelX, rowY, { width: 110, align: "right" });
       doc.text(`${euro(data.taxCents)} €`, sumValueX, rowY, { width: 65, align: "right" });
       rowY += 22;
 

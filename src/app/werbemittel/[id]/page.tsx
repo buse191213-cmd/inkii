@@ -152,13 +152,13 @@ export default async function ProductDetailPage({
 
               {/* FIYAT — ürün başlığı altında her zaman görünür */}
               {(() => {
-                // priceCents varsa onu kullan (kullanıcının admin'de girdiği ana fiyat)
-                // yoksa tier'ların minimumunu göster
+                // "ab" fiyatı = Staffeldeki EN DÜŞÜK stück fiyatı
                 const lowestTierCents = tiers.length > 0
                   ? Math.min(...tiers.map((t) => t.cents))
                   : null;
-                const displayCents = product.priceCents ?? lowestTierCents;
-                // "ab" prefix — Mengenstaffel varsa (fiyat adete göre düşer) göster
+                // Tier varsa en düşük tier, yoksa priceCents
+                const displayCents = lowestTierCents ?? product.priceCents;
+                // "ab" prefix — Mengenstaffel varsa göster
                 const showFromPrefix = tiers.length > 0;
 
                 if (displayCents == null || displayCents === 0) {
@@ -227,7 +227,7 @@ export default async function ProductDetailPage({
                 );
               })()}
               <p style={{ fontSize: 11, color: "#94a3b8", marginTop: 2, marginBottom: 16 }}>
-                Alle Preise zzgl. gesetzl. MwSt. und Versand
+                inkl. MwSt., zzgl. Versand
               </p>
 
               <p className="mm-detail-meta">

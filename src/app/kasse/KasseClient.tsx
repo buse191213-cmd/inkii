@@ -206,8 +206,9 @@ export default function KasseClient({ paymentMethods, shipping, prefill, isLogge
   );
 
   const shippingCents = subtotalCents >= shipping.freeShippingFromCents ? 0 : shipping.standardCostCents;
-  const taxCents = Math.round((subtotalCents + shippingCents) * 0.19);
-  const totalCents = subtotalCents + shippingCents + taxCents;
+  // Fiyatlar KDV DAHİL — total = subtotal + shipping, KDV içeriden
+  const totalCents = subtotalCents + shippingCents;
+  const taxCents = Math.round(totalCents - totalCents / 1.19);
 
   // Form validate (returns true if valid, else handles scroll/error display)
   function validateForm(): boolean {

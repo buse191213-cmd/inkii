@@ -3068,16 +3068,18 @@ body:has(.home-services) footer.site{margin-top:0}
 .det-staffel-transfer-note{margin-top:8px;padding-top:8px;border-top:1px solid #e8e8e6;
   font-size:.72rem;color:#004537;font-weight:600;text-align:center}
 
-/* Total MwSt breakdown */
-.det-order-total-price{display:flex;flex-direction:column;gap:3px;min-width:180px}
-.det-order-price-row{display:flex;justify-content:space-between;gap:16px;font-size:.82rem;color:#5a6660}
-.det-order-price-lbl{font-weight:500}
-.det-order-price-val{font-weight:600;font-variant-numeric:tabular-nums}
-.det-order-price-mwst{font-size:.76rem;opacity:.85}
-.det-order-price-brutto{border-top:1px solid #d9ddd5;padding-top:5px;margin-top:3px;
-  font-size:.95rem;color:#0f1a16}
-.det-order-price-brutto .det-order-price-lbl{font-weight:700}
-.det-order-price-brutto .det-order-price-val{font-weight:800;color:#004537}
+/* Total summary — Produktionszeit + Gesamt */
+.det-order-summary{background:#fafbf9;border:1px solid #e8e8e6;border-radius:10px;padding:14px 16px;
+  display:flex;flex-direction:column;gap:8px}
+.det-summary-row{display:flex;justify-content:space-between;align-items:center;gap:12px}
+.det-summary-lbl{font-size:.85rem;color:#5a6660;font-weight:500}
+.det-summary-val{font-size:.9rem;color:#0f1a16;font-weight:700}
+.det-summary-total{border-top:1px solid #e3e6df;padding-top:8px;margin-top:2px}
+.det-summary-total .det-summary-lbl{font-size:.95rem;font-weight:700;color:#0f1a16}
+.det-summary-val-big{font-size:1.5rem;font-weight:800;color:#004537;letter-spacing:-.02em;font-variant-numeric:tabular-nums}
+.det-summary-hint{font-size:.78rem;color:#92400e;background:#fffbeb;border:1px solid #fde68a;
+  border-radius:6px;padding:8px 10px;text-align:center;line-height:1.4}
+.det-summary-vat{font-size:.72rem;color:#94a3b8;text-align:right}
 @media(max-width:520px){
   .det-staffel-row{grid-template-columns:20px 1fr auto;gap:6px;font-size:.8rem}
   .det-staffel-unit{display:none}

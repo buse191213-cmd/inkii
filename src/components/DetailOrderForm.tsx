@@ -449,33 +449,26 @@ export default function DetailOrderForm({
         )}
       </div>
 
-      {/* Totalanzeige */}
-      <div className="det-order-total">
-        <div>
-          <span className="det-order-total-lbl">Gesamtmenge</span>
-          <span className="det-order-total-val">{totalQty} Stück</span>
+      {/* Totalanzeige — Produktionszeit + Gesamt (inkl. MwSt) */}
+      <div className="det-order-summary">
+        <div className="det-summary-row">
+          <span className="det-summary-lbl">Produktionszeit:</span>
+          <span className="det-summary-val">13 Werktage</span>
         </div>
-        {subtotalCents != null && totalQty > 0 && (() => {
-          const nettoCents = subtotalCents + transferCostCents * totalQty;
-          const mwstCents = Math.round(nettoCents * 0.19);
-          const bruttoCents = nettoCents + mwstCents;
-          return (
-            <div className="det-order-total-price">
-              <div className="det-order-price-row">
-                <span className="det-order-price-lbl">Netto</span>
-                <span className="det-order-price-val">€{euro(nettoCents)}</span>
-              </div>
-              <div className="det-order-price-row det-order-price-mwst">
-                <span className="det-order-price-lbl">zzgl. 19% MwSt.</span>
-                <span className="det-order-price-val">€{euro(mwstCents)}</span>
-              </div>
-              <div className="det-order-price-row det-order-price-brutto">
-                <span className="det-order-price-lbl">Gesamt (inkl. MwSt.)</span>
-                <span className="det-order-price-val">€{euro(bruttoCents)}</span>
-              </div>
-            </div>
-          );
-        })()}
+        <div className="det-summary-row det-summary-total">
+          <span className="det-summary-lbl">Gesamt:</span>
+          <span className="det-summary-val-big">
+            {subtotalCents != null && totalQty > 0
+              ? `€${euro(subtotalCents + transferCostCents * totalQty)}`
+              : "—"}
+          </span>
+        </div>
+        {transferEnabled && transferSidesCount === 0 && (
+          <div className="det-summary-hint">
+            Laden Sie Ihr Design hoch, um Ihren endgültigen Preis zu erhalten.
+          </div>
+        )}
+        <div className="det-summary-vat">inkl. MwSt.</div>
       </div>
 
       {/* Anmerkungen */}
