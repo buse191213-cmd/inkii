@@ -214,16 +214,32 @@ export async function createOrder(
       const company = await getCompanyInfo();
       const itemsHtml = input.items
         .map(
-          (i) => `
+          (i) => {
+            // Design görüntülerini çıkar (JSON {front, back})
+            let designImgs = "";
+            if (i.hasDtf && i.dtfDesignUrl) {
+              try {
+                const d = JSON.parse(i.dtfDesignUrl) as { front?: string | null; back?: string | null };
+                const thumbs: string[] = [];
+                if (d.front) thumbs.push(`<div style="display:inline-block;text-align:center;margin-right:8px;"><img src="${d.front}" alt="Vorne" style="width:60px;height:60px;object-fit:contain;border:1px solid #d1fae5;border-radius:6px;background:#f0fdf4;" /><br><span style="font-size:10px;color:#065f46;font-weight:600;">Vorne</span></div>`);
+                if (d.back) thumbs.push(`<div style="display:inline-block;text-align:center;"><img src="${d.back}" alt="Hinten" style="width:60px;height:60px;object-fit:contain;border:1px solid #d1fae5;border-radius:6px;background:#f0fdf4;" /><br><span style="font-size:10px;color:#065f46;font-weight:600;">Hinten</span></div>`);
+                if (thumbs.length > 0) {
+                  designImgs = `<div style="margin-top:8px;">${thumbs.join("")}</div>`;
+                }
+              } catch { /* ignore */ }
+            }
+            return `
         <tr>
           <td style="padding: 8px; border-bottom: 1px solid #eee;">
             ${i.productName}<br>
-            <small style="color: #666;">${i.productCode}${i.color ? ` · ${i.color}` : ""}${i.size ? ` · ${i.size}` : ""}${i.hasDtf ? ` · + DTF ${i.dtfSize}` : ""}</small>
+            <small style="color: #666;">${i.productCode}${i.color ? ` · ${i.color}` : ""}${i.size ? ` · ${i.size}` : ""}${i.hasDtf ? ` · + Transfer${i.dtfSize ? ` (${i.dtfSize})` : ""}` : ""}</small>
+            ${designImgs}
           </td>
-          <td style="padding: 8px; border-bottom: 1px solid #eee; text-align: right;">${i.quantity} Stk</td>
-          <td style="padding: 8px; border-bottom: 1px solid #eee; text-align: right;">${euro((i.unitPriceCents + i.dtfPriceCents) * i.quantity)} €</td>
+          <td style="padding: 8px; border-bottom: 1px solid #eee; text-align: right; vertical-align: top;">${i.quantity} Stk</td>
+          <td style="padding: 8px; border-bottom: 1px solid #eee; text-align: right; vertical-align: top;">${euro((i.unitPriceCents + i.dtfPriceCents) * i.quantity)} €</td>
         </tr>
-      `
+      `;
+          }
         )
         .join("");
 
@@ -285,7 +301,7 @@ export async function createOrder(
                     </tr>` : ""}
                     <tr>
                       <td style="padding: 6px 0; color: #666;">Kontoinhaber:</td>
-                      <td style="padding: 6px 0; font-weight: 600;">${company.name}${company.owner ? ` (${company.owner})` : ""}</td>
+                      <td style="padding: 6px 0; font-weight: 600;">${company.owner || company.name}</td>
                     </tr>
                     ${company.iban ? `
                     <tr>

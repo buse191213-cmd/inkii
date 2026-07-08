@@ -331,7 +331,9 @@ export default function DetailOrderForm({
               const isActive = activeTier?.qty === t.qty;
               // Transfer aktifse stück fiyatına ekle
               const unitWithTransfer = t.cents + transferCostCents;
-              const total = t.qty * unitWithTransfer;
+              // Aktif tier ise kullanıcının GERÇEK adedi, diğerleri tier referans adedi
+              const rowQty = isActive && totalQty > 0 ? totalQty : t.qty;
+              const total = rowQty * unitWithTransfer;
               const base = basePriceCents && basePriceCents > 0 ? basePriceCents : tiers[0].cents;
               const discount = base > 0 && t.cents < base
                 ? Math.round(((base - t.cents) / base) * 100)
@@ -345,7 +347,7 @@ export default function DetailOrderForm({
                       </svg>
                     )}
                   </div>
-                  <div className="det-staffel-qty">{t.qty} Stück</div>
+                  <div className="det-staffel-qty">{isActive && totalQty > 0 ? `${totalQty}` : t.qty} Stück</div>
                   <div className="det-staffel-unit">€{euro(unitWithTransfer)} / Stück</div>
                   <div className="det-staffel-spart">
                     {discount > 0 && <span className="det-staffel-badge">Spart {discount}%</span>}
@@ -443,9 +445,11 @@ export default function DetailOrderForm({
         <div className="det-summary-row det-summary-total">
           <span className="det-summary-lbl">Gesamt:</span>
           <span className="det-summary-val-big">
-            {subtotalCents != null && totalQty > 0
-              ? `€${euro(subtotalCents + transferCostCents * totalQty)}`
-              : "—"}
+            {totalQty > 0 && unitCents != null
+              ? `€${euro((subtotalCents ?? unitCents * totalQty) + transferCostCents * totalQty)}`
+              : totalQty > 0 && transferCostCents > 0
+                ? `€${euro(transferCostCents * totalQty)} + Produktpreis`
+                : "—"}
           </span>
         </div>
         {transferEnabled && transferSidesCount === 0 && (

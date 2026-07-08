@@ -92,8 +92,7 @@ export default async function BestellungErfolgPage({ searchParams }: Props) {
                 <tr>
                   <td style={tdLabel}>Kontoinhaber:</td>
                   <td style={tdValue}>
-                    {company.name}
-                    {company.owner ? ` (${company.owner})` : ""}
+                    {company.owner || company.name}
                   </td>
                 </tr>
                 {company.iban && (
