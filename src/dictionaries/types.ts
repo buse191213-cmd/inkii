@@ -468,6 +468,9 @@ export type Dictionary = {
     quoteOnlyInfo: string;
     perStk: string;
     inklGroesse: string;
+    drawerClose: string;
+    drawerCheckoutHint: string;
+    drawerShow: string;
   };
   checkout: {
     steps: { warenkorb: string; anmelden: string; zahlung: string; bestaetigung: string };
@@ -590,5 +593,29 @@ export type Dictionary = {
       versandbereit: string; versendet: string; zugestellt: string;
       abgeschlossen: string; storniert: string;
     };
+  };
+  success: {
+    thankYou: string;
+    orderNumber: string;
+    received: string;
+    bankTransfer: string;
+    contactSoon: string;
+    payTitle: string;
+    payInstruction: string;
+    bank: string;
+    accountHolder: string;
+    iban: string;
+    bic: string;
+    reference: string;
+    amount: string;
+    within: string;
+    days: string;
+    important: string;
+    referenceNote: string;
+    whatNext: string;
+    step1: string;
+    step2: string;
+    continueShopping: string;
+    toAccount: string;
   };
 };

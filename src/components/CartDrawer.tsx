@@ -1,9 +1,11 @@
 "use client";
 
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import Link from "next/link";
 import { useCart, cartItemTotalCents } from "./CartProvider";
 import { colorLabel, colorHex } from "@/lib/catalog-options";
+import { getDictionary } from "@/dictionaries";
+import { isLocale, DEFAULT_LOCALE, type Locale } from "@/lib/i18n";
 
 function euro(c: number): string {
   return (c / 100).toLocaleString("de-DE", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
@@ -16,6 +18,12 @@ type Props = {
 
 export default function CartDrawer({ open, onClose }: Props) {
   const { items, subtotalCents, updateQuantity, removeItem } = useCart();
+  const [locale, setLocale] = useState<Locale>(DEFAULT_LOCALE);
+  useEffect(() => {
+    const m = document.cookie.match(/inkii_locale=([^;]+)/);
+    if (m && isLocale(m[1])) setLocale(m[1]);
+  }, []);
+  const t = getDictionary(locale).cart;
 
   // ESC kapatma + body scroll lock
   useEffect(() => {
@@ -66,7 +74,7 @@ export default function CartDrawer({ open, onClose }: Props) {
           flexDirection: "column",
         }}
         role="dialog"
-        aria-label="Warenkorb"
+        aria-label={t.title}
       >
         {/* Header */}
         <div
@@ -80,12 +88,12 @@ export default function CartDrawer({ open, onClose }: Props) {
           }}
         >
           <h3 style={{ fontSize: 18, fontWeight: 700, margin: 0 }}>
-            Warenkorb {items.length > 0 && <span style={{ color: "#64748b", fontWeight: 500 }}>({items.length})</span>}
+            {t.title} {items.length > 0 && <span style={{ color: "#64748b", fontWeight: 500 }}>({items.length})</span>}
           </h3>
           <button
             type="button"
             onClick={onClose}
-            aria-label="Schließen"
+            aria-label={t.drawerClose}
             style={{
               background: "transparent",
               border: "none",
@@ -114,7 +122,7 @@ export default function CartDrawer({ open, onClose }: Props) {
             }}
           >
             <div style={{ fontSize: 56, color: "#cbd5e1", marginBottom: 12 }}>🛒</div>
-            <p style={{ color: "#64748b", marginBottom: 24 }}>Ihr Warenkorb ist leer.</p>
+            <p style={{ color: "#64748b", marginBottom: 24 }}>{t.empty}</p>
             <Link
               href="/werbemittel"
               onClick={onClose}
@@ -189,7 +197,7 @@ export default function CartDrawer({ open, onClose }: Props) {
                       <button
                         type="button"
                         onClick={() => removeItem(item.id)}
-                        aria-label="Entfernen"
+                        aria-label={t.remove}
                         style={{
                           background: "transparent",
                           border: "none",
@@ -270,8 +278,8 @@ export default function CartDrawer({ open, onClose }: Props) {
                         if (item.dtfDesignUrl) designs = JSON.parse(item.dtfDesignUrl);
                       } catch { /* ignore */ }
                       const thumbs: Array<{ label: string; url: string }> = [];
-                      if (designs.front) thumbs.push({ label: "Vorne", url: designs.front });
-                      if (designs.back) thumbs.push({ label: "Hinten", url: designs.back });
+                      if (designs.front) thumbs.push({ label: t.front, url: designs.front });
+                      if (designs.back) thumbs.push({ label: t.back, url: designs.back });
                       if (thumbs.length === 0) return null;
                       return (
                         <div style={{ display: "flex", gap: 6, marginTop: 6 }}>
@@ -390,12 +398,12 @@ export default function CartDrawer({ open, onClose }: Props) {
             >
               {subtotalCents > 0 && (
                 <div style={{ display: "flex", justifyContent: "space-between", marginBottom: 10, fontSize: 14 }}>
-                  <span>Zwischensumme</span>
+                  <span>{t.zwischensumme}</span>
                   <span style={{ fontWeight: 700 }}>{euro(subtotalCents)} €</span>
                 </div>
               )}
               <p style={{ fontSize: 11, color: "#64748b", margin: "0 0 14px", lineHeight: 1.4 }}>
-                Versand & MwSt. werden im Checkout berechnet.
+                {t.drawerCheckoutHint}
               </p>
 
               <Link
@@ -414,7 +422,7 @@ export default function CartDrawer({ open, onClose }: Props) {
                   borderRadius: 8,
                 }}
               >
-                🛒 Warenkorb anzeigen →
+                🛒 {t.drawerShow}
               </Link>
 
               <Link
@@ -433,7 +441,7 @@ export default function CartDrawer({ open, onClose }: Props) {
                   borderRadius: 8,
                 }}
               >
-                ✉️ Angebot anfragen
+                ✉️ {t.requestQuote}
               </Link>
             </div>
           </>
