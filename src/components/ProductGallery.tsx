@@ -35,11 +35,11 @@ const PRINT_AREA = {
   bottom: 71,
 };
 
-// Print area'nın gerçek dünya boyutları (cm) — T-shirt için standart
-// Vorderseite / Rückseite genelde 30x40 cm (A3 boyutu civarı)
+// Print area'nın gerçek dünya boyutları (cm) — T-shirt DIN A3+ standart
+// Diğer print sitelerine uyum için 34x42 cm (Vorderseite)
 const PRINT_AREA_REAL_CM = {
-  width: 30,   // cm
-  height: 40,  // cm
+  width: 34,   // cm
+  height: 42,  // cm
 };
 
 /**
@@ -75,182 +75,42 @@ function getRealSize(widthPercent: number, aspect: number) {
  * açık renkli pikseller = arka plan → şeffaflaştır.
  * Logo'nun içindeki izole beyazlar (bağlı olmadığı için) korunur.
  */
+/**
+ * Gerçek AI ile arka plan kaldırma (@imgly/background-removal).
+ * Dynamic import ile lazy-load: ilk kullanımda ~40MB model indirilir, sonra cache.
+ */
 async function removeWhiteBackground(dataUrl: string): Promise<string> {
-  return new Promise((resolve, reject) => {
-    const img = new window.Image();
-    img.onload = () => {
-      try {
-        const canvas = document.createElement("canvas");
-        canvas.width = img.width;
-        canvas.height = img.height;
-        const ctx = canvas.getContext("2d");
-        if (!ctx) { reject(new Error("Canvas context error")); return; }
-        ctx.drawImage(img, 0, 0);
+  try {
+    // Dynamic import (bundle'a eklenmez, sadece kullanıldığında yüklenir)
+    const { removeBackground } = await import("@imgly/background-removal");
 
-        const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
-        const data = imageData.data;
-        const w = canvas.width;
-        const h = canvas.height;
-        const total = w * h;
+    // dataUrl -> Blob
+    const response = await fetch(dataUrl);
+    const inputBlob = await response.blob();
 
-        // 4 KENARDAN örnekleyerek arka plan rengini/parlaklığını tespit et
-        let edgeBrightSum = 0;
-        let edgeSampleCount = 0;
-        let edgeMax = 0;
+    console.log("[BG Remove] AI model wird geladen (erstmalig ~40MB, dann cached)...");
 
-        const sampleEdge = (idx: number) => {
-          const i = idx * 4;
-          const r = data[i], g = data[i + 1], b = data[i + 2];
-          const brightness = (r + g + b) / 3;
-          edgeBrightSum += brightness;
-          edgeSampleCount++;
-          if (brightness > edgeMax) edgeMax = brightness;
-        };
+    // AI ile arka plan kaldır
+    const resultBlob = await removeBackground(inputBlob, {
+      output: {
+        format: "image/png",
+        quality: 0.9,
+      },
+    });
 
-        for (let x = 0; x < w; x++) {
-          sampleEdge(x);
-          sampleEdge((h - 1) * w + x);
-        }
-        for (let y = 0; y < h; y++) {
-          sampleEdge(y * w);
-          sampleEdge(y * w + (w - 1));
-        }
+    console.log("[BG Remove] AI process complete");
 
-        const edgeAvg = edgeBrightSum / edgeSampleCount;
-
-        // Threshold: kenar ortalamasından 40 aşağı, ama min 160
-        // Daha agresif — beyaz olmayan (240 civarı) arka planları da yakalar
-        const threshold = Math.max(160, edgeAvg - 40);
-
-        console.log(`[BG Remove] Edge avg: ${edgeAvg.toFixed(1)}, max: ${edgeMax}, threshold: ${threshold.toFixed(1)}`);
-
-        if (edgeAvg < 130) {
-          console.log("[BG Remove] Edge too dark, no bg to remove");
-          resolve(dataUrl);
-          return;
-        }
-
-        // Basit isBg: sadece parlaklık kontrolü
-        const isBg = (idx: number): boolean => {
-          const i = idx * 4;
-          const r = data[i], g = data[i + 1], b = data[i + 2];
-          const brightness = (r + g + b) / 3;
-          return brightness > threshold;
-        };
-
-        // Ziyaret edilen pikseller
-        const visited = new Uint8Array(total);
-        const queue = new Int32Array(total);
-        let queueEnd = 0;
-        let queueStart = 0;
-
-        // 4 kenardaki tüm arka plan pikselleri seed
-        for (let x = 0; x < w; x++) {
-          if (isBg(x) && !visited[x]) {
-            visited[x] = 1;
-            queue[queueEnd++] = x;
-          }
-          const bottomIdx = (h - 1) * w + x;
-          if (isBg(bottomIdx) && !visited[bottomIdx]) {
-            visited[bottomIdx] = 1;
-            queue[queueEnd++] = bottomIdx;
-          }
-        }
-        for (let y = 0; y < h; y++) {
-          const leftIdx = y * w;
-          if (isBg(leftIdx) && !visited[leftIdx]) {
-            visited[leftIdx] = 1;
-            queue[queueEnd++] = leftIdx;
-          }
-          const rightIdx = y * w + (w - 1);
-          if (isBg(rightIdx) && !visited[rightIdx]) {
-            visited[rightIdx] = 1;
-            queue[queueEnd++] = rightIdx;
-          }
-        }
-
-        console.log(`[BG Remove] Initial seeds: ${queueEnd}`);
-
-        // BFS flood-fill
-        while (queueStart < queueEnd) {
-          const p = queue[queueStart++];
-          const x = p % w;
-          const y = (p / w) | 0;
-
-          if (x > 0) {
-            const n = p - 1;
-            if (!visited[n] && isBg(n)) {
-              visited[n] = 1;
-              queue[queueEnd++] = n;
-            }
-          }
-          if (x < w - 1) {
-            const n = p + 1;
-            if (!visited[n] && isBg(n)) {
-              visited[n] = 1;
-              queue[queueEnd++] = n;
-            }
-          }
-          if (y > 0) {
-            const n = p - w;
-            if (!visited[n] && isBg(n)) {
-              visited[n] = 1;
-              queue[queueEnd++] = n;
-            }
-          }
-          if (y < h - 1) {
-            const n = p + w;
-            if (!visited[n] && isBg(n)) {
-              visited[n] = 1;
-              queue[queueEnd++] = n;
-            }
-          }
-        }
-
-        console.log(`[BG Remove] Total pixels marked as bg: ${queueEnd} / ${total} (${((queueEnd / total) * 100).toFixed(1)}%)`);
-
-        // Ziyaret edilenleri transparan yap
-        for (let i = 0; i < total; i++) {
-          if (visited[i]) {
-            data[i * 4 + 3] = 0;
-          }
-        }
-
-        // Edge softening: sınırdaki logo pikselleri için yumuşak alfa
-        for (let y = 1; y < h - 1; y++) {
-          for (let x = 1; x < w - 1; x++) {
-            const p = y * w + x;
-            if (visited[p]) continue;
-            const i = p * 4;
-            const r = data[i], g = data[i + 1], b = data[i + 2];
-            const brightness = (r + g + b) / 3;
-            if (brightness < threshold - 30) continue;
-
-            const anyNeighborBg =
-              visited[p - 1] || visited[p + 1] ||
-              visited[p - w] || visited[p + w];
-            if (anyNeighborBg) {
-              const range = threshold - (threshold - 30);
-              const above = brightness - (threshold - 30);
-              const softAlpha = Math.round(255 * (1 - Math.min(above / range, 1)));
-              data[i + 3] = Math.min(data[i + 3], softAlpha);
-            }
-          }
-        }
-
-        ctx.putImageData(imageData, 0, 0);
-        resolve(canvas.toDataURL("image/png"));
-      } catch (err) {
-        console.error("BG removal error:", err);
-        reject(err);
-      }
-    };
-    img.onerror = (e) => {
-      console.error("Image load error:", e);
-      reject(new Error("Image konnte nicht geladen werden"));
-    };
-    img.src = dataUrl;
-  });
+    // Blob -> dataUrl
+    return await new Promise<string>((resolve, reject) => {
+      const reader = new FileReader();
+      reader.onload = () => resolve(reader.result as string);
+      reader.onerror = () => reject(new Error("Blob konvertierung fehlgeschlagen"));
+      reader.readAsDataURL(resultBlob);
+    });
+  } catch (err) {
+    console.error("[BG Remove] Error:", err);
+    throw err;
+  }
 }
 
 /**
@@ -635,16 +495,6 @@ export default function ProductGallery({
 
   return (
     <div className="gallery">
-      {totalDesigns > 0 && (
-        <div className="gal-status">
-          <span className="gal-status-icon">✓</span>
-          <span>{totalDesigns} Design{totalDesigns > 1 ? "s" : ""} platziert</span>
-          <span className="gal-status-detail">
-            {designs.front && <span>Vorderseite ✓</span>}
-            {designs.back && <span>Rückseite ✓</span>}
-          </span>
-        </div>
-      )}
 
       <div
         className="gallery-main"
