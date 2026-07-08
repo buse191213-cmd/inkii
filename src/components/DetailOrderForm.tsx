@@ -33,6 +33,9 @@ function findTier(tiers: PriceTier[], qty: number): PriceTier | null {
   return match;
 }
 
+// Transfer (DTF) fiyatı — sabit, taraf başına
+const TRANSFER_PRICE_CENTS = 900; // 9,00 € pro Seite (Vorder-/Rückseite)
+
 export default function DetailOrderForm({
   productId,
   productCode,
@@ -56,6 +59,36 @@ export default function DetailOrderForm({
   const [note, setNote] = useState("");
   const [added, setAdded] = useState(false);
   const [err, setErr] = useState("");
+
+  // Transfer (Personalisierung) — kullanıcı seçebilir
+  const [transferEnabled, setTransferEnabled] = useState(false);
+  // Galeriden gelen design'lar (Vorderseite/Rückseite)
+  const [designs, setDesigns] = useState<{ front: boolean; back: boolean }>({ front: false, back: false });
+  const [designUrls, setDesignUrls] = useState<{ front: string | null; back: string | null }>({ front: null, back: null });
+
+  // Galeriden design güncellemelerini dinle
+  useEffect(() => {
+    function onDesigns(e: Event) {
+      const ce = e as CustomEvent<{ front: { imageDataUrl: string } | null; back: { imageDataUrl: string } | null }>;
+      if (ce.detail) {
+        setDesigns({ front: !!ce.detail.front, back: !!ce.detail.back });
+        setDesignUrls({
+          front: ce.detail.front?.imageDataUrl || null,
+          back: ce.detail.back?.imageDataUrl || null,
+        });
+        // Design eklendiyse transfer otomatik aktif
+        if (ce.detail.front || ce.detail.back) {
+          setTransferEnabled(true);
+        }
+      }
+    }
+    window.addEventListener("designs-updated", onDesigns as EventListener);
+    return () => window.removeEventListener("designs-updated", onDesigns as EventListener);
+  }, []);
+
+  // Transfer maliyeti: her taraf için 9€
+  const transferSidesCount = (designs.front ? 1 : 0) + (designs.back ? 1 : 0);
+  const transferCostCents = transferEnabled ? transferSidesCount * TRANSFER_PRICE_CENTS : 0;
 
   // Galery'deki renk butonlarından gelen event'i dinle - state'i güncelle
   useEffect(() => {
@@ -163,6 +196,13 @@ export default function DetailOrderForm({
       return;
     }
     const priceCents = unitCents ?? 0; // null = 0 (Angebot wird erstellt)
+    // Transfer bilgisi (design + fiyat)
+    const dtfSizeLabel = transferEnabled && transferSidesCount > 0
+      ? [designs.front ? "Vorne" : null, designs.back ? "Hinten" : null].filter(Boolean).join(" + ")
+      : "";
+    const dtfDesignCombined = transferEnabled
+      ? JSON.stringify({ front: designUrls.front, back: designUrls.back })
+      : "";
     // Pro Größe (oder Standard) eine Cart-Position anlegen
     if (sizes.length === 0) {
       addToCart({
@@ -174,10 +214,10 @@ export default function DetailOrderForm({
         size: "",
         quantity: qty["__default"] || 0,
         unitPriceCents: priceCents,
-        hasDtf: false,
-        dtfSize: "",
-        dtfPriceCents: 0,
-        dtfDesignUrl: "",
+        hasDtf: transferEnabled && transferSidesCount > 0,
+        dtfSize: dtfSizeLabel,
+        dtfPriceCents: transferCostCents,
+        dtfDesignUrl: dtfDesignCombined,
       });
     } else {
       for (const s of sizes) {
@@ -194,10 +234,10 @@ export default function DetailOrderForm({
             size: s.name,
             quantity: q,
             unitPriceCents: effective,
-            hasDtf: false,
-            dtfSize: "",
-            dtfPriceCents: 0,
-            dtfDesignUrl: "",
+            hasDtf: transferEnabled && transferSidesCount > 0,
+            dtfSize: dtfSizeLabel,
+            dtfPriceCents: transferCostCents,
+            dtfDesignUrl: dtfDesignCombined,
           });
         }
       }
@@ -315,6 +355,75 @@ export default function DetailOrderForm({
         </div>
       )}
 
+      {/* Personalisierungstechnik — Transfer (DTF) */}
+      <div className="det-transfer">
+        <div className="det-transfer-head">
+          <span className="det-transfer-title">Personalisierungstechnik auswählen</span>
+          {transferSidesCount > 0 && (
+            <span className="det-transfer-badge">
+              {transferSidesCount} × {euro(TRANSFER_PRICE_CENTS)} €
+            </span>
+          )}
+        </div>
+
+        <label className={`det-transfer-option${transferEnabled ? " active" : ""}`}>
+          <input
+            type="checkbox"
+            checked={transferEnabled}
+            onChange={(e) => setTransferEnabled(e.target.checked)}
+          />
+          <span className="det-transfer-check" aria-hidden>
+            {transferEnabled ? "✓" : ""}
+          </span>
+          <span className="det-transfer-body">
+            <span className="det-transfer-name">
+              Transfer <span className="det-transfer-tech">(DTF-Druck)</span>
+            </span>
+            <span className="det-transfer-desc">
+              Hochwertiger Textiltransfer · {euro(TRANSFER_PRICE_CENTS)} € pro Seite
+            </span>
+          </span>
+        </label>
+
+        {transferEnabled && (
+          <div className="det-transfer-sides">
+            {transferSidesCount === 0 ? (
+              <div className="det-transfer-empty">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+                  <path d="M12 9v4M12 17h.01M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/>
+                </svg>
+                <span>Bitte laden Sie oben ein Design für Vorder- oder Rückseite hoch.</span>
+              </div>
+            ) : (
+              <>
+                {designs.front && (
+                  <div className="det-transfer-side-row">
+                    <span className="det-transfer-side-label">
+                      <span className="det-transfer-side-dot" />
+                      Vorderseite
+                    </span>
+                    <span className="det-transfer-side-price">{euro(TRANSFER_PRICE_CENTS)} €</span>
+                  </div>
+                )}
+                {designs.back && (
+                  <div className="det-transfer-side-row">
+                    <span className="det-transfer-side-label">
+                      <span className="det-transfer-side-dot" />
+                      Rückseite
+                    </span>
+                    <span className="det-transfer-side-price">{euro(TRANSFER_PRICE_CENTS)} €</span>
+                  </div>
+                )}
+                <div className="det-transfer-side-row det-transfer-side-total">
+                  <span>Transfer gesamt (pro Stück)</span>
+                  <span>{euro(transferCostCents)} €</span>
+                </div>
+              </>
+            )}
+          </div>
+        )}
+      </div>
+
       {/* Totalanzeige */}
       <div className="det-order-total">
         <div>
@@ -324,7 +433,9 @@ export default function DetailOrderForm({
         {subtotalCents != null && totalQty > 0 && (
           <div>
             <span className="det-order-total-lbl">Voraussichtl. Summe</span>
-            <span className="det-order-total-val">€{euro(subtotalCents)}</span>
+            <span className="det-order-total-val">
+              €{euro(subtotalCents + transferCostCents * totalQty)}
+            </span>
           </div>
         )}
       </div>

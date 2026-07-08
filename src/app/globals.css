@@ -3047,6 +3047,35 @@ body:has(.home-services) footer.site{margin-top:0}
 .det-tier-qty{font-weight:600;color:inherit;opacity:.9}
 .det-tier-price{font-weight:800;font-size:.84rem}
 
+/* Personalisierung / Transfer seçimi */
+.det-transfer{background:#fff;border:1px solid #e8e8e6;border-radius:10px;padding:14px;margin-bottom:12px}
+.det-transfer-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;gap:10px}
+.det-transfer-title{font-size:.78rem;font-weight:700;letter-spacing:.04em;text-transform:uppercase;color:#0f1a16}
+.det-transfer-badge{background:#dcfce7;color:#065f46;padding:3px 10px;border-radius:999px;font-size:.72rem;font-weight:700}
+.det-transfer-option{display:flex;align-items:flex-start;gap:12px;padding:12px;border:1.5px solid #e3e6df;
+  border-radius:8px;cursor:pointer;transition:all .15s;position:relative}
+.det-transfer-option:hover{border-color:#004537}
+.det-transfer-option.active{border-color:#004537;background:linear-gradient(135deg,#ffffff 0%,#f0fdf4 100%)}
+.det-transfer-option input{position:absolute;opacity:0;pointer-events:none}
+.det-transfer-check{width:22px;height:22px;border:2px solid #cbd5c9;border-radius:6px;display:flex;
+  align-items:center;justify-content:center;font-size:.85rem;font-weight:700;color:#fff;flex-shrink:0;
+  transition:all .15s;margin-top:1px}
+.det-transfer-option.active .det-transfer-check{background:#004537;border-color:#004537}
+.det-transfer-body{display:flex;flex-direction:column;gap:3px;flex:1}
+.det-transfer-name{font-size:.95rem;font-weight:700;color:#0f1a16}
+.det-transfer-tech{font-weight:400;color:#5a6660;font-size:.85rem}
+.det-transfer-desc{font-size:.78rem;color:#5a6660}
+.det-transfer-sides{margin-top:10px;padding:12px;background:#fafbf9;border-radius:8px;display:flex;flex-direction:column;gap:8px}
+.det-transfer-empty{display:flex;align-items:center;gap:10px;font-size:.8rem;color:#92400e;
+  background:#fffbeb;border:1px solid #fbbf24;border-radius:6px;padding:10px 12px}
+.det-transfer-empty svg{color:#d97706;flex-shrink:0}
+.det-transfer-side-row{display:flex;justify-content:space-between;align-items:center;font-size:.85rem;color:#0f1a16}
+.det-transfer-side-label{display:flex;align-items:center;gap:8px;font-weight:500}
+.det-transfer-side-dot{width:8px;height:8px;border-radius:50%;background:#004537}
+.det-transfer-side-price{font-weight:600;color:#5a6660}
+.det-transfer-side-total{border-top:1px solid #e3e6df;padding-top:8px;margin-top:2px;font-weight:800}
+.det-transfer-side-total span:last-child{color:#004537}
+
 .det-order-total{background:#fafbf9;border:1px solid #e8e8e6;border-radius:10px;
   padding:10px 14px;display:flex;justify-content:space-between;gap:14px;flex-wrap:wrap}
 .det-order-total > div{display:flex;flex-direction:column;gap:1px}

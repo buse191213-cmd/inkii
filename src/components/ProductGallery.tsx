@@ -791,9 +791,9 @@ export default function ProductGallery({
           transition: opacity 0.25s ease, border-color 0.2s, box-shadow 0.15s, background 0.15s;
           z-index: 3;
         }
-        /* Görsel ekli iken görünür */
+        /* Görsel ekli iken görünmez — sadece hover'da */
         .gal-print-area.has-design {
-          opacity: 1;
+          opacity: 0;
         }
         /* Canvas üzerinde hover — her zaman görünür */
         .gallery-main:hover .gal-print-area {
