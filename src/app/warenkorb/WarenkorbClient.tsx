@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { useCart } from "@/components/CartProvider";
+import CartSizeDistributor from "@/components/CartSizeDistributor";
 import { colorLabel } from "@/lib/catalog-options";
 
 function euro(c: number): string {
@@ -145,66 +146,94 @@ export default function WarenkorbClient() {
                     })()}
                   </div>
                 )}
-                <div style={{ display: "flex", alignItems: "center", gap: 8, marginTop: 10 }}>
-                  <button
-                    type="button"
-                    onClick={() => updateQuantity(item.id, item.quantity - 1)}
-                    style={{
-                      width: 28,
-                      height: 28,
-                      border: "1px solid #d1d5db",
-                      background: "#fff",
-                      cursor: "pointer",
-                    }}
-                    aria-label="Menge verringern"
-                  >
-                    −
-                  </button>
-                  <input
-                    type="number"
-                    min={1}
-                    value={item.quantity}
-                    onChange={(e) => {
-                      const v = parseInt(e.target.value, 10);
-                      if (!isNaN(v) && v > 0) updateQuantity(item.id, v);
-                    }}
-                    style={{
-                      width: 60,
-                      height: 28,
-                      textAlign: "center",
-                      border: "1px solid #d1d5db",
-                    }}
-                  />
-                  <button
-                    type="button"
-                    onClick={() => updateQuantity(item.id, item.quantity + 1)}
-                    style={{
-                      width: 28,
-                      height: 28,
-                      border: "1px solid #d1d5db",
-                      background: "#fff",
-                      cursor: "pointer",
-                    }}
-                    aria-label="Menge erhöhen"
-                  >
-                    +
-                  </button>
-                  <button
-                    type="button"
-                    onClick={() => removeItem(item.id)}
-                    style={{
-                      marginLeft: 8,
-                      background: "transparent",
-                      border: "none",
-                      color: "#dc2626",
-                      cursor: "pointer",
-                      fontSize: 12,
-                      textDecoration: "underline",
-                    }}
-                  >
-                    Entfernen
-                  </button>
-                </div>
+                {/* Beden varsa: dağıtım kutuları, yoksa: normal +/- adet */}
+                {item.availableSizes && item.availableSizes.length > 0 ? (
+                  <>
+                    <CartSizeDistributor
+                      itemId={item.id}
+                      availableSizes={item.availableSizes}
+                      sizeBreakdown={item.sizeBreakdown || {}}
+                      quantity={item.quantity}
+                      minOrderQty={item.minOrderQty || 1}
+                    />
+                    <button
+                      type="button"
+                      onClick={() => removeItem(item.id)}
+                      style={{
+                        marginTop: 8,
+                        background: "transparent",
+                        border: "none",
+                        color: "#dc2626",
+                        cursor: "pointer",
+                        fontSize: 12,
+                        textDecoration: "underline",
+                      }}
+                    >
+                      Entfernen
+                    </button>
+                  </>
+                ) : (
+                  <div style={{ display: "flex", alignItems: "center", gap: 8, marginTop: 10 }}>
+                    <button
+                      type="button"
+                      onClick={() => updateQuantity(item.id, item.quantity - 1)}
+                      style={{
+                        width: 28,
+                        height: 28,
+                        border: "1px solid #d1d5db",
+                        background: "#fff",
+                        cursor: "pointer",
+                      }}
+                      aria-label="Menge verringern"
+                    >
+                      −
+                    </button>
+                    <input
+                      type="number"
+                      min={1}
+                      value={item.quantity}
+                      onChange={(e) => {
+                        const v = parseInt(e.target.value, 10);
+                        if (!isNaN(v) && v > 0) updateQuantity(item.id, v);
+                      }}
+                      style={{
+                        width: 60,
+                        height: 28,
+                        textAlign: "center",
+                        border: "1px solid #d1d5db",
+                      }}
+                    />
+                    <button
+                      type="button"
+                      onClick={() => updateQuantity(item.id, item.quantity + 1)}
+                      style={{
+                        width: 28,
+                        height: 28,
+                        border: "1px solid #d1d5db",
+                        background: "#fff",
+                        cursor: "pointer",
+                      }}
+                      aria-label="Menge erhöhen"
+                    >
+                      +
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => removeItem(item.id)}
+                      style={{
+                        marginLeft: 8,
+                        background: "transparent",
+                        border: "none",
+                        color: "#dc2626",
+                        cursor: "pointer",
+                        fontSize: 12,
+                        textDecoration: "underline",
+                      }}
+                    >
+                      Entfernen
+                    </button>
+                  </div>
+                )}
               </div>
 
               <div style={{ textAlign: "right" }}>

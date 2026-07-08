@@ -3047,6 +3047,16 @@ body:has(.home-services) footer.site{margin-top:0}
 .det-tier-qty{font-weight:600;color:inherit;opacity:.9}
 .det-tier-price{font-weight:800;font-size:.84rem}
 
+/* Tek adet girişi (bedenler sepette) */
+.det-order-qty-single{margin-bottom:14px}
+.det-order-qty-single label{display:flex;flex-direction:column;gap:6px}
+.det-order-qty-label{display:flex;justify-content:space-between;align-items:baseline;
+  font-size:.82rem;font-weight:600;color:#0f1a16}
+.det-order-qty-hint{font-size:.72rem;font-weight:400;color:#5a6660;font-style:italic}
+.det-order-qty-single input{padding:12px 14px;border:1.5px solid #d9ddd5;border-radius:8px;
+  font-size:1.1rem;font-weight:700;color:#0f1a16;width:100%;transition:border-color .15s}
+.det-order-qty-single input:focus{outline:none;border-color:#004537}
+
 /* Staffelpreise — variante içinde, aktif tier işaretli */
 .det-staffel{background:#fff;border:1px solid #e8e8e6;border-radius:10px;padding:14px;margin-bottom:12px}
 .det-staffel-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px}

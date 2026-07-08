@@ -20,6 +20,8 @@ export type CartItem = {
   quantity: number;
   unitPriceCents: number; // 0 = "Preis auf Anfrage"
   minOrderQty?: number; // Mindestbestellmenge
+  availableSizes?: string[]; // Ürünün mevcut bedenleri: ["XS","S","M",...]
+  sizeBreakdown?: Record<string, number>; // Beden dağılımı: {S:5, M:10, L:10}
   // DTF eklemeleri
   hasDtf: boolean;
   dtfSize: string;
@@ -34,6 +36,7 @@ type CartContextValue = {
   addItem: (item: Omit<CartItem, "id">) => void;
   removeItem: (id: string) => void;
   updateQuantity: (id: string, qty: number) => void;
+  updateSizeBreakdown: (id: string, breakdown: Record<string, number>) => void;
   clearCart: () => void;
   isLoaded: boolean;
 };
@@ -100,6 +103,17 @@ export function CartProvider({ children }: { children: ReactNode }) {
     );
   }, []);
 
+  // Beden dağılımını güncelle — quantity otomatik toplamla senkronize olur
+  const updateSizeBreakdown = useCallback((id: string, breakdown: Record<string, number>) => {
+    setItems((cur) =>
+      cur.map((i) => {
+        if (i.id !== id) return i;
+        const total = Object.values(breakdown).reduce((s, n) => s + (n || 0), 0);
+        return { ...i, sizeBreakdown: breakdown, quantity: total };
+      })
+    );
+  }, []);
+
   const clearCart = useCallback(() => {
     setItems([]);
   }, []);
@@ -119,6 +133,7 @@ export function CartProvider({ children }: { children: ReactNode }) {
         addItem,
         removeItem,
         updateQuantity,
+        updateSizeBreakdown,
         clearCart,
         isLoaded,
       }}

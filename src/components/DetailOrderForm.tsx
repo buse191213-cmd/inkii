@@ -195,11 +195,11 @@ export default function DetailOrderForm({
   function handleAddToCart() {
     setErr("");
     if (totalQty === 0) {
-      setErr("Bitte mindestens eine Menge eintragen.");
+      setErr("Bitte eine Menge eintragen.");
       return;
     }
     if (totalQty < minOrderQty) {
-      setErr(`Für dieses Produkt beträgt die Mindestmenge ${minOrderQty}. Bitte aktualisieren Sie die Menge oder die Größen.`);
+      setErr(`Für dieses Produkt beträgt die Mindestmenge ${minOrderQty}. Bitte erhöhen Sie die Menge.`);
       return;
     }
     const priceCents = unitCents ?? 0; // null = 0 (Angebot wird erstellt)
@@ -210,47 +210,26 @@ export default function DetailOrderForm({
     const dtfDesignCombined = transferEnabled
       ? JSON.stringify({ front: designUrls.front, back: designUrls.back })
       : "";
-    // Pro Größe (oder Standard) eine Cart-Position anlegen
-    if (sizes.length === 0) {
-      addToCart({
-        productId,
-        productCode,
-        productName,
-        productImage: productImage ?? "",
-        color: selectedColor ?? "",
-        size: "",
-        quantity: qty["__default"] || 0,
-        unitPriceCents: priceCents,
-        minOrderQty,
-        hasDtf: transferEnabled && transferSidesCount > 0,
-        dtfSize: dtfSizeLabel,
-        dtfPriceCents: transferCostCents,
-        dtfDesignUrl: dtfDesignCombined,
-      });
-    } else {
-      for (const s of sizes) {
-        const q = qty[s.name] || 0;
-        if (q > 0) {
-          const sizePrice = s.extraCents > 0 ? s.extraCents : (basePriceCents ?? 0);
-          const effective = priceCents > 0 ? Math.round(sizePrice * effectiveRatio) : 0;
-          addToCart({
-            productId,
-            productCode,
-            productName,
-            productImage: productImage ?? "",
-            color: selectedColor ?? "",
-            size: s.name,
-            quantity: q,
-            unitPriceCents: effective,
-            minOrderQty,
-            hasDtf: transferEnabled && transferSidesCount > 0,
-            dtfSize: dtfSizeLabel,
-            dtfPriceCents: transferCostCents,
-            dtfDesignUrl: dtfDesignCombined,
-          });
-        }
-      }
-    }
+
+    // TEK cart item — bedenler sepette girilecek
+    const availableSizes = sizes.map((s) => s.name);
+    addToCart({
+      productId,
+      productCode,
+      productName,
+      productImage: productImage ?? "",
+      color: selectedColor ?? "",
+      size: "",
+      quantity: totalQty,
+      unitPriceCents: priceCents,
+      minOrderQty,
+      availableSizes: availableSizes.length > 0 ? availableSizes : undefined,
+      sizeBreakdown: undefined, // sepette doldurulacak
+      hasDtf: transferEnabled && transferSidesCount > 0,
+      dtfSize: dtfSizeLabel,
+      dtfPriceCents: transferCostCents,
+      dtfDesignUrl: dtfDesignCombined,
+    });
     setAddedToCart(true);
     setTimeout(() => setAddedToCart(false), 3000);
   }
@@ -260,8 +239,8 @@ export default function DetailOrderForm({
   return (
     <div className="det-order">
       <div className="det-order-head">
-        <h3>Variante wählen & merken</h3>
-        <p>Wählen Sie Farbe und Wunschmengen — sammeln Sie alle Varianten auf dem Merkzettel. Die finale Anfrage senden Sie dort gebündelt ab.</p>
+        <h3>Farbe, Menge & Design wählen</h3>
+        <p>Wählen Sie Farbe und Menge. Die Größenverteilung (z.&nbsp;B. S, M, L) legen Sie anschließend im Warenkorb fest.</p>
       </div>
 
       {/* Farbauswahl */}
@@ -304,50 +283,26 @@ export default function DetailOrderForm({
         </div>
       )}
 
-      {/* Größen + Mengen */}
-      {sizes.length > 0 ? (
-        <div className="det-order-sizes">
-          {sizes.map((s) => (
-            <label key={s.name} className="det-order-size">
-              <span className="det-order-size-name">{s.name}</span>
-              {s.extraCents > 0 && s.extraCents !== baseCents && (
-                <span className={`det-order-size-extra${s.extraCents < baseCents ? " neg" : ""}`}>
-                  €{euro(s.extraCents)}<em>/Stk</em>
-                  {effectiveRatio < 1 && (
-                    <em className="det-extra-eff">
-                      bei Menge: €{euro(Math.round(s.extraCents * effectiveRatio))}
-                    </em>
-                  )}
-                </span>
-              )}
-              <input
-                type="number"
-                inputMode="numeric"
-                min="0"
-                step="1"
-                value={qty[s.name] || ""}
-                onChange={(e) => setSizeQty(s.name, parseInt(e.target.value || "0", 10))}
-                placeholder="0"
-              />
-            </label>
-          ))}
-        </div>
-      ) : (
-        <div className="det-order-sizes single">
-          <label className="det-order-size">
-            <span className="det-order-size-name">Menge</span>
-            <input
-              type="number"
-              inputMode="numeric"
-              min="0"
-              step="1"
-              value={qty["__default"] || ""}
-              onChange={(e) => setSizeQty("__default", parseInt(e.target.value || "0", 10))}
-              placeholder="0"
-            />
-          </label>
-        </div>
-      )}
+      {/* Menge — tek adet girişi (bedenler sepette dağıtılır) */}
+      <div className="det-order-qty-single">
+        <label>
+          <span className="det-order-qty-label">
+            Menge (Stück)
+            {sizes.length > 0 && (
+              <span className="det-order-qty-hint">Größen wählen Sie im Warenkorb</span>
+            )}
+          </span>
+          <input
+            type="number"
+            inputMode="numeric"
+            min="0"
+            step="1"
+            value={qty["__default"] || ""}
+            onChange={(e) => setSizeQty("__default", parseInt(e.target.value || "0", 10))}
+            placeholder={minOrderQty > 1 ? `min. ${minOrderQty}` : "0"}
+          />
+        </label>
+      </div>
 
       {/* Staffelpreise — aktif tier işaretli */}
       {tiers.length > 0 && (
