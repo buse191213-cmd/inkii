@@ -94,10 +94,9 @@ async function removeWhiteBackground(dataUrl: string): Promise<string> {
         const total = w * h;
 
         // 4 KENARDAN örnekleyerek arka plan rengini/parlaklığını tespit et
-        // Bu adaptive threshold — kullanıcının logosuna göre otomatik ayarlanır
         let edgeBrightSum = 0;
         let edgeSampleCount = 0;
-        let edgeMinBrightness = 255;
+        let edgeMax = 0;
 
         const sampleEdge = (idx: number) => {
           const i = idx * 4;
@@ -105,47 +104,38 @@ async function removeWhiteBackground(dataUrl: string): Promise<string> {
           const brightness = (r + g + b) / 3;
           edgeBrightSum += brightness;
           edgeSampleCount++;
-          if (brightness < edgeMinBrightness) edgeMinBrightness = brightness;
+          if (brightness > edgeMax) edgeMax = brightness;
         };
 
-        // Üst ve alt kenar
         for (let x = 0; x < w; x++) {
-          sampleEdge(x);              // top
-          sampleEdge((h - 1) * w + x); // bottom
+          sampleEdge(x);
+          sampleEdge((h - 1) * w + x);
         }
-        // Sol ve sağ kenar
         for (let y = 0; y < h; y++) {
-          sampleEdge(y * w);          // left
-          sampleEdge(y * w + (w - 1)); // right
+          sampleEdge(y * w);
+          sampleEdge(y * w + (w - 1));
         }
 
         const edgeAvg = edgeBrightSum / edgeSampleCount;
 
-        // Threshold: kenarların ortalamasından 30 aşağı, ama minimum 180
-        // Eğer kenarlar zaten çok açıksa (255 gibi) → threshold 225 civarı
-        // Eğer kenarlar orta parlaklıksa → daha agresif
-        const threshold = Math.max(180, Math.min(240, edgeAvg - 25));
+        // Threshold: kenar ortalamasından 40 aşağı, ama min 160
+        // Daha agresif — beyaz olmayan (240 civarı) arka planları da yakalar
+        const threshold = Math.max(160, edgeAvg - 40);
 
-        console.log(`[BG Remove] Edge avg: ${edgeAvg.toFixed(1)}, min: ${edgeMinBrightness}, threshold: ${threshold.toFixed(1)}`);
+        console.log(`[BG Remove] Edge avg: ${edgeAvg.toFixed(1)}, max: ${edgeMax}, threshold: ${threshold.toFixed(1)}`);
 
-        // Eğer kenarlar zaten koyu ise (< 150), muhtemelen transparant PNG,
-        // arka plan yok — hiçbir şey yapma
-        if (edgeAvg < 150) {
-          console.log("[BG Remove] Edge avg too low, no bg to remove");
+        if (edgeAvg < 130) {
+          console.log("[BG Remove] Edge too dark, no bg to remove");
           resolve(dataUrl);
           return;
         }
 
-        // Bir pikselin "arka plan" olarak sayılıp sayılmayacağı
+        // Basit isBg: sadece parlaklık kontrolü
         const isBg = (idx: number): boolean => {
           const i = idx * 4;
           const r = data[i], g = data[i + 1], b = data[i + 2];
           const brightness = (r + g + b) / 3;
-          // Renk saturasyonu düşük (gri/beyaz) VE parlak
-          const maxC = Math.max(r, g, b);
-          const minC = Math.min(r, g, b);
-          const saturation = maxC > 0 ? (maxC - minC) / maxC : 0;
-          return brightness > threshold && saturation < 0.15;
+          return brightness > threshold;
         };
 
         // Ziyaret edilen pikseller
@@ -509,6 +499,89 @@ export default function ProductGallery({
   };
 
   const [bgProcessing, setBgProcessing] = useState(false);
+  const [downloadProcessing, setDownloadProcessing] = useState(false);
+
+  // Mockup indirme — t-shirt + design'ı compose ederek PNG olarak indirir
+  const handleDownloadMockup = useCallback(async () => {
+    if (downloadProcessing) return;
+    if (!activeImage) return;
+    setDownloadProcessing(true);
+    try {
+      const OUT_SIZE = 1200;
+
+      // Ürün görselini yükle (crossOrigin ile)
+      const productImg = await new Promise<HTMLImageElement>((resolve, reject) => {
+        const im = new window.Image();
+        im.crossOrigin = "anonymous";
+        im.onload = () => resolve(im);
+        im.onerror = () => reject(new Error("Ürün görseli yüklenemedi"));
+        im.src = activeImage;
+      });
+
+      const canvas = document.createElement("canvas");
+      canvas.width = OUT_SIZE;
+      canvas.height = OUT_SIZE;
+      const ctx = canvas.getContext("2d");
+      if (!ctx) throw new Error("Canvas context error");
+
+      // Beyaz zemin (t-shirt fotoğrafı transparent bg'liyse)
+      ctx.fillStyle = "#ffffff";
+      ctx.fillRect(0, 0, OUT_SIZE, OUT_SIZE);
+
+      // Ürün görselini contain olarak çiz
+      const prodAspect = productImg.width / productImg.height;
+      let pw = OUT_SIZE, ph = OUT_SIZE, px = 0, py = 0;
+      if (prodAspect > 1) {
+        ph = OUT_SIZE / prodAspect;
+        py = (OUT_SIZE - ph) / 2;
+      } else {
+        pw = OUT_SIZE * prodAspect;
+        px = (OUT_SIZE - pw) / 2;
+      }
+      ctx.drawImage(productImg, px, py, pw, ph);
+
+      // Design varsa çiz
+      if (currentDesign) {
+        const designImg = await new Promise<HTMLImageElement>((resolve, reject) => {
+          const im = new window.Image();
+          im.onload = () => resolve(im);
+          im.onerror = () => reject(new Error("Design yüklenemedi"));
+          im.src = currentDesign.imageDataUrl;
+        });
+
+        // Canvas'a göre design boyutu ve konumu
+        const dw = (currentDesign.width / 100) * OUT_SIZE;
+        const dh = dw / currentDesign.imageAspect;
+        const dx = (currentDesign.x / 100) * OUT_SIZE;
+        const dy = (currentDesign.y / 100) * OUT_SIZE;
+
+        ctx.save();
+        ctx.translate(dx, dy);
+        ctx.rotate((currentDesign.rotation * Math.PI) / 180);
+        ctx.drawImage(designImg, -dw / 2, -dh / 2, dw, dh);
+        ctx.restore();
+      }
+
+      // Blob oluştur ve indir
+      const blob = await new Promise<Blob>((resolve, reject) => {
+        canvas.toBlob((b) => (b ? resolve(b) : reject(new Error("Blob error"))), "image/png");
+      });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      const safeName = name.replace(/[^a-z0-9]/gi, "-").toLowerCase().substring(0, 40);
+      a.download = `${safeName}-${side === "front" ? "vorderseite" : "rueckseite"}-mockup.png`;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+    } catch (err) {
+      console.error("Mockup download failed:", err);
+      alert("Mockup konnte nicht erstellt werden. Bitte versuchen Sie es erneut.");
+    } finally {
+      setDownloadProcessing(false);
+    }
+  }, [activeImage, currentDesign, downloadProcessing, name, side]);
   const handleToggleBg = async () => {
     if (!currentDesign || bgProcessing) return;
 
@@ -692,6 +765,24 @@ export default function ProductGallery({
                   </svg>
                   <span className="gal-ctrl-bg-label">BG</span>
                 </>
+              )}
+            </button>
+            <div className="gal-ctrl-sep" />
+            <button
+              type="button"
+              className={`gal-ctrl-btn gal-ctrl-download${downloadProcessing ? " loading" : ""}`}
+              onClick={handleDownloadMockup}
+              disabled={downloadProcessing}
+              title="Mockup als PNG herunterladen"
+            >
+              {downloadProcessing ? (
+                <span className="gal-ctrl-spinner" />
+              ) : (
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                  <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+                  <polyline points="7 10 12 15 17 10"/>
+                  <line x1="12" y1="15" x2="12" y2="3"/>
+                </svg>
               )}
             </button>
             <div className="gal-ctrl-sep" />
@@ -1016,6 +1107,10 @@ export default function ProductGallery({
           font-size: 0.65rem;
           font-weight: 700;
           letter-spacing: 0.5px;
+        }
+        .gal-ctrl-download.loading {
+          opacity: 0.7;
+          cursor: wait;
         }
         .gal-ctrl-size {
           display: inline-flex;
