@@ -125,36 +125,11 @@ export default function DetailOrderForm({
 
   const subtotalCents = useMemo(() => {
     if (unitCents == null) return null;
-    // NEUE LOGIK (Mai 2026):
-    // Das Feld `extraCents` einer Größe ist jetzt der ABSOLUTE Stückpreis dieser Größe.
-    //   0  → wie Basispreis (kein Unterschied)
-    //   >0 → eigener Stückpreis (z. B. XL kostet €1,50 statt €1,00 Basis)
-    // Der Mengenrabatt aus den PriceTiers (z. B. 30 Stk → €0,85 statt €1,00)
-    // wird ANTEILIG (Faktor = unitCents/basePriceCents) auf jeden Größen-Stückpreis übertragen.
-    // Beispiel: Basis €1,00, 30-Stk-Staffel €0,85 (Faktor 0,85), XL Stückpreis €1,50
-    //   → XL effektiv: €1,50 × 0,85 = €1,28/Stk
-    const baseCents = basePriceCents ?? unitCents;
-    const ratio = baseCents > 0 ? unitCents / baseCents : 1;
-    let sum = 0;
-    if (sizes.length === 0) {
-      sum = (qty["__default"] || 0) * unitCents;
-    } else {
-      for (const s of sizes) {
-        const q = qty[s.name] || 0;
-        if (q > 0) {
-          // Wenn extraCents=0 → Basispreis verwenden; sonst dieser absolute Stückpreis
-          const sizePrice = s.extraCents > 0 ? s.extraCents : baseCents;
-          const effectivePrice = Math.round(sizePrice * ratio);
-          sum += q * effectivePrice;
-        }
-      }
-    }
-    return sum;
-  }, [qty, sizes, unitCents, basePriceCents]);
-
-  const baseCents = basePriceCents ?? unitCents ?? 0;
-  const effectiveRatio =
-    baseCents > 0 && unitCents != null ? unitCents / baseCents : 1;
+    // YENİ AKIŞ (2026): Bedenler sepette dağıtılıyor, formda TEK adet var.
+    // Bu yüzden Gesamt = toplam adet × aktif tier fiyatı (base).
+    // Beden özel fiyatları sepette hesaplanır (burada henüz beden yok).
+    return totalQty * unitCents;
+  }, [totalQty, unitCents]);
 
   function setSizeQty(name: string, value: number) {
     setSizeQtyState(name, Math.max(0, Math.floor(value || 0)));
@@ -445,11 +420,9 @@ export default function DetailOrderForm({
         <div className="det-summary-row det-summary-total">
           <span className="det-summary-lbl">Gesamt:</span>
           <span className="det-summary-val-big">
-            {totalQty > 0 && unitCents != null
-              ? `€${euro((subtotalCents ?? unitCents * totalQty) + transferCostCents * totalQty)}`
-              : totalQty > 0 && transferCostCents > 0
-                ? `€${euro(transferCostCents * totalQty)} + Produktpreis`
-                : "—"}
+            {totalQty > 0 && subtotalCents != null
+              ? `€${euro(subtotalCents + transferCostCents * totalQty)}`
+              : "—"}
           </span>
         </div>
         {transferEnabled && transferSidesCount === 0 && (
