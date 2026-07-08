@@ -1,6 +1,8 @@
 import { getCurrentCustomer } from "@/lib/customer-auth";
 import { db } from "@/lib/db";
 import Link from "next/link";
+import { getLocale } from "@/lib/i18n-server";
+import { getDictionary } from "@/dictionaries";
 
 export const metadata = { title: "Übersicht | Mein Konto | INKII Works" };
 export const dynamic = "force-dynamic";
@@ -12,22 +14,26 @@ function germanDate(d: Date): string {
   return d.toLocaleDateString("de-DE", { day: "2-digit", month: "2-digit", year: "numeric" });
 }
 
-// SOFT PASTEL STATUS
-const STATUS: Record<string, { label: string; bg: string; color: string }> = {
-  NEU:            { label: "Neu",            bg: "#e0e7ff", color: "#3730a3" },
-  WARTEND:        { label: "Wartend",        bg: "#fef3c7", color: "#92400e" },
-  BEZAHLT:        { label: "Bezahlt",        bg: "#d1fae5", color: "#065f46" },
-  IN_PRODUKTION:  { label: "In Produktion",  bg: "#f3e8ff", color: "#6b21a8" },
-  VERSANDBEREIT:  { label: "Versandbereit",  bg: "#fed7aa", color: "#9a3412" },
-  VERSENDET:      { label: "Versendet",      bg: "#dbeafe", color: "#1e40af" },
-  ZUGESTELLT:     { label: "Zugestellt",     bg: "#d1fae5", color: "#065f46" },
-  ABGESCHLOSSEN:  { label: "Abgeschlossen",  bg: "#f1f5f9", color: "#475569" },
-  STORNIERT:      { label: "Storniert",      bg: "#fee2e2", color: "#991b1b" },
+// Status renkleri (label çeviriden gelir)
+const STATUS_COLORS: Record<string, { bg: string; color: string; key: string }> = {
+  NEU:            { bg: "#e0e7ff", color: "#3730a3", key: "neu" },
+  WARTEND:        { bg: "#fef3c7", color: "#92400e", key: "wartend" },
+  BEZAHLT:        { bg: "#d1fae5", color: "#065f46", key: "bezahlt" },
+  IN_PRODUKTION:  { bg: "#f3e8ff", color: "#6b21a8", key: "inProduktion" },
+  VERSANDBEREIT:  { bg: "#fed7aa", color: "#9a3412", key: "versandbereit" },
+  VERSENDET:      { bg: "#dbeafe", color: "#1e40af", key: "versendet" },
+  ZUGESTELLT:     { bg: "#d1fae5", color: "#065f46", key: "zugestellt" },
+  ABGESCHLOSSEN:  { bg: "#f1f5f9", color: "#475569", key: "abgeschlossen" },
+  STORNIERT:      { bg: "#fee2e2", color: "#991b1b", key: "storniert" },
 };
 
 export default async function KontoUebersichtPage() {
   const customer = await getCurrentCustomer();
   if (!customer) return null;
+
+  const locale = await getLocale();
+  const dict = getDictionary(locale);
+  const tk = dict.konto;
 
   const [orders, anfrageCount] = await Promise.all([
     db.order.findMany({
@@ -49,16 +55,16 @@ export default async function KontoUebersichtPage() {
     <>
       {/* Stats Row */}
       <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(160px, 1fr))", gap: 0, marginBottom: 50, border: "1px solid #e5e5e5", borderRadius: 4 }}>
-        <StatCard href="/konto/bestellungen" label="Bestellungen" value={String(totalOrders)} />
-        <StatCard href="/konto/anfragen" label="Anfragen" value={String(anfrageCount)} />
-        <StatCard label="Gesamtumsatz" value={`${euro(totalSpent._sum.totalCents ?? 0)} €`} />
-        <StatCard label="Kunde seit" value={germanDate(customer.createdAt)} last />
+        <StatCard href="/konto/bestellungen" label={tk.stats.bestellungen} value={String(totalOrders)} />
+        <StatCard href="/konto/anfragen" label={tk.stats.anfragen} value={String(anfrageCount)} />
+        <StatCard label={tk.stats.gesamtumsatz} value={`${euro(totalSpent._sum.totalCents ?? 0)} €`} />
+        <StatCard label={tk.stats.kundeSeit} value={germanDate(customer.createdAt)} last />
       </div>
 
       {/* Bestellungen Block */}
       <div>
         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline", marginBottom: 20 }}>
-          <h2 style={titleStyle}>Letzte Bestellungen</h2>
+          <h2 style={titleStyle}>{tk.letzteBestellungen}</h2>
           <Link href="/konto/bestellungen" style={{
             fontSize: 11,
             color: "#0f1a16",
@@ -67,7 +73,7 @@ export default async function KontoUebersichtPage() {
             textTransform: "uppercase",
             fontWeight: 600,
           }}>
-            Alle anzeigen
+            {tk.alleAnzeigen}
           </Link>
         </div>
 
@@ -76,7 +82,7 @@ export default async function KontoUebersichtPage() {
         ) : (
           <div style={{ border: "1px solid #e5e5e5", borderRadius: 4 }}>
             {orders.map((o, idx) => {
-              const s = STATUS[o.status] || { label: o.status, bg: "#f5f5f5", color: "#666" };
+              const sc = STATUS_COLORS[o.status]; const s = sc ? { label: tk.status[sc.key as keyof typeof tk.status], bg: sc.bg, color: sc.color } : { label: o.status, bg: "#f5f5f5", color: "#666" };
               return (
                 <Link
                   key={o.id}
@@ -178,7 +184,7 @@ function StatCard({ href, label, value, last }: { href?: string; label: string; 
 function EmptyState() {
   return (
     <div style={{ padding: "60px 30px", textAlign: "center", border: "1px solid #e5e5e5", borderRadius: 4 }}>
-      <p style={{ color: "#666", marginBottom: 20, fontSize: 14 }}>Noch keine Bestellungen.</p>
+      <p style={{ color: "#666", marginBottom: 20, fontSize: 14 }}>{tk.keineBestellungen}</p>
       <Link href="/werbemittel" style={{
         display: "inline-block",
         background: "#0f1a16",

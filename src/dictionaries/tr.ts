@@ -721,6 +721,24 @@ const tr: Dictionary = {
     stueck: "Adet",
     noch: "kalan",
   },
+  konto: {
+    nav: {
+      uebersicht: "Genel Bakış", bestellungen: "Siparişler", anfragen: "Talepler",
+      adressen: "Adresler", profil: "Profil", sicherheit: "Güvenlik", abmelden: "Çıkış",
+    },
+    stats: {
+      bestellungen: "Siparişler", anfragen: "Talepler",
+      gesamtumsatz: "Toplam ciro", kundeSeit: "Müşteri olma",
+    },
+    letzteBestellungen: "Son siparişler",
+    keineBestellungen: "Henüz sipariş yok.",
+    alleAnzeigen: "Tümünü göster →",
+    status: {
+      neu: "Yeni", wartend: "Bekliyor", bezahlt: "Ödendi", inProduktion: "Üretimde",
+      versandbereit: "Sevkiyata hazır", versendet: "Gönderildi", zugestellt: "Teslim edildi",
+      abgeschlossen: "Tamamlandı", storniert: "İptal edildi",
+    },
+  },
 };
 
 export default tr;

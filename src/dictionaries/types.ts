@@ -566,4 +566,29 @@ export type Dictionary = {
     stueck: string;
     noch: string;
   };
+  konto: {
+    nav: {
+      uebersicht: string;
+      bestellungen: string;
+      anfragen: string;
+      adressen: string;
+      profil: string;
+      sicherheit: string;
+      abmelden: string;
+    };
+    stats: {
+      bestellungen: string;
+      anfragen: string;
+      gesamtumsatz: string;
+      kundeSeit: string;
+    };
+    letzteBestellungen: string;
+    keineBestellungen: string;
+    alleAnzeigen: string;
+    status: {
+      neu: string; wartend: string; bezahlt: string; inProduktion: string;
+      versandbereit: string; versendet: string; zugestellt: string;
+      abgeschlossen: string; storniert: string;
+    };
+  };
 };

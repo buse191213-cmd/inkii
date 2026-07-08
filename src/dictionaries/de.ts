@@ -721,6 +721,24 @@ const de: Dictionary = {
     stueck: "Stück",
     noch: "noch",
   },
+  konto: {
+    nav: {
+      uebersicht: "Übersicht", bestellungen: "Bestellungen", anfragen: "Anfragen",
+      adressen: "Adressen", profil: "Profil", sicherheit: "Sicherheit", abmelden: "Abmelden",
+    },
+    stats: {
+      bestellungen: "Bestellungen", anfragen: "Anfragen",
+      gesamtumsatz: "Gesamtumsatz", kundeSeit: "Kunde seit",
+    },
+    letzteBestellungen: "Letzte Bestellungen",
+    keineBestellungen: "Noch keine Bestellungen.",
+    alleAnzeigen: "Alle anzeigen →",
+    status: {
+      neu: "Neu", wartend: "Wartend", bezahlt: "Bezahlt", inProduktion: "In Produktion",
+      versandbereit: "Versandbereit", versendet: "Versendet", zugestellt: "Zugestellt",
+      abgeschlossen: "Abgeschlossen", storniert: "Storniert",
+    },
+  },
 };
 
 export default de;

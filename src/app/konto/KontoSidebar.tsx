@@ -4,11 +4,12 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useTransition } from "react";
 import { logoutCustomer } from "../login/auth-actions";
+import type { Dictionary } from "@/dictionaries/types";
 
 const NAV = [
   {
     href: "/konto",
-    label: "Übersicht",
+    key: "uebersicht" as const,
     icon: (
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.5} strokeLinecap="round" strokeLinejoin="round">
         <rect x="3" y="3" width="7" height="9" rx="1" />
@@ -20,7 +21,7 @@ const NAV = [
   },
   {
     href: "/konto/bestellungen",
-    label: "Bestellungen",
+    key: "bestellungen" as const,
     icon: (
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.5} strokeLinecap="round" strokeLinejoin="round">
         <path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z" />
@@ -31,7 +32,7 @@ const NAV = [
   },
   {
     href: "/konto/anfragen",
-    label: "Anfragen",
+    key: "anfragen" as const,
     icon: (
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.5} strokeLinecap="round" strokeLinejoin="round">
         <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z" />
@@ -41,7 +42,7 @@ const NAV = [
   },
   {
     href: "/konto/adressen",
-    label: "Adressen",
+    key: "adressen" as const,
     icon: (
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.5} strokeLinecap="round" strokeLinejoin="round">
         <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z" />
@@ -51,7 +52,7 @@ const NAV = [
   },
   {
     href: "/konto/profil",
-    label: "Profil",
+    key: "profil" as const,
     icon: (
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.5} strokeLinecap="round" strokeLinejoin="round">
         <path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2" />
@@ -61,7 +62,7 @@ const NAV = [
   },
   {
     href: "/konto/sicherheit",
-    label: "Sicherheit",
+    key: "sicherheit" as const,
     icon: (
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.5} strokeLinecap="round" strokeLinejoin="round">
         <rect x="3" y="11" width="18" height="11" rx="2" />
@@ -71,7 +72,7 @@ const NAV = [
   },
 ];
 
-export default function KontoSidebar({ customerName, customerEmail }: { customerName: string; customerEmail: string }) {
+export default function KontoSidebar({ customerName, customerEmail, t }: { customerName: string; customerEmail: string; t: Dictionary["konto"]["nav"] }) {
   const pathname = usePathname();
   const [isPending, startTransition] = useTransition();
   const initials = customerName.split(" ").map(s => s[0]).filter(Boolean).slice(0, 2).join("").toUpperCase();
@@ -172,7 +173,7 @@ export default function KontoSidebar({ customerName, customerEmail }: { customer
                 flexShrink: 0,
                 display: "inline-flex",
               }}>{item.icon}</span>
-              {item.label}
+              {t[item.key]}
             </Link>
           );
         })}
@@ -199,7 +200,7 @@ export default function KontoSidebar({ customerName, customerEmail }: { customer
             borderRadius: 4,
           }}
         >
-          {isPending ? "…" : "Abmelden"}
+          {isPending ? "…" : t.abmelden}
         </button>
       </div>
 

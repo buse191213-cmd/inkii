@@ -1,5 +1,7 @@
 import { getCurrentCustomer } from "@/lib/customer-auth";
 import { redirect } from "next/navigation";
+import { getLocale } from "@/lib/i18n-server";
+import { getDictionary } from "@/dictionaries";
 import KontoSidebar from "./KontoSidebar";
 
 export default async function KontoLayout({
@@ -11,6 +13,11 @@ export default async function KontoLayout({
   if (!customer) redirect("/login?next=/konto");
   if (!customer.isActive) redirect("/konto/deaktiviert");
 
+  const locale = await getLocale();
+  const dict = getDictionary(locale);
+  const meinKonto = locale === "tr" ? "Hesabım" : locale === "en" ? "My Account" : "Mein Konto";
+  const hallo = locale === "tr" ? "Merhaba" : locale === "en" ? "Hello" : "Hallo";
+
   return (
     <div className="konto-shell">
       {/* SOL: Sidebar — Desktop'ta sticky, mobilde üstte */}
@@ -18,6 +25,7 @@ export default async function KontoLayout({
         <KontoSidebar
           customerName={`${customer.firstName} ${customer.lastName}`}
           customerEmail={customer.email}
+          t={dict.konto.nav}
         />
       </aside>
 
@@ -35,7 +43,7 @@ export default async function KontoLayout({
               margin: 0,
               marginBottom: 10,
             }}>
-              Mein Konto
+              {meinKonto}
             </p>
             <h1 style={{
               fontSize: "2rem",
@@ -44,7 +52,7 @@ export default async function KontoLayout({
               color: "#0f1a16",
               letterSpacing: "-0.02em",
             }}>
-              Hallo, {customer.firstName}
+              {hallo}, {customer.firstName}
             </h1>
           </div>
 

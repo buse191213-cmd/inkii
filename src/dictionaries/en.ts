@@ -721,6 +721,24 @@ const en: Dictionary = {
     stueck: "pcs",
     noch: "remaining",
   },
+  konto: {
+    nav: {
+      uebersicht: "Overview", bestellungen: "Orders", anfragen: "Inquiries",
+      adressen: "Addresses", profil: "Profile", sicherheit: "Security", abmelden: "Sign out",
+    },
+    stats: {
+      bestellungen: "Orders", anfragen: "Inquiries",
+      gesamtumsatz: "Total revenue", kundeSeit: "Customer since",
+    },
+    letzteBestellungen: "Recent orders",
+    keineBestellungen: "No orders yet.",
+    alleAnzeigen: "Show all →",
+    status: {
+      neu: "New", wartend: "Pending", bezahlt: "Paid", inProduktion: "In production",
+      versandbereit: "Ready to ship", versendet: "Shipped", zugestellt: "Delivered",
+      abgeschlossen: "Completed", storniert: "Cancelled",
+    },
+  },
 };
 
 export default en;
