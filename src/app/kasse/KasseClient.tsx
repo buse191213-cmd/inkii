@@ -122,6 +122,7 @@ export default function KasseClient({ paymentMethods, shipping, prefill, isLogge
   const [isPending, startTransition] = useTransition();
   const [generalError, setGeneralError] = useState<string>("");
   const [validationStarted, setValidationStarted] = useState(false);
+  const [isRedirecting, setIsRedirecting] = useState(false);
 
   // Refs for scroll-to-error
   const refs = {
@@ -163,6 +164,20 @@ export default function KasseClient({ paymentMethods, shipping, prefill, isLogge
     return (
       <section style={{ maxWidth: 1200, margin: "0 auto", padding: "60px 28px" }}>
         <p>Laden…</p>
+      </section>
+    );
+  }
+
+  if (isRedirecting) {
+    return (
+      <section style={{ maxWidth: 800, margin: "0 auto", padding: "100px 28px", textAlign: "center" }}>
+        <div style={{
+          width: 44, height: 44, margin: "0 auto 20px",
+          border: "3px solid #e5e7eb", borderTopColor: "#004537",
+          borderRadius: "50%", animation: "kasse-spin 0.8s linear infinite",
+        }} />
+        <p style={{ color: "#5a6660", fontSize: 15 }}>Ihre Bestellung wird verarbeitet…</p>
+        <style>{`@keyframes kasse-spin { to { transform: rotate(360deg); } }`}</style>
       </section>
     );
   }
@@ -313,9 +328,10 @@ export default function KasseClient({ paymentMethods, shipping, prefill, isLogge
       const result = await createOrder(buildOrderInput());
 
       if (result.ok && result.orderId && result.orderNumber) {
-        // Rechnung: direkt başarı sayfası
-        clearCart();
+        // Rechnung: direkt başarı sayfası — önce redirect flag, sonra temizle
+        setIsRedirecting(true);
         router.push(`/bestellung-erfolg?nr=${result.orderNumber}`);
+        clearCart();
       } else {
         setGeneralError(result.error ?? "Bestellung konnte nicht gespeichert werden.");
       }
@@ -807,8 +823,9 @@ export default function KasseClient({ paymentMethods, shipping, prefill, isLogge
                 amountCents={totalCents}
                 validateAndCreateOrder={validateAndCreateOrderForPayPal}
                 onSuccess={(orderNumber) => {
-                  clearCart();
+                  setIsRedirecting(true);
                   router.push(`/bestellung-erfolg?nr=${orderNumber}`);
+                  clearCart();
                 }}
                 disabled={isPending}
               />
