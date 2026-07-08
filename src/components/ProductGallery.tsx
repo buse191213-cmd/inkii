@@ -79,13 +79,40 @@ async function generateMockupDataUrl(
 ): Promise<string | null> {
   try {
     if (!productImageSrc) return null;
-    const productImg = await new Promise<HTMLImageElement>((resolve, reject) => {
-      const im = new window.Image();
-      im.crossOrigin = "anonymous";
-      im.onload = () => resolve(im);
-      im.onerror = () => reject(new Error("Ürün görseli yüklenemedi"));
-      im.src = productImageSrc;
-    });
+
+    // Ürün görselini yükle — CORS taint'i önlemek için fetch+blob dene
+    async function loadProductImage(src: string): Promise<HTMLImageElement> {
+      // 1) Önce fetch ile dataURL'e çevir (CORS taint bypass)
+      try {
+        const resp = await fetch(src, { mode: "cors" });
+        if (resp.ok) {
+          const blob = await resp.blob();
+          const dataUrl = await new Promise<string>((res, rej) => {
+            const r = new FileReader();
+            r.onload = () => res(r.result as string);
+            r.onerror = () => rej(new Error("read failed"));
+            r.readAsDataURL(blob);
+          });
+          return await new Promise<HTMLImageElement>((res, rej) => {
+            const im = new window.Image();
+            im.onload = () => res(im);
+            im.onerror = () => rej(new Error("img decode failed"));
+            im.src = dataUrl;
+          });
+        }
+      } catch { /* fetch başarısız → img fallback */ }
+
+      // 2) Fallback: crossOrigin img
+      return await new Promise<HTMLImageElement>((res, rej) => {
+        const im = new window.Image();
+        im.crossOrigin = "anonymous";
+        im.onload = () => res(im);
+        im.onerror = () => rej(new Error("img load failed"));
+        im.src = src;
+      });
+    }
+
+    const productImg = await loadProductImage(productImageSrc);
 
     const canvas = document.createElement("canvas");
     canvas.width = outSize;

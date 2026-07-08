@@ -251,7 +251,7 @@ export default function DetailOrderForm({
       dtfDesignUrl: dtfDesignCombined,
     });
     setAddedToCart(true);
-    setTimeout(() => setAddedToCart(false), 3000);
+    setTimeout(() => setAddedToCart(false), 6000);
   }
 
   const alreadyOn = has(productId, selectedColor);
