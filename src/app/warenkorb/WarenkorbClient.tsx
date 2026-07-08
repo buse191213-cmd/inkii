@@ -157,6 +157,7 @@ export default function WarenkorbClient() {
                       minOrderQty={item.minOrderQty || 1}
                       sizePrices={item.sizePrices}
                       basePriceCents={item.unitPriceCents}
+                      priceTiers={item.priceTiers}
                     />
                     <button
                       type="button"
@@ -243,9 +244,9 @@ export default function WarenkorbClient() {
                   {euro(cartItemTotalCents(item))} €
                 </div>
                 <div style={{ fontSize: 11, color: "#64748b", marginTop: 2 }}>
-                  {item.sizePrices && Object.keys(item.sizePrices).length > 0
-                    ? "inkl. Größenaufpreis"
-                    : `${euro(item.unitPriceCents + item.dtfPriceCents)} € / Stk`}
+                  {item.quantity > 0
+                    ? `Ø ${euro(Math.round(cartItemTotalCents(item) / item.quantity))} € / Stk`
+                    : "—"}
                 </div>
               </div>
             </div>

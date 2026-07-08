@@ -202,18 +202,12 @@ export default function DetailOrderForm({
       setErr(`Für dieses Produkt beträgt die Mindestmenge ${minOrderQty}. Bitte erhöhen Sie die Menge.`);
       return;
     }
-    const priceCents = unitCents ?? 0; // null = 0 (Angebot wird erstellt)
-    // Transfer bilgisi (design + fiyat)
-    const dtfSizeLabel = transferEnabled && transferSidesCount > 0
-      ? [designs.front ? "Vorne" : null, designs.back ? "Hinten" : null].filter(Boolean).join(" + ")
-      : "";
-    const dtfDesignCombined = transferEnabled
-      ? JSON.stringify({ front: designUrls.front, back: designUrls.back })
-      : "";
+    // HAM base fiyat (priceCents) — ratio uygulanmadan. Sepet dinamik hesaplar.
+    const rawBaseCents = basePriceCents ?? unitCents ?? 0;
 
     // TEK cart item — bedenler sepette girilecek
     const availableSizes = sizes.map((s) => s.name);
-    // Beden özel fiyatları (extraCents > 0 olanlar): {"2XL": 2500}
+    // Beden HAM özel fiyatları (extraCents > 0 olanlar): {"2XL": 2500}
     const sizePrices: Record<string, number> = {};
     for (const s of sizes) {
       if (s.extraCents && s.extraCents > 0) {
@@ -228,11 +222,12 @@ export default function DetailOrderForm({
       color: selectedColor ?? "",
       size: "",
       quantity: totalQty,
-      unitPriceCents: priceCents,
+      unitPriceCents: rawBaseCents, // HAM base — sepet tier'ı kendi hesaplar
       minOrderQty,
       availableSizes: availableSizes.length > 0 ? availableSizes : undefined,
       sizePrices: Object.keys(sizePrices).length > 0 ? sizePrices : undefined,
       sizeBreakdown: undefined, // sepette doldurulacak
+      priceTiers: tiers.length > 0 ? tiers.map((t) => ({ qty: t.qty, cents: t.cents })) : undefined,
       hasDtf: transferEnabled && transferSidesCount > 0,
       dtfSize: dtfSizeLabel,
       dtfPriceCents: transferCostCents,

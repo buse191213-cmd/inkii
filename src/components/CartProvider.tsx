@@ -18,11 +18,12 @@ export type CartItem = {
   color: string;
   size: string;
   quantity: number;
-  unitPriceCents: number; // 0 = "Preis auf Anfrage" — Staffel/base fiyat (beden fiyatı boşsa bu kullanılır)
+  unitPriceCents: number; // Basispreis (priceCents) — ratio uygulanmadan HAM base
   minOrderQty?: number; // Mindestbestellmenge
   availableSizes?: string[]; // Ürünün mevcut bedenleri: ["XS","S","M",...]
-  sizePrices?: Record<string, number>; // Beden bazlı özel fiyat (0/boş = unitPriceCents kullan): {"2XL": 2500}
+  sizePrices?: Record<string, number>; // Beden HAM özel fiyat (ratio uygulanmadan): {"2XL": 2500}
   sizeBreakdown?: Record<string, number>; // Beden dağılımı: {S:5, M:10, L:10}
+  priceTiers?: Array<{ qty: number; cents: number }>; // Mengenstaffel — dinamik indirim için
   // DTF eklemeleri
   hasDtf: boolean;
   dtfSize: string;
@@ -31,29 +32,56 @@ export type CartItem = {
 };
 
 /**
- * Bir cart kaleminin toplam fiyatını hesaplar.
- * Beden dağılımı varsa: her beden kendi fiyatından (yoksa unitPriceCents'ten).
- * Transfer (dtf) her adet için eklenir.
+ * Bir cart kaleminin toplam fiyatını hesaplar — DOĞRU tier + beden mantığı.
+ *
+ * Mantık:
+ * 1. Toplam adete göre aktif Staffel tier bulunur → indirim oranı (ratio) hesaplanır
+ *    ratio = tierFiyat / baseFiyat  (örn 100 adet → %11 indirim → ratio 0.89)
+ * 2. Her beden için:
+ *    - Beden özel fiyatı varsa (2XL=25€) → o HAM fiyata ratio uygulanır: 25 × 0.89
+ *    - Yoksa base fiyata ratio uygulanır (zaten tierFiyat)
+ * 3. Transfer her adet için ayrıca eklenir
  */
 export function cartItemTotalCents(item: CartItem): number {
   const transferPerUnit = item.dtfPriceCents || 0;
+  const baseCents = item.unitPriceCents; // ham base (priceCents)
 
-  // Beden dağılımı + beden fiyatları varsa: beden bazlı hesapla
+  // Toplam adet
+  const totalQty = item.sizeBreakdown && Object.keys(item.sizeBreakdown).length > 0
+    ? Object.values(item.sizeBreakdown).reduce((s, n) => s + (n || 0), 0)
+    : item.quantity;
+
+  // Aktif tier fiyatını bul (toplam adete göre)
+  let activeTierCents = baseCents;
+  if (item.priceTiers && item.priceTiers.length > 0 && totalQty > 0) {
+    const sorted = [...item.priceTiers].sort((a, b) => a.qty - b.qty);
+    for (const t of sorted) {
+      if (totalQty >= t.qty) activeTierCents = t.cents;
+    }
+  }
+
+  // İndirim oranı: aktif tier / base
+  const ratio = baseCents > 0 ? activeTierCents / baseCents : 1;
+
+  // Beden dağılımı varsa: her beden kendi fiyatından × ratio
   if (item.sizeBreakdown && Object.keys(item.sizeBreakdown).length > 0) {
     let total = 0;
     for (const [size, qty] of Object.entries(item.sizeBreakdown)) {
       const n = qty || 0;
       if (n <= 0) continue;
-      // Beden özel fiyatı varsa onu, yoksa base unitPriceCents kullan
-      const sizePrice = item.sizePrices?.[size];
-      const unit = (sizePrice && sizePrice > 0) ? sizePrice : item.unitPriceCents;
-      total += (unit + transferPerUnit) * n;
+      // Beden HAM fiyatı (özel varsa o, yoksa base)
+      const rawSizePrice = (item.sizePrices?.[size] && item.sizePrices[size] > 0)
+        ? item.sizePrices[size]
+        : baseCents;
+      // ratio uygula (Staffel indirimi bu bedene de yansır)
+      const effectivePrice = Math.round(rawSizePrice * ratio);
+      total += (effectivePrice + transferPerUnit) * n;
     }
     return total;
   }
 
-  // Beden yoksa: normal hesap
-  return (item.unitPriceCents + transferPerUnit) * item.quantity;
+  // Beden yoksa: aktif tier fiyatı × adet
+  return (activeTierCents + transferPerUnit) * item.quantity;
 }
 
 type CartContextValue = {

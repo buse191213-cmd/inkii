@@ -10,12 +10,12 @@ type Props = {
   minOrderQty: number;
   sizePrices?: Record<string, number>;
   basePriceCents: number;
+  priceTiers?: Array<{ qty: number; cents: number }>;
 };
 
 /**
  * Sepette beden dağıtımı — Merchery tarzı.
- * Kullanıcı toplam adedi bedenlere dağıtır (S:5, M:10, L:10...).
- * Beden özel fiyatı varsa gösterir, yoksa base (Staffel) fiyat.
+ * Her beden fiyatı: (özel fiyat veya base) × Staffel-indirim-oranı.
  */
 export default function CartSizeDistributor({
   itemId,
@@ -25,12 +25,23 @@ export default function CartSizeDistributor({
   minOrderQty,
   sizePrices,
   basePriceCents,
+  priceTiers,
 }: Props) {
   const { updateSizeBreakdown } = useCart();
 
   const currentTotal = Object.values(sizeBreakdown).reduce((s, n) => s + (n || 0), 0);
   const remaining = quantity - currentTotal;
   const belowMin = currentTotal < minOrderQty;
+
+  // Aktif tier ratio (toplam adete göre)
+  let activeTierCents = basePriceCents;
+  if (priceTiers && priceTiers.length > 0 && currentTotal > 0) {
+    const sorted = [...priceTiers].sort((a, b) => a.qty - b.qty);
+    for (const t of sorted) {
+      if (currentTotal >= t.qty) activeTierCents = t.cents;
+    }
+  }
+  const ratio = basePriceCents > 0 ? activeTierCents / basePriceCents : 1;
 
   function setSize(size: string, value: number) {
     const next = { ...sizeBreakdown, [size]: Math.max(0, value) };
@@ -55,7 +66,8 @@ export default function CartSizeDistributor({
       <div className="csd-grid">
         {availableSizes.map((size) => {
           const specialPrice = sizePrices?.[size];
-          const effectivePrice = (specialPrice && specialPrice > 0) ? specialPrice : basePriceCents;
+          const rawPrice = (specialPrice && specialPrice > 0) ? specialPrice : basePriceCents;
+          const effectivePrice = Math.round(rawPrice * ratio); // Staffel indirimi uygulanmış
           const isSpecial = Boolean(specialPrice && specialPrice > 0);
           return (
             <div key={size} className="csd-cell">
