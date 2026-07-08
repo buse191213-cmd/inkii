@@ -2,7 +2,6 @@
 
 import { useState, useTransition, useRef } from "react";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
 import { useCart, cartItemTotalCents } from "@/components/CartProvider";
 import CheckoutSteps from "@/components/CheckoutSteps";
 import { colorLabel } from "@/lib/catalog-options";
@@ -117,7 +116,6 @@ type Props = {
 };
 
 export default function KasseClient({ paymentMethods, shipping, prefill, isLoggedIn, paypalClientId, paypalMode }: Props) {
-  const router = useRouter();
   const { items, subtotalCents, clearCart, isLoaded } = useCart();
   const [isPending, startTransition] = useTransition();
   const [generalError, setGeneralError] = useState<string>("");
@@ -288,6 +286,21 @@ export default function KasseClient({ paymentMethods, shipping, prefill, isLogge
         const lineTotalCents = cartItemTotalCents(i);
         // Ortalama birim fiyat (order kaydı için)
         const avgUnitCents = i.quantity > 0 ? Math.round(lineTotalCents / i.quantity) : i.unitPriceCents;
+        // Order'a giden design: mockup'ları ÇIKAR (çok büyük, sadece sepet önizlemesi için)
+        // Logo + boyut yeterli (admin baskı için logoyu indirir)
+        let orderDesignUrl = i.dtfDesignUrl;
+        if (i.dtfDesignUrl) {
+          try {
+            const parsed = JSON.parse(i.dtfDesignUrl);
+            orderDesignUrl = JSON.stringify({
+              front: parsed.front || null,
+              back: parsed.back || null,
+              frontSize: parsed.frontSize || null,
+              backSize: parsed.backSize || null,
+              // mockup'lar order'a gitmez (payload küçülür)
+            });
+          } catch { /* ignore, orijinali kullan */ }
+        }
         return {
           productId: i.productId,
           productCode: i.productCode,
@@ -300,7 +313,7 @@ export default function KasseClient({ paymentMethods, shipping, prefill, isLogge
           hasDtf: i.hasDtf,
           dtfSize: i.dtfSize,
           dtfPriceCents: i.dtfPriceCents,
-          dtfDesignUrl: i.dtfDesignUrl,
+          dtfDesignUrl: orderDesignUrl,
         };
       }),
       paymentMethod,
@@ -328,10 +341,10 @@ export default function KasseClient({ paymentMethods, shipping, prefill, isLogge
       const result = await createOrder(buildOrderInput());
 
       if (result.ok && result.orderId && result.orderNumber) {
-        // Rechnung: direkt başarı sayfası — önce redirect flag, sonra temizle
+        // Rechnung: direkt başarı sayfası — tam sayfa yükleme (SPA state sorunlarını önler)
         setIsRedirecting(true);
-        router.push(`/bestellung-erfolg?nr=${result.orderNumber}`);
         clearCart();
+        window.location.href = `/bestellung-erfolg?nr=${result.orderNumber}`;
       } else {
         setGeneralError(result.error ?? "Bestellung konnte nicht gespeichert werden.");
       }
@@ -824,8 +837,8 @@ export default function KasseClient({ paymentMethods, shipping, prefill, isLogge
                 validateAndCreateOrder={validateAndCreateOrderForPayPal}
                 onSuccess={(orderNumber) => {
                   setIsRedirecting(true);
-                  router.push(`/bestellung-erfolg?nr=${orderNumber}`);
                   clearCart();
+                  window.location.href = `/bestellung-erfolg?nr=${orderNumber}`;
                 }}
                 disabled={isPending}
               />
