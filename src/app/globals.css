@@ -3338,8 +3338,8 @@ body:has(.cookie-banner) .wa-fab{bottom:120px}
   display:flex;flex-direction:column}
 .mm-related-card:hover{transform:translateY(-4px);
   box-shadow:0 10px 28px rgba(28,39,34,.08);border-color:#1c2722}
-.mm-related-img{aspect-ratio:4/3;background:#f4f5f1 center/cover no-repeat;position:relative;
-  display:grid;place-items:center}
+.mm-related-img{aspect-ratio:4/3;background:#f4f5f1 center/contain no-repeat;position:relative;
+  display:grid;place-items:center;padding:12px}
 .mm-related-img-fallback{color:#c5cdc6;font-size:.85rem;letter-spacing:.2em;font-weight:800}
 .mm-related-body{padding:14px 16px 18px;flex:1;display:flex;flex-direction:column;gap:4px}
 .mm-related-code{font-size:.7rem;color:#9ea7a2;letter-spacing:.06em;font-family:'SF Mono',Menlo,monospace}

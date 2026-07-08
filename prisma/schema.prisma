@@ -30,6 +30,7 @@ model Product {
   sizes       String   @default("[]") // JSON: [{name:"S",extraCents:0},{name:"XXL",extraCents:90}]
   stock       Int      @default(0)
   minOrderQty Int      @default(1) // Mindestbestellmenge (z.B. 25 Stück)
+  recommendedIds String @default("") // Manuel önerilen ürün ID'leri (virgülle ayrılmış)
   status      String   @default("active") // active | draft
   isNew       Boolean  @default(false)
   isEco       Boolean  @default(false)

@@ -72,16 +72,37 @@ export default async function ProductDetailPage({
   });
   if (!product) notFound();
 
-  // Cross-sell: 4 weitere Produkte aus derselben Kategorie (oder zufällige Fallbacks)
-  let related = await db.product.findMany({
-    where: {
-      id: { not: product.id },
-      ...(product.categoryId ? { categoryId: product.categoryId } : {}),
-    },
-    take: 4,
-    orderBy: { createdAt: "desc" },
-  });
-  // Falls in dieser Kategorie zu wenige sind, mit anderen Produkten auffüllen
+  // Cross-sell: önce ADMIN'in manuel seçtiği öneriler, yoksa aynı kategori
+  const recommendedIds = ((product as { recommendedIds?: string }).recommendedIds || "")
+    .split(",").map((s) => s.trim()).filter(Boolean);
+
+  let related: Awaited<ReturnType<typeof db.product.findMany>> = [];
+
+  if (recommendedIds.length > 0) {
+    // Manuel önerilen ürünleri getir (admin seçti)
+    const manual = await db.product.findMany({
+      where: { id: { in: recommendedIds } },
+    });
+    // Admin'in sıralamasını koru
+    related = recommendedIds
+      .map((id) => manual.find((m) => m.id === id))
+      .filter((p): p is NonNullable<typeof p> => Boolean(p));
+  }
+
+  // Manuel öneri yoksa veya 4'ten az ise: aynı kategoriden doldur
+  if (related.length < 4) {
+    const existing = [product.id, ...related.map((r) => r.id)];
+    const catProducts = await db.product.findMany({
+      where: {
+        id: { notIn: existing },
+        ...(product.categoryId ? { categoryId: product.categoryId } : {}),
+      },
+      take: 4 - related.length,
+      orderBy: { createdAt: "desc" },
+    });
+    related = [...related, ...catProducts];
+  }
+  // Hâlâ azsa: diğer ürünlerle doldur
   if (related.length < 4) {
     const fillers = await db.product.findMany({
       where: { id: { notIn: [product.id, ...related.map((r) => r.id)] } },

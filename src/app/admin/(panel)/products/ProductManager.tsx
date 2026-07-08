@@ -24,6 +24,7 @@ export type AdminProduct = {
   sizes: string;
   stock: number;
   minOrderQty?: number;
+  recommendedIds?: string;
   status: string;
   isNew: boolean;
   isEco: boolean;
@@ -50,7 +51,7 @@ const MAX_IMAGES = 15;
 
 const EMPTY: AdminProduct = {
   id: "", code: "INKI-", name: "", subtitle: "", description: "", icon: "box",
-  priceCents: null, priceTiers: "[]", sizes: "[]", stock: 0, minOrderQty: 1, status: "active",
+  priceCents: null, priceTiers: "[]", sizes: "[]", stock: 0, minOrderQty: 1, recommendedIds: "", status: "active",
   isNew: false, isEco: false,
   colors: "", material: "", images: "", colorImages: "{}", careSymbols: "", displayOrder: 0, cardFit: "cover", cardCrop: "", visiblePages: [], categoryId: "", categoryName: "",
 };
@@ -104,6 +105,7 @@ export default function ProductManager({
   type TierDraft = { qtyText: string; priceText: string };
   const [tiers, setTiers] = useState<TierDraft[]>([]);
   const [sizes, setSizes] = useState<Array<{ nameText: string; extraText: string }>>([]);
+  const [selRecommended, setSelRecommended] = useState<string[]>([]);
   const [customColor, setCustomColor] = useState("#3f9c5c");
   const [customColorName, setCustomColorName] = useState("");
   const fileInput = useRef<HTMLInputElement>(null);
@@ -257,6 +259,7 @@ export default function ProductManager({
     setSelCare([]);
     setTiers([]);
     setSizes([]);
+    setSelRecommended([]);
     setModal({ ...EMPTY, categoryId: categories[0]?.id ?? "" });
   }
   function openEdit(p: AdminProduct) {
@@ -295,6 +298,7 @@ export default function ProductManager({
       }))
     );
     setSizes(parseSizesField(p.sizes ?? "[]"));
+    setSelRecommended((p.recommendedIds || "").split(",").map((s) => s.trim()).filter(Boolean));
     setModal({ ...p });
   }
 
@@ -404,6 +408,9 @@ export default function ProductManager({
 
     // Größen
     fd.set("sizes", stringifySizesFromDrafts(sizes));
+
+    // Empfohlene Produkte (Cross-Sell)
+    fd.set("recommendedIds", selRecommended.join(","));
 
     // visiblePages: alle gleichnamigen Felder einsammeln und als JSON serialisieren
     const checkedPages = fd.getAll("visiblePages").filter((v): v is string => typeof v === "string");
@@ -758,6 +765,56 @@ export default function ProductManager({
                     <label>Mindestbestellmenge (Stk)</label>
                     <input name="minOrderQty" type="number" min="1" defaultValue={modal.minOrderQty ?? 1} />
                   </div>
+                </div>
+
+                {/* Empfohlene Produkte (Cross-Sell) */}
+                <div className="field">
+                  <label>Empfohlene Produkte (Cross-Sell)</label>
+                  <div className="tier-help">
+                    Wählen Sie Produkte, die auf dieser Detailseite unter „Weitere Artikel" angezeigt werden. Kunden, die dieses Produkt ansehen, sehen Ihre Empfehlungen.
+                  </div>
+                  <div style={{
+                    maxHeight: 200, overflowY: "auto", border: "1px solid #e5e7eb",
+                    padding: 8, display: "flex", flexDirection: "column", gap: 4,
+                  }}>
+                    {products.filter((p) => p.id !== modal.id).length === 0 ? (
+                      <span style={{ fontSize: 12, color: "#94a3b8" }}>Keine anderen Produkte vorhanden.</span>
+                    ) : (
+                      products
+                        .filter((p) => p.id !== modal.id)
+                        .map((p) => {
+                          const checked = selRecommended.includes(p.id);
+                          return (
+                            <label
+                              key={p.id}
+                              style={{
+                                display: "flex", alignItems: "center", gap: 8,
+                                padding: "5px 8px", cursor: "pointer", fontSize: 13,
+                                background: checked ? "#f0fdf4" : "transparent",
+                                border: checked ? "1px solid #86efac" : "1px solid transparent",
+                              }}
+                            >
+                              <input
+                                type="checkbox"
+                                checked={checked}
+                                onChange={() =>
+                                  setSelRecommended((cur) =>
+                                    cur.includes(p.id) ? cur.filter((x) => x !== p.id) : [...cur, p.id]
+                                  )
+                                }
+                              />
+                              <span style={{ fontWeight: 600 }}>{p.name}</span>
+                              {p.code && <span style={{ color: "#94a3b8", fontSize: 11 }}>({p.code})</span>}
+                            </label>
+                          );
+                        })
+                    )}
+                  </div>
+                  {selRecommended.length > 0 && (
+                    <div style={{ fontSize: 12, color: "#059669", marginTop: 6, fontWeight: 600 }}>
+                      {selRecommended.length} Produkt(e) empfohlen
+                    </div>
+                  )}
                 </div>
 
                 <div className="field">
