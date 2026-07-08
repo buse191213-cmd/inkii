@@ -286,8 +286,8 @@ export default function KasseClient({ paymentMethods, shipping, prefill, isLogge
         const lineTotalCents = cartItemTotalCents(i);
         // Ortalama birim fiyat (order kaydı için)
         const avgUnitCents = i.quantity > 0 ? Math.round(lineTotalCents / i.quantity) : i.unitPriceCents;
-        // Order'a giden design: mockup'ları ÇIKAR (çok büyük, sadece sepet önizlemesi için)
-        // Logo + boyut yeterli (admin baskı için logoyu indirir)
+        // Order'a giden design: logo + boyut + mockup (mail ve admin için)
+        // Mockup'lar 600px JPEG (küçük), payload'ı aşırı şişirmez.
         let orderDesignUrl = i.dtfDesignUrl;
         if (i.dtfDesignUrl) {
           try {
@@ -297,7 +297,8 @@ export default function KasseClient({ paymentMethods, shipping, prefill, isLogge
               back: parsed.back || null,
               frontSize: parsed.frontSize || null,
               backSize: parsed.backSize || null,
-              // mockup'lar order'a gitmez (payload küçülür)
+              frontMockup: parsed.frontMockup || null,
+              backMockup: parsed.backMockup || null,
             });
           } catch { /* ignore, orijinali kullan */ }
         }
