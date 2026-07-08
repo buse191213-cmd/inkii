@@ -216,6 +216,21 @@ export default function KasseClient({ paymentMethods, shipping, prefill, isLogge
     setGeneralError("");
     setValidationStarted(true);
 
+    // Beden dağıtımı kontrolü — eksikse ödemeye izin verme
+    const sizeIssue = items.find((i) => {
+      if (!i.availableSizes || i.availableSizes.length === 0) return false;
+      const breakdown = i.sizeBreakdown || {};
+      const distributed = Object.values(breakdown).reduce((s, n) => s + (n || 0), 0);
+      if (distributed === 0) return true;
+      if (distributed !== i.quantity) return true;
+      if (distributed < (i.minOrderQty || 1)) return true;
+      return false;
+    });
+    if (sizeIssue) {
+      setGeneralError(`Bitte verteilen Sie im Warenkorb bei „${sizeIssue.productName}" alle Größen, bevor Sie bestellen.`);
+      return false;
+    }
+
     if (errors.firstName) { refs.firstName.current?.focus(); refs.firstName.current?.scrollIntoView({ behavior: "smooth", block: "center" }); return false; }
     if (errors.lastName) { refs.lastName.current?.focus(); refs.lastName.current?.scrollIntoView({ behavior: "smooth", block: "center" }); return false; }
     if (errors.email) { refs.email.current?.focus(); refs.email.current?.scrollIntoView({ behavior: "smooth", block: "center" }); return false; }

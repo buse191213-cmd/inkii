@@ -349,9 +349,42 @@ export default function WarenkorbClient() {
               // "Preis auf Anfrage" = HEM ürün fiyatı HEM dtf fiyatı 0 olan
               const hasQuoteOnly = items.some((i) => (i.unitPriceCents + i.dtfPriceCents) === 0);
 
+              // Beden dağıtımı eksik/hatalı olan ürün var mı?
+              const sizeIssue = items.find((i) => {
+                if (!i.availableSizes || i.availableSizes.length === 0) return false;
+                const breakdown = i.sizeBreakdown || {};
+                const distributed = Object.values(breakdown).reduce((s, n) => s + (n || 0), 0);
+                // Dağıtım toplamı adetle eşleşmeli VE minimum karşılanmalı
+                if (distributed === 0) return true; // hiç dağıtılmamış
+                if (distributed !== i.quantity) return true; // eksik/fazla
+                if (distributed < (i.minOrderQty || 1)) return true; // min altı
+                return false;
+              });
+              const blocked = hasQuoteOnly || Boolean(sizeIssue);
+
               return (
                 <>
-                  {hasQuoteOnly ? (
+                  {sizeIssue && (
+                    <div style={{
+                      background: "#fffbeb",
+                      border: "1px solid #fde68a",
+                      borderRadius: 8,
+                      padding: "10px 14px",
+                      marginBottom: 10,
+                      fontSize: 13,
+                      color: "#92400e",
+                      display: "flex",
+                      alignItems: "flex-start",
+                      gap: 8,
+                    }}>
+                      <span style={{ fontSize: 16, flexShrink: 0 }}>⚠️</span>
+                      <span>
+                        Bitte verteilen Sie bei <strong>{sizeIssue.productName}</strong> alle {sizeIssue.quantity} Stück auf die Größen, bevor Sie zur Kasse gehen.
+                      </span>
+                    </div>
+                  )}
+
+                  {blocked ? (
                     <div
                       style={{
                         display: "block",
@@ -363,10 +396,11 @@ export default function WarenkorbClient() {
                         fontSize: 14,
                         marginBottom: 8,
                         cursor: "not-allowed",
+                        borderRadius: 8,
                       }}
-                      title="Mindestens ein Artikel ist nur auf Anfrage"
+                      title={hasQuoteOnly ? "Mindestens ein Artikel ist nur auf Anfrage" : "Bitte Größen verteilen"}
                     >
-                      🛒 Direkt zur Kasse (nicht möglich)
+                      🛒 Zur Kasse {hasQuoteOnly ? "(nicht möglich)" : "(Größen fehlen)"}
                     </div>
                   ) : (
                     <Link
@@ -381,6 +415,7 @@ export default function WarenkorbClient() {
                         textDecoration: "none",
                         fontSize: 14,
                         marginBottom: 8,
+                        borderRadius: 8,
                       }}
                     >
                       🛒 Direkt zur Kasse →
