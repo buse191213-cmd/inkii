@@ -154,6 +154,7 @@ export function useCart() {
       addItem: () => {},
       removeItem: () => {},
       updateQuantity: () => {},
+      updateSizeBreakdown: () => {},
       clearCart: () => {},
       isLoaded: false,
     };
