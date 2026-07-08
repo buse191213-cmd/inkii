@@ -18,6 +18,7 @@ type Props = {
   tiers: PriceTier[];
   basePriceCents: number | null;
   transferPriceCents?: number;
+  minOrderQty?: number;
 };
 
 function euro(c: number): string {
@@ -46,6 +47,7 @@ export default function DetailOrderForm({
   tiers,
   basePriceCents,
   transferPriceCents = 900,
+  minOrderQty = 1,
 }: Props) {
   const { addOrUpdate, has } = useMerkliste();
   const { addItem: addToCart } = useCart();
@@ -196,6 +198,10 @@ export default function DetailOrderForm({
       setErr("Bitte mindestens eine Menge eintragen.");
       return;
     }
+    if (totalQty < minOrderQty) {
+      setErr(`Für dieses Produkt beträgt die Mindestmenge ${minOrderQty}. Bitte aktualisieren Sie die Menge oder die Größen.`);
+      return;
+    }
     const priceCents = unitCents ?? 0; // null = 0 (Angebot wird erstellt)
     // Transfer bilgisi (design + fiyat)
     const dtfSizeLabel = transferEnabled && transferSidesCount > 0
@@ -215,6 +221,7 @@ export default function DetailOrderForm({
         size: "",
         quantity: qty["__default"] || 0,
         unitPriceCents: priceCents,
+        minOrderQty,
         hasDtf: transferEnabled && transferSidesCount > 0,
         dtfSize: dtfSizeLabel,
         dtfPriceCents: transferCostCents,
@@ -235,6 +242,7 @@ export default function DetailOrderForm({
             size: s.name,
             quantity: q,
             unitPriceCents: effective,
+            minOrderQty,
             hasDtf: transferEnabled && transferSidesCount > 0,
             dtfSize: dtfSizeLabel,
             dtfPriceCents: transferCostCents,
@@ -451,6 +459,17 @@ export default function DetailOrderForm({
 
       {/* Totalanzeige — Produktionszeit + Gesamt (inkl. MwSt) */}
       <div className="det-order-summary">
+        {minOrderQty > 1 && (
+          <div className={`det-summary-min${totalQty > 0 && totalQty < minOrderQty ? " warn" : ""}`}>
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+              <circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/>
+            </svg>
+            Mindestbestellmenge: <strong>{minOrderQty} Stück</strong>
+            {totalQty > 0 && totalQty < minOrderQty && (
+              <span className="det-summary-min-need"> · noch {minOrderQty - totalQty} Stk</span>
+            )}
+          </div>
+        )}
         <div className="det-summary-row">
           <span className="det-summary-lbl">Produktionszeit:</span>
           <span className="det-summary-val">5–10 Werktage</span>

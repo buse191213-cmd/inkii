@@ -19,6 +19,7 @@ export type CartItem = {
   size: string;
   quantity: number;
   unitPriceCents: number; // 0 = "Preis auf Anfrage"
+  minOrderQty?: number; // Mindestbestellmenge
   // DTF eklemeleri
   hasDtf: boolean;
   dtfSize: string;

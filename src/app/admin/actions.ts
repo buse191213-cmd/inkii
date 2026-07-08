@@ -183,6 +183,7 @@ export async function saveProduct(formData: FormData): Promise<ActionResult> {
     priceTiers: String(formData.get("priceTiers") ?? "[]"),
     sizes: String(formData.get("sizes") ?? "[]"),
     stock: parseInt(String(formData.get("stock") ?? "0"), 10) || 0,
+    minOrderQty: Math.max(1, parseInt(String(formData.get("minOrderQty") ?? "1"), 10) || 1),
     status: String(formData.get("status") ?? "active"),
     isNew: formData.get("isNew") === "on",
     isEco: formData.get("isEco") === "on",

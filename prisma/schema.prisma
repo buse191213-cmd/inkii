@@ -29,6 +29,7 @@ model Product {
   priceTiers  String   @default("[]") // JSON: [{qty:15,cents:1491},{qty:50,cents:1349}]
   sizes       String   @default("[]") // JSON: [{name:"S",extraCents:0},{name:"XXL",extraCents:90}]
   stock       Int      @default(0)
+  minOrderQty Int      @default(1) // Mindestbestellmenge (z.B. 25 Stück)
   status      String   @default("active") // active | draft
   isNew       Boolean  @default(false)
   isEco       Boolean  @default(false)

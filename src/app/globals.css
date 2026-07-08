@@ -3080,6 +3080,12 @@ body:has(.home-services) footer.site{margin-top:0}
 .det-summary-hint{font-size:.78rem;color:#92400e;background:#fffbeb;border:1px solid #fde68a;
   border-radius:6px;padding:8px 10px;text-align:center;line-height:1.4}
 .det-summary-vat{font-size:.72rem;color:#94a3b8;text-align:right}
+.det-summary-min{display:flex;align-items:center;gap:6px;font-size:.8rem;color:#5a6660;
+  padding:8px 10px;background:#f1f5f9;border-radius:6px;margin-bottom:2px}
+.det-summary-min svg{color:#64748b;flex-shrink:0}
+.det-summary-min.warn{background:#fffbeb;color:#92400e;border:1px solid #fde68a}
+.det-summary-min.warn svg{color:#d97706}
+.det-summary-min-need{font-weight:700;color:#dc2626}
 @media(max-width:520px){
   .det-staffel-row{grid-template-columns:20px 1fr auto;gap:6px;font-size:.8rem}
   .det-staffel-unit{display:none}

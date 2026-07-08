@@ -23,6 +23,7 @@ export type AdminProduct = {
   priceTiers: string;
   sizes: string;
   stock: number;
+  minOrderQty?: number;
   status: string;
   isNew: boolean;
   isEco: boolean;
@@ -49,7 +50,7 @@ const MAX_IMAGES = 15;
 
 const EMPTY: AdminProduct = {
   id: "", code: "INKI-", name: "", subtitle: "", description: "", icon: "box",
-  priceCents: null, priceTiers: "[]", sizes: "[]", stock: 0, status: "active",
+  priceCents: null, priceTiers: "[]", sizes: "[]", stock: 0, minOrderQty: 1, status: "active",
   isNew: false, isEco: false,
   colors: "", material: "", images: "", colorImages: "{}", careSymbols: "", displayOrder: 0, cardFit: "cover", cardCrop: "", visiblePages: [], categoryId: "", categoryName: "",
 };
@@ -752,6 +753,10 @@ export default function ProductManager({
                   <div className="field">
                     <label>Lagerbestand (Stk)</label>
                     <input name="stock" type="number" defaultValue={modal.stock} />
+                  </div>
+                  <div className="field">
+                    <label>Mindestbestellmenge (Stk)</label>
+                    <input name="minOrderQty" type="number" min="1" defaultValue={modal.minOrderQty ?? 1} />
                   </div>
                 </div>
 
