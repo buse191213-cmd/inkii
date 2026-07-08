@@ -11,6 +11,14 @@ type Props = {
   sizePrices?: Record<string, number>;
   basePriceCents: number;
   priceTiers?: Array<{ qty: number; cents: number }>;
+  t?: {
+    distributeSizes: string;
+    noch: string;
+    tooMany: string;
+    distributeHint: string;
+    distributeRemainder: string;
+    minQtyWarn: string;
+  };
 };
 
 /**
@@ -26,7 +34,16 @@ export default function CartSizeDistributor({
   sizePrices,
   basePriceCents,
   priceTiers,
+  t,
 }: Props) {
+  const tt = t || {
+    distributeSizes: "Größen verteilen",
+    noch: "noch",
+    tooMany: "zu viel",
+    distributeHint: "Bitte verteilen Sie noch {n} Stück auf die Größen.",
+    distributeRemainder: "Sie haben {n} Stück zu viel verteilt.",
+    minQtyWarn: "Für dieses Produkt beträgt die Mindestmenge {n}. Bitte aktualisieren Sie die Menge oder die Größen.",
+  };
   const { updateSizeBreakdown } = useCart();
 
   const currentTotal = Object.values(sizeBreakdown).reduce((s, n) => s + (n || 0), 0);
@@ -55,11 +72,11 @@ export default function CartSizeDistributor({
   return (
     <div className="csd">
       <div className="csd-head">
-        <span className="csd-title">Größen verteilen</span>
+        <span className="csd-title">{tt.distributeSizes}</span>
         <span className={`csd-counter${remaining !== 0 ? " off" : " ok"}`}>
-          {currentTotal} / {quantity} Stk
-          {remaining > 0 && <span className="csd-remaining"> · noch {remaining}</span>}
-          {remaining < 0 && <span className="csd-over"> · {Math.abs(remaining)} zu viel</span>}
+          {currentTotal} / {quantity}
+          {remaining > 0 && <span className="csd-remaining"> · {tt.noch} {remaining}</span>}
+          {remaining < 0 && <span className="csd-over"> · {Math.abs(remaining)} {tt.tooMany}</span>}
         </span>
       </div>
 
@@ -98,14 +115,14 @@ export default function CartSizeDistributor({
             <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/>
             <path d="M12 9v4M12 17h.01"/>
           </svg>
-          Für dieses Produkt beträgt die Mindestmenge {minOrderQty}. Bitte aktualisieren Sie die Menge oder die Größen.
+          {tt.minQtyWarn.replace("{n}", String(minOrderQty))}
         </div>
       )}
       {!belowMin && remaining !== 0 && (
         <div className="csd-hint">
           {remaining > 0
-            ? `Bitte verteilen Sie noch ${remaining} Stück auf die Größen.`
-            : `Sie haben ${Math.abs(remaining)} Stück zu viel verteilt.`}
+            ? tt.distributeHint.replace("{n}", String(remaining))
+            : tt.distributeRemainder.replace("{n}", String(Math.abs(remaining)))}
         </div>
       )}
 

@@ -18,14 +18,23 @@ const ALL_STEPS: Step[] = [
 type Props = {
   current: "warenkorb" | "anmelden" | "zahlung" | "bestaetigung";
   isLoggedIn?: boolean;
+  labels?: { warenkorb: string; anmelden: string; zahlung: string; bestaetigung: string };
 };
 
-export default function CheckoutSteps({ current, isLoggedIn }: Props) {
-  const currentIdx = ALL_STEPS.findIndex((s) => s.key === current);
+export default function CheckoutSteps({ current, isLoggedIn, labels }: Props) {
+  const STEPS: Step[] = labels
+    ? [
+        { key: "warenkorb", label: labels.warenkorb },
+        { key: "anmelden", label: labels.anmelden },
+        { key: "zahlung", label: labels.zahlung },
+        { key: "bestaetigung", label: labels.bestaetigung },
+      ]
+    : ALL_STEPS;
+  const currentIdx = STEPS.findIndex((s) => s.key === current);
 
   return (
     <div className="checkout-steps">
-      {ALL_STEPS.map((step, i) => {
+      {STEPS.map((step, i) => {
         const isDone = i < currentIdx || (step.key === "anmelden" && isLoggedIn && current !== "anmelden");
         const isActive = step.key === current;
         return (

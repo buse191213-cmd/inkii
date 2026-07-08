@@ -5,6 +5,7 @@ import { useCart, cartItemTotalCents } from "@/components/CartProvider";
 import CartSizeDistributor from "@/components/CartSizeDistributor";
 import CheckoutSteps from "@/components/CheckoutSteps";
 import { colorLabel } from "@/lib/catalog-options";
+import type { Dictionary } from "@/dictionaries/types";
 
 function euro(c: number): string {
   return (c / 100).toLocaleString("de-DE", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
@@ -13,7 +14,12 @@ function euro(c: number): string {
 const FREE_FROM = 10000; // 100€
 const SHIPPING_COST = 599; // 5.99€
 
-export default function WarenkorbClient() {
+type Props = {
+  t: Dictionary["cart"];
+  tSteps: Dictionary["checkout"]["steps"];
+};
+
+export default function WarenkorbClient({ t, tSteps }: Props) {
   const { items, subtotalCents, updateQuantity, removeItem, clearCart, isLoaded } = useCart();
 
   if (!isLoaded) {
@@ -33,9 +39,9 @@ export default function WarenkorbClient() {
   if (items.length === 0) {
     return (
       <section style={{ maxWidth: 800, margin: "0 auto", padding: "80px 28px", textAlign: "center" }}>
-        <h1 style={{ fontSize: "2rem", fontWeight: 700, marginBottom: 16 }}>Warenkorb</h1>
+        <h1 style={{ fontSize: "2rem", fontWeight: 700, marginBottom: 16 }}>{t.title}</h1>
         <p style={{ color: "#64748b", marginBottom: 32 }}>
-          Ihr Warenkorb ist leer.
+          {t.empty}
         </p>
         <Link
           href="/werbemittel"
@@ -48,7 +54,7 @@ export default function WarenkorbClient() {
             textDecoration: "none",
           }}
         >
-          Zum Katalog →
+          {t.toCatalog}
         </Link>
       </section>
     );
@@ -56,9 +62,9 @@ export default function WarenkorbClient() {
 
   return (
     <section style={{ maxWidth: 1200, margin: "0 auto", padding: "40px 28px" }}>
-      <CheckoutSteps current="warenkorb" />
+      <CheckoutSteps current="warenkorb" labels={tSteps} />
       <h1 style={{ fontSize: "2rem", fontWeight: 700, marginBottom: 24 }}>
-        Warenkorb <span style={{ color: "#64748b", fontWeight: 400, fontSize: "1.2rem" }}>({items.length} {items.length === 1 ? "Artikel" : "Artikel"})</span>
+        {t.title} <span style={{ color: "#64748b", fontWeight: 400, fontSize: "1.2rem" }}>({items.length})</span>
       </h1>
 
       <div style={{ display: "grid", gridTemplateColumns: "1fr 360px", gap: 32 }} className="cart-layout">
@@ -108,14 +114,14 @@ export default function WarenkorbClient() {
                   {item.productName}
                 </Link>
                 <div style={{ fontSize: 12, color: "#64748b", marginTop: 4 }}>
-                  Art-Nr.: {item.productCode}
+                  {t.artNr}: {item.productCode}
                   {item.color && ` · ${colorLabel(item.color)}`}
                   {item.size && ` · ${item.size}`}
                 </div>
                 {item.hasDtf && (
                   <div style={{ marginTop: 6 }}>
                     <div style={{ fontSize: 12, color: "#0d9488", fontWeight: 600 }}>
-                      + Transfer (DTF) {item.dtfSize && `· ${item.dtfSize}`} — {euro(item.dtfPriceCents)} € / Stk
+                      + {t.transfer} (DTF) {item.dtfSize && `· ${item.dtfSize}`} — {euro(item.dtfPriceCents)} € {t.perStk}
                     </div>
                     {(() => {
                       // dtfDesignUrl = JSON {front, back, frontSize, backSize, frontMockup, backMockup}
@@ -130,8 +136,8 @@ export default function WarenkorbClient() {
                       } catch { /* ignore */ }
                       const thumbs: Array<{ label: string; url: string; size?: { widthCm: number; heightCm: number } | null }> = [];
                       // Mockup varsa onu göster (logo ürün üzerinde), yoksa logo
-                      if (designs.front) thumbs.push({ label: "Vorne", url: designs.frontMockup || designs.front, size: designs.frontSize });
-                      if (designs.back) thumbs.push({ label: "Hinten", url: designs.backMockup || designs.back, size: designs.backSize });
+                      if (designs.front) thumbs.push({ label: t.front, url: designs.frontMockup || designs.front, size: designs.frontSize });
+                      if (designs.back) thumbs.push({ label: t.back, url: designs.backMockup || designs.back, size: designs.backSize });
                       if (thumbs.length === 0) return null;
                       return (
                         <div style={{ display: "flex", gap: 12, marginTop: 8 }}>
@@ -173,6 +179,14 @@ export default function WarenkorbClient() {
                       sizePrices={item.sizePrices}
                       basePriceCents={item.unitPriceCents}
                       priceTiers={item.priceTiers}
+                      t={{
+                        distributeSizes: t.distributeSizes,
+                        noch: t.noch,
+                        tooMany: t.tooMany,
+                        distributeHint: t.distributeHint,
+                        distributeRemainder: t.distributeRemainder,
+                        minQtyWarn: t.minQtyWarn,
+                      }}
                     />
                     <button
                       type="button"
@@ -187,7 +201,7 @@ export default function WarenkorbClient() {
                         textDecoration: "underline",
                       }}
                     >
-                      Entfernen
+                      {t.remove}
                     </button>
                   </>
                 ) : (
@@ -248,7 +262,7 @@ export default function WarenkorbClient() {
                         textDecoration: "underline",
                       }}
                     >
-                      Entfernen
+                      {t.remove}
                     </button>
                   </div>
                 )}
@@ -260,7 +274,7 @@ export default function WarenkorbClient() {
                 </div>
                 <div style={{ fontSize: 11, color: "#64748b", marginTop: 2 }}>
                   {item.quantity > 0
-                    ? `Ø ${euro(Math.round(cartItemTotalCents(item) / item.quantity))} € / Stk`
+                    ? `Ø ${euro(Math.round(cartItemTotalCents(item) / item.quantity))} € ${t.perStk}`
                     : "—"}
                 </div>
               </div>
@@ -299,15 +313,15 @@ export default function WarenkorbClient() {
 
           <div style={{ display: "flex", flexDirection: "column", gap: 8, fontSize: 14 }}>
             <div style={{ display: "flex", justifyContent: "space-between" }}>
-              <span>Zwischensumme</span>
+              <span>{t.zwischensumme}</span>
               <span>{euro(subtotalCents)} €</span>
             </div>
             <div style={{ display: "flex", justifyContent: "space-between" }}>
-              <span>Versand {shippingCents === 0 && <small style={{ color: "#0d9488" }}>(kostenlos)</small>}</span>
+              <span>{t.shipping} {shippingCents === 0 && <small style={{ color: "#0d9488" }}>({t.free})</small>}</span>
               <span>{euro(shippingCents)} €</span>
             </div>
             <div style={{ display: "flex", justifyContent: "space-between", color: "#64748b" }}>
-              <span>davon MwSt. 19%</span>
+              <span>{t.davonMwst}</span>
               <span>{euro(taxCents)} €</span>
             </div>
             <div
@@ -321,7 +335,7 @@ export default function WarenkorbClient() {
                 fontSize: 18,
               }}
             >
-              <span>Gesamt</span>
+              <span>{t.gesamt}</span>
               <span>{euro(totalCents)} €</span>
             </div>
           </div>
@@ -336,7 +350,7 @@ export default function WarenkorbClient() {
                 color: "#92400e",
               }}
             >
-              Nur noch <strong>{euro(FREE_FROM - subtotalCents)} €</strong> bis zum kostenlosen Versand!
+              {t.freeShippingHint.replace("{amount}", euro(FREE_FROM - subtotalCents))}
             </div>
           )}
 
@@ -381,7 +395,7 @@ export default function WarenkorbClient() {
                     }}>
                       <span style={{ fontSize: 16, flexShrink: 0 }}>⚠️</span>
                       <span>
-                        Bitte verteilen Sie bei <strong>{sizeIssue.productName}</strong> alle {sizeIssue.quantity} Stück auf die Größen, bevor Sie zur Kasse gehen.
+                        {t.minQtyWarn.replace("{n}", String(sizeIssue.minOrderQty || sizeIssue.quantity))}
                       </span>
                     </div>
                   )}
@@ -400,9 +414,8 @@ export default function WarenkorbClient() {
                         cursor: "not-allowed",
                         borderRadius: 0,
                       }}
-                      title={hasQuoteOnly ? "Mindestens ein Artikel ist nur auf Anfrage" : "Bitte Größen verteilen"}
                     >
-                      🛒 Zur Kasse {hasQuoteOnly ? "(nicht möglich)" : "(Größen fehlen)"}
+                      🛒 {hasQuoteOnly ? t.checkoutQuoteOnly : t.checkoutSizesMissing}
                     </div>
                   ) : (
                     <Link
@@ -420,7 +433,7 @@ export default function WarenkorbClient() {
                         borderRadius: 0,
                       }}
                     >
-                      🛒 Direkt zur Kasse →
+                      🛒 {t.toCheckout}
                     </Link>
                   )}
 
@@ -438,12 +451,12 @@ export default function WarenkorbClient() {
                       fontSize: 14,
                     }}
                   >
-                    ✉️ Angebot anfragen
+                    ✉️ {t.requestQuote}
                   </Link>
 
                   {hasQuoteOnly && (
                     <p style={{ fontSize: 11, color: "#92400e", marginTop: 10, padding: 8, background: "#fef3c7", lineHeight: 1.4 }}>
-                      ℹ️ Ihr Warenkorb enthält Artikel mit „Preis auf Anfrage". Bitte fragen Sie ein individuelles Angebot an.
+                      ℹ️ {t.quoteOnlyInfo}
                     </p>
                   )}
                 </>
