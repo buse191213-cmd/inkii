@@ -717,6 +717,9 @@ footer.site ul a:hover{color:var(--leaf)}
   background:rgba(28,39,34,.74);color:#fff;font-size:.66rem;cursor:pointer;
   display:grid;place-items:center;transition:.13s}
 .adm .img-star:hover{background:var(--leaf)}
+.adm .img-side{position:absolute;top:0;left:0;right:0;height:18px;background:rgba(30,64,175,.9);
+  color:#fff;font-size:.58rem;font-weight:700;display:grid;place-items:center;letter-spacing:.05em;
+  text-transform:uppercase}
 .adm .img-new{position:absolute;top:3px;left:3px;background:var(--orange);
   color:#fff;font-size:.6rem;font-weight:700;padding:2px 6px}
 .adm .img-add{width:84px;height:84px;border:2px dashed var(--line);cursor:pointer;

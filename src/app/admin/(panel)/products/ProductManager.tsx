@@ -628,23 +628,36 @@ export default function ProductManager({
                 {/* --- Produktbilder --- */}
                 <div className="field">
                   <label>Produktbilder (max. {MAX_IMAGES})</label>
+                  <div style={{ fontSize: 12, color: "#5a6660", marginBottom: 10, padding: "8px 12px", background: "#fafbf9", border: "1px solid #e3e6df", borderRadius: 4 }}>
+                    💡 <b>Wichtig:</b> Das <b>1. Bild</b> = <b>Vorderseite</b>, das <b>2. Bild</b> = <b>Rückseite</b>. Kunden können damit ihre Designs auf Vorder- und Rückseite platzieren.
+                  </div>
                   <div className="img-manager">
-                    {images.map((img, i) => (
+                    {images.map((img, i) => {
+                      const sideLabel =
+                        i === 0 ? "★ Vorderseite" :
+                        i === 1 ? "Rückseite" :
+                        `Ansicht ${i + 1}`;
+                      return (
                       <div className={`img-thumb${i === 0 ? " is-main" : ""}`} key={img.key}>
                         {/* eslint-disable-next-line @next/next/no-img-element */}
                         <img src={img.preview} alt="" />
                         {img.file && <span className="img-new">neu</span>}
                         {i === 0 ? (
-                          <span className="img-main">★ Vitrine</span>
+                          <span className="img-main">{sideLabel}</span>
                         ) : (
-                          <button
-                            type="button"
-                            className="img-star"
-                            title="Als Hauptbild (Vitrine) setzen"
-                            onClick={() => makeMain(i)}
-                          >
-                            ★
-                          </button>
+                          <>
+                            <span className="img-side" title={`Diese Position wird als "${sideLabel}" angezeigt`}>
+                              {sideLabel}
+                            </span>
+                            <button
+                              type="button"
+                              className="img-star"
+                              title="Als Hauptbild (Vitrine) setzen"
+                              onClick={() => makeMain(i)}
+                            >
+                              ★
+                            </button>
+                          </>
                         )}
                         <button
                           type="button"
@@ -655,7 +668,8 @@ export default function ProductManager({
                           ✕
                         </button>
                       </div>
-                    ))}
+                    );
+                    })}
                     {images.length < MAX_IMAGES && (
                       <label className="img-add">
                         <span>+</span>
