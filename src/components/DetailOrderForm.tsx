@@ -8,6 +8,8 @@ import { colorHex, colorLabel } from "@/lib/catalog-options";
 import type { ProductSize } from "@/lib/sizes";
 import type { PriceTier } from "@/lib/price-tiers";
 
+import type { Dictionary } from "@/dictionaries/types";
+
 type Props = {
   productId: string;
   productCode: string;
@@ -20,6 +22,7 @@ type Props = {
   transferPriceCents?: number;
   minOrderQty?: number;
   colorImages?: Record<string, string[]>;
+  t?: Dictionary["detailForm"];
 };
 
 function euro(c: number): string {
@@ -36,7 +39,21 @@ function findTier(tiers: PriceTier[], qty: number): PriceTier | null {
   return match;
 }
 
-// Transfer (DTF) fiyatı — sabit, taraf başına
+// Fallback (Almanca) — prop gelmezse
+const DEFAULT_T: Dictionary["detailForm"] = {
+  title: "Farbe, Menge & Design wählen",
+  subtitle: "Wählen Sie Farbe und Menge. Die Größenverteilung legen Sie im Warenkorb fest.",
+  color: "Farbe", colorTip: "", quantity: "{t.quantity}", sizesInCart: "Größen wählen Sie im Warenkorb",
+  staffelpreise: "Staffelpreise", inklTransfer: "inkl. Transfer", current: "Aktuell", perStueck: "/ Stück",
+  spart: "Spart", pricesInklTransfer: "Preise inkl. Transfer", choosePersonalization: "Personalisierungstechnik auswählen",
+  transfer: "Transfer", dtfDruck: "(DTF-Druck)", transferDesc: "Hochwertiger Textiltransfer",
+  uploadDesignFirst: "Bitte laden Sie oben ein Design hoch.", front: "Vorderseite", back: "Rückseite",
+  productionTime: "Produktionszeit:", productionDays: "5–10 Werktage", gesamt: "Gesamt:",
+  uploadForPrice: "Laden Sie Ihr Design hoch.", inklMwst: "inkl. MwSt.", notesPlaceholder: "Anmerkungen … (optional)",
+  addToCart: "In den Warenkorb", updateVariant: "Variante aktualisieren", addedToCart: "Zum Warenkorb hinzugefügt.",
+  openCart: "Warenkorb öffnen →", minQtyEnter: "Bitte eine Menge eintragen.", enterQty: "Bitte eine Menge eintragen.",
+  minQtyWarn: "Mindestmenge {n}.", minOrderQty: "Mindestbestellmenge:", stueck: "Stück", noch: "noch",
+};
 
 export default function DetailOrderForm({
   productId,
@@ -50,6 +67,7 @@ export default function DetailOrderForm({
   transferPriceCents = 900,
   minOrderQty = 1,
   colorImages,
+  t = DEFAULT_T,
 }: Props) {
   const { addOrUpdate, has } = useMerkliste();
   const { addItem: addToCart } = useCart();
@@ -170,7 +188,7 @@ export default function DetailOrderForm({
   function handleAdd() {
     setErr("");
     if (totalQty === 0) {
-      setErr("Bitte mindestens eine Menge eintragen.");
+      setErr(t.minQtyEnter);
       return;
     }
     const sizeList = sizes.length > 0
@@ -197,11 +215,11 @@ export default function DetailOrderForm({
   function handleAddToCart() {
     setErr("");
     if (totalQty === 0) {
-      setErr("Bitte eine Menge eintragen.");
+      setErr(t.enterQty);
       return;
     }
     if (totalQty < minOrderQty) {
-      setErr(`Für dieses Produkt beträgt die Mindestmenge ${minOrderQty}. Bitte erhöhen Sie die Menge.`);
+      setErr(t.minQtyWarn.replace("{n}", String(minOrderQty)));
       return;
     }
     // HAM base fiyat (priceCents) — ratio uygulanmadan. Sepet dinamik hesaplar.
@@ -209,7 +227,7 @@ export default function DetailOrderForm({
 
     // Transfer bilgisi (design + fiyat)
     const dtfSizeLabel = transferEnabled && transferSidesCount > 0
-      ? [designs.front ? "Vorne" : null, designs.back ? "Hinten" : null].filter(Boolean).join(" + ")
+      ? [designs.front ? t.front : null, designs.back ? t.back : null].filter(Boolean).join(" + ")
       : "";
     const dtfDesignCombined = transferEnabled
       ? JSON.stringify({
@@ -244,7 +262,7 @@ export default function DetailOrderForm({
       availableSizes: availableSizes.length > 0 ? availableSizes : undefined,
       sizePrices: Object.keys(sizePrices).length > 0 ? sizePrices : undefined,
       sizeBreakdown: undefined, // sepette doldurulacak
-      priceTiers: tiers.length > 0 ? tiers.map((t) => ({ qty: t.qty, cents: t.cents })) : undefined,
+      priceTiers: tiers.length > 0 ? tiers.map((tr) => ({ qty: tr.qty, cents: tr.cents })) : undefined,
       hasDtf: transferEnabled && transferSidesCount > 0,
       dtfSize: dtfSizeLabel,
       dtfPriceCents: transferCostCents,
@@ -259,15 +277,15 @@ export default function DetailOrderForm({
   return (
     <div className="det-order">
       <div className="det-order-head">
-        <h3>Farbe, Menge & Design wählen</h3>
-        <p>Wählen Sie Farbe und Menge. Die Größenverteilung (z.&nbsp;B. S, M, L) legen Sie anschließend im Warenkorb fest.</p>
+        <h3>{t.title}</h3>
+        <p>{t.subtitle}</p>
       </div>
 
       {/* Farbauswahl */}
       {colors.length > 0 && (
         <div className="det-order-colors">
           <div className="det-order-colors-head">
-            <span className="det-order-colors-label">Farbe</span>
+            <span className="det-order-colors-label">{t.color}</span>
             {selectedColor && (
               <span className="det-order-color-name">{colorLabel(selectedColor)}</span>
             )}
@@ -297,7 +315,7 @@ export default function DetailOrderForm({
           </div>
           {colors.length > 1 && (
             <p className="det-order-colors-hint">
-              Tipp: Andere Farben? Wählen Sie eine, fügen Sie sie hinzu, dann wechseln Sie die Farbe und fügen die nächste Variante hinzu.
+              {t.colorTip}
             </p>
           )}
         </div>
@@ -307,9 +325,9 @@ export default function DetailOrderForm({
       <div className="det-order-qty-single">
         <label>
           <span className="det-order-qty-label">
-            Menge (Stück)
+            {t.quantity}
             {sizes.length > 0 && (
-              <span className="det-order-qty-hint">Größen wählen Sie im Warenkorb</span>
+              <span className="det-order-qty-hint">{t.sizesInCart}</span>
             )}
           </span>
           <input
@@ -328,24 +346,24 @@ export default function DetailOrderForm({
       {tiers.length > 0 && (
         <div className="det-staffel">
           <div className="det-staffel-head">
-            <span>Staffelpreise{transferCostCents > 0 ? " inkl. Transfer" : ""}</span>
+            <span>{t.staffelpreise}{transferCostCents > 0 ? ` ${t.inklTransfer}` : ""}</span>
             {totalQty > 0 && activeTier && (
               <span className="det-staffel-active-hint">
-                Aktuell: ab {activeTier.qty} Stk
+                {t.current}: ab {activeTier.qty} {t.stueck}
               </span>
             )}
           </div>
           <div className="det-staffel-list">
-            {tiers.map((t, i) => {
-              const isActive = activeTier?.qty === t.qty;
+            {tiers.map((tier, i) => {
+              const isActive = activeTier?.qty === tier.qty;
               // Transfer aktifse stück fiyatına ekle
-              const unitWithTransfer = t.cents + transferCostCents;
+              const unitWithTransfer = tier.cents + transferCostCents;
               // Aktif tier ise kullanıcının GERÇEK adedi, diğerleri tier referans adedi
-              const rowQty = isActive && totalQty > 0 ? totalQty : t.qty;
+              const rowQty = isActive && totalQty > 0 ? totalQty : tier.qty;
               const total = rowQty * unitWithTransfer;
               const base = basePriceCents && basePriceCents > 0 ? basePriceCents : tiers[0].cents;
-              const discount = base > 0 && t.cents < base
-                ? Math.round(((base - t.cents) / base) * 100)
+              const discount = base > 0 && tier.cents < base
+                ? Math.round(((base - tier.cents) / base) * 100)
                 : 0;
               return (
                 <div key={i} className={`det-staffel-row${isActive ? " active" : ""}`}>
@@ -356,10 +374,10 @@ export default function DetailOrderForm({
                       </svg>
                     )}
                   </div>
-                  <div className="det-staffel-qty">{isActive && totalQty > 0 ? `${totalQty}` : t.qty} Stück</div>
-                  <div className="det-staffel-unit">€{euro(unitWithTransfer)} / Stück</div>
+                  <div className="det-staffel-qty">{isActive && totalQty > 0 ? `${totalQty}` : tier.qty} {t.stueck}</div>
+                  <div className="det-staffel-unit">€{euro(unitWithTransfer)} {t.perStueck}</div>
                   <div className="det-staffel-spart">
-                    {discount > 0 && <span className="det-staffel-badge">Spart {discount}%</span>}
+                    {discount > 0 && <span className="det-staffel-badge">{t.spart} {discount}%</span>}
                   </div>
                   <div className="det-staffel-total">€{euro(total)}</div>
                 </div>
@@ -368,7 +386,7 @@ export default function DetailOrderForm({
           </div>
           {transferCostCents > 0 && (
             <div className="det-staffel-transfer-note">
-              Preise inkl. Transfer ({[designs.front ? "Vorne" : null, designs.back ? "Hinten" : null].filter(Boolean).join(" + ")})
+              {t.pricesInklTransfer} ({[designs.front ? t.front : null, designs.back ? t.back : null].filter(Boolean).join(" + ")})
             </div>
           )}
         </div>
@@ -377,7 +395,7 @@ export default function DetailOrderForm({
       {/* Personalisierungstechnik — Transfer (DTF) */}
       <div className="det-transfer">
         <div className="det-transfer-head">
-          <span className="det-transfer-title">Personalisierungstechnik auswählen</span>
+          <span className="det-transfer-title">{t.choosePersonalization}</span>
         </div>
 
         <label className={`det-transfer-option${transferEnabled ? " active" : ""}`}>
@@ -391,10 +409,10 @@ export default function DetailOrderForm({
           </span>
           <span className="det-transfer-body">
             <span className="det-transfer-name">
-              Transfer <span className="det-transfer-tech">(DTF-Druck)</span>
+              {t.transfer} <span className="det-transfer-tech">{t.dtfDruck}</span>
             </span>
             <span className="det-transfer-desc">
-              Hochwertiger Textiltransfer für langlebige Motive
+              {t.transferDesc}
             </span>
           </span>
         </label>
@@ -406,7 +424,7 @@ export default function DetailOrderForm({
                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
                   <path d="M12 9v4M12 17h.01M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/>
                 </svg>
-                <span>Bitte laden Sie oben ein Design für Vorder- oder Rückseite hoch.</span>
+                <span>{t.uploadDesignFirst}</span>
               </div>
             ) : (
               <>
@@ -441,18 +459,18 @@ export default function DetailOrderForm({
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
               <circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/>
             </svg>
-            Mindestbestellmenge: <strong>{minOrderQty} Stück</strong>
+            {t.minOrderQty} <strong>{minOrderQty} {t.stueck}</strong>
             {totalQty > 0 && totalQty < minOrderQty && (
-              <span className="det-summary-min-need"> · noch {minOrderQty - totalQty} Stk</span>
+              <span className="det-summary-min-need"> · {t.noch} {minOrderQty - totalQty} {t.stueck}</span>
             )}
           </div>
         )}
         <div className="det-summary-row">
-          <span className="det-summary-lbl">Produktionszeit:</span>
-          <span className="det-summary-val">5–10 Werktage</span>
+          <span className="det-summary-lbl">{t.productionTime}</span>
+          <span className="det-summary-val">{t.productionDays}</span>
         </div>
         <div className="det-summary-row det-summary-total">
-          <span className="det-summary-lbl">Gesamt:</span>
+          <span className="det-summary-lbl">{t.gesamt}</span>
           <span className="det-summary-val-big">
             {totalQty > 0 && subtotalCents != null
               ? `€${euro(subtotalCents + transferCostCents * totalQty)}`
@@ -461,16 +479,16 @@ export default function DetailOrderForm({
         </div>
         {transferEnabled && transferSidesCount === 0 && (
           <div className="det-summary-hint">
-            Laden Sie Ihr Design hoch, um Ihren endgültigen Preis zu erhalten.
+            {t.uploadForPrice}
           </div>
         )}
-        <div className="det-summary-vat">inkl. MwSt.</div>
+        <div className="det-summary-vat">{t.inklMwst}</div>
       </div>
 
       {/* Anmerkungen */}
       <textarea
         className="det-order-input det-order-textarea"
-        placeholder="Anmerkungen, Wunschveredelung, Logoplatzierung … (optional)"
+        placeholder={t.notesPlaceholder}
         value={note}
         onChange={(e) => { setNote(e.target.value); setAdded(false); }}
         rows={3}
@@ -492,8 +510,8 @@ export default function DetailOrderForm({
           <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" strokeWidth="2.5">
             <path d="M20 6L9 17l-5-5" strokeLinecap="round" strokeLinejoin="round" />
           </svg>
-          <span>Zum Warenkorb hinzugefügt.</span>
-          <Link href="/warenkorb" className="det-order-success-link">Warenkorb öffnen →</Link>
+          <span>{t.addedToCart}</span>
+          <Link href="/warenkorb" className="det-order-success-link">{t.openCart}</Link>
         </div>
       )}
 
@@ -514,7 +532,7 @@ export default function DetailOrderForm({
             <circle cx="20" cy="21" r="1.5" />
             <path d="M3 3h2l3 13h12l3-9H6" strokeLinecap="round" strokeLinejoin="round" />
           </svg>
-          {alreadyOn ? "Variante aktualisieren" : "In den Warenkorb"}
+          {alreadyOn ? t.updateVariant : t.addToCart}
           {totalQty > 0 ? ` · ${totalQty} Stk` : ""}
           {selectedColor ? ` · ${colorLabel(selectedColor)}` : ""}
         </button>

@@ -308,6 +308,7 @@ export default async function ProductDetailPage({
                 transferPriceCents={transferPriceCents}
                 minOrderQty={(product as { minOrderQty?: number }).minOrderQty ?? 1}
                 colorImages={colorImages}
+                t={d.detailForm}
               />
 
               {/* Eigenes Design hochladen — Tasarımcı modali açar */}
