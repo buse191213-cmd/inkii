@@ -769,13 +769,14 @@ export default function ProductManager({
 
                 {/* Empfohlene Produkte (Cross-Sell) */}
                 <div className="field">
-                  <label>Empfohlene Produkte (Cross-Sell)</label>
+                  <label>Empfohlene Produkte (Cross-Sell) — max. 4</label>
                   <div className="tier-help">
-                    Wählen Sie Produkte, die auf dieser Detailseite unter „Weitere Artikel" angezeigt werden. Kunden, die dieses Produkt ansehen, sehen Ihre Empfehlungen.
+                    Wählen Sie bis zu 4 Produkte, die auf dieser Detailseite unter „Weitere Artikel" angezeigt werden.
                   </div>
                   <div style={{
-                    maxHeight: 200, overflowY: "auto", border: "1px solid #e5e7eb",
+                    maxHeight: 220, overflowY: "auto", border: "1px solid #e5e7eb",
                     padding: 8, display: "flex", flexDirection: "column", gap: 4,
+                    alignItems: "stretch",
                   }}>
                     {products.filter((p) => p.id !== modal.id).length === 0 ? (
                       <span style={{ fontSize: 12, color: "#94a3b8" }}>Keine anderen Produkte vorhanden.</span>
@@ -784,23 +785,30 @@ export default function ProductManager({
                         .filter((p) => p.id !== modal.id)
                         .map((p) => {
                           const checked = selRecommended.includes(p.id);
+                          const limitReached = selRecommended.length >= 4 && !checked;
                           return (
                             <label
                               key={p.id}
                               style={{
                                 display: "flex", alignItems: "center", gap: 8,
-                                padding: "5px 8px", cursor: "pointer", fontSize: 13,
+                                padding: "6px 8px",
+                                cursor: limitReached ? "not-allowed" : "pointer",
+                                fontSize: 13, textAlign: "left",
                                 background: checked ? "#f0fdf4" : "transparent",
                                 border: checked ? "1px solid #86efac" : "1px solid transparent",
+                                opacity: limitReached ? 0.4 : 1,
                               }}
                             >
                               <input
                                 type="checkbox"
                                 checked={checked}
+                                disabled={limitReached}
                                 onChange={() =>
-                                  setSelRecommended((cur) =>
-                                    cur.includes(p.id) ? cur.filter((x) => x !== p.id) : [...cur, p.id]
-                                  )
+                                  setSelRecommended((cur) => {
+                                    if (cur.includes(p.id)) return cur.filter((x) => x !== p.id);
+                                    if (cur.length >= 4) return cur; // max 4
+                                    return [...cur, p.id];
+                                  })
                                 }
                               />
                               <span style={{ fontWeight: 600 }}>{p.name}</span>
@@ -810,11 +818,10 @@ export default function ProductManager({
                         })
                     )}
                   </div>
-                  {selRecommended.length > 0 && (
-                    <div style={{ fontSize: 12, color: "#059669", marginTop: 6, fontWeight: 600 }}>
-                      {selRecommended.length} Produkt(e) empfohlen
-                    </div>
-                  )}
+                  <div style={{ fontSize: 12, marginTop: 6, fontWeight: 600, color: selRecommended.length >= 4 ? "#dc2626" : "#059669" }}>
+                    {selRecommended.length} / 4 Produkt(e) ausgewählt
+                    {selRecommended.length >= 4 && " — Maximum erreicht"}
+                  </div>
                 </div>
 
                 <div className="field">

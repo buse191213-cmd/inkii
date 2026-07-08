@@ -26,6 +26,8 @@ export default async function ProductsPage() {
     priceTiers: p.priceTiers ?? "[]",
     sizes: p.sizes ?? "[]",
     stock: p.stock,
+    minOrderQty: (p as { minOrderQty?: number }).minOrderQty ?? 1,
+    recommendedIds: (p as { recommendedIds?: string }).recommendedIds || "",
     status: p.status,
     isNew: p.isNew,
     isEco: p.isEco,
