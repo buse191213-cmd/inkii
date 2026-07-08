@@ -769,33 +769,39 @@ export default function ProductManager({
 
                 {/* Empfohlene Produkte (Cross-Sell) */}
                 <div className="field">
-                  <label>Empfohlene Produkte (Cross-Sell) — max. 4</label>
-                  <div className="tier-help">
-                    Wählen Sie bis zu 4 Produkte, die auf dieser Detailseite unter „Weitere Artikel" angezeigt werden.
+                  <label>Empfohlene Produkte (Cross-Sell)</label>
+                  <div className="tier-help" style={{ marginBottom: 10 }}>
+                    Bis zu 4 Produkte für „Weitere Artikel" auf der Detailseite.
+                    <strong style={{ marginLeft: 6, color: selRecommended.length >= 4 ? "#dc2626" : "#059669" }}>
+                      {selRecommended.length}/4
+                    </strong>
                   </div>
                   <div style={{
-                    maxHeight: 220, overflowY: "auto", border: "1px solid #e5e7eb",
-                    padding: 8, display: "flex", flexDirection: "column", gap: 4,
-                    alignItems: "stretch",
+                    maxHeight: 260, overflowY: "auto",
+                    border: "1px solid #e5e7eb",
+                    display: "flex", flexDirection: "column",
                   }}>
                     {products.filter((p) => p.id !== modal.id).length === 0 ? (
-                      <span style={{ fontSize: 12, color: "#94a3b8" }}>Keine anderen Produkte vorhanden.</span>
+                      <span style={{ fontSize: 12, color: "#94a3b8", padding: 12 }}>Keine anderen Produkte vorhanden.</span>
                     ) : (
                       products
                         .filter((p) => p.id !== modal.id)
                         .map((p) => {
                           const checked = selRecommended.includes(p.id);
                           const limitReached = selRecommended.length >= 4 && !checked;
+                          const thumb = splitImages(p.images)[0] || null;
                           return (
                             <label
                               key={p.id}
                               style={{
-                                display: "flex", alignItems: "center", gap: 8,
-                                padding: "6px 8px",
+                                display: "grid",
+                                gridTemplateColumns: "20px 44px 1fr",
+                                alignItems: "center",
+                                gap: 12,
+                                padding: "8px 12px",
                                 cursor: limitReached ? "not-allowed" : "pointer",
-                                fontSize: 13, textAlign: "left",
-                                background: checked ? "#f0fdf4" : "transparent",
-                                border: checked ? "1px solid #86efac" : "1px solid transparent",
+                                borderBottom: "1px solid #f1f5f9",
+                                background: checked ? "#f0fdf4" : "#fff",
                                 opacity: limitReached ? 0.4 : 1,
                               }}
                             >
@@ -803,24 +809,30 @@ export default function ProductManager({
                                 type="checkbox"
                                 checked={checked}
                                 disabled={limitReached}
+                                style={{ margin: 0 }}
                                 onChange={() =>
                                   setSelRecommended((cur) => {
                                     if (cur.includes(p.id)) return cur.filter((x) => x !== p.id);
-                                    if (cur.length >= 4) return cur; // max 4
+                                    if (cur.length >= 4) return cur;
                                     return [...cur, p.id];
                                   })
                                 }
                               />
-                              <span style={{ fontWeight: 600 }}>{p.name}</span>
-                              {p.code && <span style={{ color: "#94a3b8", fontSize: 11 }}>({p.code})</span>}
+                              <div style={{
+                                width: 44, height: 44,
+                                background: thumb ? `#f4f5f3 url(${thumb}) center/contain no-repeat` : "#f4f5f3",
+                                border: "1px solid #e5e7eb",
+                              }} />
+                              <div style={{ textAlign: "left", minWidth: 0 }}>
+                                <div style={{ fontWeight: 600, fontSize: 13, color: "#0f1a16", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
+                                  {p.name}
+                                </div>
+                                {p.code && <div style={{ color: "#94a3b8", fontSize: 11 }}>{p.code}</div>}
+                              </div>
                             </label>
                           );
                         })
                     )}
-                  </div>
-                  <div style={{ fontSize: 12, marginTop: 6, fontWeight: 600, color: selRecommended.length >= 4 ? "#dc2626" : "#059669" }}>
-                    {selRecommended.length} / 4 Produkt(e) ausgewählt
-                    {selRecommended.length >= 4 && " — Maximum erreicht"}
                   </div>
                 </div>
 
