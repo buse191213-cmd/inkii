@@ -263,6 +263,38 @@ export default function CartDrawer({ open, onClose }: Props) {
                       )}
                     </div>
 
+                    {/* Design önizlemeleri (drawer) */}
+                    {item.hasDtf && (() => {
+                      let designs: { front?: string | null; back?: string | null } = {};
+                      try {
+                        if (item.dtfDesignUrl) designs = JSON.parse(item.dtfDesignUrl);
+                      } catch { /* ignore */ }
+                      const thumbs: Array<{ label: string; url: string }> = [];
+                      if (designs.front) thumbs.push({ label: "Vorne", url: designs.front });
+                      if (designs.back) thumbs.push({ label: "Hinten", url: designs.back });
+                      if (thumbs.length === 0) return null;
+                      return (
+                        <div style={{ display: "flex", gap: 6, marginTop: 6 }}>
+                          {thumbs.map((t, i) => (
+                            <div key={i} style={{ textAlign: "center" }}>
+                              <div style={{
+                                width: 38, height: 38,
+                                border: "1px solid #d1fae5",
+                                borderRadius: 5,
+                                background: "#f0fdf4",
+                                display: "flex", alignItems: "center", justifyContent: "center",
+                                overflow: "hidden",
+                              }}>
+                                {/* eslint-disable-next-line @next/next/no-img-element */}
+                                <img src={t.url} alt={t.label} style={{ maxWidth: "100%", maxHeight: "100%", objectFit: "contain", padding: 2 }} />
+                              </div>
+                              <div style={{ fontSize: 9, color: "#065f46", marginTop: 1, fontWeight: 600 }}>{t.label}</div>
+                            </div>
+                          ))}
+                        </div>
+                      );
+                    })()}
+
                     {/* Adet + fiyat satırı */}
                     <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginTop: 10, gap: 10 }}>
                       {/* Adet kontrol */}

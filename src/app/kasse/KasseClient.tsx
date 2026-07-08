@@ -703,9 +703,35 @@ export default function KasseClient({ paymentMethods, shipping, prefill, isLogge
                   </div>
                   {item.hasDtf && (
                     <div style={{ color: "#0d9488", fontSize: 10, marginTop: 2 }}>
-                      + DTF {item.dtfSize}
+                      + Transfer{item.dtfSize ? ` (${item.dtfSize})` : ""}
                     </div>
                   )}
+                  {item.hasDtf && (() => {
+                    let designs: { front?: string | null; back?: string | null } = {};
+                    try {
+                      if (item.dtfDesignUrl) designs = JSON.parse(item.dtfDesignUrl);
+                    } catch { /* ignore */ }
+                    const thumbs: Array<{ label: string; url: string }> = [];
+                    if (designs.front) thumbs.push({ label: "V", url: designs.front });
+                    if (designs.back) thumbs.push({ label: "H", url: designs.back });
+                    if (thumbs.length === 0) return null;
+                    return (
+                      <div style={{ display: "flex", gap: 4, marginTop: 4 }}>
+                        {thumbs.map((t, i) => (
+                          <div key={i} style={{
+                            width: 28, height: 28,
+                            border: "1px solid #d1fae5", borderRadius: 4,
+                            background: "#f0fdf4", overflow: "hidden",
+                            display: "flex", alignItems: "center", justifyContent: "center",
+                            position: "relative",
+                          }} title={t.label === "V" ? "Vorderseite" : "Rückseite"}>
+                            {/* eslint-disable-next-line @next/next/no-img-element */}
+                            <img src={t.url} alt={t.label} style={{ maxWidth: "100%", maxHeight: "100%", objectFit: "contain", padding: 1 }} />
+                          </div>
+                        ))}
+                      </div>
+                    );
+                  })()}
                 </div>
                 <div style={{ fontWeight: 600, fontSize: 12, flexShrink: 0 }}>
                   {euro((item.unitPriceCents + item.dtfPriceCents) * item.quantity)} €
