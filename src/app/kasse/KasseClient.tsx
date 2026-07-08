@@ -4,6 +4,7 @@ import { useState, useTransition, useRef } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useCart, cartItemTotalCents } from "@/components/CartProvider";
+import CheckoutSteps from "@/components/CheckoutSteps";
 import { colorLabel } from "@/lib/catalog-options";
 import { createOrder } from "./order-actions";
 import PayPalInlineButtons from "./PayPalInlineButtons";
@@ -297,6 +298,7 @@ export default function KasseClient({ paymentMethods, shipping, prefill, isLogge
 
   return (
     <section style={{ maxWidth: 1200, margin: "0 auto", padding: "40px 28px" }}>
+      <CheckoutSteps current={isLoggedIn ? "versand" : "anmelden"} isLoggedIn={isLoggedIn} />
       <h1 style={{ fontSize: "2rem", fontWeight: 700, marginBottom: 12 }}>Kasse</h1>
 
       {!isLoggedIn && (

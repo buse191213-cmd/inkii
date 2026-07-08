@@ -296,9 +296,11 @@ export default function ProductGallery({
 
   // Dış component'ler için design'ları broadcast et
   useEffect(() => {
+    const frontSize = designs.front ? getRealSize(designs.front.width, designs.front.imageAspect) : null;
+    const backSize = designs.back ? getRealSize(designs.back.width, designs.back.imageAspect) : null;
     const detail = {
-      front: designs.front ? { imageDataUrl: designs.front.imageDataUrl } : null,
-      back: designs.back ? { imageDataUrl: designs.back.imageDataUrl } : null,
+      front: designs.front ? { imageDataUrl: designs.front.imageDataUrl, sizeCm: frontSize } : null,
+      back: designs.back ? { imageDataUrl: designs.back.imageDataUrl, sizeCm: backSize } : null,
       hasBack,
     };
     window.dispatchEvent(new CustomEvent("designs-updated", { detail }));

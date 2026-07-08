@@ -19,6 +19,7 @@ type Props = {
   basePriceCents: number | null;
   transferPriceCents?: number;
   minOrderQty?: number;
+  colorImages?: Record<string, string[]>;
 };
 
 function euro(c: number): string {
@@ -48,11 +49,24 @@ export default function DetailOrderForm({
   basePriceCents,
   transferPriceCents = 900,
   minOrderQty = 1,
+  colorImages,
 }: Props) {
   const { addOrUpdate, has } = useMerkliste();
   const { addItem: addToCart } = useCart();
   const [addedToCart, setAddedToCart] = useState(false);
   const [selectedColor, setSelectedColor] = useState<string | null>(null);
+
+  // Seçili renge göre ürün görseli (renk değişince sepete doğru görsel gider)
+  const effectiveImage = useMemo(() => {
+    if (selectedColor && colorImages) {
+      const norm = (s: string) => s.toLowerCase().replace(/[^a-z0-9]/g, "");
+      const target = norm(selectedColor);
+      const key = Object.keys(colorImages).find((k) => norm(k) === target);
+      const imgs = key ? colorImages[key] : null;
+      if (imgs && imgs.length > 0) return imgs[0];
+    }
+    return productImage;
+  }, [selectedColor, colorImages, productImage]);
   const [qty, setQty] = useState<Record<string, number>>(() => {
     const init: Record<string, number> = {};
     sizes.forEach((s) => (init[s.name] = 0));
@@ -68,16 +82,24 @@ export default function DetailOrderForm({
   // Galeriden gelen design'lar (Vorderseite/Rückseite)
   const [designs, setDesigns] = useState<{ front: boolean; back: boolean }>({ front: false, back: false });
   const [designUrls, setDesignUrls] = useState<{ front: string | null; back: string | null }>({ front: null, back: null });
+  const [designSizes, setDesignSizes] = useState<{ front: { widthCm: number; heightCm: number } | null; back: { widthCm: number; heightCm: number } | null }>({ front: null, back: null });
 
   // Galeriden design güncellemelerini dinle
   useEffect(() => {
     function onDesigns(e: Event) {
-      const ce = e as CustomEvent<{ front: { imageDataUrl: string } | null; back: { imageDataUrl: string } | null }>;
+      const ce = e as CustomEvent<{
+        front: { imageDataUrl: string; sizeCm?: { widthCm: number; heightCm: number } } | null;
+        back: { imageDataUrl: string; sizeCm?: { widthCm: number; heightCm: number } } | null;
+      }>;
       if (ce.detail) {
         setDesigns({ front: !!ce.detail.front, back: !!ce.detail.back });
         setDesignUrls({
           front: ce.detail.front?.imageDataUrl || null,
           back: ce.detail.back?.imageDataUrl || null,
+        });
+        setDesignSizes({
+          front: ce.detail.front?.sizeCm || null,
+          back: ce.detail.back?.sizeCm || null,
         });
         // Design eklendiyse transfer otomatik aktif
         if (ce.detail.front || ce.detail.back) {
@@ -157,7 +179,7 @@ export default function DetailOrderForm({
       id: productId,
       code: productCode,
       name: productName,
-      image: productImage,
+      image: effectiveImage,
       qty: totalQty,
       sizes: sizeList,
       note: note.trim() || undefined,
@@ -185,7 +207,12 @@ export default function DetailOrderForm({
       ? [designs.front ? "Vorne" : null, designs.back ? "Hinten" : null].filter(Boolean).join(" + ")
       : "";
     const dtfDesignCombined = transferEnabled
-      ? JSON.stringify({ front: designUrls.front, back: designUrls.back })
+      ? JSON.stringify({
+          front: designUrls.front,
+          back: designUrls.back,
+          frontSize: designSizes.front,
+          backSize: designSizes.back,
+        })
       : "";
 
     // TEK cart item — bedenler sepette girilecek
@@ -201,7 +228,7 @@ export default function DetailOrderForm({
       productId,
       productCode,
       productName,
-      productImage: productImage ?? "",
+      productImage: effectiveImage ?? "",
       color: selectedColor ?? "",
       size: "",
       quantity: totalQty,

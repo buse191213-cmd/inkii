@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { useCart, cartItemTotalCents } from "@/components/CartProvider";
 import CartSizeDistributor from "@/components/CartSizeDistributor";
+import CheckoutSteps from "@/components/CheckoutSteps";
 import { colorLabel } from "@/lib/catalog-options";
 
 function euro(c: number): string {
@@ -55,6 +56,7 @@ export default function WarenkorbClient() {
 
   return (
     <section style={{ maxWidth: 1200, margin: "0 auto", padding: "40px 28px" }}>
+      <CheckoutSteps current="warenkorb" />
       <h1 style={{ fontSize: "2rem", fontWeight: 700, marginBottom: 24 }}>
         Warenkorb <span style={{ color: "#64748b", fontWeight: 400, fontSize: "1.2rem" }}>({items.length} {items.length === 1 ? "Artikel" : "Artikel"})</span>
       </h1>
@@ -67,21 +69,23 @@ export default function WarenkorbClient() {
               key={item.id}
               style={{
                 display: "grid",
-                gridTemplateColumns: "80px 1fr auto",
-                gap: 16,
-                padding: "16px 0",
+                gridTemplateColumns: "160px 1fr auto",
+                gap: 20,
+                padding: "20px 0",
                 borderBottom: "1px solid #e5e7eb",
-                alignItems: "center",
+                alignItems: "start",
               }}
             >
               <div
                 style={{
-                  width: 80,
-                  height: 80,
+                  width: 160,
+                  height: 160,
                   background: "#f4f5f3",
+                  borderRadius: 10,
                   display: "grid",
                   placeItems: "center",
                   overflow: "hidden",
+                  flexShrink: 0,
                 }}
               >
                 {item.productImage ? (
@@ -114,31 +118,40 @@ export default function WarenkorbClient() {
                       + Transfer (DTF) {item.dtfSize && `· ${item.dtfSize}`} — {euro(item.dtfPriceCents)} € / Stk
                     </div>
                     {(() => {
-                      // dtfDesignUrl = JSON {front, back}
-                      let designs: { front?: string | null; back?: string | null } = {};
+                      // dtfDesignUrl = JSON {front, back, frontSize, backSize}
+                      let designs: {
+                        front?: string | null; back?: string | null;
+                        frontSize?: { widthCm: number; heightCm: number } | null;
+                        backSize?: { widthCm: number; heightCm: number } | null;
+                      } = {};
                       try {
                         if (item.dtfDesignUrl) designs = JSON.parse(item.dtfDesignUrl);
                       } catch { /* ignore */ }
-                      const thumbs: Array<{ label: string; url: string }> = [];
-                      if (designs.front) thumbs.push({ label: "Vorne", url: designs.front });
-                      if (designs.back) thumbs.push({ label: "Hinten", url: designs.back });
+                      const thumbs: Array<{ label: string; url: string; size?: { widthCm: number; heightCm: number } | null }> = [];
+                      if (designs.front) thumbs.push({ label: "Vorne", url: designs.front, size: designs.frontSize });
+                      if (designs.back) thumbs.push({ label: "Hinten", url: designs.back, size: designs.backSize });
                       if (thumbs.length === 0) return null;
                       return (
-                        <div style={{ display: "flex", gap: 8, marginTop: 6 }}>
+                        <div style={{ display: "flex", gap: 12, marginTop: 8 }}>
                           {thumbs.map((t, i) => (
                             <div key={i} style={{ textAlign: "center" }}>
                               <div style={{
-                                width: 44, height: 44,
+                                width: 72, height: 72,
                                 border: "1px solid #d1fae5",
-                                borderRadius: 6,
+                                borderRadius: 8,
                                 background: "#f0fdf4",
                                 display: "flex", alignItems: "center", justifyContent: "center",
                                 overflow: "hidden",
                               }}>
                                 {/* eslint-disable-next-line @next/next/no-img-element */}
-                                <img src={t.url} alt={t.label} style={{ maxWidth: "100%", maxHeight: "100%", objectFit: "contain", padding: 2 }} />
+                                <img src={t.url} alt={t.label} style={{ maxWidth: "100%", maxHeight: "100%", objectFit: "contain", padding: 4 }} />
                               </div>
-                              <div style={{ fontSize: 10, color: "#065f46", marginTop: 2, fontWeight: 600 }}>{t.label}</div>
+                              <div style={{ fontSize: 11, color: "#065f46", marginTop: 3, fontWeight: 700 }}>{t.label}</div>
+                              {t.size && (
+                                <div style={{ fontSize: 10, color: "#5a6660", marginTop: 1 }}>
+                                  {t.size.widthCm.toLocaleString("de-DE")} × {t.size.heightCm.toLocaleString("de-DE")} cm
+                                </div>
+                              )}
                             </div>
                           ))}
                         </div>
