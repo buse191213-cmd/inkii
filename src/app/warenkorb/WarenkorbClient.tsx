@@ -81,7 +81,7 @@ export default function WarenkorbClient() {
                   width: 160,
                   height: 160,
                   background: "#f4f5f3",
-                  borderRadius: 10,
+                  borderRadius: 0,
                   display: "grid",
                   placeItems: "center",
                   overflow: "hidden",
@@ -140,7 +140,7 @@ export default function WarenkorbClient() {
                               <div style={{
                                 width: 96, height: 96,
                                 border: "1px solid #e3e6df",
-                                borderRadius: 8,
+                                borderRadius: 0,
                                 background: "#fff",
                                 display: "flex", alignItems: "center", justifyContent: "center",
                                 overflow: "hidden",
@@ -370,7 +370,7 @@ export default function WarenkorbClient() {
                     <div style={{
                       background: "#fffbeb",
                       border: "1px solid #fde68a",
-                      borderRadius: 8,
+                      borderRadius: 0,
                       padding: "10px 14px",
                       marginBottom: 10,
                       fontSize: 13,
@@ -398,7 +398,7 @@ export default function WarenkorbClient() {
                         fontSize: 14,
                         marginBottom: 8,
                         cursor: "not-allowed",
-                        borderRadius: 8,
+                        borderRadius: 0,
                       }}
                       title={hasQuoteOnly ? "Mindestens ein Artikel ist nur auf Anfrage" : "Bitte Größen verteilen"}
                     >
@@ -417,7 +417,7 @@ export default function WarenkorbClient() {
                         textDecoration: "none",
                         fontSize: 14,
                         marginBottom: 8,
-                        borderRadius: 8,
+                        borderRadius: 0,
                       }}
                     >
                       🛒 Direkt zur Kasse →

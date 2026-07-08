@@ -115,7 +115,7 @@ export default function CartSizeDistributor({
           padding: 12px;
           background: #fafbf9;
           border: 1px solid #e3e6df;
-          border-radius: 8px;
+          border-radius: 0;
         }
         .csd-head {
           display: flex;
@@ -167,7 +167,7 @@ export default function CartSizeDistributor({
           padding: 8px 4px;
           text-align: center;
           border: 1.5px solid #d9ddd5;
-          border-radius: 6px;
+          border-radius: 0;
           font-size: 0.95rem;
           font-weight: 600;
           color: #0f1a16;
@@ -194,7 +194,7 @@ export default function CartSizeDistributor({
           padding: 9px 11px;
           background: #fffbeb;
           border: 1px solid #fde68a;
-          border-radius: 6px;
+          border-radius: 0;
           font-size: 0.78rem;
           color: #92400e;
           line-height: 1.4;
