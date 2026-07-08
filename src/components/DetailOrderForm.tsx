@@ -341,18 +341,52 @@ export default function DetailOrderForm({
         </div>
       )}
 
-      {/* Mengenstaffel Hinweis */}
+      {/* Staffelpreise — aktif tier işaretli */}
       {tiers.length > 0 && (
-        <div className="det-order-tier-hint">
-          {tiers.map((t, i) => {
-            const isActive = activeTier?.qty === t.qty;
-            return (
-              <div key={i} className={`det-tier-pill${isActive ? " active" : ""}`}>
-                <span className="det-tier-qty">ab {t.qty} Stk</span>
-                <span className="det-tier-price">€{euro(t.cents)}/Stk</span>
-              </div>
-            );
-          })}
+        <div className="det-staffel">
+          <div className="det-staffel-head">
+            <span>Staffelpreise{transferCostCents > 0 ? " inkl. Transfer" : ""}</span>
+            {totalQty > 0 && activeTier && (
+              <span className="det-staffel-active-hint">
+                Aktuell: ab {activeTier.qty} Stk
+              </span>
+            )}
+          </div>
+          <div className="det-staffel-list">
+            {tiers.map((t, i) => {
+              const isActive = activeTier?.qty === t.qty;
+              // Transfer aktifse stück fiyatına ekle
+              const unitWithTransfer = t.cents + transferCostCents;
+              const total = t.qty * unitWithTransfer;
+              const base = basePriceCents && basePriceCents > 0 ? basePriceCents : tiers[0].cents;
+              const discount = base > 0 && t.cents < base
+                ? Math.round(((base - t.cents) / base) * 100)
+                : 0;
+              return (
+                <div key={i} className={`det-staffel-row${isActive ? " active" : ""}`}>
+                  <div className="det-staffel-check" aria-hidden>
+                    {isActive && (
+                      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round">
+                        <path d="M20 6L9 17l-5-5"/>
+                      </svg>
+                    )}
+                  </div>
+                  <div className="det-staffel-qty">{t.qty} Stück</div>
+                  <div className="det-staffel-unit">€{euro(unitWithTransfer)} / Stück</div>
+                  <div className="det-staffel-spart">
+                    {discount > 0 && <span className="det-staffel-badge">Spart {discount}%</span>}
+                  </div>
+                  <div className="det-staffel-total">€{euro(total)}</div>
+                </div>
+              );
+            })}
+          </div>
+          {transferCostCents > 0 && (
+            <div className="det-staffel-transfer-note">
+              inkl. {euro(transferCostCents)} € Transfer / Stück
+              ({[designs.front ? "Vorne" : null, designs.back ? "Hinten" : null].filter(Boolean).join(" + ")})
+            </div>
+          )}
         </div>
       )}
 

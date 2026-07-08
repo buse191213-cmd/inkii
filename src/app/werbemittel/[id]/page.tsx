@@ -8,9 +8,8 @@ import MerkenButton from "@/components/MerkenButton";
 import { db } from "@/lib/db";
 import { formatPrice, formatNumber } from "@/lib/format";
 import { colorHex, colorLabel, materialLabel } from "@/lib/catalog-options";
-import { parsePriceTiers, tierDiscountPercent } from "@/lib/price-tiers";
+import { parsePriceTiers } from "@/lib/price-tiers";
 import { parseSizes } from "@/lib/sizes";
-import { SHOW_TIERS } from "@/lib/feature-flags";
 import { getLocale } from "@/lib/i18n-server";
 import { getDictionary } from "@/dictionaries";
 import DetailOrderForm from "@/components/DetailOrderForm";
@@ -287,41 +286,6 @@ export default async function ProductDetailPage({
                 basePriceCents={product.priceCents}
                 transferPriceCents={transferPriceCents}
               />
-
-              {/* Mengenstaffel-Tabelle (eski yeri: Material altında) */}
-              {SHOW_TIERS && tiers.length > 0 && (
-                <div className="mm-tiers">
-                  <div className="mm-tiers-head">
-                    <span>Staffelpreise</span>
-                  </div>
-                  <div className="mm-tiers-list">
-                    {tiers.map((t, i) => {
-                      const total = t.qty * t.cents;
-                      const discount = tierDiscountPercent(tiers, t, product.priceCents);
-                      const totalEuro = (total / 100).toLocaleString("de-DE", {
-                        minimumFractionDigits: 2,
-                        maximumFractionDigits: 2,
-                      });
-                      const unitEuro = (t.cents / 100).toLocaleString("de-DE", {
-                        minimumFractionDigits: 2,
-                        maximumFractionDigits: 2,
-                      });
-                      return (
-                        <div key={i} className="mm-tier-row">
-                          <div className="mm-tier-qty">{t.qty} Stück</div>
-                          <div className="mm-tier-unit">€{unitEuro} / Stück</div>
-                          <div className="mm-tier-spart">
-                            <span className={`mm-tier-badge${discount > 0 ? " active" : ""}`}>
-                              Spart {discount}%
-                            </span>
-                          </div>
-                          <div className="mm-tier-total">€{totalEuro}</div>
-                        </div>
-                      );
-                    })}
-                  </div>
-                </div>
-              )}
 
               {/* Eigenes Design hochladen — Tasarımcı modali açar */}
 
