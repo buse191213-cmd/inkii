@@ -68,39 +68,46 @@ function getRealSize(widthPercent: number, aspect: number) {
 }
 
 /**
- * Beyaz arka planı transparan yapar (client-side, canvas ile).
- * En etkili: beyaz zeminli logolar için. Karmaşık arka planlar için sınırlı.
+ * Beyaz/açık arka planı transparan yapar (client-side canvas).
+ * threshold: bu değerin ÜSTÜNDEKİ RGB tam beyaz kabul edilir → transparan.
+ * Daha düşük değer = daha agresif temizlik (gri alanlar da gider).
  */
-async function removeWhiteBackground(dataUrl: string, threshold = 230): Promise<string> {
+async function removeWhiteBackground(dataUrl: string, threshold = 200): Promise<string> {
   return new Promise((resolve, reject) => {
     const img = new window.Image();
-    img.crossOrigin = "anonymous";
     img.onload = () => {
-      const canvas = document.createElement("canvas");
-      canvas.width = img.width;
-      canvas.height = img.height;
-      const ctx = canvas.getContext("2d");
-      if (!ctx) { reject(new Error("Canvas error")); return; }
-      ctx.drawImage(img, 0, 0);
       try {
+        const canvas = document.createElement("canvas");
+        canvas.width = img.width;
+        canvas.height = img.height;
+        const ctx = canvas.getContext("2d");
+        if (!ctx) { reject(new Error("Canvas context error")); return; }
+        ctx.drawImage(img, 0, 0);
         const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
         const data = imageData.data;
         for (let i = 0; i < data.length; i += 4) {
           const r = data[i], g = data[i + 1], b = data[i + 2];
-          // Neredeyse beyaz pikselleri şeffaflaştır (yumuşak geçiş)
-          if (r > threshold && g > threshold && b > threshold) {
-            const brightness = (r + g + b) / 3;
-            const alphaRatio = Math.max(0, (255 - brightness) / (255 - threshold));
-            data[i + 3] = Math.round(255 * alphaRatio);
+          // Beyaz veya çok açık renkli pikselleri şeffaflaştır
+          const brightness = (r + g + b) / 3;
+          if (brightness > threshold) {
+            // Yumuşak alfa geçişi (kenar aliasing için)
+            const range = 255 - threshold;
+            const above = brightness - threshold;
+            const ratio = 1 - Math.min(above / range, 1);
+            data[i + 3] = Math.round(255 * ratio);
           }
         }
         ctx.putImageData(imageData, 0, 0);
         resolve(canvas.toDataURL("image/png"));
       } catch (err) {
+        console.error("BG removal error:", err);
         reject(err);
       }
     };
-    img.onerror = () => reject(new Error("Image load error"));
+    img.onerror = (e) => {
+      console.error("Image load error:", e);
+      reject(new Error("Image konnte nicht geladen werden"));
+    };
     img.src = dataUrl;
   });
 }
@@ -449,7 +456,7 @@ export default function ProductGallery({
         {/* Design overlay */}
         {currentDesign && (
           <div
-            className="gal-design-layer"
+            className={`gal-design-layer${isDragging ? " is-dragging" : ""}`}
             style={{
               left: `${currentDesign.x}%`,
               top: `${currentDesign.y}%`,
@@ -478,7 +485,14 @@ export default function ProductGallery({
             <button
               type="button"
               className="gal-handle gal-handle-remove"
-              onClick={(e) => { e.stopPropagation(); handleRemove(); }}
+              onPointerDown={(e) => { e.stopPropagation(); e.preventDefault(); }}
+              onMouseDown={(e) => { e.stopPropagation(); e.preventDefault(); }}
+              onTouchStart={(e) => { e.stopPropagation(); }}
+              onClick={(e) => {
+                e.stopPropagation();
+                e.preventDefault();
+                handleRemove();
+              }}
               aria-label="Design entfernen"
             >
               ✕
@@ -721,13 +735,27 @@ export default function ProductGallery({
           user-select: none;
           touch-action: none;
           z-index: 5;
-          outline: 1.5px dashed rgba(15, 26, 22, 0.35);
+          outline: 1.5px dashed transparent;
           outline-offset: 2px;
-          transition: outline-color 0.15s, outline-width 0.15s;
+          transition: outline-color 0.15s;
         }
         .gal-design-layer:hover {
-          outline-color: rgba(94, 132, 112, 0.8);
-          outline-width: 2px;
+          outline-color: rgba(94, 132, 112, 0.85);
+        }
+        .gal-design-layer .gal-handle {
+          opacity: 0;
+          pointer-events: none;
+          transition: opacity 0.15s;
+        }
+        /* Hover'da veya sürüklerken handles görünür */
+        .gal-design-layer:hover .gal-handle,
+        .gal-design-layer.is-dragging .gal-handle {
+          opacity: 1;
+          pointer-events: auto;
+        }
+        /* Sürüklerken outline da görünsün */
+        .gal-design-layer.is-dragging {
+          outline-color: rgba(94, 132, 112, 0.85);
         }
         .gal-design-img {
           width: 100%;
