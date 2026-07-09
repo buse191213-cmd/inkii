@@ -3,6 +3,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import SiteShell from "@/components/SiteShell";
 import ProductGallery from "@/components/ProductGallery";
+import { guessPrintAreaType } from "@/lib/print-areas";
 import DesignUploadTabs from "@/components/DesignUploadTabs";
 import MerkenButton from "@/components/MerkenButton";
 import { db } from "@/lib/db";
@@ -113,6 +114,14 @@ export default async function ProductDetailPage({
   }
 
   const categoryName = product.category?.name ?? "Werbemittel";
+
+  // Baskı alanı tipi: admin manuel seçtiyse onu kullan, yoksa kategoriden otomatik tahmin et
+  const adminPrintType = (product as { printAreaType?: string }).printAreaType;
+  const effectivePrintAreaType =
+    adminPrintType && adminPrintType !== "tshirt"
+      ? adminPrintType
+      : guessPrintAreaType(product.category?.name, product.category?.slug);
+
   const images = split(product.images);
   const colors = split(product.colors);
   const materials = split(product.material);
@@ -163,7 +172,7 @@ export default async function ProductDetailPage({
                 name={product.name}
                 iconName={product.icon}
                 cardCrop={(product as { cardCrop?: string }).cardCrop || ""}
-                printAreaType={(product as { printAreaType?: string }).printAreaType || "tshirt"}
+                printAreaType={effectivePrintAreaType}
               />
             </div>
 
