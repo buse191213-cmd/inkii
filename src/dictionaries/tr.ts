@@ -811,6 +811,28 @@ const tr: Dictionary = {
     alreadyAccount: "Zaten hesabınız var mı?",
     loginHere: "Buradan giriş yapın",
   },
+  kontaktForm: {
+    thankYou: "Talebiniz için teşekkürler!",
+    vorname: "Ad",
+    nachname: "Soyad",
+    email: "E-posta",
+    phone: "Telefon",
+    company: "Firma",
+    companyPh: "Firma / Dernek",
+    projektTyp: "Proje türü",
+    choose: "Seçin …",
+    budget: "Bütçe",
+    projektFrist: "Proje tarihi (GG.AA.YYYY)",
+    yourDesign: "Tasarımınız",
+    message: "Size nasıl yardımcı olabiliriz?",
+    messagePh: "Sizin için ne yapabileceğimizi bize bildirin.",
+    sending: "Gönderiliyor …",
+    submit: "Talep gönder",
+    sendFailed: "Gönderim başarısız.",
+    privacyNote1: "Göndererek şunları kabul edersiniz:",
+    privacyLink: "Gizlilik Politikası",
+    budgetOptions: ["< 500 €", "500 – 1.500 €", "1.500 – 5.000 €", "5.000 – 15.000 €", "> 15.000 €", "Henüz belirsiz"],
+  },
 };
 
 export default tr;

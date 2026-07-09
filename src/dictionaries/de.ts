@@ -811,6 +811,28 @@ const de: Dictionary = {
     alreadyAccount: "Bereits ein Konto?",
     loginHere: "Hier anmelden",
   },
+  kontaktForm: {
+    thankYou: "Vielen Dank für Ihre Anfrage!",
+    vorname: "Vorname",
+    nachname: "Nachname",
+    email: "E-Mail",
+    phone: "Telefon",
+    company: "Firma",
+    companyPh: "Firma / Verein",
+    projektTyp: "Projekttyp",
+    choose: "Wählen …",
+    budget: "Budget",
+    projektFrist: "Projektfrist (TT.MM.JJJJ)",
+    yourDesign: "Ihr Design",
+    message: "Wobei können wir Ihnen helfen?",
+    messagePh: "Lass uns wissen, was wir für dich tun können.",
+    sending: "Wird gesendet …",
+    submit: "Anfrage senden",
+    sendFailed: "Senden fehlgeschlagen.",
+    privacyNote1: "Mit dem Absenden akzeptieren Sie unsere",
+    privacyLink: "Datenschutzerklärung",
+    budgetOptions: ["< 500 €", "500 – 1.500 €", "1.500 – 5.000 €", "5.000 – 15.000 €", "> 15.000 €", "Noch unklar"],
+  },
 };
 
 export default de;

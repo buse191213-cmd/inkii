@@ -663,4 +663,26 @@ export type Dictionary = {
     alreadyAccount: string;
     loginHere: string;
   };
+  kontaktForm: {
+    thankYou: string;
+    vorname: string;
+    nachname: string;
+    email: string;
+    phone: string;
+    company: string;
+    companyPh: string;
+    projektTyp: string;
+    choose: string;
+    budget: string;
+    projektFrist: string;
+    yourDesign: string;
+    message: string;
+    messagePh: string;
+    sending: string;
+    submit: string;
+    sendFailed: string;
+    privacyNote1: string;
+    privacyLink: string;
+    budgetOptions: string[];
+  };
 };
