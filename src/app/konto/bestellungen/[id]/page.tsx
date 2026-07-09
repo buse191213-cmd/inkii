@@ -3,6 +3,8 @@ import { notFound } from "next/navigation";
 import { db } from "@/lib/db";
 import Link from "next/link";
 import ReorderButton from "./ReorderButton";
+import { getLocale } from "@/lib/i18n-server";
+import { getDictionary } from "@/dictionaries";
 
 export const dynamic = "force-dynamic";
 
@@ -47,6 +49,9 @@ export default async function KundenBestellungDetailPage({
   const customer = await getCurrentCustomer();
   if (!customer) notFound();
 
+  const locale = await getLocale();
+  const to = getDictionary(locale).konto.orderDetail;
+
   const { id } = await params;
   const order = await db.order.findUnique({
     where: { id },
@@ -70,7 +75,7 @@ export default async function KundenBestellungDetailPage({
 
         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", flexWrap: "wrap", gap: 12, marginTop: 16, marginBottom: 24 }}>
           <div>
-            <h1 style={{ fontSize: "1.5rem", fontWeight: 700, margin: 0 }}>Bestellung {order.orderNumber}</h1>
+            <h1 style={{ fontSize: "1.5rem", fontWeight: 700, margin: 0 }}>{to.order} {order.orderNumber}</h1>
             <p style={{ color: "#64748b", marginTop: 4, fontSize: 13 }}>
               {germanDate(order.createdAt)}
             </p>
@@ -120,7 +125,7 @@ export default async function KundenBestellungDetailPage({
         {/* TIMELINE - Status izleyici */}
         {!isCancelled && (
           <div style={{ background: "#fff", padding: 24, border: "1px solid #e5e7eb", marginBottom: 24 }}>
-            <h3 style={{ fontSize: 16, fontWeight: 700, marginBottom: 20 }}>Status</h3>
+            <h3 style={{ fontSize: 16, fontWeight: 700, marginBottom: 20 }}>{to.statusTitle}</h3>
             <div className="status-timeline" style={{ display: "flex", justifyContent: "space-between", gap: 8 }}>
               {STATUS_STEPS.map((step, idx) => {
                 const done = currentStep >= idx + 1;
@@ -180,7 +185,7 @@ export default async function KundenBestellungDetailPage({
 
         {isCancelled && (
           <div style={{ background: "#fee2e2", padding: 16, border: "1px solid #fca5a5", marginBottom: 24, color: "#991b1b" }}>
-            <strong>Diese Bestellung wurde {order.status === "STORNIERT" ? "storniert" : "zurückerstattet"}.</strong>
+            <strong>{to.wasCancelled} {order.status === "STORNIERT" ? to.cancelled : to.refunded}.</strong>
             <br />
             <small>Bei Fragen kontaktieren Sie uns bitte.</small>
           </div>
@@ -217,7 +222,7 @@ export default async function KundenBestellungDetailPage({
         <div style={{ display: "grid", gridTemplateColumns: "1fr 320px", gap: 24 }} className="detail-layout">
           {/* Artikel + Adresse */}
           <div>
-            <h3 style={{ fontSize: 16, fontWeight: 700, marginBottom: 12 }}>Bestellte Artikel</h3>
+            <h3 style={{ fontSize: 16, fontWeight: 700, marginBottom: 12 }}>{to.orderedItems}</h3>
             <div style={{ background: "#fff", border: "1px solid #e5e7eb" }}>
               {order.items.map((item) => (
                 <div
@@ -274,7 +279,7 @@ export default async function KundenBestellungDetailPage({
               ))}
             </div>
 
-            <h3 style={{ fontSize: 16, fontWeight: 700, marginTop: 24, marginBottom: 12 }}>Lieferadresse</h3>
+            <h3 style={{ fontSize: 16, fontWeight: 700, marginTop: 24, marginBottom: 12 }}>{to.shippingAddress}</h3>
             <div style={{ background: "#f8fafc", padding: 16, border: "1px solid #e5e7eb", fontSize: 13, lineHeight: 1.6 }}>
               <strong>{customer.salutation} {customer.firstName} {customer.lastName}</strong>
               {customer.firmname && <><br />{customer.firmname}</>}
@@ -298,14 +303,14 @@ export default async function KundenBestellungDetailPage({
           {/* Summary */}
           <aside>
             <div style={{ background: "#f8fafc", padding: 20, border: "1px solid #e5e7eb" }}>
-              <h3 style={{ fontSize: 15, fontWeight: 700, marginBottom: 14 }}>Zusammenfassung</h3>
+              <h3 style={{ fontSize: 15, fontWeight: 700, marginBottom: 14 }}>{to.summary}</h3>
               <div style={{ fontSize: 13 }}>
                 <div style={{ display: "flex", justifyContent: "space-between", padding: "4px 0" }}>
-                  <span>Zwischensumme</span>
+                  <span>{to.zwischensumme}</span>
                   <span>{euro(order.subtotalCents)} €</span>
                 </div>
                 <div style={{ display: "flex", justifyContent: "space-between", padding: "4px 0" }}>
-                  <span>Versand</span>
+                  <span>{to.versand}</span>
                   <span>{euro(order.shippingCents)} €</span>
                 </div>
                 <div style={{ display: "flex", justifyContent: "space-between", padding: "4px 0", color: "#64748b" }}>
@@ -313,7 +318,7 @@ export default async function KundenBestellungDetailPage({
                   <span>{euro(order.taxCents)} €</span>
                 </div>
                 <div style={{ display: "flex", justifyContent: "space-between", padding: "10px 0 4px", borderTop: "1px solid #cbd5e1", marginTop: 6, fontWeight: 700, fontSize: 16 }}>
-                  <span>Gesamt</span>
+                  <span>{to.gesamt}</span>
                   <span>{euro(order.totalCents)} €</span>
                 </div>
               </div>
@@ -321,9 +326,9 @@ export default async function KundenBestellungDetailPage({
               <hr style={{ border: "none", borderTop: "1px solid #e5e7eb", margin: "16px 0" }} />
 
               <div style={{ fontSize: 12, color: "#475569" }}>
-                Zahlung: <strong>{order.paymentMethod === "paypal" ? "PayPal" : order.paymentMethod === "klarna" ? "Klarna" : order.paymentMethod === "rechnung" ? "Auf Rechnung" : order.paymentMethod}</strong>
+                {to.payment}: <strong>{order.paymentMethod === "paypal" ? "PayPal" : order.paymentMethod === "klarna" ? "Klarna" : order.paymentMethod === "rechnung" ? to.onRechnung : order.paymentMethod}</strong>
                 <br />
-                Status: {order.paymentStatus === "PAID" ? "✓ Bezahlt" : order.paymentStatus === "PENDING" ? "Ausstehend" : order.paymentStatus}
+                {to.paymentStatus}: {order.paymentStatus === "PAID" ? `✓ ${to.paid}` : order.paymentStatus === "PENDING" ? to.pending : order.paymentStatus}
               </div>
             </div>
           </aside>

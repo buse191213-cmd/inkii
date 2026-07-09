@@ -1,8 +1,10 @@
 "use client";
 
-import { useState, useTransition } from "react";
+import { useState, useTransition, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { updateAddress } from "../profile-actions";
+import { getDictionary } from "@/dictionaries";
+import { isLocale, DEFAULT_LOCALE, type Locale } from "@/lib/i18n";
 
 const COUNTRIES = [
   { code: "DE", label: "Deutschland" },
@@ -32,6 +34,14 @@ type Initial = {
 export default function AdressenClient({ initial }: { initial: Initial }) {
   const router = useRouter();
   const [isPending, startTransition] = useTransition();
+  const [locale, setLocale] = useState<Locale>(DEFAULT_LOCALE);
+  useEffect(() => {
+    const m = document.cookie.match(/inkii_locale=([^;]+)/);
+    if (m && isLocale(m[1])) setLocale(m[1]);
+  }, []);
+  const dict = getDictionary(locale);
+  const ta = dict.konto.adressenPage;
+  const tf = dict.checkout.form;
   const [billingStreet, setBillingStreet] = useState(initial.billingStreet);
   const [billingZip, setBillingZip] = useState(initial.billingZip);
   const [billingCity, setBillingCity] = useState(initial.billingCity);
@@ -52,11 +62,11 @@ export default function AdressenClient({ initial }: { initial: Initial }) {
         shippingDiffers, shippingStreet, shippingZip, shippingCity, shippingCountry,
       });
       if (result.ok) {
-        setMsg({ type: "ok", text: "Gespeichert." });
+        setMsg({ type: "ok", text: ta.saved });
         router.refresh();
         setTimeout(() => setMsg(null), 3000);
       } else {
-        setMsg({ type: "err", text: result.error ?? "Fehler" });
+        setMsg({ type: "err", text: result.error ?? ta.error });
       }
     });
   }
@@ -64,26 +74,26 @@ export default function AdressenClient({ initial }: { initial: Initial }) {
   return (
     <>
       <div style={{ marginBottom: 28 }}>
-        <h2 style={titleStyle}>Adressen</h2>
-        <p style={sub}>Rechnungs- und Lieferadresse verwalten.</p>
+        <h2 style={titleStyle}>{ta.title}</h2>
+        <p style={sub}>{ta.sub}</p>
       </div>
 
       <form onSubmit={handleSubmit} noValidate style={{ maxWidth: 600 }}>
 
-        <h3 style={sectionTitle}>Rechnungsadresse</h3>
-        <Field label="Straße & Hausnummer *">
+        <h3 style={sectionTitle}>{ta.billingAddress}</h3>
+        <Field label={`${tf.street} *`}>
           <input value={billingStreet} onChange={(e) => setBillingStreet(e.target.value)} style={input} required />
         </Field>
 
         {/* GRID: 120px (PLZ) | 1fr (Stadt) | 180px (Land) */}
         <div style={addressRow} className="addr-row">
-          <Field label="PLZ *">
+          <Field label={`${tf.zip} *`}>
             <input value={billingZip} onChange={(e) => setBillingZip(e.target.value)} style={input} required />
           </Field>
-          <Field label="Stadt *">
+          <Field label={`${tf.city} *`}>
             <input value={billingCity} onChange={(e) => setBillingCity(e.target.value)} style={input} required />
           </Field>
-          <Field label="Land">
+          <Field label={tf.country}>
             <select value={billingCountry} onChange={(e) => setBillingCountry(e.target.value)} style={input}>
               {COUNTRIES.map((c) => <option key={c.code} value={c.code}>{c.label}</option>)}
             </select>
@@ -109,23 +119,23 @@ export default function AdressenClient({ initial }: { initial: Initial }) {
               onChange={(e) => setShippingDiffers(e.target.checked)}
               style={{ accentColor: "#0f1a16" }}
             />
-            Abweichende Lieferadresse
+            {ta.differentShipping}
           </label>
 
           {shippingDiffers && (
             <>
-              <h3 style={sectionTitle}>Lieferadresse</h3>
-              <Field label="Straße & Hausnummer">
+              <h3 style={sectionTitle}>{ta.shippingAddress}</h3>
+              <Field label={tf.street}>
                 <input value={shippingStreet} onChange={(e) => setShippingStreet(e.target.value)} style={input} />
               </Field>
               <div style={addressRow} className="addr-row">
-                <Field label="PLZ">
+                <Field label={tf.zip}>
                   <input value={shippingZip} onChange={(e) => setShippingZip(e.target.value)} style={input} />
                 </Field>
-                <Field label="Stadt">
+                <Field label={tf.city}>
                   <input value={shippingCity} onChange={(e) => setShippingCity(e.target.value)} style={input} />
                 </Field>
-                <Field label="Land">
+                <Field label={tf.country}>
                   <select value={shippingCountry} onChange={(e) => setShippingCountry(e.target.value)} style={input}>
                     {COUNTRIES.map((c) => <option key={c.code} value={c.code}>{c.label}</option>)}
                   </select>
@@ -153,7 +163,7 @@ export default function AdressenClient({ initial }: { initial: Initial }) {
         )}
 
         <button type="submit" disabled={isPending} style={{ ...submitBtn(isPending), marginTop: 12 }}>
-          {isPending ? "Speichern…" : "Adressen speichern"}
+          {isPending ? ta.saving : ta.save}
         </button>
       </form>
 

@@ -620,6 +620,36 @@ export type Dictionary = {
       confirmDeactivate: string;
       deactivateBtn: string;
     };
+    adressenPage: {
+      title: string;
+      sub: string;
+      billingAddress: string;
+      shippingAddress: string;
+      differentShipping: string;
+      saved: string;
+      error: string;
+      save: string;
+      saving: string;
+    };
+    orderDetail: {
+      order: string;
+      statusTitle: string;
+      orderedItems: string;
+      shippingAddress: string;
+      summary: string;
+      zwischensumme: string;
+      versand: string;
+      gesamt: string;
+      payment: string;
+      paymentStatus: string;
+      paid: string;
+      pending: string;
+      onRechnung: string;
+      cancelled: string;
+      refunded: string;
+      wasCancelled: string;
+      pos: string;
+    };
     status: {
       neu: string; wartend: string; bezahlt: string; inProduktion: string;
       versandbereit: string; versendet: string; zugestellt: string;
