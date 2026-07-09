@@ -372,19 +372,6 @@ export async function deleteInquiry(id: string): Promise<ActionResult> {
   }
 }
 
-export async function deleteOrder(id: string): Promise<ActionResult> {
-  try {
-    // OrderItem'lar cascade ile otomatik silinir
-    await db.order.delete({ where: { id } });
-    revalidatePath("/admin/bestellungen");
-    revalidatePath("/admin");
-    return { ok: true };
-  } catch (err) {
-    console.error("[deleteOrder]", err);
-    return { ok: false, error: "Bestellung konnte nicht gelöscht werden." };
-  }
-}
-
 /**
  * Speichert die URL des Hero-Videos. Die Videodatei selbst wird im Browser
  * direkt zu Vercel Blob hochgeladen (siehe /api/upload), damit auch große

@@ -645,6 +645,7 @@ export type Dictionary = {
     important: string;
     referenceNote: string;
     afterPaymentNote: string;
+    afterPaymentNote: string;
     whatNext: string;
     step1: string;
     step2: string;

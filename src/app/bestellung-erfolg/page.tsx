@@ -80,12 +80,10 @@ export default async function BestellungErfolgPage({ searchParams }: Props) {
             <h3 style={{ margin: "0 0 16px 0", color: "#004537", fontSize: 18, fontWeight: 700 }}>
               💳 {ts.payTitle}
             </h3>
-            <p style={{ margin: "0 0 12px 0", fontSize: 14, color: "#1f2937", lineHeight: 1.6 }}>
-              {ts.payInstruction}{" "}
-              <strong>{euro(totalCents)} €</strong> {ts.within}{" "}
-              <strong>{company.paymentTermDays || 14} {ts.days}</strong>.
+            <p style={{ margin: "0 0 8px 0", fontSize: 14, color: "#1f2937", lineHeight: 1.6 }}>
+              {ts.payInstruction} <strong>{euro(totalCents)} €</strong>.
             </p>
-            <p style={{ margin: "0 0 18px 0", fontSize: 13, color: "#0d9488", fontWeight: 600, lineHeight: 1.5 }}>
+            <p style={{ margin: "0 0 18px 0", fontSize: 14, color: "#0d9488", fontWeight: 600, lineHeight: 1.5 }}>
               ℹ️ {ts.afterPaymentNote}
             </p>
             <table style={{ width: "100%", fontSize: 14, borderCollapse: "collapse" }}>
