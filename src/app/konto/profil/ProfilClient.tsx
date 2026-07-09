@@ -1,8 +1,10 @@
 "use client";
 
-import { useState, useTransition } from "react";
+import { useState, useTransition, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { updateProfile } from "../profile-actions";
+import { getDictionary } from "@/dictionaries";
+import { isLocale, DEFAULT_LOCALE, type Locale } from "@/lib/i18n";
 
 type Initial = {
   email: string;
@@ -17,6 +19,14 @@ type Initial = {
 export default function ProfilClient({ initial }: { initial: Initial }) {
   const router = useRouter();
   const [isPending, startTransition] = useTransition();
+  const [locale, setLocale] = useState<Locale>(DEFAULT_LOCALE);
+  useEffect(() => {
+    const m = document.cookie.match(/inkii_locale=([^;]+)/);
+    if (m && isLocale(m[1])) setLocale(m[1]);
+  }, []);
+  const dict = getDictionary(locale);
+  const tp = dict.konto.profilPage;
+  const tf = dict.checkout.form;
   const [salutation, setSalutation] = useState(initial.salutation);
   const [firstName, setFirstName] = useState(initial.firstName);
   const [lastName, setLastName] = useState(initial.lastName);
@@ -33,11 +43,11 @@ export default function ProfilClient({ initial }: { initial: Initial }) {
         salutation, firstName, lastName, phone, firmname, ustId,
       });
       if (result.ok) {
-        setMsg({ type: "ok", text: "Profil gespeichert." });
+        setMsg({ type: "ok", text: tp.saved });
         router.refresh();
         setTimeout(() => setMsg(null), 3000);
       } else {
-        setMsg({ type: "err", text: result.error ?? "Fehler" });
+        setMsg({ type: "err", text: result.error ?? tp.error });
       }
     });
   }
@@ -45,51 +55,51 @@ export default function ProfilClient({ initial }: { initial: Initial }) {
   return (
     <>
       <div style={{ marginBottom: 28 }}>
-        <h2 style={titleStyle}>Profil bearbeiten</h2>
-        <p style={sub}>Persönliche Daten und Firmeninformationen.</p>
+        <h2 style={titleStyle}>{tp.title}</h2>
+        <p style={sub}>{tp.sub}</p>
       </div>
 
       <form onSubmit={handleSubmit} noValidate style={{ maxWidth: 540 }}>
         {/* Email readonly */}
-        <Field label="E-Mail">
+        <Field label={tf.email}>
           <input value={initial.email} readOnly style={{ ...input, color: "#999", cursor: "not-allowed" }} />
           <small style={{ fontSize: 10, color: "#999", marginTop: 4, display: "block", letterSpacing: "1px" }}>NICHT ÄNDERBAR</small>
         </Field>
 
         <div style={row}>
           <div style={{ minWidth: 100, maxWidth: 130 }}>
-            <Field label="Anrede">
+            <Field label={tf.salutation}>
               <select value={salutation} onChange={(e) => setSalutation(e.target.value)} style={input}>
-                <option value="Herr">Herr</option>
-                <option value="Frau">Frau</option>
-                <option value="Divers">Divers</option>
+                <option value="Herr">{tf.herr}</option>
+                <option value="Frau">{tf.frau}</option>
+                <option value="Divers">{tf.divers}</option>
               </select>
             </Field>
           </div>
           <div style={{ flex: 1 }}>
-            <Field label="Vorname *">
+            <Field label={`${tf.firstName} *`}>
               <input value={firstName} onChange={(e) => setFirstName(e.target.value)} style={input} required />
             </Field>
           </div>
           <div style={{ flex: 1 }}>
-            <Field label="Nachname *">
+            <Field label={`${tf.lastName} *`}>
               <input value={lastName} onChange={(e) => setLastName(e.target.value)} style={input} required />
             </Field>
           </div>
         </div>
 
-        <Field label="Telefon">
+        <Field label={tf.phone}>
           <input type="tel" value={phone} onChange={(e) => setPhone(e.target.value)} style={input} placeholder="+49 160 1234567" />
         </Field>
 
         <div style={row}>
           <div style={{ flex: 1 }}>
-            <Field label="Firma">
+            <Field label={tf.company}>
               <input value={firmname} onChange={(e) => setFirmname(e.target.value)} style={input} />
             </Field>
           </div>
           <div style={{ flex: 1 }}>
-            <Field label="USt-IdNr.">
+            <Field label={tf.ustId}>
               <input value={ustId} onChange={(e) => setUstId(e.target.value)} style={input} placeholder="DE123456789" />
             </Field>
           </div>
@@ -117,7 +127,7 @@ export default function ProfilClient({ initial }: { initial: Initial }) {
           disabled={isPending}
           style={submitBtn(isPending)}
         >
-          {isPending ? "Speichern…" : "Speichern"}
+          {isPending ? tp.saving : tp.save}
         </button>
       </form>
     </>

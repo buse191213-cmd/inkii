@@ -1,12 +1,20 @@
 "use client";
 
-import { useState, useTransition } from "react";
+import { useState, useTransition, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { changePassword, deactivateAccount } from "../profile-actions";
+import { getDictionary } from "@/dictionaries";
+import { isLocale, DEFAULT_LOCALE, type Locale } from "@/lib/i18n";
 
 export default function SicherheitClient() {
   const router = useRouter();
   const [isPending, startTransition] = useTransition();
+  const [locale, setLocale] = useState<Locale>(DEFAULT_LOCALE);
+  useEffect(() => {
+    const m = document.cookie.match(/inkii_locale=([^;]+)/);
+    if (m && isLocale(m[1])) setLocale(m[1]);
+  }, []);
+  const ts = getDictionary(locale).konto.sicherheitPage;
 
   const [currentPwd, setCurrentPwd] = useState("");
   const [newPwd, setNewPwd] = useState("");
@@ -22,13 +30,13 @@ export default function SicherheitClient() {
     e.preventDefault();
     setPwdMsg(null);
     if (newPwd !== newPwd2) {
-      setPwdMsg({ type: "err", text: "Passwörter stimmen nicht überein." });
+      setPwdMsg({ type: "err", text: ts.pwMismatch });
       return;
     }
     startTransition(async () => {
       const result = await changePassword(currentPwd, newPwd);
       if (result.ok) {
-        setPwdMsg({ type: "ok", text: "Passwort geändert." });
+        setPwdMsg({ type: "ok", text: ts.pwChanged });
         setCurrentPwd(""); setNewPwd(""); setNewPwd2("");
       } else {
         setPwdMsg({ type: "err", text: result.error ?? "Fehler" });
@@ -56,23 +64,23 @@ export default function SicherheitClient() {
   return (
     <>
       <div style={{ marginBottom: 28 }}>
-        <h2 style={titleStyle}>Sicherheit</h2>
-        <p style={sub}>Passwort ändern oder Konto deaktivieren.</p>
+        <h2 style={titleStyle}>{ts.title}</h2>
+        <p style={sub}>{ts.sub}</p>
       </div>
 
       {/* Passwort ändern */}
       <form onSubmit={handlePasswordChange} noValidate style={{ maxWidth: 480, marginBottom: 60 }}>
-        <h3 style={sectionTitle}>Passwort ändern</h3>
+        <h3 style={sectionTitle}>{ts.changePassword}</h3>
 
-        <Field label="Aktuelles Passwort">
+        <Field label={ts.currentPassword}>
           <input type="password" value={currentPwd} onChange={(e) => setCurrentPwd(e.target.value)} style={input} required />
         </Field>
 
-        <Field label="Neues Passwort (min. 6)">
+        <Field label={ts.newPassword}>
           <input type="password" value={newPwd} onChange={(e) => setNewPwd(e.target.value)} style={input} required minLength={6} />
         </Field>
 
-        <Field label="Neues Passwort wiederholen">
+        <Field label={ts.repeatPassword}>
           <input type="password" value={newPwd2} onChange={(e) => setNewPwd2(e.target.value)} style={input} required />
         </Field>
 
@@ -94,7 +102,7 @@ export default function SicherheitClient() {
         )}
 
         <button type="submit" disabled={isPending} style={submitBtn(isPending)}>
-          {isPending ? "…" : "Passwort ändern"}
+          {isPending ? "…" : ts.changeBtn}
         </button>
       </form>
 
@@ -171,11 +179,11 @@ export default function SicherheitClient() {
           </button>
         ) : (
           <form onSubmit={handleDeactivate} noValidate>
-            <Field label="Aktuelles Passwort">
+            <Field label={ts.currentPassword}>
               <input type="password" value={deactivatePwd} onChange={(e) => setDeactivatePwd(e.target.value)} style={input} required />
             </Field>
 
-            <Field label='Bestätigung: „DEAKTIVIEREN" eingeben'>
+            <Field label={ts.confirmDeactivate}>
               <input
                 type="text"
                 value={deactivateConfirm}
@@ -220,7 +228,7 @@ export default function SicherheitClient() {
                   borderRadius: 4,
                 }}
               >
-                {isPending ? "…" : "Endgültig deaktivieren"}
+                {isPending ? "…" : ts.deactivateBtn}
               </button>
               <button
                 type="button"

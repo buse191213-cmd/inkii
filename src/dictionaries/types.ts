@@ -594,6 +594,29 @@ export type Dictionary = {
     keineAnfragen: string;
     anfrageSg: string;
     anfragePl: string;
+    profilPage: {
+      title: string;
+      sub: string;
+      saved: string;
+      error: string;
+      save: string;
+      saving: string;
+    };
+    sicherheitPage: {
+      title: string;
+      sub: string;
+      changePassword: string;
+      currentPassword: string;
+      newPassword: string;
+      repeatPassword: string;
+      pwMismatch: string;
+      pwChanged: string;
+      changeBtn: string;
+      deactivateTitle: string;
+      deactivateDesc: string;
+      confirmDeactivate: string;
+      deactivateBtn: string;
+    };
     status: {
       neu: string; wartend: string; bezahlt: string; inProduktion: string;
       versandbereit: string; versendet: string; zugestellt: string;
