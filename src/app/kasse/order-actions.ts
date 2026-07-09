@@ -4,6 +4,7 @@ import { db } from "@/lib/db";
 import { getCurrentCustomerId } from "@/lib/customer-auth";
 import { getCompanyInfo } from "@/lib/company-info";
 import nodemailer from "nodemailer";
+import { put } from "@vercel/blob";
 
 function isSmtpConfigured(): boolean {
   return Boolean(
@@ -80,6 +81,64 @@ type OrderInput = {
 
 function euro(c: number): string {
   return (c / 100).toLocaleString("de-DE", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+}
+
+/**
+ * base64 dataURL'i Vercel Blob'a upload eder, public https URL döner.
+ * Mailde base64 görseller çalışmaz — bu yüzden gerçek URL'e çeviririz.
+ * Zaten http(s) URL ise dokunmadan döner. Hata olursa null döner.
+ */
+async function uploadDataUrlToBlob(dataUrl: string | null | undefined, filename: string): Promise<string | null> {
+  if (!dataUrl) return null;
+  // Zaten normal URL ise dokunma
+  if (dataUrl.startsWith("http://") || dataUrl.startsWith("https://")) return dataUrl;
+  if (!dataUrl.startsWith("data:")) return null;
+  try {
+    // data:image/png;base64,XXXX → buffer
+    const match = dataUrl.match(/^data:(image\/[a-zA-Z]+);base64,(.+)$/);
+    if (!match) return null;
+    const mime = match[1];
+    const ext = mime.split("/")[1] || "png";
+    const buffer = Buffer.from(match[2], "base64");
+    const blob = await put(`orders/${Date.now()}-${filename}.${ext}`, buffer, {
+      access: "public",
+      contentType: mime,
+    });
+    return blob.url;
+  } catch (err) {
+    console.error("[Order] Blob upload failed:", err);
+    return null;
+  }
+}
+
+/**
+ * Bir item'ın dtfDesignUrl JSON'undaki tüm base64 görselleri Blob'a taşır.
+ */
+async function migrateDesignImages(dtfDesignUrl: string, code: string): Promise<string> {
+  if (!dtfDesignUrl) return dtfDesignUrl;
+  try {
+    const d = JSON.parse(dtfDesignUrl) as {
+      front?: string | null; back?: string | null;
+      frontSize?: unknown; backSize?: unknown;
+      frontMockup?: string | null; backMockup?: string | null;
+    };
+    const [front, back, frontMockup, backMockup] = await Promise.all([
+      uploadDataUrlToBlob(d.front, `${code}-front-logo`),
+      uploadDataUrlToBlob(d.back, `${code}-back-logo`),
+      uploadDataUrlToBlob(d.frontMockup, `${code}-front-mockup`),
+      uploadDataUrlToBlob(d.backMockup, `${code}-back-mockup`),
+    ]);
+    return JSON.stringify({
+      front: front || d.front || null,
+      back: back || d.back || null,
+      frontSize: d.frontSize || null,
+      backSize: d.backSize || null,
+      frontMockup: frontMockup || null,
+      backMockup: backMockup || null,
+    });
+  } catch {
+    return dtfDesignUrl;
+  }
 }
 
 async function generateOrderNumber(): Promise<string> {
@@ -171,6 +230,16 @@ export async function createOrder(
     // Status: Rechnung → WARTEND, anderen → NEU (PayPal/Klarna sonra ödeyince BEZAHLT olur)
     const initialStatus = input.paymentMethod === "rechnung" ? "WARTEND" : "NEU";
 
+    // Design görsellerini (base64) Vercel Blob'a taşı → mailde çalışan https URL
+    const itemsWithBlobDesigns = await Promise.all(
+      input.items.map(async (i) => ({
+        ...i,
+        dtfDesignUrl: i.hasDtf && i.dtfDesignUrl
+          ? await migrateDesignImages(i.dtfDesignUrl, i.productCode)
+          : i.dtfDesignUrl,
+      }))
+    );
+
     const order = await db.order.create({
       data: {
         orderNumber,
@@ -185,7 +254,7 @@ export async function createOrder(
         paymentStatus: "PENDING",
         customerNote: input.customerNote,
         items: {
-          create: input.items.map((i) => ({
+          create: itemsWithBlobDesigns.map((i) => ({
             productId: i.productId,
             productCode: i.productCode,
             productName: i.productName,
@@ -212,7 +281,7 @@ export async function createOrder(
 
     try {
       const company = await getCompanyInfo();
-      const itemsHtml = input.items
+      const itemsHtml = itemsWithBlobDesigns
         .map(
           (i) => {
             // Design görüntülerini çıkar (JSON {front, back, frontSize, backSize})
