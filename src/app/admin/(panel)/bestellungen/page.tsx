@@ -1,5 +1,6 @@
 import { db } from "@/lib/db";
 import Link from "next/link";
+import DeleteOrderButton from "./DeleteOrderButton";
 
 export const dynamic = "force-dynamic";
 
@@ -223,9 +224,12 @@ export default async function BestellungenPage({
                       </span>
                     </td>
                     <td style={{ ...td, textAlign: "right" }}>
-                      <Link href={`/admin/bestellungen/${o.id}`} style={{ color: "#004537", fontWeight: 600, fontSize: 13, textDecoration: "none" }}>
-                        Details →
-                      </Link>
+                      <span style={{ display: "inline-flex", gap: 12, alignItems: "center", justifyContent: "flex-end" }}>
+                        <Link href={`/admin/bestellungen/${o.id}`} style={{ color: "#004537", fontWeight: 600, fontSize: 13, textDecoration: "none" }}>
+                          Details →
+                        </Link>
+                        <DeleteOrderButton orderId={o.id} orderNumber={o.orderNumber} />
+                      </span>
                     </td>
                   </tr>
                 );
