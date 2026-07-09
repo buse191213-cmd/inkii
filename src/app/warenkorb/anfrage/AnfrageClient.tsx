@@ -6,6 +6,7 @@ import { useRouter } from "next/navigation";
 import { useCart } from "@/components/CartProvider";
 import { colorLabel } from "@/lib/catalog-options";
 import { sendQuoteRequest } from "./quote-actions";
+import type { Dictionary } from "@/dictionaries/types";
 
 function euro(c: number): string {
   return (c / 100).toLocaleString("de-DE", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
@@ -49,7 +50,7 @@ type Prefill = {
   company: string;
 };
 
-export default function AnfrageClient({ prefill }: { prefill?: Prefill | null }) {
+export default function AnfrageClient({ prefill, t, tCart }: { prefill?: Prefill | null; t: Dictionary["anfrageForm"]; tCart: Dictionary["cart"] }) {
   const router = useRouter();
   const { items, subtotalCents, clearCart, isLoaded } = useCart();
   const [isPending, startTransition] = useTransition();
@@ -112,7 +113,7 @@ export default function AnfrageClient({ prefill }: { prefill?: Prefill | null })
   if (!isLoaded) {
     return (
       <section style={{ maxWidth: 900, margin: "0 auto", padding: "60px 28px" }}>
-        <p>Laden…</p>
+        <p>{t.loading}</p>
       </section>
     );
   }
@@ -120,7 +121,7 @@ export default function AnfrageClient({ prefill }: { prefill?: Prefill | null })
   if (items.length === 0) {
     return (
       <section style={{ maxWidth: 700, margin: "0 auto", padding: "80px 28px", textAlign: "center" }}>
-        <h1 style={{ fontSize: "2rem", fontWeight: 700, marginBottom: 16 }}>Angebot anfragen</h1>
+        <h1 style={{ fontSize: "2rem", fontWeight: 700, marginBottom: 16 }}>{t.title}</h1>
         <p style={{ color: "#64748b", marginBottom: 32 }}>
           Ihr Warenkorb ist leer. Bitte fügen Sie zuerst Artikel hinzu.
         </p>
@@ -148,11 +149,11 @@ export default function AnfrageClient({ prefill }: { prefill?: Prefill | null })
     if (errors.lastName) { refs.lastName.current?.focus(); refs.lastName.current?.scrollIntoView({ behavior: "smooth", block: "center" }); return; }
     if (errors.email) { refs.email.current?.focus(); refs.email.current?.scrollIntoView({ behavior: "smooth", block: "center" }); return; }
     if (errors.phone) {
-      setGeneralError("Telefon ungültig (6-15 Ziffern).");
+      setGeneralError(t.phoneInvalid);
       return;
     }
     if (!accepts) {
-      setGeneralError("Bitte Datenschutz akzeptieren.");
+      setGeneralError(t.acceptPrivacy);
       return;
     }
 
@@ -177,7 +178,7 @@ export default function AnfrageClient({ prefill }: { prefill?: Prefill | null })
         clearCart();
         router.push("/warenkorb/anfrage/erfolg");
       } else {
-        setGeneralError(result.error ?? "Anfrage konnte nicht gesendet werden.");
+        setGeneralError(result.error ?? t.sendFailed);
       }
     });
   }
@@ -186,43 +187,43 @@ export default function AnfrageClient({ prefill }: { prefill?: Prefill | null })
 
   return (
     <section style={{ maxWidth: 1100, margin: "0 auto", padding: "40px 28px" }}>
-      <h1 style={{ fontSize: "2rem", fontWeight: 700, marginBottom: 8 }}>Angebot anfragen</h1>
+      <h1 style={{ fontSize: "2rem", fontWeight: 700, marginBottom: 8 }}>{t.title}</h1>
       <p style={{ color: "#64748b", marginBottom: 28, fontSize: 14 }}>
         Wir erstellen Ihnen ein individuelles Angebot für die Artikel in Ihrem Warenkorb.
       </p>
 
       <div style={{ display: "grid", gridTemplateColumns: "1fr 360px", gap: 32 }} className="anfrage-layout">
         <div>
-          <h3 style={{ fontSize: 17, fontWeight: 700, marginBottom: 16 }}>Ihre Kontaktdaten</h3>
+          <h3 style={{ fontSize: 17, fontWeight: 700, marginBottom: 16 }}>{t.contactData}</h3>
 
           <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12, marginBottom: 12 }}>
             <div style={field}>
-              <label style={showErr && errors.firstName ? labelErr : undefined}>Vorname *</label>
+              <label style={showErr && errors.firstName ? labelErr : undefined}>{t.firstName} *</label>
               <input
                 ref={refs.firstName}
                 value={firstName}
                 onChange={(e) => setFirstName(cleanName(e.target.value))}
                 style={showErr && errors.firstName ? inputErr : input}
               />
-              {showErr && errors.firstName === "required" && <span style={errMsg}>Bitte ausfüllen</span>}
-              {showErr && errors.firstName === "format" && <span style={errMsg}>Mindestens 2 Zeichen</span>}
+              {showErr && errors.firstName === "required" && <span style={errMsg}>{t.required}</span>}
+              {showErr && errors.firstName === "format" && <span style={errMsg}>{t.min2}</span>}
             </div>
             <div style={field}>
-              <label style={showErr && errors.lastName ? labelErr : undefined}>Nachname *</label>
+              <label style={showErr && errors.lastName ? labelErr : undefined}>{t.lastName} *</label>
               <input
                 ref={refs.lastName}
                 value={lastName}
                 onChange={(e) => setLastName(cleanName(e.target.value))}
                 style={showErr && errors.lastName ? inputErr : input}
               />
-              {showErr && errors.lastName === "required" && <span style={errMsg}>Bitte ausfüllen</span>}
-              {showErr && errors.lastName === "format" && <span style={errMsg}>Mindestens 2 Zeichen</span>}
+              {showErr && errors.lastName === "required" && <span style={errMsg}>{t.required}</span>}
+              {showErr && errors.lastName === "format" && <span style={errMsg}>{t.min2}</span>}
             </div>
           </div>
 
           <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12, marginBottom: 12 }}>
             <div style={field}>
-              <label style={showErr && errors.email ? labelErr : undefined}>E-Mail *</label>
+              <label style={showErr && errors.email ? labelErr : undefined}>{t.email} *</label>
               <input
                 ref={refs.email}
                 type="email"
@@ -231,11 +232,11 @@ export default function AnfrageClient({ prefill }: { prefill?: Prefill | null })
                 style={showErr && errors.email ? inputErr : input}
                 placeholder="name@beispiel.de"
               />
-              {showErr && errors.email === "required" && <span style={errMsg}>Bitte ausfüllen</span>}
-              {showErr && errors.email === "format" && <span style={errMsg}>Bitte gültige E-Mail-Adresse</span>}
+              {showErr && errors.email === "required" && <span style={errMsg}>{t.required}</span>}
+              {showErr && errors.email === "format" && <span style={errMsg}>{t.invalidEmail}</span>}
             </div>
             <div style={field}>
-              <label>Telefon</label>
+              <label>{t.phone}</label>
               <div style={{ display: "flex", gap: 6 }}>
                 <select
                   value={phoneCountry}
@@ -260,16 +261,16 @@ export default function AnfrageClient({ prefill }: { prefill?: Prefill | null })
           </div>
 
           <div style={{ ...field, marginBottom: 12 }}>
-            <label>Firma (optional)</label>
+            <label>{t.company}</label>
             <input value={firmname} onChange={(e) => setFirmname(e.target.value)} style={input} />
           </div>
 
           <div style={{ ...field, marginBottom: 16 }}>
-            <label>Ihre Nachricht (optional)</label>
+            <label>{t.yourMessage}</label>
             <textarea
               value={message}
               onChange={(e) => setMessage(e.target.value)}
-              placeholder="Z.B. Wunschmenge, Lieferzeitraum, Druckspezifikationen…"
+              placeholder={t.messagePh}
               style={{ ...input, minHeight: 100, fontFamily: "inherit", resize: "vertical" }}
             />
           </div>
@@ -277,7 +278,7 @@ export default function AnfrageClient({ prefill }: { prefill?: Prefill | null })
           <label style={{ display: "flex", gap: 10, fontSize: 13, lineHeight: 1.5, cursor: "pointer", marginBottom: 16 }}>
             <input type="checkbox" checked={accepts} onChange={(e) => setAccepts(e.target.checked)} style={{ marginTop: 3, flexShrink: 0 }} />
             <span>
-              Ich habe die <Link href="/datenschutz" style={{ color: "#004537", textDecoration: "underline" }}>Datenschutzerklärung</Link> gelesen und stimme der Verarbeitung meiner Daten zu.
+              {t.privacyText} <Link href="/datenschutz" style={{ color: "#004537", textDecoration: "underline" }}>{t.privacyLink}</Link>.
             </span>
           </label>
 
@@ -295,7 +296,7 @@ export default function AnfrageClient({ prefill }: { prefill?: Prefill | null })
         </div>
 
         <aside style={{ background: "#f8fafc", padding: 24, border: "1px solid #e5e7eb", position: "sticky", top: 100, alignSelf: "start" }}>
-          <h3 style={{ fontWeight: 700, fontSize: 18, marginBottom: 16 }}>Ihre Anfrage</h3>
+          <h3 style={{ fontWeight: 700, fontSize: 18, marginBottom: 16 }}>{t.yourInquiry}</h3>
 
           <div style={{ marginBottom: 16, maxHeight: 280, overflowY: "auto" }}>
             {items.map((item) => (
@@ -344,7 +345,7 @@ export default function AnfrageClient({ prefill }: { prefill?: Prefill | null })
               fontSize: 15,
             }}
           >
-            {isPending ? "Wird gesendet…" : "Anfrage senden →"}
+            {isPending ? t.sending : t.submit}
           </button>
 
           <Link href="/warenkorb" style={{ display: "block", marginTop: 10, textAlign: "center", color: "#64748b", fontSize: 13, textDecoration: "underline" }}>
