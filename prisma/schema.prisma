@@ -31,6 +31,7 @@ model Product {
   stock       Int      @default(0)
   minOrderQty Int      @default(1) // Mindestbestellmenge (z.B. 25 Stück)
   recommendedIds String @default("") // Manuel önerilen ürün ID'leri (virgülle ayrılmış)
+  printAreaType String @default("tshirt") // Baskı alanı tipi: tshirt, bag, cap, mug, notebook
   status      String   @default("active") // active | draft
   isNew       Boolean  @default(false)
   isEco       Boolean  @default(false)

@@ -3,6 +3,7 @@
 import { useEffect, useState, useMemo, useRef, useCallback } from "react";
 import Link from "next/link";
 import { ProductIcon } from "@/lib/icons";
+import { getPrintArea, type PrintAreaConfig } from "@/lib/print-areas";
 
 function resolveUrl(rel: string, allImages: string[]): string {
   if (!rel) return rel;
@@ -27,39 +28,25 @@ const EMPTY: Omit<Placement, "imageDataUrl" | "originalImageDataUrl" | "imageAsp
   x: 50, y: 47, width: 30, rotation: 0,
 };
 
-// Print area — logo bu alanın dışına çıkamaz (% cinsinden) - dar ve kare
-const PRINT_AREA = {
-  left: 29,
-  top: 20,
-  right: 71,
-  bottom: 71,
-};
-
-// Print area'nın gerçek dünya boyutları (cm) — T-shirt DIN A3+ standart
-// Diğer print sitelerine uyum için 34x42 cm (Vorderseite)
-const PRINT_AREA_REAL_CM = {
-  width: 34,   // cm
-  height: 42,  // cm
-};
-
 /**
  * Design'ın gerçek dünya boyutunu hesapla (cm).
  * currentDesign.width canvas'a göre %, biz print_area'ya oranlayıp cm'e çeviriyoruz.
+ * printArea parametre olarak gelir (ürün tipine göre değişir).
  */
-function getRealSize(widthPercent: number, aspect: number) {
-  const paW = PRINT_AREA.right - PRINT_AREA.left; // print area width %
-  const paH = PRINT_AREA.bottom - PRINT_AREA.top; // print area height %
+function getRealSize(widthPercent: number, aspect: number, printArea: PrintAreaConfig) {
+  const paW = printArea.right - printArea.left; // print area width %
+  const paH = printArea.bottom - printArea.top; // print area height %
 
   // Logo canvas'a göre widthPercent → print_area'ya göre kaç %
   const widthOfPrintArea = (widthPercent / paW) * 100; // 0-100 arasında
 
   // Logo cm'i
-  const widthCm = (widthOfPrintArea / 100) * PRINT_AREA_REAL_CM.width;
+  const widthCm = (widthOfPrintArea / 100) * printArea.widthCm;
 
   // Logo yükseklik (canvas'a göre)
   const heightPercent = widthPercent / aspect;
   const heightOfPrintArea = (heightPercent / paH) * 100;
-  const heightCm = (heightOfPrintArea / 100) * PRINT_AREA_REAL_CM.height;
+  const heightCm = (heightOfPrintArea / 100) * printArea.heightCm;
 
   return {
     widthCm: Math.round(widthCm * 10) / 10,
@@ -293,14 +280,14 @@ async function removeWhiteBackground(dataUrl: string): Promise<string> {
 /**
  * Design'ın boyutunu ve konumunu print area içinde kısıtla.
  */
-function clampToPrintArea(x: number, y: number, width: number, aspect: number) {
+function clampToPrintArea(x: number, y: number, width: number, aspect: number, printArea: PrintAreaConfig) {
   const height = width / aspect;
   const halfW = width / 2;
   const halfH = height / 2;
 
   // Boyut zaten print area'yı aşıyorsa küçült
-  const maxWidth = PRINT_AREA.right - PRINT_AREA.left;
-  const maxHeight = PRINT_AREA.bottom - PRINT_AREA.top;
+  const maxWidth = printArea.right - printArea.left;
+  const maxHeight = printArea.bottom - printArea.top;
   let clampedWidth = width;
   if (width > maxWidth) clampedWidth = maxWidth;
   const clampedHeight = clampedWidth / aspect;
@@ -309,10 +296,10 @@ function clampToPrintArea(x: number, y: number, width: number, aspect: number) {
   const finalHalfW = clampedWidth / 2;
   const finalHalfH = (clampedWidth / aspect) / 2;
 
-  const xMin = PRINT_AREA.left + finalHalfW;
-  const xMax = PRINT_AREA.right - finalHalfW;
-  const yMin = PRINT_AREA.top + finalHalfH;
-  const yMax = PRINT_AREA.bottom - finalHalfH;
+  const xMin = printArea.left + finalHalfW;
+  const xMax = printArea.right - finalHalfW;
+  const yMin = printArea.top + finalHalfH;
+  const yMax = printArea.bottom - finalHalfH;
 
   return {
     x: Math.max(xMin, Math.min(xMax, x)),
@@ -329,6 +316,7 @@ export default function ProductGallery({
   colors,
   name,
   iconName,
+  printAreaType,
 }: {
   images: string[];
   colorImages?: Record<string, string[]>;
@@ -336,7 +324,11 @@ export default function ProductGallery({
   name: string;
   iconName: string;
   cardCrop?: string;
+  printAreaType?: string;
 }) {
+  // Ürün tipine göre aktif baskı alanı (t-shirt, çanta, şapka…)
+  const printArea = useMemo(() => getPrintArea(printAreaType), [printAreaType]);
+
   const [activeColor, setActiveColor] = useState<string | null>(colors?.[0] ?? null);
   const [side, setSide] = useState<Side>("front");
   const [designs, setDesigns] = useState<{ front: Placement | null; back: Placement | null }>({
@@ -392,8 +384,8 @@ export default function ProductGallery({
   useEffect(() => {
     let cancelled = false;
     async function build() {
-      const frontSize = designs.front ? getRealSize(designs.front.width, designs.front.imageAspect) : null;
-      const backSize = designs.back ? getRealSize(designs.back.width, designs.back.imageAspect) : null;
+      const frontSize = designs.front ? getRealSize(designs.front.width, designs.front.imageAspect, printArea) : null;
+      const backSize = designs.back ? getRealSize(designs.back.width, designs.back.imageAspect, printArea) : null;
 
       // Mockup'lar (logo ürün üzerinde) — sepet önizlemesi için
       const frontMockup = designs.front
@@ -456,9 +448,9 @@ export default function ProductGallery({
       const img = new Image();
       img.onload = () => {
         const aspect = img.width / img.height;
-        const centerX = (PRINT_AREA.left + PRINT_AREA.right) / 2;
-        const centerY = (PRINT_AREA.top + PRINT_AREA.bottom) / 2;
-        const clamped = clampToPrintArea(centerX, centerY, EMPTY.width, aspect);
+        const centerX = (printArea.left + printArea.right) / 2;
+        const centerY = (printArea.top + printArea.bottom) / 2;
+        const clamped = clampToPrintArea(centerX, centerY, EMPTY.width, aspect, printArea);
         setDesigns((prev) => ({
           ...prev,
           [side]: {
@@ -509,7 +501,7 @@ export default function ProductGallery({
       if (start.mode === "move") {
         const rawX = start.startVal + dx;
         const rawY = start.startVal2 + dy;
-        const clamped = clampToPrintArea(rawX, rawY, currentDesign.width, currentDesign.imageAspect);
+        const clamped = clampToPrintArea(rawX, rawY, currentDesign.width, currentDesign.imageAspect, printArea);
         // Sınıra dayandığı zaman feedback
         const isAtBound = Math.abs(clamped.x - rawX) > 0.5 || Math.abs(clamped.y - rawY) > 0.5;
         if (isAtBound !== atBoundary) setAtBoundary(isAtBound);
@@ -523,7 +515,8 @@ export default function ProductGallery({
           currentDesign.x,
           currentDesign.y,
           rawWidth,
-          currentDesign.imageAspect
+          currentDesign.imageAspect,
+          printArea
         );
         // Size sınırlandıysa boundary vurgusu
         const isAtBound = Math.abs(clamped.width - rawWidth) > 0.5;
@@ -713,10 +706,10 @@ export default function ProductGallery({
           <div
             className={`gal-print-area${currentDesign ? " has-design" : ""}${atBoundary ? " at-boundary" : ""}${isDragging ? " is-dragging" : ""}`}
             style={{
-              left: `${PRINT_AREA.left}%`,
-              top: `${PRINT_AREA.top}%`,
-              width: `${PRINT_AREA.right - PRINT_AREA.left}%`,
-              height: `${PRINT_AREA.bottom - PRINT_AREA.top}%`,
+              left: `${printArea.left}%`,
+              top: `${printArea.top}%`,
+              width: `${printArea.right - printArea.left}%`,
+              height: `${printArea.bottom - printArea.top}%`,
             }}
             aria-hidden
           >
@@ -779,7 +772,7 @@ export default function ProductGallery({
             <button type="button" className="gal-ctrl-btn" onClick={() => handleRotate(15)} title="Nach rechts drehen">↻</button>
             <div className="gal-ctrl-sep" />
             {(() => {
-              const size = getRealSize(currentDesign.width, currentDesign.imageAspect);
+              const size = getRealSize(currentDesign.width, currentDesign.imageAspect, printArea);
               return (
                 <div className="gal-ctrl-size" title="Größe im echten Druck">
                   <span className="gal-ctrl-size-item">

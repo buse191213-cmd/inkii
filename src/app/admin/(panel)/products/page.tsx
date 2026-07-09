@@ -28,6 +28,7 @@ export default async function ProductsPage() {
     stock: p.stock,
     minOrderQty: (p as { minOrderQty?: number }).minOrderQty ?? 1,
     recommendedIds: (p as { recommendedIds?: string }).recommendedIds || "",
+    printAreaType: (p as { printAreaType?: string }).printAreaType || "tshirt",
     status: p.status,
     isNew: p.isNew,
     isEco: p.isEco,

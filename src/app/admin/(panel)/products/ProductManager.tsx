@@ -25,6 +25,7 @@ export type AdminProduct = {
   stock: number;
   minOrderQty?: number;
   recommendedIds?: string;
+  printAreaType?: string;
   status: string;
   isNew: boolean;
   isEco: boolean;
@@ -765,6 +766,22 @@ export default function ProductManager({
                     <label>Mindestbestellmenge (Stk)</label>
                     <input name="minOrderQty" type="number" min="1" defaultValue={modal.minOrderQty ?? 1} />
                   </div>
+                </div>
+
+                {/* Druckbereich-Typ (Print Area) */}
+                <div className="field">
+                  <label>Druckbereich (Designer-Position)</label>
+                  <div className="tier-help" style={{ marginBottom: 8 }}>
+                    Bestimmt, wo das Logo im Designer platziert werden kann. Für T-Shirts, Taschen, Caps usw. unterschiedlich.
+                  </div>
+                  <select name="printAreaType" defaultValue={modal.printAreaType || "tshirt"}>
+                    <option value="tshirt">T-Shirt / Textil (Brust)</option>
+                    <option value="hoodie">Hoodie / Sweatshirt</option>
+                    <option value="bag">Tasche / Beutel</option>
+                    <option value="cap">Cap / Mütze (Front)</option>
+                    <option value="mug">Tasse</option>
+                    <option value="notebook">Notizbuch / Block</option>
+                  </select>
                 </div>
 
                 {/* Empfohlene Produkte (Cross-Sell) */}

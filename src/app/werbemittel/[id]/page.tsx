@@ -163,6 +163,7 @@ export default async function ProductDetailPage({
                 name={product.name}
                 iconName={product.icon}
                 cardCrop={(product as { cardCrop?: string }).cardCrop || ""}
+                printAreaType={(product as { printAreaType?: string }).printAreaType || "tshirt"}
               />
             </div>
 
