@@ -214,6 +214,9 @@ export type Dictionary = {
     qtyMinus: string;
     qtyPlus: string;
     removeItem: string;
+    anmerkung: string;
+    artikelImMerkzettel: string;
+    gesamtmenge: string;
   };
   notFound: {
     h1: string;
@@ -646,5 +649,18 @@ export type Dictionary = {
     step2: string;
     continueShopping: string;
     toAccount: string;
+  };
+  register: {
+    title: string;
+    accessData: string;
+    personalData: string;
+    address: string;
+    passwordHint: string;
+    passwordRepeat: string;
+    pwMismatch: string;
+    creating: string;
+    createBtn: string;
+    alreadyAccount: string;
+    loginHere: string;
   };
 };

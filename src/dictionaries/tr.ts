@@ -283,6 +283,9 @@ const tr: Dictionary = {
     qtyMinus: "Adedi azalt",
     qtyPlus: "Adedi artır",
     removeItem: "Ürünü kaldır",
+    anmerkung: "Not:",
+    artikelImMerkzettel: "Listedeki ürünler",
+    gesamtmenge: "Toplam miktar",
   },
   notFound: {
     h1: "Bu sayfa mevcut değil",
@@ -794,6 +797,19 @@ const tr: Dictionary = {
     step2: "Tamamlandıktan sonra siparişiniz takip bilgisiyle gönderilir.",
     continueShopping: "Alışverişe devam et",
     toAccount: "Hesabıma git",
+  },
+  register: {
+    title: "Hesap oluştur",
+    accessData: "Giriş bilgileri",
+    personalData: "Kişisel bilgiler",
+    address: "Adres",
+    passwordHint: "(min. 6 karakter)",
+    passwordRepeat: "Şifreyi tekrarla",
+    pwMismatch: "Şifreler eşleşmiyor.",
+    creating: "Oluşturuluyor…",
+    createBtn: "Hesap oluştur",
+    alreadyAccount: "Zaten hesabınız var mı?",
+    loginHere: "Buradan giriş yapın",
   },
 };
 

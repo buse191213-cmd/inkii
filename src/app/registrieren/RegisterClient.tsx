@@ -1,9 +1,11 @@
 "use client";
 
-import { useState, useTransition } from "react";
+import { useState, useTransition, useEffect } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { registerCustomer } from "../login/auth-actions";
+import { getDictionary } from "@/dictionaries";
+import { isLocale, DEFAULT_LOCALE, type Locale } from "@/lib/i18n";
 
 const COUNTRIES = [
   { code: "DE", label: "Deutschland" },
@@ -21,6 +23,14 @@ const COUNTRIES = [
 export default function RegisterClient() {
   const router = useRouter();
   const [isPending, startTransition] = useTransition();
+  const [locale, setLocale] = useState<Locale>(DEFAULT_LOCALE);
+  useEffect(() => {
+    const m = document.cookie.match(/inkii_locale=([^;]+)/);
+    if (m && isLocale(m[1])) setLocale(m[1]);
+  }, []);
+  const dict = getDictionary(locale);
+  const tr = dict.register;
+  const tf = dict.checkout.form;
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [password2, setPassword2] = useState("");
@@ -40,7 +50,7 @@ export default function RegisterClient() {
     e.preventDefault();
     setError("");
     if (password !== password2) {
-      setError("Passwörter stimmen nicht überein.");
+      setError(tr.pwMismatch);
       return;
     }
     startTransition(async () => {
@@ -62,81 +72,81 @@ export default function RegisterClient() {
 
   return (
     <section style={{ maxWidth: 720, margin: "0 auto", padding: "60px 28px" }}>
-      <h1 style={{ fontSize: "1.75rem", fontWeight: 700, marginBottom: 8 }}>Account erstellen</h1>
+      <h1 style={{ fontSize: "1.75rem", fontWeight: 700, marginBottom: 8 }}>{tr.title}</h1>
       <p style={{ color: "#64748b", marginBottom: 32, fontSize: 14 }}>
         Registrieren Sie sich, um Ihre Bestellungen zu verfolgen, Wiederbestellungen schnell zu erstellen und Rechnungen einzusehen.
       </p>
 
       <form onSubmit={handleSubmit} noValidate style={{ display: "flex", flexDirection: "column", gap: 14 }}>
         {/* Login Daten */}
-        <h3 style={sectionH}>Zugangsdaten</h3>
+        <h3 style={sectionH}>{tr.accessData}</h3>
         <div style={field}>
-          <label>E-Mail *</label>
+          <label>{tf.email} *</label>
           <input type="email" value={email} onChange={(e) => setEmail(e.target.value)} style={input} required />
         </div>
         <div style={row}>
           <div style={field}>
-            <label>Passwort * <small style={{ color: "#94a3b8" }}>(min. 6 Zeichen)</small></label>
+            <label>{locale === "tr" ? "Şifre" : locale === "en" ? "Password" : "Passwort"} * <small style={{ color: "#94a3b8" }}>{tr.passwordHint}</small></label>
             <input type="password" value={password} onChange={(e) => setPassword(e.target.value)} style={input} required minLength={6} />
           </div>
           <div style={field}>
-            <label>Passwort wiederholen *</label>
+            <label>{tr.passwordRepeat} *</label>
             <input type="password" value={password2} onChange={(e) => setPassword2(e.target.value)} style={input} required />
           </div>
         </div>
 
         {/* Persönliche Daten */}
-        <h3 style={{ ...sectionH, marginTop: 16 }}>Persönliche Daten</h3>
+        <h3 style={{ ...sectionH, marginTop: 16 }}>{tr.personalData}</h3>
         <div style={row}>
           <div style={{ ...field, maxWidth: 120 }}>
-            <label>Anrede</label>
+            <label>{tf.salutation}</label>
             <select value={salutation} onChange={(e) => setSalutation(e.target.value)} style={input}>
-              <option value="Herr">Herr</option>
-              <option value="Frau">Frau</option>
-              <option value="Divers">Divers</option>
+              <option value="Herr">{tf.herr}</option>
+              <option value="Frau">{tf.frau}</option>
+              <option value="Divers">{tf.divers}</option>
             </select>
           </div>
           <div style={field}>
-            <label>Vorname *</label>
+            <label>{tf.firstName} *</label>
             <input value={firstName} onChange={(e) => setFirstName(e.target.value)} style={input} required />
           </div>
           <div style={field}>
-            <label>Nachname *</label>
+            <label>{tf.lastName} *</label>
             <input value={lastName} onChange={(e) => setLastName(e.target.value)} style={input} required />
           </div>
         </div>
         <div style={row}>
           <div style={field}>
-            <label>Telefon</label>
+            <label>{tf.phone}</label>
             <input type="tel" value={phone} onChange={(e) => setPhone(e.target.value)} style={input} />
           </div>
           <div style={field}>
-            <label>Firma (optional)</label>
+            <label>{tf.companyOpt}</label>
             <input value={firmname} onChange={(e) => setFirmname(e.target.value)} style={input} />
           </div>
         </div>
         <div style={field}>
-          <label>USt-IdNr. (optional)</label>
+          <label>{tf.ustId}</label>
           <input value={ustId} onChange={(e) => setUstId(e.target.value)} style={input} placeholder="DE123456789" />
         </div>
 
         {/* Adresse */}
-        <h3 style={{ ...sectionH, marginTop: 16 }}>Adresse</h3>
+        <h3 style={{ ...sectionH, marginTop: 16 }}>{tr.address}</h3>
         <div style={field}>
-          <label>Straße & Hausnummer *</label>
+          <label>{tf.street} *</label>
           <input value={billingStreet} onChange={(e) => setBillingStreet(e.target.value)} style={input} required />
         </div>
         <div style={row}>
           <div style={{ ...field, maxWidth: 140 }}>
-            <label>PLZ *</label>
+            <label>{tf.zip} *</label>
             <input value={billingZip} onChange={(e) => setBillingZip(e.target.value)} style={input} required />
           </div>
           <div style={field}>
-            <label>Stadt *</label>
+            <label>{tf.city} *</label>
             <input value={billingCity} onChange={(e) => setBillingCity(e.target.value)} style={input} required />
           </div>
           <div style={{ ...field, maxWidth: 180 }}>
-            <label>Land</label>
+            <label>{tf.country}</label>
             <select value={billingCountry} onChange={(e) => setBillingCountry(e.target.value)} style={input}>
               {COUNTRIES.map((c) => <option key={c.code} value={c.code}>{c.label}</option>)}
             </select>
@@ -163,13 +173,13 @@ export default function RegisterClient() {
             marginTop: 12,
           }}
         >
-          {isPending ? "Wird erstellt…" : "Account erstellen"}
+          {isPending ? tr.creating : tr.createBtn}
         </button>
 
         <div style={{ textAlign: "center", fontSize: 13, marginTop: 4 }}>
-          Bereits Account?{" "}
+          {tr.alreadyAccount}{" "}
           <Link href="/login" style={{ color: "#004537", textDecoration: "underline" }}>
-            Hier anmelden
+            {tr.loginHere}
           </Link>
         </div>
       </form>

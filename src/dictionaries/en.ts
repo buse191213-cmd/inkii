@@ -283,6 +283,9 @@ const en: Dictionary = {
     qtyMinus: "Decrease quantity",
     qtyPlus: "Increase quantity",
     removeItem: "Remove item",
+    anmerkung: "Note:",
+    artikelImMerkzettel: "Items in wishlist",
+    gesamtmenge: "Total quantity",
   },
   notFound: {
     h1: "This page doesn't exist",
@@ -794,6 +797,19 @@ const en: Dictionary = {
     step2: "Once completed, your order will be shipped with tracking information.",
     continueShopping: "Continue shopping",
     toAccount: "Go to my account",
+  },
+  register: {
+    title: "Create account",
+    accessData: "Login details",
+    personalData: "Personal data",
+    address: "Address",
+    passwordHint: "(min. 6 characters)",
+    passwordRepeat: "Repeat password",
+    pwMismatch: "Passwords do not match.",
+    creating: "Creating…",
+    createBtn: "Create account",
+    alreadyAccount: "Already have an account?",
+    loginHere: "Sign in here",
   },
 };
 

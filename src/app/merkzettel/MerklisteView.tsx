@@ -114,7 +114,7 @@ export default function MerklisteView({
                   )}
                   {it.note && (
                     <div className="merk-note">
-                      <span className="merk-note-lbl">Anmerkung:</span> {it.note}
+                      <span className="merk-note-lbl">{t.anmerkung}</span> {it.note}
                     </div>
                   )}
                 </div>
@@ -139,11 +139,11 @@ export default function MerklisteView({
               return (
                 <div className="merk-total">
                   <div className="merk-total-row">
-                    <span className="merk-total-label">Artikel im Merkzettel</span>
+                    <span className="merk-total-label">{t.artikelImMerkzettel}</span>
                     <span className="merk-total-value">{items.length}</span>
                   </div>
                   <div className="merk-total-row merk-total-main">
-                    <span className="merk-total-label">Gesamtmenge</span>
+                    <span className="merk-total-label">{t.gesamtmenge}</span>
                     <span className="merk-total-value">{totalQty} Stück</span>
                   </div>
                 </div>

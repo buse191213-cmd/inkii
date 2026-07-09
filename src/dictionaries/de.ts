@@ -283,6 +283,9 @@ const de: Dictionary = {
     qtyMinus: "Menge verringern",
     qtyPlus: "Menge erhöhen",
     removeItem: "Artikel entfernen",
+    anmerkung: "Anmerkung:",
+    artikelImMerkzettel: "Artikel im Merkzettel",
+    gesamtmenge: "Gesamtmenge",
   },
   notFound: {
     h1: "Diese Seite gibt es nicht",
@@ -794,6 +797,19 @@ const de: Dictionary = {
     step2: "Nach Fertigstellung wird Ihre Bestellung versendet, mit Tracking-Information.",
     continueShopping: "Weiter einkaufen",
     toAccount: "Zu meinem Konto",
+  },
+  register: {
+    title: "Account erstellen",
+    accessData: "Zugangsdaten",
+    personalData: "Persönliche Daten",
+    address: "Adresse",
+    passwordHint: "(min. 6 Zeichen)",
+    passwordRepeat: "Passwort wiederholen",
+    pwMismatch: "Passwörter stimmen nicht überein.",
+    creating: "Wird erstellt…",
+    createBtn: "Account erstellen",
+    alreadyAccount: "Bereits ein Konto?",
+    loginHere: "Hier anmelden",
   },
 };
 
