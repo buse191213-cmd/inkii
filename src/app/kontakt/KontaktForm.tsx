@@ -3,14 +3,11 @@
 import { useState, useEffect } from "react";
 import { useSearchParams } from "next/navigation";
 import { submitInquiry } from "./actions";
-import type { Dictionary } from "@/dictionaries/types";
 
 export default function KontaktForm({
   projectTypes,
-  t,
 }: {
   projectTypes?: string[];
-  t?: Dictionary["kontaktForm"];
 } = {}) {
   const searchParams = useSearchParams();
   const designNote = searchParams.get("note") || "";
@@ -26,19 +23,7 @@ export default function KontaktForm({
     ? projectTypes
     : ["Textildruck & Veredelung", "Stickerei", "Werbemittel & Werbeartikel", "Druck (Flyer, Plakate, etc.)", "Werbetechnik", "Webdesign", "Marketing", "Komplettlösung", "Sonstiges"];
 
-  const BUDGET_OPTIONEN = t?.budgetOptions ?? ["< 500 €", "500 – 1.500 €", "1.500 – 5.000 €", "5.000 – 15.000 €", "> 15.000 €", "Noch unklar"];
-
-  // Fallback (Almanca)
-  const tt = t ?? {
-    thankYou: "Vielen Dank für Ihre Anfrage!", vorname: "Vorname", nachname: "Nachname",
-    email: "E-Mail", phone: "Telefon", company: "Firma", companyPh: "Firma / Verein",
-    projektTyp: "Projekttyp", choose: "Wählen …", budget: "Budget",
-    projektFrist: "Projektfrist (TT.MM.JJJJ)", yourDesign: "Ihr Design",
-    message: "Wobei können wir Ihnen helfen?", messagePh: "Lass uns wissen, was wir für dich tun können.",
-    sending: "Wird gesendet …", submit: "Anfrage senden", sendFailed: "Senden fehlgeschlagen.",
-    privacyNote1: "Mit dem Absenden akzeptieren Sie unsere", privacyLink: "Datenschutzerklärung",
-    budgetOptions: BUDGET_OPTIONEN,
-  } as Dictionary["kontaktForm"];
+  const BUDGET_OPTIONEN = ["< 500 €", "500 – 1.500 €", "1.500 – 5.000 €", "5.000 – 15.000 €", "> 15.000 €", "Noch unklar"];
 
   const [pending, setPending] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -54,7 +39,7 @@ export default function KontaktForm({
     const dbRes = await submitInquiry({ ok: false }, fd);
     setPending(false);
     if (!dbRes.ok) {
-      setError(dbRes.error ?? tt.sendFailed);
+      setError(dbRes.error ?? "Senden fehlgeschlagen.");
       return;
     }
     setSuccess(true);
@@ -63,7 +48,7 @@ export default function KontaktForm({
   if (success) {
     return (
       <div className="kontakt-form-card">
-        <div className="form-ok">{tt.thankYou}</div>
+        <div className="form-ok">Vielen Dank für Ihre Anfrage!</div>
         <p style={{ color: "var(--muted)", fontSize: ".95rem", marginTop: 10 }}>
           Wir melden uns innerhalb von 24 Stunden bei Ihnen.
         </p>
@@ -77,35 +62,35 @@ export default function KontaktForm({
 
       <div className="kf-row">
         <div className="kf-field">
-          <label htmlFor="vorname">{tt.vorname}</label>
-          <input id="vorname" name="vorname" type="text" placeholder={tt.vorname} required />
+          <label htmlFor="vorname">Vorname</label>
+          <input id="vorname" name="vorname" type="text" placeholder="Vorname" required />
         </div>
         <div className="kf-field">
-          <label htmlFor="nachname">{tt.nachname}</label>
-          <input id="nachname" name="nachname" type="text" placeholder={tt.nachname} required />
+          <label htmlFor="nachname">Nachname</label>
+          <input id="nachname" name="nachname" type="text" placeholder="Nachname" required />
         </div>
       </div>
 
       <div className="kf-row">
         <div className="kf-field">
-          <label htmlFor="email">{tt.email}</label>
+          <label htmlFor="email">E-Mail</label>
           <input id="email" name="email" type="email" placeholder="name@firma.de" required />
         </div>
         <div className="kf-field">
-          <label htmlFor="phone">{tt.phone}</label>
+          <label htmlFor="phone">Telefon</label>
           <input id="phone" name="phone" type="tel" placeholder="+49 XXX XXXXXXX" />
         </div>
       </div>
 
       <div className="kf-row">
         <div className="kf-field">
-          <label htmlFor="company">{tt.company}</label>
-          <input id="company" name="company" type="text" placeholder={tt.companyPh} />
+          <label htmlFor="company">Firma</label>
+          <input id="company" name="company" type="text" placeholder="Firma / Verein" />
         </div>
         <div className="kf-field">
-          <label htmlFor="projektTyp">{tt.projektTyp}</label>
+          <label htmlFor="projektTyp">Projekttyp</label>
           <select id="projektTyp" name="projektTyp" defaultValue="">
-            <option value="" disabled>{tt.choose}</option>
+            <option value="" disabled>Wählen …</option>
             {PROJEKT_TYPEN.map((t) => (
               <option key={t} value={t}>{t}</option>
             ))}
@@ -115,16 +100,16 @@ export default function KontaktForm({
 
       <div className="kf-row">
         <div className="kf-field">
-          <label htmlFor="budget">{tt.budget}</label>
+          <label htmlFor="budget">Budget</label>
           <select id="budget" name="budget" defaultValue="">
-            <option value="" disabled>{tt.choose}</option>
+            <option value="" disabled>Wählen …</option>
             {BUDGET_OPTIONEN.map((b) => (
               <option key={b} value={b}>{b}</option>
             ))}
           </select>
         </div>
         <div className="kf-field">
-          <label htmlFor="projektFrist">{tt.projektFrist}</label>
+          <label htmlFor="projektFrist">Projektfrist (TT.MM.JJJJ)</label>
           <input
             id="projektFrist"
             name="projektFrist"
@@ -154,7 +139,7 @@ export default function KontaktForm({
         <div className="kf-design-preview">
           <div className="kf-design-thumb">
             {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img src={designUrl} alt={tt.yourDesign} />
+            <img src={designUrl} alt="Ihr Design" />
           </div>
           <div className="kf-design-info">
             <strong>📨 Ihr optimiertes Design ist hinzugefügt</strong>
@@ -164,24 +149,25 @@ export default function KontaktForm({
       )}
 
       <div className="kf-field">
-        <label htmlFor="message">{tt.message}</label>
+        <label htmlFor="message">Wobei können wir Ihnen helfen?</label>
         <textarea
           id="message"
           name="message"
           rows={5}
-          placeholder={tt.messagePh}
+          placeholder="Lass uns wissen, was wir für dich tun können."
           value={message}
           onChange={(e) => setMessage(e.target.value)}
         />
       </div>
 
       <button className="kf-submit" type="submit" disabled={pending}>
-        {pending ? tt.sending : tt.submit}
+        {pending ? "Wird gesendet …" : "Anfrage senden"}
       </button>
 
       <p className="kf-note">
-        {tt.privacyNote1}{" "}
-        <a href="/datenschutz">{tt.privacyLink}</a>.
+        Mit dem Absenden willigen Sie ein, dass wir Ihre Angaben zur Bearbeitung
+        verwenden. Weitere Informationen in der{" "}
+        <a href="/datenschutz">Datenschutzerklärung</a>.
       </p>
     </form>
   );

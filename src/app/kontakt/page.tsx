@@ -117,7 +117,7 @@ export default async function KontaktPage() {
 
           {/* Rechte Spalte: Formular */}
           <div className="kontakt-right">
-            <KontaktForm projectTypes={k.projectTypes} t={d.kontaktForm} />
+            <KontaktForm projectTypes={k.projectTypes} />
           </div>
 
         </div>

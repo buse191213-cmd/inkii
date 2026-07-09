@@ -307,8 +307,11 @@ export async function createOrder(
               ? `
                 <div style="margin-top: 28px; padding: 20px; border: 2px solid #004537; background: #f0fdf4;">
                   <h3 style="margin: 0 0 12px 0; color: #004537; font-size: 16px;">💳 Zahlung per Banküberweisung</h3>
-                  <p style="margin: 0 0 16px 0; font-size: 14px; color: #1f2937;">
+                  <p style="margin: 0 0 8px 0; font-size: 14px; color: #1f2937;">
                     Bitte überweisen Sie den Gesamtbetrag von <strong>${euro(input.totalCents)} €</strong> innerhalb von <strong>${company.paymentTermDays || 14} Tagen</strong> auf folgendes Konto:
+                  </p>
+                  <p style="margin: 0 0 16px 0; font-size: 13px; color: #0d9488; font-weight: 600;">
+                    ℹ️ Nach Zahlungseingang wird Ihre Bestellung bearbeitet und produziert.
                   </p>
                   <table style="width: 100%; font-size: 14px; border-collapse: collapse;">
                     ${company.bankName ? `
