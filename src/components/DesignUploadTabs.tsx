@@ -33,6 +33,11 @@ export default function DesignUploadTabs() {
     if (gallery) gallery.scrollIntoView({ behavior: "smooth", block: "center" });
   }
 
+  function removeDesign(side: "front" | "back", e: React.MouseEvent) {
+    e.stopPropagation();
+    window.dispatchEvent(new CustomEvent("design-remove-request", { detail: { side } }));
+  }
+
   const anyDesign = designs.front || designs.back;
 
   return (
@@ -50,56 +55,90 @@ export default function DesignUploadTabs() {
       </header>
 
       <div className="dut-tabs">
-        <button
-          type="button"
-          className={`dut-tab${designs.front ? " active" : ""}`}
-          onClick={() => requestUpload("front")}
-          title="Design für Vorderseite hochladen"
-        >
-          <div className="dut-tab-preview">
-            {designs.front ? (
-              /* eslint-disable-next-line @next/next/no-img-element */
-              <img src={designs.front.imageDataUrl} alt="Vorderseite Design" />
-            ) : (
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
-                <path d="M17 8l-5-5-5 5"/><path d="M12 3v12"/><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+        {/* Vorderseite */}
+        <div className={`dut-tab${designs.front ? " active" : ""}`}>
+          <button
+            type="button"
+            className="dut-tab-main"
+            onClick={() => { if (!designs.front) requestUpload("front"); }}
+            title={designs.front ? "Vorderseite" : "Design für Vorderseite hochladen"}
+            style={{ cursor: designs.front ? "default" : "pointer" }}
+          >
+            <div className="dut-tab-preview">
+              {designs.front ? (
+                /* eslint-disable-next-line @next/next/no-img-element */
+                <img src={designs.front.imageDataUrl} alt="Vorderseite Design" />
+              ) : (
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+                  <path d="M17 8l-5-5-5 5"/><path d="M12 3v12"/><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+                </svg>
+              )}
+            </div>
+            <div className="dut-tab-text">
+              <span className="dut-tab-side">Vorderseite</span>
+              <span className="dut-tab-status">
+                {designs.front ? "Hochgeladen ✓" : "Design hochladen →"}
+              </span>
+            </div>
+          </button>
+          {designs.front && (
+            <button
+              type="button"
+              className="dut-remove"
+              onClick={(e) => removeDesign("front", e)}
+              title="Design entfernen"
+              aria-label="Vorderseite Design entfernen"
+            >
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round">
+                <path d="M18 6 6 18M6 6l12 12"/>
               </svg>
-            )}
-          </div>
-          <div className="dut-tab-text">
-            <span className="dut-tab-side">Vorderseite</span>
-            <span className="dut-tab-status">
-              {designs.front ? "Bearbeiten →" : "Design hochladen →"}
-            </span>
-          </div>
-        </button>
+            </button>
+          )}
+        </div>
 
-        <button
-          type="button"
-          className={`dut-tab${designs.back ? " active" : ""}${!hasBack ? " disabled" : ""}`}
-          onClick={() => requestUpload("back")}
-          disabled={!hasBack}
-          title={!hasBack ? "Kein Rückseiten-Bild verfügbar" : "Design für Rückseite hochladen"}
-        >
-          <div className="dut-tab-preview">
-            {designs.back ? (
-              /* eslint-disable-next-line @next/next/no-img-element */
-              <img src={designs.back.imageDataUrl} alt="Rückseite Design" />
-            ) : hasBack ? (
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
-                <path d="M17 8l-5-5-5 5"/><path d="M12 3v12"/><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+        {/* Rückseite */}
+        <div className={`dut-tab${designs.back ? " active" : ""}${!hasBack ? " disabled" : ""}`}>
+          <button
+            type="button"
+            className="dut-tab-main"
+            onClick={() => { if (!designs.back && hasBack) requestUpload("back"); }}
+            disabled={!hasBack}
+            title={!hasBack ? "Kein Rückseiten-Bild verfügbar" : designs.back ? "Rückseite" : "Design für Rückseite hochladen"}
+            style={{ cursor: designs.back || !hasBack ? "default" : "pointer" }}
+          >
+            <div className="dut-tab-preview">
+              {designs.back ? (
+                /* eslint-disable-next-line @next/next/no-img-element */
+                <img src={designs.back.imageDataUrl} alt="Rückseite Design" />
+              ) : hasBack ? (
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+                  <path d="M17 8l-5-5-5 5"/><path d="M12 3v12"/><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+                </svg>
+              ) : (
+                <span style={{ fontSize: 16 }}>🔒</span>
+              )}
+            </div>
+            <div className="dut-tab-text">
+              <span className="dut-tab-side">Rückseite</span>
+              <span className="dut-tab-status">
+                {designs.back ? "Hochgeladen ✓" : hasBack ? "Design hochladen →" : "Nicht verfügbar"}
+              </span>
+            </div>
+          </button>
+          {designs.back && (
+            <button
+              type="button"
+              className="dut-remove"
+              onClick={(e) => removeDesign("back", e)}
+              title="Design entfernen"
+              aria-label="Rückseite Design entfernen"
+            >
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round">
+                <path d="M18 6 6 18M6 6l12 12"/>
               </svg>
-            ) : (
-              <span style={{ fontSize: 16 }}>🔒</span>
-            )}
-          </div>
-          <div className="dut-tab-text">
-            <span className="dut-tab-side">Rückseite</span>
-            <span className="dut-tab-status">
-              {designs.back ? "Bearbeiten →" : hasBack ? "Design hochladen →" : "Nicht verfügbar"}
-            </span>
-          </div>
-        </button>
+            </button>
+          )}
+        </div>
       </div>
 
       <style jsx>{`
@@ -149,21 +188,27 @@ export default function DesignUploadTabs() {
           gap: 8px;
         }
         .dut-tab {
+          position: relative;
           background: #fff;
           border: 1px solid #e3e6df;
-          padding: 12px;
-          cursor: pointer;
           border-radius: 5px;
+          transition: all 0.15s;
+        }
+        .dut-tab-main {
+          background: transparent;
+          border: none;
+          padding: 12px;
+          width: 100%;
+          cursor: pointer;
           display: flex;
           align-items: center;
           gap: 12px;
-          transition: all 0.15s;
           text-align: left;
           font-family: inherit;
+          border-radius: 5px;
         }
         .dut-tab:hover:not(.disabled) {
           border-color: #0f1a16;
-          transform: translateY(-1px);
           box-shadow: 0 4px 10px rgba(0,0,0,0.06);
         }
         .dut-tab.active {
@@ -172,8 +217,30 @@ export default function DesignUploadTabs() {
         }
         .dut-tab.disabled {
           opacity: 0.5;
-          cursor: not-allowed;
           background: #f8f8f6;
+        }
+        .dut-tab.disabled .dut-tab-main { cursor: not-allowed; }
+        .dut-remove {
+          position: absolute;
+          top: -8px;
+          right: -8px;
+          width: 24px;
+          height: 24px;
+          border-radius: 50%;
+          background: #dc2626;
+          color: #fff;
+          border: 2px solid #fff;
+          cursor: pointer;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+          transition: background 0.15s, transform 0.15s;
+          z-index: 2;
+        }
+        .dut-remove:hover {
+          background: #b91c1c;
+          transform: scale(1.1);
         }
         .dut-tab-preview {
           width: 44px;

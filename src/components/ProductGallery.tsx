@@ -429,6 +429,17 @@ export default function ProductGallery({
     return () => window.removeEventListener("design-upload-request", onUploadRequest as EventListener);
   }, [hasBack]);
 
+  // Dışarıdan (DesignUploadTabs) design silme isteği
+  useEffect(() => {
+    function onRemoveRequest(e: Event) {
+      const ce = e as CustomEvent<{ side: Side }>;
+      const s = ce.detail?.side || "front";
+      setDesigns((prev) => ({ ...prev, [s]: null }));
+    }
+    window.addEventListener("design-remove-request", onRemoveRequest as EventListener);
+    return () => window.removeEventListener("design-remove-request", onRemoveRequest as EventListener);
+  }, []);
+
   // Auto-switch to front if back is not available
   useEffect(() => {
     if (side === "back" && !hasBack) setSide("front");
@@ -840,19 +851,7 @@ export default function ProductGallery({
           </div>
         )}
 
-        {/* Upload CTA when no design on current side */}
-        {!currentDesign && activeImage && (
-          <button
-            type="button"
-            className="gal-upload-cta"
-            onClick={() => fileInputRef.current?.click()}
-          >
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
-              <path d="M17 8l-5-5-5 5"/><path d="M12 3v12"/><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
-            </svg>
-            Design für {side === "front" ? "Vorderseite" : "Rückseite"} hochladen
-          </button>
-        )}
+        {/* Upload CTA kaldırıldı — kullanıcı sağdaki Vorderseite/Rückseite sekmelerinden ekler */}
 
         <input
           ref={fileInputRef}
