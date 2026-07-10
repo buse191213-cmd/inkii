@@ -808,17 +808,25 @@ export default function ProductGallery({
               const size = getRealSize(currentDesign.width, currentDesign.imageAspect, printArea);
               return (
                 <div className="gal-ctrl-size" title="Größe im echten Druck">
-                  <span className="gal-ctrl-size-item">
-                    <span className="gal-ctrl-size-label">B</span>
-                    <span className="gal-ctrl-size-val">{size.widthCm.toLocaleString("de-DE")}</span>
-                    <span className="gal-ctrl-size-unit">cm</span>
-                  </span>
-                  <span className="gal-ctrl-size-sep">×</span>
-                  <span className="gal-ctrl-size-item">
-                    <span className="gal-ctrl-size-label">H</span>
-                    <span className="gal-ctrl-size-val">{size.heightCm.toLocaleString("de-DE")}</span>
-                    <span className="gal-ctrl-size-unit">cm</span>
-                  </span>
+                  {/* İkon (cetvel/ölçü) — normalde bu görünür */}
+                  <svg className="gal-ctrl-size-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+                    <path d="M21.3 8.7 8.7 21.3a1 1 0 0 1-1.4 0l-4.6-4.6a1 1 0 0 1 0-1.4L15.3 2.7a1 1 0 0 1 1.4 0l4.6 4.6a1 1 0 0 1 0 1.4Z"/>
+                    <path d="m7.5 10.5 2 2M10.5 7.5l2 2M13.5 4.5l2 2M4.5 13.5l2 2"/>
+                  </svg>
+                  {/* cm değerleri — hover'da yandan çıkar */}
+                  <div className="gal-ctrl-size-pop">
+                    <span className="gal-ctrl-size-item">
+                      <span className="gal-ctrl-size-label">B</span>
+                      <span className="gal-ctrl-size-val">{size.widthCm.toLocaleString("de-DE")}</span>
+                      <span className="gal-ctrl-size-unit">cm</span>
+                    </span>
+                    <span className="gal-ctrl-size-sep">×</span>
+                    <span className="gal-ctrl-size-item">
+                      <span className="gal-ctrl-size-label">H</span>
+                      <span className="gal-ctrl-size-val">{size.heightCm.toLocaleString("de-DE")}</span>
+                      <span className="gal-ctrl-size-unit">cm</span>
+                    </span>
+                  </div>
                 </div>
               );
             })()}
@@ -1180,15 +1188,13 @@ export default function ProductGallery({
           cursor: wait;
         }
         .gal-ctrl-size {
+          position: relative;
           display: flex;
-          flex-direction: column;
           align-items: center;
-          gap: 1px;
+          justify-content: center;
           color: #0f1a16;
-          font-size: 0.6rem;
-          padding: 5px 3px;
-          white-space: nowrap;
-          font-variant-numeric: tabular-nums;
+          width: 34px;
+          height: 34px;
           background: #fff;
           border: 1px solid #e3e6df;
           border-radius: 6px;
@@ -1197,7 +1203,37 @@ export default function ProductGallery({
           cursor: default;
         }
         .gal-ctrl-size:hover {
+          background: #0f1a16;
+          color: #fff;
           border-color: #0f1a16;
+        }
+        .gal-ctrl-size-icon {
+          display: block;
+        }
+        .gal-ctrl-size-pop {
+          position: absolute;
+          left: calc(100% + 8px);
+          top: 50%;
+          transform: translateY(-50%);
+          background: #0f1a16;
+          color: #fff;
+          padding: 6px 10px;
+          border-radius: 6px;
+          font-size: 0.72rem;
+          font-weight: 600;
+          white-space: nowrap;
+          font-variant-numeric: tabular-nums;
+          display: flex;
+          align-items: center;
+          gap: 6px;
+          opacity: 0;
+          pointer-events: none;
+          transition: opacity 0.15s;
+          box-shadow: 0 2px 8px rgba(0,0,0,0.25);
+          z-index: 10;
+        }
+        .gal-ctrl-size:hover .gal-ctrl-size-pop {
+          opacity: 1;
         }
         .gal-ctrl-size-item {
           display: inline-flex;
@@ -1205,8 +1241,8 @@ export default function ProductGallery({
           gap: 2px;
         }
         .gal-ctrl-size-label {
-          font-size: 0.52rem;
-          opacity: 0.55;
+          font-size: 0.6rem;
+          opacity: 0.6;
           letter-spacing: 0.3px;
           text-transform: uppercase;
           font-weight: 700;
