@@ -27,16 +27,16 @@ export const PRINT_AREAS: Record<PrintAreaType, PrintAreaConfig> = {
     widthCm: 30, heightCm: 36,
     label: "Hoodie / Sweatshirt",
   },
-  // Tasche/Beutel: orta-alt bölge, daha küçük alan
+  // Tasche/Beutel: geniş alan — müşteri serbest yerleştirebilir
   bag: {
-    left: 30, top: 58, right: 70, bottom: 92,
-    widthCm: 25, heightCm: 30,
+    left: 12, top: 15, right: 88, bottom: 92,
+    widthCm: 30, heightCm: 35,
     label: "Tasche / Beutel",
   },
-  // Cap/Mütze: ön panel, üstte ve klein
+  // Cap/Mütze: geniş ön alan — müşteri serbest yerleştirebilir
   cap: {
-    left: 40, top: 32, right: 60, bottom: 46,
-    widthCm: 9, heightCm: 5,
+    left: 15, top: 15, right: 85, bottom: 75,
+    widthCm: 18, heightCm: 10,
     label: "Cap / Mütze (Front)",
   },
   // Tasse: yan yüzey, orta bölge
