@@ -457,6 +457,11 @@ export default function ProductGallery({
     if (side === "back" && !hasBack) setSide("front");
   }, [side, hasBack]);
 
+  // Galeri side değişince sekmelere bildir (senkron için)
+  useEffect(() => {
+    window.dispatchEvent(new CustomEvent("gallery-side-changed", { detail: { side } }));
+  }, [side]);
+
   const handleFileUpload = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
