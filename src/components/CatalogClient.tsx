@@ -144,7 +144,7 @@ export default function CatalogClient({
 
   return (
     <section className="mm-cat">
-      <div className="wrap">
+      <div className="wrap-wide">
 
         {/* === Breadcrumb === */}
         <div className="mm-crumb">

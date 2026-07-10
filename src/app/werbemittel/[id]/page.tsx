@@ -143,7 +143,7 @@ export default async function ProductDetailPage({
   return (
     <SiteShell>
       <section className="mm-detail">
-        <div className="wrap">
+        <div className="wrap-wide">
 
           {/* Breadcrumb */}
           <div className="mm-crumb mm-detail-crumb">
@@ -351,7 +351,7 @@ export default async function ProductDetailPage({
 
       {related.length > 0 && (
         <section className="mm-related">
-          <div className="wrap">
+          <div className="wrap-wide">
             <div className="mm-related-head">
               <p className="kicker">{dt.relatedKicker}</p>
               <h3>{dt.relatedTitle}</h3>

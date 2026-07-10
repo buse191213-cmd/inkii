@@ -19,6 +19,9 @@ a{color:inherit;text-decoration:none}
 img{max-width:100%;display:block}
 button,input,select,textarea{font-family:var(--body)}
 .wrap{max-width:var(--max);margin:0 auto;padding:0 28px}
+/* Geniş konteynır — katalog & ürün detay için (ekranı verimli kullan) */
+.wrap-wide{max-width:1600px;margin:0 auto;padding:0 clamp(20px,3vw,48px)}
+@media(max-width:900px){.wrap-wide{padding:0 16px}}
 
 /* ---------- UTILITY BAR ---------- */
 .utility{position:sticky;top:0;left:0;right:0;z-index:60;
@@ -316,6 +319,7 @@ h2.big{font-family:var(--display);font-weight:800;letter-spacing:-.025em;
 .pager button.active{background:var(--leaf);color:#fff;border-color:var(--leaf);font-weight:700}
 .sort-right{font-size:.92rem;color:var(--muted)}
 .cat-prod-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:var(--line)}
+@media(min-width:1500px){.cat-prod-grid{grid-template-columns:repeat(5,1fr)}}
 .pcard{background:#fff;display:flex;flex-direction:column;transition:.15s}
 .pcard:hover{box-shadow:0 0 0 2px var(--leaf) inset;z-index:2}
 .pcard-img{position:relative;aspect-ratio:1;background:#f7f8f6;display:grid;place-items:center;overflow:hidden}
