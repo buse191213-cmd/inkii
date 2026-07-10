@@ -1102,31 +1102,32 @@ export default function ProductGallery({
         }
         .gal-controls {
           position: absolute;
-          top: 12px;
+          top: 50%;
           left: 12px;
+          transform: translateY(-50%);
           display: flex;
           flex-direction: column;
-          gap: 4px;
-          background: rgba(15,26,22,0.92);
-          padding: 4px;
+          gap: 3px;
+          background: rgba(15,26,22,0.88);
+          padding: 3px;
           border-radius: 8px;
           backdrop-filter: blur(10px);
           box-shadow: 0 4px 14px rgba(0,0,0,0.2);
           z-index: 6;
         }
         .gal-ctrl-sep {
-          width: 20px;
+          width: 18px;
           height: 1px;
           background: rgba(255,255,255,0.2);
-          margin: 2px 0;
+          margin: 1px 0;
         }
         .gal-ctrl-btn {
           background: transparent;
           border: none;
           color: #fff;
-          width: 32px;
-          height: 32px;
-          font-size: 1.05rem;
+          width: 28px;
+          height: 28px;
+          font-size: 0.95rem;
           cursor: pointer;
           border-radius: 5px;
           display: flex;
@@ -1138,10 +1139,11 @@ export default function ProductGallery({
           background: rgba(255,255,255,0.15);
         }
         .gal-ctrl-bg {
-          padding: 0 10px;
-          gap: 4px;
-          min-width: auto;
-          width: auto !important;
+          gap: 2px;
+          flex-direction: column;
+          width: 28px !important;
+          height: auto;
+          padding: 4px 0;
           display: inline-flex;
         }
         .gal-ctrl-bg.active {
@@ -1165,22 +1167,29 @@ export default function ProductGallery({
           cursor: wait;
         }
         .gal-ctrl-size {
-          display: inline-flex;
+          display: flex;
+          flex-direction: column;
           align-items: center;
-          gap: 6px;
+          gap: 1px;
           color: #fff;
-          font-size: 0.72rem;
-          padding: 0 6px;
+          font-size: 0.6rem;
+          padding: 3px 2px;
           white-space: nowrap;
           font-variant-numeric: tabular-nums;
+          opacity: 0.6;
+          transition: opacity 0.15s;
+          cursor: default;
+        }
+        .gal-ctrl-size:hover {
+          opacity: 1;
         }
         .gal-ctrl-size-item {
           display: inline-flex;
           align-items: baseline;
-          gap: 3px;
+          gap: 2px;
         }
         .gal-ctrl-size-label {
-          font-size: 0.6rem;
+          font-size: 0.52rem;
           opacity: 0.5;
           letter-spacing: 0.3px;
           text-transform: uppercase;
@@ -1188,16 +1197,15 @@ export default function ProductGallery({
         }
         .gal-ctrl-size-val {
           font-weight: 700;
-          font-size: 0.78rem;
+          font-size: 0.66rem;
         }
         .gal-ctrl-size-unit {
-          font-size: 0.58rem;
+          font-size: 0.5rem;
           opacity: 0.55;
           margin-left: 1px;
         }
         .gal-ctrl-size-sep {
-          opacity: 0.35;
-          font-weight: 300;
+          display: none;
         }
         .gal-ctrl-spinner {
           width: 14px;
