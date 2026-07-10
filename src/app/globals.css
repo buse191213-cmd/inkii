@@ -1538,8 +1538,8 @@ body:has(.home-services) footer.site{margin-top:0}
 /* Title row */
 .mm-title-row{display:flex;align-items:center;justify-content:space-between;
   gap:24px;margin-bottom:36px;flex-wrap:wrap}
-.mm-title{font-family:var(--display);font-weight:800;
-  font-size:clamp(2.2rem,5vw,3.6rem);line-height:1.02;letter-spacing:-.025em;
+.mm-title{font-family:var(--display);font-weight:600;
+  font-size:clamp(1.6rem,3.2vw,2.4rem);line-height:1.1;letter-spacing:-.02em;
   color:var(--ink);margin:0}
 .mm-filter-btn{display:inline-flex;align-items:center;gap:10px;
   padding:13px 22px;border:1.5px solid var(--ink);background:#fff;color:var(--ink);
@@ -1630,7 +1630,7 @@ body:has(.home-services) footer.site{margin-top:0}
 }
 @media(max-width:760px){
   .mm-grid{grid-template-columns:repeat(2,1fr);gap:18px}
-  .mm-title{font-size:2rem}
+  .mm-title{font-size:1.6rem}
   .mm-filter-btn{padding:10px 16px;font-size:.82rem}
   .mm-fp-grid{grid-template-columns:1fr}
   .mm-cat{padding:24px 0 60px}
@@ -1667,8 +1667,8 @@ body:has(.home-services) footer.site{margin-top:0}
 
 /* Info-Spalte */
 .mm-detail-info{display:flex;flex-direction:column}
-.mm-detail-h1{font-family:var(--display);font-weight:800;
-  font-size:clamp(2rem,3.6vw,3rem);line-height:1.05;letter-spacing:-.02em;
+.mm-detail-h1{font-family:var(--display);font-weight:600;
+  font-size:clamp(1.5rem,2.6vw,2.1rem);line-height:1.15;letter-spacing:-.015em;
   color:var(--ink);margin:0 0 6px}
 .mm-detail-sub{font-size:1.05rem;color:var(--muted);line-height:1.4;
   margin:0 0 10px;font-weight:500}
