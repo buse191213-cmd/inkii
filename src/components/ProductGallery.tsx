@@ -440,6 +440,18 @@ export default function ProductGallery({
     return () => window.removeEventListener("design-remove-request", onRemoveRequest as EventListener);
   }, []);
 
+  // Dışarıdan taraf değiştirme (upload açmadan ön/arka göster)
+  useEffect(() => {
+    function onSwitchSide(e: Event) {
+      const ce = e as CustomEvent<{ side: Side }>;
+      const s = ce.detail?.side || "front";
+      if (s === "back" && !hasBack) return;
+      setSide(s);
+    }
+    window.addEventListener("design-switch-side", onSwitchSide as EventListener);
+    return () => window.removeEventListener("design-switch-side", onSwitchSide as EventListener);
+  }, [hasBack]);
+
   // Auto-switch to front if back is not available
   useEffect(() => {
     if (side === "back" && !hasBack) setSide("front");

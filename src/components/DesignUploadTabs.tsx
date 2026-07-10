@@ -33,6 +33,24 @@ export default function DesignUploadTabs() {
     if (gallery) gallery.scrollIntoView({ behavior: "smooth", block: "center" });
   }
 
+  // Sadece tarafı değiştir (ön/arka görselini göster), upload açma
+  function switchSide(side: "front" | "back") {
+    if (side === "back" && !hasBack) return;
+    window.dispatchEvent(new CustomEvent("design-switch-side", { detail: { side } }));
+    const gallery = document.querySelector(".gallery");
+    if (gallery) gallery.scrollIntoView({ behavior: "smooth", block: "center" });
+  }
+
+  // Sekmeye tıklama: boşsa upload aç, doluysa sadece o tarafa geç
+  function handleTabClick(side: "front" | "back") {
+    const has = side === "front" ? designs.front : designs.back;
+    if (has) {
+      switchSide(side);
+    } else {
+      requestUpload(side);
+    }
+  }
+
   function removeDesign(side: "front" | "back", e: React.MouseEvent) {
     e.stopPropagation();
     window.dispatchEvent(new CustomEvent("design-remove-request", { detail: { side } }));
@@ -60,9 +78,9 @@ export default function DesignUploadTabs() {
           <button
             type="button"
             className="dut-tab-main"
-            onClick={() => { if (!designs.front) requestUpload("front"); }}
+            onClick={() => handleTabClick("front")}
             title={designs.front ? "Vorderseite" : "Design für Vorderseite hochladen"}
-            style={{ cursor: designs.front ? "default" : "pointer" }}
+            style={{ cursor: "pointer" }}
           >
             <div className="dut-tab-preview">
               {designs.front ? (
@@ -101,10 +119,10 @@ export default function DesignUploadTabs() {
           <button
             type="button"
             className="dut-tab-main"
-            onClick={() => { if (!designs.back && hasBack) requestUpload("back"); }}
+            onClick={() => handleTabClick("back")}
             disabled={!hasBack}
             title={!hasBack ? "Kein Rückseiten-Bild verfügbar" : designs.back ? "Rückseite" : "Design für Rückseite hochladen"}
-            style={{ cursor: designs.back || !hasBack ? "default" : "pointer" }}
+            style={{ cursor: hasBack ? "pointer" : "default" }}
           >
             <div className="dut-tab-preview">
               {designs.back ? (
