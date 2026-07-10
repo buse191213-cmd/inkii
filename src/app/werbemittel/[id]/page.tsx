@@ -372,6 +372,12 @@ export default async function ProductDetailPage({
                       {r.code && <div className="mm-related-code">{r.code}</div>}
                       <div className="mm-related-name">{r.name}</div>
                       {r.subtitle && <div className="mm-related-sub">{r.subtitle}</div>}
+                      <span className="mm-related-cta">
+                        {dt.relatedCta ?? "Ansehen"}
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
+                          <path d="M5 12h14M13 6l6 6-6 6"/>
+                        </svg>
+                      </span>
                     </div>
                   </Link>
                 );

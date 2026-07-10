@@ -255,6 +255,7 @@ const de: Dictionary = {
     specVeredelungValue: "Druck, Gravur & Stick möglich",
     relatedKicker: "Aus derselben Kategorie",
     relatedTitle: "Weitere Artikel",
+    relatedCta: "Ansehen",
   },
   merkzettel: {
     loading: "Merkzettel wird geladen …",

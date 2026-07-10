@@ -255,6 +255,7 @@ const tr: Dictionary = {
     specVeredelungValue: "Baskı, gravür & nakış mümkün",
     relatedKicker: "Aynı kategoriden",
     relatedTitle: "Diğer ürünler",
+    relatedCta: "İncele",
   },
   merkzettel: {
     loading: "İstek listesi yükleniyor …",

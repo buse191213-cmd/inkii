@@ -186,6 +186,7 @@ export type Dictionary = {
     specVeredelungValue: string;
     relatedKicker: string;
     relatedTitle: string;
+    relatedCta: string;
   };
   merkzettel: {
     loading: string;

@@ -255,6 +255,7 @@ const en: Dictionary = {
     specVeredelungValue: "Print, engraving & embroidery possible",
     relatedKicker: "From the same category",
     relatedTitle: "More items",
+    relatedCta: "View",
   },
   merkzettel: {
     loading: "Loading wishlist …",
