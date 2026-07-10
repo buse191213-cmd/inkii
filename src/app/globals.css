@@ -4337,14 +4337,14 @@ body:has(.hero-full) header.site .brand-other img{filter:none;height:52px}
   color: #3b4540 !important;
 }
 
-/* 5) Variante wählen card — köşeleri keskin (radius yok) */
+/* 5) Variante wählen card — hafif yuvarlak köşeler */
 .det-order {
-  border-radius: 0 !important;
+  border-radius: 14px !important;
 }
 
-/* 6) DTF Launcher buton köşesi keskin, üst kart ile uyumlu */
+/* 6) DTF Launcher buton — hafif yuvarlak */
 .dtf-launcher-btn {
-  border-radius: 0 !important;
+  border-radius: 8px !important;
 }
 
 /* === Monday Merch tarzı orantılar === */
@@ -4432,7 +4432,7 @@ body:has(.hero-full) header.site .brand-other img{filter:none;height:52px}
   display: flex;
   flex-direction: column;
   background: #fff;
-  border-radius: 0;
+  border-radius: 12px;
   box-shadow:
     0 1px 2px rgba(15, 23, 36, 0.04),
     0 8px 32px rgba(15, 23, 36, 0.06);
@@ -4447,7 +4447,7 @@ body:has(.hero-full) header.site .brand-other img{filter:none;height:52px}
   content: "";
   position: absolute;
   inset: 0;
-  border-radius: 0;
+  border-radius: 12px;
   padding: 1px;
   background: linear-gradient(180deg, rgba(0, 69, 55, 0.18), rgba(0, 69, 55, 0));
   -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
@@ -4465,7 +4465,7 @@ body:has(.hero-full) header.site .brand-other img{filter:none;height:52px}
   width: 44px;
   height: 44px;
   background: linear-gradient(135deg, #cce5dd 0%, #7fb8a3 100%);
-  border-radius: 0;
+  border-radius: 8px;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -4530,7 +4530,7 @@ body:has(.hero-full) header.site .brand-other img{filter:none;height:52px}
   letter-spacing: 0.08em;
   width: 100%;
   cursor: pointer;
-  border-radius: 0;
+  border-radius: 0 0 12px 12px;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -4581,17 +4581,7 @@ body:has(.hero-full) header.site .brand-other img{filter:none;height:52px}
   }
 }
 
-/* 3) DetailOrderForm içindeki TÜM border-radius'ları kaldır - tek tip kare köşeler */
-.det-order,
-.det-order-size,
-.det-order-color,
-.det-order *,
-.det-order-cta,
-.det-order-color-name,
-.det-order-colors-grid > *,
-.det-order-success {
-  border-radius: 0 !important;
-}
+/* DetailOrderForm — hafif yuvarlak köşeler (radius korunur) */
 
 /* === Monday Merch BIREBIR uyumlu final layout === */
 @media (min-width: 1024px) {
@@ -4766,12 +4756,9 @@ body:has(.hero-full) header.site .brand-other img{filter:none;height:52px}
   padding: 5px 0 !important;
 }
 
-/* === Related products kart radius kaldır === */
-.mm-related-card,
-.mm-related-card *,
-.mm-related-img,
-.mm-related-body {
-  border-radius: 0 !important;
+/* === Related products — görsele hafif radius (premium) === */
+.mm-related-img {
+  border-radius: 16px !important;
 }
 
 /* === Boşluk ve font-weight düzeltmeleri === */
