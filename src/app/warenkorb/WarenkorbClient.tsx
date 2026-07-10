@@ -1,5 +1,6 @@
 "use client";
 
+import { useState } from "react";
 import Link from "next/link";
 import { useCart, cartItemTotalCents } from "@/components/CartProvider";
 import CartSizeDistributor from "@/components/CartSizeDistributor";
@@ -21,6 +22,7 @@ type Props = {
 
 export default function WarenkorbClient({ t, tSteps }: Props) {
   const { items, subtotalCents, updateQuantity, removeItem, clearCart, isLoaded } = useCart();
+  const [lightbox, setLightbox] = useState<{ url: string; label: string } | null>(null);
 
   if (!isLoaded) {
     return (
@@ -61,6 +63,7 @@ export default function WarenkorbClient({ t, tSteps }: Props) {
   }
 
   return (
+    <>
     <section className="cart-section" style={{ maxWidth: 1200, margin: "0 auto", padding: "40px 28px" }}>
       <CheckoutSteps current="warenkorb" labels={tSteps} />
       <h1 style={{ fontSize: "2rem", fontWeight: 700, marginBottom: 24 }}>
@@ -145,16 +148,30 @@ export default function WarenkorbClient({ t, tSteps }: Props) {
                         <div style={{ display: "flex", gap: 12, marginTop: 8 }}>
                           {thumbs.map((t, i) => (
                             <div key={i} style={{ textAlign: "center" }}>
-                              <div style={{
+                              <div
+                                onClick={() => setLightbox({ url: t.url, label: t.label })}
+                                style={{
                                 width: 96, height: 96,
                                 border: "1px solid #e3e6df",
                                 borderRadius: 0,
                                 background: "#fff",
                                 display: "flex", alignItems: "center", justifyContent: "center",
                                 overflow: "hidden",
+                                cursor: "zoom-in",
+                                position: "relative",
                               }}>
                                 {/* eslint-disable-next-line @next/next/no-img-element */}
                                 <img src={t.url} alt={t.label} style={{ maxWidth: "100%", maxHeight: "100%", objectFit: "contain" }} />
+                                <span style={{
+                                  position: "absolute", bottom: 3, right: 3,
+                                  background: "rgba(15,26,22,0.75)", color: "#fff",
+                                  borderRadius: 3, padding: "1px 4px", fontSize: 9,
+                                  display: "flex", alignItems: "center", gap: 2,
+                                }}>
+                                  <svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round">
+                                    <circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3M11 8v6M8 11h6"/>
+                                  </svg>
+                                </span>
                               </div>
                               <div style={{ fontSize: 11, color: "#065f46", marginTop: 3, fontWeight: 700 }}>{t.label}</div>
                               {t.size && (
@@ -519,5 +536,52 @@ export default function WarenkorbClient({ t, tSteps }: Props) {
         }
       `}</style>
     </section>
+
+    {/* Mockup büyütme popup (lightbox) */}
+    {lightbox && (
+      <div
+        onClick={() => setLightbox(null)}
+        style={{
+          position: "fixed", inset: 0, zIndex: 1000,
+          background: "rgba(15,26,22,0.82)",
+          display: "flex", alignItems: "center", justifyContent: "center",
+          padding: 20, cursor: "zoom-out",
+          backdropFilter: "blur(4px)",
+        }}
+      >
+        <div
+          onClick={(e) => e.stopPropagation()}
+          style={{
+            background: "#fff", borderRadius: 8, padding: 16,
+            maxWidth: "90vw", maxHeight: "90vh",
+            display: "flex", flexDirection: "column", alignItems: "center", gap: 12,
+            position: "relative", cursor: "default",
+          }}
+        >
+          <button
+            type="button"
+            onClick={() => setLightbox(null)}
+            aria-label="Schließen"
+            style={{
+              position: "absolute", top: -14, right: -14,
+              width: 36, height: 36, borderRadius: "50%",
+              background: "#0f1a16", color: "#fff", border: "2px solid #fff",
+              cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center",
+              boxShadow: "0 2px 8px rgba(0,0,0,0.3)", fontSize: 18,
+            }}
+          >
+            ×
+          </button>
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img
+            src={lightbox.url}
+            alt={lightbox.label}
+            style={{ maxWidth: "82vw", maxHeight: "78vh", objectFit: "contain" }}
+          />
+          <div style={{ fontSize: 14, fontWeight: 700, color: "#065f46" }}>{lightbox.label}</div>
+        </div>
+      </div>
+    )}
+    </>
   );
 }
