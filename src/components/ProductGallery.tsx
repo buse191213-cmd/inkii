@@ -1102,10 +1102,10 @@ export default function ProductGallery({
         }
         .gal-controls {
           position: absolute;
-          bottom: 12px;
-          left: 50%;
-          transform: translateX(-50%);
+          top: 12px;
+          left: 12px;
           display: flex;
+          flex-direction: column;
           gap: 4px;
           background: rgba(15,26,22,0.92);
           padding: 4px;
@@ -1113,6 +1113,12 @@ export default function ProductGallery({
           backdrop-filter: blur(10px);
           box-shadow: 0 4px 14px rgba(0,0,0,0.2);
           z-index: 6;
+        }
+        .gal-ctrl-sep {
+          width: 20px;
+          height: 1px;
+          background: rgba(255,255,255,0.2);
+          margin: 2px 0;
         }
         .gal-ctrl-btn {
           background: transparent;
@@ -1130,12 +1136,6 @@ export default function ProductGallery({
         }
         .gal-ctrl-btn:hover {
           background: rgba(255,255,255,0.15);
-        }
-        .gal-ctrl-sep {
-          width: 1px;
-          height: 20px;
-          background: rgba(255,255,255,0.2);
-          margin: 0 2px;
         }
         .gal-ctrl-bg {
           padding: 0 10px;
