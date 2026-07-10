@@ -2,7 +2,6 @@
 
 import { useState, useTransition, useRef, useEffect } from "react";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
 import { useCart } from "@/components/CartProvider";
 import { colorLabel } from "@/lib/catalog-options";
 import { sendQuoteRequest } from "./quote-actions";
@@ -51,7 +50,6 @@ type Prefill = {
 };
 
 export default function AnfrageClient({ prefill, t, tCart }: { prefill?: Prefill | null; t: Dictionary["anfrageForm"]; tCart: Dictionary["cart"] }) {
-  const router = useRouter();
   const { items, subtotalCents, clearCart, isLoaded } = useCart();
   const [isPending, startTransition] = useTransition();
   const [validationStarted, setValidationStarted] = useState(false);
@@ -176,7 +174,9 @@ export default function AnfrageClient({ prefill, t, tCart }: { prefill?: Prefill
       });
       if (result.ok) {
         clearCart();
-        router.push("/warenkorb/anfrage/erfolg");
+        // router.push yerine window.location — sepet temizlenince
+        // component re-render olup push'u iptal edebiliyor
+        window.location.href = "/warenkorb/anfrage/erfolg";
       } else {
         setGeneralError(result.error ?? t.sendFailed);
       }
