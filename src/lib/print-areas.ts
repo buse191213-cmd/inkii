@@ -29,7 +29,7 @@ export const PRINT_AREAS: Record<PrintAreaType, PrintAreaConfig> = {
   },
   // Tasche/Beutel: küçük alan, aşağıda
   bag: {
-    left: 31, top: 50, right: 69, bottom: 82,
+    left: 31, top: 62, right: 69, bottom: 90,
     widthCm: 22, heightCm: 26,
     label: "Tasche / Beutel",
   },
