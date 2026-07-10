@@ -3054,7 +3054,8 @@ body:has(.home-services) footer.site{margin-top:0}
 .det-tier-price{font-weight:800;font-size:.84rem}
 
 /* Tek adet girişi (bedenler sepette) */
-.det-order-qty-single{margin-bottom:14px}
+.det-order-qty-single{margin-bottom:12px;background:#fafbf9;border:1px solid #e8e8e6;
+  border-radius:10px;padding:14px}
 .det-order-qty-single label{display:flex;flex-direction:column;gap:6px}
 .det-order-qty-label{display:flex;justify-content:space-between;align-items:baseline;
   font-size:.82rem;font-weight:600;color:#0f1a16}
@@ -3234,8 +3235,8 @@ body:has(.home-services) footer.site{margin-top:0}
 }
 
 /* === Detail Color Picker === */
-.det-order-colors{display:flex;flex-direction:column;gap:7px;
-  padding-bottom:10px;border-bottom:1px solid #f0f0ec}
+.det-order-colors{display:flex;flex-direction:column;gap:9px;
+  background:#fafbf9;border:1px solid #e8e8e6;border-radius:10px;padding:14px;margin-bottom:12px}
 .det-order-colors-head{display:flex;align-items:baseline;gap:10px}
 .det-order-colors-label{font-size:.7rem;letter-spacing:.12em;text-transform:uppercase;
   color:#9ea7a2;font-weight:600}
