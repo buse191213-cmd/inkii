@@ -28,17 +28,12 @@ export default function DesignUploadTabs() {
   function requestUpload(side: "front" | "back") {
     if (side === "back" && !hasBack) return;
     window.dispatchEvent(new CustomEvent("design-upload-request", { detail: { side } }));
-    // Galeriye smooth scroll
-    const gallery = document.querySelector(".gallery");
-    if (gallery) gallery.scrollIntoView({ behavior: "smooth", block: "center" });
   }
 
   // Sadece tarafı değiştir (ön/arka görselini göster), upload açma
   function switchSide(side: "front" | "back") {
     if (side === "back" && !hasBack) return;
     window.dispatchEvent(new CustomEvent("design-switch-side", { detail: { side } }));
-    const gallery = document.querySelector(".gallery");
-    if (gallery) gallery.scrollIntoView({ behavior: "smooth", block: "center" });
   }
 
   // Sekmeye tıklama: boşsa upload aç, doluysa sadece o tarafa geç
