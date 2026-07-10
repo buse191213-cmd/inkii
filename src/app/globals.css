@@ -3029,7 +3029,7 @@ body:has(.home-services) footer.site{margin-top:0}
 .det-order-sizes{display:grid;grid-template-columns:repeat(auto-fill,minmax(88px,1fr));gap:8px}
 .det-order-sizes.single{grid-template-columns:1fr}
 .det-order-size{display:flex;flex-direction:column;gap:1px;padding:5px 10px;
-  border:1.5px solid #e3e6df;border-radius:8px;background:#fafbf9;transition:.18s;cursor:text}
+  border:1.5px solid #e3e6df;border-radius:10px;background:#fafbf9;transition:.18s;cursor:text}
 .det-order-size:focus-within{border-color:#1c2722;background:#fff;
   box-shadow:0 0 0 3px rgba(28,39,34,.06)}
 .det-order-size-name{font-weight:700;font-size:.86rem;color:#1c2722;letter-spacing:.02em}
