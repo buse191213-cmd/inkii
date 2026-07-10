@@ -253,8 +253,8 @@ const de: Dictionary = {
     specMaterial: "Material",
     specVeredelung: "Veredelung",
     specVeredelungValue: "Druck, Gravur & Stick möglich",
-    relatedKicker: "Aus derselben Kategorie",
-    relatedTitle: "Weitere Artikel",
+    relatedKicker: "",
+    relatedTitle: "Das könnte Ihnen auch gefallen…",
     relatedCta: "Ansehen",
   },
   merkzettel: {

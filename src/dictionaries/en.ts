@@ -253,8 +253,8 @@ const en: Dictionary = {
     specMaterial: "Material",
     specVeredelung: "Finishing",
     specVeredelungValue: "Print, engraving & embroidery possible",
-    relatedKicker: "From the same category",
-    relatedTitle: "More items",
+    relatedKicker: "",
+    relatedTitle: "You might also like…",
     relatedCta: "View",
   },
   merkzettel: {

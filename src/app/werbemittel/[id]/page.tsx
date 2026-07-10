@@ -353,7 +353,7 @@ export default async function ProductDetailPage({
         <section className="mm-related">
           <div className="wrap-wide">
             <div className="mm-related-head">
-              <p className="kicker">{dt.relatedKicker}</p>
+              {dt.relatedKicker && <p className="kicker">{dt.relatedKicker}</p>}
               <h3>{dt.relatedTitle}</h3>
             </div>
             <div className="mm-related-grid">
@@ -369,7 +369,6 @@ export default async function ProductDetailPage({
                       {!rImg && <span className="mm-related-img-fallback">INKII</span>}
                     </div>
                     <div className="mm-related-body">
-                      {r.code && <div className="mm-related-code">{r.code}</div>}
                       <div className="mm-related-name">{r.name}</div>
                       {r.subtitle && <div className="mm-related-sub">{r.subtitle}</div>}
                       <span className="mm-related-cta">

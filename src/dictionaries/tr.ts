@@ -253,8 +253,8 @@ const tr: Dictionary = {
     specMaterial: "Malzeme",
     specVeredelung: "İşleme",
     specVeredelungValue: "Baskı, gravür & nakış mümkün",
-    relatedKicker: "Aynı kategoriden",
-    relatedTitle: "Diğer ürünler",
+    relatedKicker: "",
+    relatedTitle: "Bunları da beğenebilirsiniz…",
     relatedCta: "İncele",
   },
   merkzettel: {
