@@ -173,6 +173,7 @@ export default async function ProductDetailPage({
                 iconName={product.icon}
                 cardCrop={(product as { cardCrop?: string }).cardCrop || ""}
                 printAreaType={effectivePrintAreaType}
+                customPrintArea={(product as { customPrintArea?: string }).customPrintArea || ""}
               />
             </div>
 

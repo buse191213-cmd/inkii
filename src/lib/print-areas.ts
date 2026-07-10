@@ -63,6 +63,29 @@ export function getPrintArea(type?: string | null): PrintAreaConfig {
 }
 
 /**
+ * Admin'in görsel üstünde çizdiği manuel baskı alanını parse eder.
+ * Geçerli JSON değilse veya boşsa null döner (o zaman preset kullanılır).
+ */
+export function parseCustomPrintArea(json?: string | null): PrintAreaConfig | null {
+  if (!json) return null;
+  try {
+    const p = JSON.parse(json);
+    if (
+      typeof p.left === "number" && typeof p.top === "number" &&
+      typeof p.right === "number" && typeof p.bottom === "number" &&
+      p.right > p.left && p.bottom > p.top
+    ) {
+      return {
+        left: p.left, top: p.top, right: p.right, bottom: p.bottom,
+        widthCm: p.widthCm || 25, heightCm: p.heightCm || 30,
+        label: "Custom",
+      };
+    }
+  } catch {}
+  return null;
+}
+
+/**
  * Kategori adından/slug'ından otomatik print area tipi tahmin eder.
  * Admin manuel seçmezse başlangıç değeri olarak kullanılır.
  */

@@ -3,7 +3,7 @@
 import { useEffect, useState, useMemo, useRef, useCallback } from "react";
 import Link from "next/link";
 import { ProductIcon } from "@/lib/icons";
-import { getPrintArea, type PrintAreaConfig } from "@/lib/print-areas";
+import { getPrintArea, parseCustomPrintArea, type PrintAreaConfig } from "@/lib/print-areas";
 
 function resolveUrl(rel: string, allImages: string[]): string {
   if (!rel) return rel;
@@ -317,6 +317,7 @@ export default function ProductGallery({
   name,
   iconName,
   printAreaType,
+  customPrintArea,
 }: {
   images: string[];
   colorImages?: Record<string, string[]>;
@@ -325,9 +326,13 @@ export default function ProductGallery({
   iconName: string;
   cardCrop?: string;
   printAreaType?: string;
+  customPrintArea?: string;
 }) {
-  // Ürün tipine göre aktif baskı alanı (t-shirt, çanta, şapka…)
-  const printArea = useMemo(() => getPrintArea(printAreaType), [printAreaType]);
+  // Ürün tipine göre aktif baskı alanı. Admin manuel çizdiyse (customPrintArea) onu kullan.
+  const printArea = useMemo(
+    () => parseCustomPrintArea(customPrintArea) ?? getPrintArea(printAreaType),
+    [customPrintArea, printAreaType]
+  );
 
   const [activeColor, setActiveColor] = useState<string | null>(colors?.[0] ?? null);
   const [side, setSide] = useState<Side>("front");

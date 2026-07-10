@@ -32,6 +32,9 @@ model Product {
   minOrderQty Int      @default(1) // Mindestbestellmenge (z.B. 25 Stück)
   recommendedIds String @default("") // Manuel önerilen ürün ID'leri (virgülle ayrılmış)
   printAreaType String @default("tshirt") // Baskı alanı tipi: tshirt, bag, cap, mug, notebook
+  // Manuel baskı alanı (admin görsel üstünde çizer). Boşsa printAreaType preset'i kullanılır.
+  // JSON: {"left":30,"top":40,"right":70,"bottom":80,"widthCm":25,"heightCm":30}
+  customPrintArea String @default("")
   status      String   @default("active") // active | draft
   isNew       Boolean  @default(false)
   isEco       Boolean  @default(false)

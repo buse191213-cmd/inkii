@@ -10,6 +10,7 @@ import { parsePriceTiers, stringifyPriceTiers, type PriceTier } from "@/lib/pric
 import { parseSizesField, stringifySizesFromDrafts } from "@/lib/sizes";
 import RichEditor from "@/components/admin/RichEditor";
 import CropEditor from "@/components/admin/CropEditor";
+import PrintAreaEditor from "@/components/admin/PrintAreaEditor";
 import { CARE_SYMBOLS, careLabel } from "@/lib/care-symbols";
 
 export type AdminProduct = {
@@ -26,6 +27,7 @@ export type AdminProduct = {
   minOrderQty?: number;
   recommendedIds?: string;
   printAreaType?: string;
+  customPrintArea?: string;
   status: string;
   isNew: boolean;
   isEco: boolean;
@@ -1246,6 +1248,22 @@ export default function ProductManager({
                       return { zoom: 1, x: 0, y: 0 };
                     })();
                     return <CropEditor firstImage={firstImg} initial={cropData} />;
+                  })()}
+                </div>
+
+                {/* Druckbereich zeichnen (Werbeartikel) */}
+                <div className="field">
+                  <label>Druckbereich zeichnen (für Werbeartikel)</label>
+                  {(() => {
+                    const firstImg = images[0]?.preview || images[0]?.url;
+                    const paData = (() => {
+                      try {
+                        const raw = (modal as { customPrintArea?: string }).customPrintArea || "";
+                        if (raw) return JSON.parse(raw);
+                      } catch {}
+                      return null;
+                    })();
+                    return <PrintAreaEditor firstImage={firstImg} initial={paData} />;
                   })()}
                 </div>
                 <div className="field">
