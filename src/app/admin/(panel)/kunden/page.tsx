@@ -1,5 +1,6 @@
 import { db } from "@/lib/db";
 import Link from "next/link";
+import DeleteCustomerButton from "./DeleteCustomerButton";
 
 export const dynamic = "force-dynamic";
 
@@ -130,12 +131,19 @@ export default async function KundenPage({
                     <td style={{ ...td, textAlign: "right", fontWeight: 600 }}>{euro(totalRevenue)} €</td>
                     <td style={{ ...td, fontSize: 12, color: "#64748b" }}>{germanDate(c.createdAt)}</td>
                     <td style={{ ...td, textAlign: "right" }}>
-                      <Link
-                        href={`/admin/kunden/${c.id}`}
-                        style={{ color: "#004537", fontWeight: 600, fontSize: 13, textDecoration: "none" }}
-                      >
-                        Details →
-                      </Link>
+                      <span style={{ display: "inline-flex", gap: 10, alignItems: "center", justifyContent: "flex-end" }}>
+                        <Link
+                          href={`/admin/kunden/${c.id}`}
+                          style={{ color: "#004537", fontWeight: 600, fontSize: 13, textDecoration: "none" }}
+                        >
+                          Details →
+                        </Link>
+                        <DeleteCustomerButton
+                          customerId={c.id}
+                          customerName={`${c.firstName} ${c.lastName}`}
+                          orderCount={c._count.orders}
+                        />
+                      </span>
                     </td>
                   </tr>
                 );
