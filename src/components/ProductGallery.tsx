@@ -130,10 +130,12 @@ async function generateMockupDataUrl(
         im.onerror = () => reject(new Error("Design yüklenemedi"));
         im.src = design.imageDataUrl;
       });
-      const dw = (design.width / 100) * outSize;
+      // Design koordinatları ÜRÜN GÖRSELİNE göre (galerideki gibi),
+      // bu yüzden ürünün contain kutusuna (px,py,pw,ph) map ediyoruz.
+      const dw = (design.width / 100) * pw;
       const dh = dw / design.imageAspect;
-      const dx = (design.x / 100) * outSize;
-      const dy = (design.y / 100) * outSize;
+      const dx = px + (design.x / 100) * pw;
+      const dy = py + (design.y / 100) * ph;
       ctx.save();
       ctx.translate(dx, dy);
       ctx.rotate((design.rotation * Math.PI) / 180);
@@ -342,6 +344,13 @@ export default function ProductGallery({
   });
 
   const canvasRef = useRef<HTMLDivElement>(null);
+  const imgRef = useRef<HTMLImageElement>(null);
+  // Gerçek görsel kutusu (object-fit:contain nedeniyle konteynırdan küçük olabilir).
+  // Print area görselin ÜSTÜNDE olmalı, konteynıra göre değil — yoksa
+  // farklı ekran oranlarında (mobil/web) alan kayar.
+  const [imgBox, setImgBox] = useState<{ left: number; top: number; width: number; height: number }>({
+    left: 0, top: 0, width: 100, height: 100,
+  });
   const fileInputRef = useRef<HTMLInputElement>(null);
   const dragRef = useRef<{ x: number; y: number; startVal: number; startVal2: number; mode: "move" | "resize" | null }>({ x: 0, y: 0, startVal: 0, startVal2: 0, mode: null });
   const [atBoundary, setAtBoundary] = useState(false);
@@ -462,6 +471,60 @@ export default function ProductGallery({
     window.dispatchEvent(new CustomEvent("gallery-side-changed", { detail: { side } }));
   }, [side]);
 
+  /**
+   * object-fit:contain ile görsel konteynırı tam kaplamaz — oranı korur,
+   * kenarlarda boşluk kalır. Bu boşluk ekran genişliğine göre değişir.
+   * Print area konteynır yüzdesiyle çizilirse mobilde/webde farklı yere düşer.
+   * Bu yüzden görselin GERÇEK kutusunu ölçüp print area'yı ona göre konumlandırıyoruz.
+   */
+  useEffect(() => {
+    function measure() {
+      const container = canvasRef.current;
+      const img = imgRef.current;
+      if (!container || !img || !img.naturalWidth || !img.naturalHeight) return;
+
+      const cw = container.clientWidth;
+      const ch = container.clientHeight;
+      if (!cw || !ch) return;
+
+      const imgAspect = img.naturalWidth / img.naturalHeight;
+      const containerAspect = cw / ch;
+
+      let w: number, h: number, x: number, y: number;
+      if (imgAspect > containerAspect) {
+        // Görsel daha geniş → genişlik dolu, üstte/altta boşluk
+        w = cw;
+        h = cw / imgAspect;
+        x = 0;
+        y = (ch - h) / 2;
+      } else {
+        // Görsel daha dar/uzun → yükseklik dolu, yanlarda boşluk
+        h = ch;
+        w = ch * imgAspect;
+        x = (cw - w) / 2;
+        y = 0;
+      }
+
+      setImgBox({
+        left: (x / cw) * 100,
+        top: (y / ch) * 100,
+        width: (w / cw) * 100,
+        height: (h / ch) * 100,
+      });
+    }
+
+    measure();
+    const img = imgRef.current;
+    if (img && !img.complete) {
+      img.addEventListener("load", measure);
+    }
+    window.addEventListener("resize", measure);
+    return () => {
+      if (img) img.removeEventListener("load", measure);
+      window.removeEventListener("resize", measure);
+    };
+  }, [activeImage]);
+
   const handleFileUpload = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
@@ -528,8 +591,13 @@ export default function ProductGallery({
       if (!start.mode || !currentDesign || !canvasRef.current) return;
 
       const canvas = canvasRef.current.getBoundingClientRect();
-      const dx = ((e.clientX - start.x) / canvas.width) * 100;
-      const dy = ((e.clientY - start.y) / canvas.height) * 100;
+      // Koordinatlar GÖRSELE göre (imgBox), konteynıra göre değil.
+      // Sürükleme farkını da görselin gerçek boyutuna oranla → mobil/web tutarlı.
+      const imgW = (canvas.width * imgBox.width) / 100;
+      const imgH = (canvas.height * imgBox.height) / 100;
+      if (!imgW || !imgH) return;
+      const dx = ((e.clientX - start.x) / imgW) * 100;
+      const dy = ((e.clientY - start.y) / imgH) * 100;
 
       if (start.mode === "move") {
         const rawX = start.startVal + dx;
@@ -560,7 +628,7 @@ export default function ProductGallery({
         }));
       }
     },
-    [currentDesign, side]
+    [currentDesign, side, printArea, atBoundary, imgBox]
   );
 
   const handlePointerUp = useCallback((e: React.PointerEvent) => {
@@ -633,11 +701,11 @@ export default function ProductGallery({
           im.src = currentDesign.imageDataUrl;
         });
 
-        // Canvas'a göre design boyutu ve konumu
-        const dw = (currentDesign.width / 100) * OUT_SIZE;
+        // Design koordinatları ÜRÜN GÖRSELİNE göre → ürünün contain kutusuna map et
+        const dw = (currentDesign.width / 100) * pw;
         const dh = dw / currentDesign.imageAspect;
-        const dx = (currentDesign.x / 100) * OUT_SIZE;
-        const dy = (currentDesign.y / 100) * OUT_SIZE;
+        const dx = px + (currentDesign.x / 100) * pw;
+        const dy = py + (currentDesign.y / 100) * ph;
 
         ctx.save();
         ctx.translate(dx, dy);
@@ -729,20 +797,22 @@ export default function ProductGallery({
       >
         {activeImage ? (
           /* eslint-disable-next-line @next/next/no-img-element */
-          <img src={activeImage} alt={`${name} — ${side === "front" ? "Vorderseite" : "Rückseite"}`} draggable={false} />
+          <img ref={imgRef} src={activeImage} alt={`${name} — ${side === "front" ? "Vorderseite" : "Rückseite"}`} draggable={false} />
         ) : (
           <div className="gallery-empty"><ProductIcon name={iconName} /></div>
         )}
 
-        {/* Print area — logo bu alan içinde kalmalı */}
+        {/* Print area — logo bu alan içinde kalmalı.
+            printArea yüzdeleri GÖRSELE göre; imgBox ile konteynır koordinatına map edilir,
+            böylece her ekran oranında (mobil/web) aynı yerde durur. */}
         {activeImage && (
           <div
             className={`gal-print-area${currentDesign ? " has-design" : ""}${atBoundary ? " at-boundary" : ""}${isDragging ? " is-dragging" : ""}`}
             style={{
-              left: `${printArea.left}%`,
-              top: `${printArea.top}%`,
-              width: `${printArea.right - printArea.left}%`,
-              height: `${printArea.bottom - printArea.top}%`,
+              left: `${imgBox.left + (printArea.left / 100) * imgBox.width}%`,
+              top: `${imgBox.top + (printArea.top / 100) * imgBox.height}%`,
+              width: `${((printArea.right - printArea.left) / 100) * imgBox.width}%`,
+              height: `${((printArea.bottom - printArea.top) / 100) * imgBox.height}%`,
             }}
             aria-hidden
           >
@@ -756,9 +826,10 @@ export default function ProductGallery({
           <div
             className={`gal-design-layer${isDragging ? " is-dragging" : ""}`}
             style={{
-              left: `${currentDesign.x}%`,
-              top: `${currentDesign.y}%`,
-              width: `${currentDesign.width}%`,
+              // Design koordinatları da GÖRSELE göre — imgBox'a map edilir
+              left: `${imgBox.left + (currentDesign.x / 100) * imgBox.width}%`,
+              top: `${imgBox.top + (currentDesign.y / 100) * imgBox.height}%`,
+              width: `${(currentDesign.width / 100) * imgBox.width}%`,
               transform: `translate(-50%, -50%) rotate(${currentDesign.rotation}deg)`,
             }}
             onPointerDown={(e) => handlePointerDown(e, "move")}
