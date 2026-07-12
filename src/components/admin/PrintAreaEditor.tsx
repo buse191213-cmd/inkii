@@ -83,20 +83,20 @@ export default function PrintAreaEditor({
     }
   }, [initial?.left, initial?.top]);
 
-  /** Mausposition → Prozent RELATIV ZUM BILD (nicht zum Rahmen). */
+  /**
+   * Mausposition → Prozent des RAHMENS.
+   * Shop-Galerie nutzt exakt denselben Rahmen (quadratisch + object-fit:contain),
+   * daher stimmen die Koordinaten 1:1 überein — keine Umrechnung nötig.
+   */
   function pointToPercent(clientX: number, clientY: number) {
     const el = containerRef.current;
     if (!el) return { x: 0, y: 0 };
     const rect = el.getBoundingClientRect();
-    // Position im Rahmen (%)
-    const cx = ((clientX - rect.left) / rect.width) * 100;
-    const cy = ((clientY - rect.top) / rect.height) * 100;
-    // In Bild-Koordinaten umrechnen
-    const ix = imgBox.width > 0 ? ((cx - imgBox.left) / imgBox.width) * 100 : 0;
-    const iy = imgBox.height > 0 ? ((cy - imgBox.top) / imgBox.height) * 100 : 0;
+    const x = ((clientX - rect.left) / rect.width) * 100;
+    const y = ((clientY - rect.top) / rect.height) * 100;
     return {
-      x: Math.max(0, Math.min(100, ix)),
-      y: Math.max(0, Math.min(100, iy)),
+      x: Math.max(0, Math.min(100, x)),
+      y: Math.max(0, Math.min(100, y)),
     };
   }
 
@@ -184,10 +184,10 @@ export default function PrintAreaEditor({
             <div
               style={{
                 position: "absolute",
-                left: `${imgBox.left + (box.left / 100) * imgBox.width}%`,
-                top: `${imgBox.top + (box.top / 100) * imgBox.height}%`,
-                width: `${((box.right - box.left) / 100) * imgBox.width}%`,
-                height: `${((box.bottom - box.top) / 100) * imgBox.height}%`,
+                left: `${box.left}%`,
+                top: `${box.top}%`,
+                width: `${box.right - box.left}%`,
+                height: `${box.bottom - box.top}%`,
                 border: "2px dashed #004537",
                 background: "rgba(0, 69, 55, 0.12)",
                 pointerEvents: "none",

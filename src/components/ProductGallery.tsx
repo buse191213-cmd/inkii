@@ -130,12 +130,11 @@ async function generateMockupDataUrl(
         im.onerror = () => reject(new Error("Design yüklenemedi"));
         im.src = design.imageDataUrl;
       });
-      // Design koordinatları ÜRÜN GÖRSELİNE göre (galerideki gibi),
-      // bu yüzden ürünün contain kutusuna (px,py,pw,ph) map ediyoruz.
-      const dw = (design.width / 100) * pw;
+      // Koordinatlar galeri konteynırının yüzdesi (kare) → canvas da kare (outSize)
+      const dw = (design.width / 100) * outSize;
       const dh = dw / design.imageAspect;
-      const dx = px + (design.x / 100) * pw;
-      const dy = py + (design.y / 100) * ph;
+      const dx = (design.x / 100) * outSize;
+      const dy = (design.y / 100) * outSize;
       ctx.save();
       ctx.translate(dx, dy);
       ctx.rotate((design.rotation * Math.PI) / 180);
@@ -608,12 +607,9 @@ export default function ProductGallery({
       const start = dragRef.current;
       if (!start.mode || !currentDesign || !canvasRef.current) return;
 
-      // Koordinatlar GÖRSELE göre (imgBox px), konteynıra göre değil.
-      const imgW = imgBox.pxWidth;
-      const imgH = imgBox.pxHeight;
-      if (!imgW || !imgH) return;
-      const dx = ((e.clientX - start.x) / imgW) * 100;
-      const dy = ((e.clientY - start.y) / imgH) * 100;
+      const canvas = canvasRef.current.getBoundingClientRect();
+      const dx = ((e.clientX - start.x) / canvas.width) * 100;
+      const dy = ((e.clientY - start.y) / canvas.height) * 100;
 
       if (start.mode === "move") {
         const rawX = start.startVal + dx;
@@ -644,7 +640,7 @@ export default function ProductGallery({
         }));
       }
     },
-    [currentDesign, side, printArea, atBoundary, imgBox]
+    [currentDesign, side, printArea, atBoundary]
   );
 
   const handlePointerUp = useCallback((e: React.PointerEvent) => {
@@ -717,11 +713,11 @@ export default function ProductGallery({
           im.src = currentDesign.imageDataUrl;
         });
 
-        // Design koordinatları ÜRÜN GÖRSELİNE göre → ürünün contain kutusuna map et
-        const dw = (currentDesign.width / 100) * pw;
+        // Koordinatlar galeri konteynırının yüzdesi (kare) → canvas da kare
+        const dw = (currentDesign.width / 100) * OUT_SIZE;
         const dh = dw / currentDesign.imageAspect;
-        const dx = px + (currentDesign.x / 100) * pw;
-        const dy = py + (currentDesign.y / 100) * ph;
+        const dx = (currentDesign.x / 100) * OUT_SIZE;
+        const dy = (currentDesign.y / 100) * OUT_SIZE;
 
         ctx.save();
         ctx.translate(dx, dy);
@@ -819,18 +815,18 @@ export default function ProductGallery({
         )}
 
         {/* Print area — logo bu alan içinde kalmalı.
-            printArea yüzdeleri GÖRSELE göre; imgBox ile konteynır koordinatına map edilir,
-            böylece her ekran oranında (mobil/web) aynı yerde durur. */}
+            Koordinatlar galeri konteynırının yüzdesi. Admin-Editor nutzt denselben
+            quadratischen Rahmen mit object-fit:contain → identische Position. */}
         {activeImage && (
           <div
             className={`gal-print-area${currentDesign ? " has-design" : ""}${atBoundary ? " at-boundary" : ""}${isDragging ? " is-dragging" : ""}`}
             style={{
               // Piksel ile konumlandır — % kullanılırsa konteynır oranı
               // (mobilde 4:5, webde 1:1) kutuyu bozar/uzatır.
-              left: `${imgBox.pxLeft + (printArea.left / 100) * imgBox.pxWidth}px`,
-              top: `${imgBox.pxTop + (printArea.top / 100) * imgBox.pxHeight}px`,
-              width: `${((printArea.right - printArea.left) / 100) * imgBox.pxWidth}px`,
-              height: `${((printArea.bottom - printArea.top) / 100) * imgBox.pxHeight}px`,
+              left: `${printArea.left}%`,
+              top: `${printArea.top}%`,
+              width: `${printArea.right - printArea.left}%`,
+              height: `${printArea.bottom - printArea.top}%`,
             }}
             aria-hidden
           >
@@ -845,9 +841,9 @@ export default function ProductGallery({
             className={`gal-design-layer${isDragging ? " is-dragging" : ""}`}
             style={{
               // Piksel ile — konteynır oranından bağımsız, her ekranda aynı
-              left: `${imgBox.pxLeft + (currentDesign.x / 100) * imgBox.pxWidth}px`,
-              top: `${imgBox.pxTop + (currentDesign.y / 100) * imgBox.pxHeight}px`,
-              width: `${(currentDesign.width / 100) * imgBox.pxWidth}px`,
+              left: `${currentDesign.x}%`,
+              top: `${currentDesign.y}%`,
+              width: `${currentDesign.width}%`,
               transform: `translate(-50%, -50%) rotate(${currentDesign.rotation}deg)`,
             }}
             onPointerDown={(e) => handlePointerDown(e, "move")}

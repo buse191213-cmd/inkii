@@ -4603,9 +4603,13 @@ body:has(.hero-full) header.site .brand-other img{filter:none;height:52px}
    Hochformat-Rahmen (4:5) → Produkt füllt den Bereich aus.
    Der Druckbereich wird per JS am tatsächlichen Bild ausgerichtet,
    daher bleibt er trotz anderem Rahmen-Verhältnis korrekt. */
+/* MOBIL: Gleiches Seitenverhältnis wie Desktop und wie der Admin-Editor
+   (quadratisch). Nur so liegt der im Admin gezeichnete Druckbereich
+   auf allen Geräten exakt gleich. Ein abweichendes Verhältnis (z. B. 4:5)
+   verschiebt den Bereich. */
 @media (max-width: 1023px) {
   .mm-detail-gallery .gallery-main {
-    aspect-ratio: 4 / 5;
+    aspect-ratio: 1 / 1;
     background: #f5f5f5;
   }
   .mm-detail-gallery .gallery-main img {
