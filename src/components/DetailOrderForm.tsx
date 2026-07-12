@@ -168,6 +168,11 @@ export default function DetailOrderForm({
   const activeTier = useMemo(() => findTier(tiers, totalQty), [tiers, totalQty]);
   const unitCents = activeTier?.cents ?? basePriceCents ?? null;
 
+  // Fiyatı olmayan ürün (Preis auf Anfrage) sepete eklenemez — sadece Angebot.
+  // Aksi halde müşteri sadece DTF+Versand ödeyip ürünü bedava alabilirdi.
+  const hasPrice = (basePriceCents != null && basePriceCents > 0) ||
+                   (tiers.length > 0 && tiers.some((tier) => tier.cents > 0));
+
   const subtotalCents = useMemo(() => {
     if (unitCents == null) return null;
     // YENİ AKIŞ (2026): Bedenler sepette dağıtılıyor, formda TEK adet var.
@@ -214,6 +219,11 @@ export default function DetailOrderForm({
 
   function handleAddToCart() {
     setErr("");
+    // Fiyatsız ürün sepete eklenemez — teklif talebi gerekir
+    if (!hasPrice) {
+      setErr("Für dieses Produkt gilt „Preis auf Anfrage". Bitte fordern Sie ein Angebot an.");
+      return;
+    }
     if (totalQty === 0) {
       setErr(t.enterQty);
       return;
@@ -516,26 +526,46 @@ export default function DetailOrderForm({
       )}
 
       <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
-        {/* TEK BUTON — sepete ekle (B2B: liste yap, sonra teklif veya satın al) */}
-        <button
-          type="button"
-          className="det-order-submit"
-          onClick={handleAddToCart}
-          style={{
-            background: "#004537",
-            color: "#fff",
-            border: "1px solid #004537",
-          }}
-        >
-          <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" strokeWidth="2">
-            <circle cx="9" cy="21" r="1.5" />
-            <circle cx="20" cy="21" r="1.5" />
-            <path d="M3 3h2l3 13h12l3-9H6" strokeLinecap="round" strokeLinejoin="round" />
-          </svg>
-          {alreadyOn ? t.updateVariant : t.addToCart}
-          {totalQty > 0 ? ` · ${totalQty} Stk` : ""}
-          {selectedColor ? ` · ${colorLabel(selectedColor)}` : ""}
-        </button>
+        {hasPrice ? (
+          /* TEK BUTON — sepete ekle (B2B: liste yap, sonra teklif veya satın al) */
+          <button
+            type="button"
+            className="det-order-submit"
+            onClick={handleAddToCart}
+            style={{
+              background: "#004537",
+              color: "#fff",
+              border: "1px solid #004537",
+            }}
+          >
+            <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" strokeWidth="2">
+              <circle cx="9" cy="21" r="1.5" />
+              <circle cx="20" cy="21" r="1.5" />
+              <path d="M3 3h2l3 13h12l3-9H6" strokeLinecap="round" strokeLinejoin="round" />
+            </svg>
+            {alreadyOn ? t.updateVariant : t.addToCart}
+            {totalQty > 0 ? ` · ${totalQty} Stk` : ""}
+            {selectedColor ? ` · ${colorLabel(selectedColor)}` : ""}
+          </button>
+        ) : (
+          /* Fiyat yok → sadece Angebot anfordern (bedava ürün açığını kapatır) */
+          <a
+            href="/kontakt"
+            className="det-order-submit"
+            style={{
+              background: "#004537",
+              color: "#fff",
+              border: "1px solid #004537",
+              textDecoration: "none",
+            }}
+          >
+            <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+              <path d="M4 4h16v12H5.17L4 17.17V4z" />
+              <path d="M8 9h8M8 12h5" />
+            </svg>
+            Angebot anfordern
+          </a>
+        )}
       </div>
     </div>
   );

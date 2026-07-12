@@ -171,6 +171,16 @@ export async function createOrder(
   try {
     const c = input.customer;
 
+    // GÜVENLİK: Fiyatsız ("Preis auf Anfrage") ürün siparişe giremez.
+    // Aksi halde müşteri sadece DTF+Versand ödeyip ürünü bedava alabilirdi.
+    const zeroPriced = input.items.filter((i) => !i.unitPriceCents || i.unitPriceCents <= 0);
+    if (zeroPriced.length > 0) {
+      return {
+        ok: false,
+        error: `Für folgende Artikel gilt „Preis auf Anfrage" – bitte fordern Sie ein Angebot an: ${zeroPriced.map((i) => i.productName).join(", ")}`,
+      };
+    }
+
     // 0) Login durumu — varsa müşteriye direkt bağla
     const loggedInCustomerId = await getCurrentCustomerId();
 
