@@ -4587,19 +4587,31 @@ body:has(.hero-full) header.site .brand-other img{filter:none;height:52px}
   .mm-detail-gallery .gallery {
     max-width: 100% !important;
   }
-  /* Container bleibt quadratisch (aspect-ratio:1) — max-height würde das
-     Seitenverhältnis brechen und den Druckbereich verschieben. */
   .mm-detail-gallery .gallery-main {
     background: #f5f5f5 !important;
   }
-  /* WICHTIG: Bild MUSS den Container komplett füllen (contain, 100%/100%).
-     Sonst sitzt der Druckbereich (in % des Containers) nicht mehr auf dem
-     Produkt — am Desktop passt es zufällig, am Handy verschiebt es sich. */
   .mm-detail-gallery .gallery-main img {
     width: 100%;
     height: 100%;
     object-fit: contain;
     margin: 0;
+  }
+}
+
+/* MOBIL: Produktbilder (T-Shirts, Tanktops) sind hochformatig.
+   In einem quadratischen Rahmen wirken sie klein/gestaucht.
+   Hochformat-Rahmen (4:5) → Produkt füllt den Bereich aus.
+   Der Druckbereich wird per JS am tatsächlichen Bild ausgerichtet,
+   daher bleibt er trotz anderem Rahmen-Verhältnis korrekt. */
+@media (max-width: 1023px) {
+  .mm-detail-gallery .gallery-main {
+    aspect-ratio: 4 / 5;
+    background: #f5f5f5;
+  }
+  .mm-detail-gallery .gallery-main img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
   }
 }
 

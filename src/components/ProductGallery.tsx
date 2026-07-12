@@ -518,10 +518,20 @@ export default function ProductGallery({
     if (img && !img.complete) {
       img.addEventListener("load", measure);
     }
+    // ResizeObserver: Container-Größe/Verhältnis ändert sich (Breakpoints,
+    // Rotation, PWA) → Druckbereich sofort neu ausrichten.
+    let ro: ResizeObserver | null = null;
+    if (typeof ResizeObserver !== "undefined" && canvasRef.current) {
+      ro = new ResizeObserver(() => measure());
+      ro.observe(canvasRef.current);
+    }
     window.addEventListener("resize", measure);
+    window.addEventListener("orientationchange", measure);
     return () => {
       if (img) img.removeEventListener("load", measure);
+      if (ro) ro.disconnect();
       window.removeEventListener("resize", measure);
+      window.removeEventListener("orientationchange", measure);
     };
   }, [activeImage]);
 
