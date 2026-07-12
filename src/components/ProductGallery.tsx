@@ -130,7 +130,6 @@ async function generateMockupDataUrl(
         im.onerror = () => reject(new Error("Design yüklenemedi"));
         im.src = design.imageDataUrl;
       });
-      // Koordinatlar galeri konteynırının yüzdesi (kare) → canvas da kare (outSize)
       const dw = (design.width / 100) * outSize;
       const dh = dw / design.imageAspect;
       const dx = (design.x / 100) * outSize;
@@ -343,17 +342,6 @@ export default function ProductGallery({
   });
 
   const canvasRef = useRef<HTMLDivElement>(null);
-  const imgRef = useRef<HTMLImageElement>(null);
-  // Gerçek görsel kutusu (object-fit:contain nedeniyle konteynırdan küçük olabilir).
-  // Print area görselin ÜSTÜNDE olmalı, konteynıra göre değil — yoksa
-  // farklı ekran oranlarında (mobil/web) alan kayar.
-  const [imgBox, setImgBox] = useState<{
-    left: number; top: number; width: number; height: number;   // % (konteynıra göre)
-    pxLeft: number; pxTop: number; pxWidth: number; pxHeight: number; // piksel
-  }>({
-    left: 0, top: 0, width: 100, height: 100,
-    pxLeft: 0, pxTop: 0, pxWidth: 0, pxHeight: 0,
-  });
   const fileInputRef = useRef<HTMLInputElement>(null);
   const dragRef = useRef<{ x: number; y: number; startVal: number; startVal2: number; mode: "move" | "resize" | null }>({ x: 0, y: 0, startVal: 0, startVal2: 0, mode: null });
   const [atBoundary, setAtBoundary] = useState(false);
@@ -474,74 +462,6 @@ export default function ProductGallery({
     window.dispatchEvent(new CustomEvent("gallery-side-changed", { detail: { side } }));
   }, [side]);
 
-  /**
-   * object-fit:contain ile görsel konteynırı tam kaplamaz — oranı korur,
-   * kenarlarda boşluk kalır. Bu boşluk ekran genişliğine göre değişir.
-   * Print area konteynır yüzdesiyle çizilirse mobilde/webde farklı yere düşer.
-   * Bu yüzden görselin GERÇEK kutusunu ölçüp print area'yı ona göre konumlandırıyoruz.
-   */
-  useEffect(() => {
-    function measure() {
-      const container = canvasRef.current;
-      const img = imgRef.current;
-      if (!container || !img || !img.naturalWidth || !img.naturalHeight) return;
-
-      const cw = container.clientWidth;
-      const ch = container.clientHeight;
-      if (!cw || !ch) return;
-
-      const imgAspect = img.naturalWidth / img.naturalHeight;
-      const containerAspect = cw / ch;
-
-      let w: number, h: number, x: number, y: number;
-      if (imgAspect > containerAspect) {
-        // Görsel daha geniş → genişlik dolu, üstte/altta boşluk
-        w = cw;
-        h = cw / imgAspect;
-        x = 0;
-        y = (ch - h) / 2;
-      } else {
-        // Görsel daha dar/uzun → yükseklik dolu, yanlarda boşluk
-        h = ch;
-        w = ch * imgAspect;
-        x = (cw - w) / 2;
-        y = 0;
-      }
-
-      setImgBox({
-        left: (x / cw) * 100,
-        top: (y / ch) * 100,
-        width: (w / cw) * 100,
-        height: (h / ch) * 100,
-        pxLeft: x,
-        pxTop: y,
-        pxWidth: w,
-        pxHeight: h,
-      });
-    }
-
-    measure();
-    const img = imgRef.current;
-    if (img && !img.complete) {
-      img.addEventListener("load", measure);
-    }
-    // ResizeObserver: Container-Größe/Verhältnis ändert sich (Breakpoints,
-    // Rotation, PWA) → Druckbereich sofort neu ausrichten.
-    let ro: ResizeObserver | null = null;
-    if (typeof ResizeObserver !== "undefined" && canvasRef.current) {
-      ro = new ResizeObserver(() => measure());
-      ro.observe(canvasRef.current);
-    }
-    window.addEventListener("resize", measure);
-    window.addEventListener("orientationchange", measure);
-    return () => {
-      if (img) img.removeEventListener("load", measure);
-      if (ro) ro.disconnect();
-      window.removeEventListener("resize", measure);
-      window.removeEventListener("orientationchange", measure);
-    };
-  }, [activeImage]);
-
   const handleFileUpload = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
@@ -640,7 +560,7 @@ export default function ProductGallery({
         }));
       }
     },
-    [currentDesign, side, printArea, atBoundary]
+    [currentDesign, side]
   );
 
   const handlePointerUp = useCallback((e: React.PointerEvent) => {
@@ -713,7 +633,7 @@ export default function ProductGallery({
           im.src = currentDesign.imageDataUrl;
         });
 
-        // Koordinatlar galeri konteynırının yüzdesi (kare) → canvas da kare
+        // Canvas'a göre design boyutu ve konumu
         const dw = (currentDesign.width / 100) * OUT_SIZE;
         const dh = dw / currentDesign.imageAspect;
         const dx = (currentDesign.x / 100) * OUT_SIZE;
@@ -809,20 +729,16 @@ export default function ProductGallery({
       >
         {activeImage ? (
           /* eslint-disable-next-line @next/next/no-img-element */
-          <img ref={imgRef} src={activeImage} alt={`${name} — ${side === "front" ? "Vorderseite" : "Rückseite"}`} draggable={false} />
+          <img src={activeImage} alt={`${name} — ${side === "front" ? "Vorderseite" : "Rückseite"}`} draggable={false} />
         ) : (
           <div className="gallery-empty"><ProductIcon name={iconName} /></div>
         )}
 
-        {/* Print area — logo bu alan içinde kalmalı.
-            Koordinatlar galeri konteynırının yüzdesi. Admin-Editor nutzt denselben
-            quadratischen Rahmen mit object-fit:contain → identische Position. */}
+        {/* Print area — logo bu alan içinde kalmalı */}
         {activeImage && (
           <div
             className={`gal-print-area${currentDesign ? " has-design" : ""}${atBoundary ? " at-boundary" : ""}${isDragging ? " is-dragging" : ""}`}
             style={{
-              // Piksel ile konumlandır — % kullanılırsa konteynır oranı
-              // (mobilde 4:5, webde 1:1) kutuyu bozar/uzatır.
               left: `${printArea.left}%`,
               top: `${printArea.top}%`,
               width: `${printArea.right - printArea.left}%`,
@@ -840,7 +756,6 @@ export default function ProductGallery({
           <div
             className={`gal-design-layer${isDragging ? " is-dragging" : ""}`}
             style={{
-              // Piksel ile — konteynır oranından bağımsız, her ekranda aynı
               left: `${currentDesign.x}%`,
               top: `${currentDesign.y}%`,
               width: `${currentDesign.width}%`,

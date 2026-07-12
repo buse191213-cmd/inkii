@@ -29,51 +29,8 @@ export default function PrintAreaEditor({
   const [widthCm, setWidthCm] = useState(initial?.widthCm ?? 25);
   const [heightCm, setHeightCm] = useState(initial?.heightCm ?? 30);
   const containerRef = useRef<HTMLDivElement>(null);
-  const imgRef = useRef<HTMLImageElement>(null);
   const drawStart = useRef<{ x: number; y: number } | null>(null);
   const [drawing, setDrawing] = useState(false);
-
-  /**
-   * object-fit:contain → Bild füllt den quadratischen Rahmen nicht komplett.
-   * Koordinaten MÜSSEN relativ zum BILD gespeichert werden (nicht zum Rahmen),
-   * sonst sitzt der Druckbereich im Shop (anderes Rahmen-Verhältnis, z. B.
-   * mobil 4:5) an einer anderen Stelle als hier gezeichnet.
-   */
-  const [imgBox, setImgBox] = useState({ left: 0, top: 0, width: 100, height: 100 });
-
-  useEffect(() => {
-    function measure() {
-      const el = containerRef.current;
-      const img = imgRef.current;
-      if (!el || !img || !img.naturalWidth || !img.naturalHeight) return;
-      const cw = el.clientWidth;
-      const ch = el.clientHeight;
-      if (!cw || !ch) return;
-
-      const imgAspect = img.naturalWidth / img.naturalHeight;
-      const contAspect = cw / ch;
-      let w: number, h: number, x: number, y: number;
-      if (imgAspect > contAspect) {
-        w = cw; h = cw / imgAspect; x = 0; y = (ch - h) / 2;
-      } else {
-        h = ch; w = ch * imgAspect; x = (cw - w) / 2; y = 0;
-      }
-      setImgBox({
-        left: (x / cw) * 100,
-        top: (y / ch) * 100,
-        width: (w / cw) * 100,
-        height: (h / ch) * 100,
-      });
-    }
-    measure();
-    const img = imgRef.current;
-    if (img && !img.complete) img.addEventListener("load", measure);
-    window.addEventListener("resize", measure);
-    return () => {
-      if (img) img.removeEventListener("load", measure);
-      window.removeEventListener("resize", measure);
-    };
-  }, [firstImage]);
 
   useEffect(() => {
     if (initial) {
@@ -83,11 +40,6 @@ export default function PrintAreaEditor({
     }
   }, [initial?.left, initial?.top]);
 
-  /**
-   * Mausposition → Prozent des RAHMENS.
-   * Shop-Galerie nutzt exakt denselben Rahmen (quadratisch + object-fit:contain),
-   * daher stimmen die Koordinaten 1:1 überein — keine Umrechnung nötig.
-   */
   function pointToPercent(clientX: number, clientY: number) {
     const el = containerRef.current;
     if (!el) return { x: 0, y: 0 };
@@ -166,7 +118,6 @@ export default function PrintAreaEditor({
         >
           {firstImage ? (
             <img
-              ref={imgRef}
               src={firstImage}
               alt="Produkt"
               draggable={false}
@@ -178,8 +129,7 @@ export default function PrintAreaEditor({
             </div>
           )}
 
-          {/* Çizilen baskı alanı — box BILD-relativ gespeichert,
-              zur Anzeige zurück in Rahmen-Koordinaten umrechnen */}
+          {/* Çizilen baskı alanı */}
           {box && (
             <div
               style={{
