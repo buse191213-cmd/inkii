@@ -744,7 +744,6 @@ export default function ProductGallery({
       <div
         className="gallery-main"
         ref={canvasRef}
-        style={productAspect ? { aspectRatio: String(productAspect) } : undefined}
         onPointerMove={handlePointerMove}
         onPointerUp={handlePointerUp}
         onPointerCancel={handlePointerUp}
