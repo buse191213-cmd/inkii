@@ -45,6 +45,22 @@ export default async function WerbemittelPage() {
       ? String(p.images).split(",").map((s: string) => s.trim()).filter(Boolean)
       : [],
     priceCents: p.priceCents,
+    // Kademeli fiyatlardaki EN DÜŞÜK fiyat (çok alınca ucuzlar) — listede "ab X €" için
+    lowestPriceCents: (() => {
+      try {
+        const tiers = JSON.parse((p as { priceTiers?: string }).priceTiers ?? "[]");
+        const tierCents = Array.isArray(tiers)
+          ? tiers
+              .map((t: { cents?: number }) => t?.cents)
+              .filter((c: unknown): c is number => typeof c === "number" && c > 0)
+          : [];
+        const base = typeof p.priceCents === "number" && p.priceCents > 0 ? [p.priceCents] : [];
+        const all = [...base, ...tierCents];
+        return all.length > 0 ? Math.min(...all) : null;
+      } catch {
+        return p.priceCents;
+      }
+    })(),
     stock: p.stock,
     isNew: p.isNew,
     isEco: p.isEco,

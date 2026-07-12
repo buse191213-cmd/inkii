@@ -18,6 +18,7 @@ export type CatalogProduct = {
   icon: string;
   images: string[];
   priceCents: number | null;
+  lowestPriceCents?: number | null;
   stock: number;
   isNew: boolean;
   isEco: boolean;
@@ -33,12 +34,14 @@ export type CatalogCategory = { slug: string; name: string; count: number };
 
 type SortKey = "standard" | "preis-auf" | "preis-ab" | "neu";
 
-/** Preisvergleich – Artikel ohne Preis ans Ende. */
+/** Preisvergleich – Artikel ohne Preis ans Ende. Nutzt den niedrigsten Preis (ab-Preis). */
 function cmpPrice(a: CatalogProduct, b: CatalogProduct, dir: 1 | -1): number {
-  if (a.priceCents == null && b.priceCents == null) return 0;
-  if (a.priceCents == null) return 1;
-  if (b.priceCents == null) return -1;
-  return (a.priceCents - b.priceCents) * dir;
+  const pa = a.lowestPriceCents ?? a.priceCents;
+  const pb = b.lowestPriceCents ?? b.priceCents;
+  if (pa == null && pb == null) return 0;
+  if (pa == null) return 1;
+  if (pb == null) return -1;
+  return (pa - pb) * dir;
 }
 
 export default function CatalogClient({
@@ -253,7 +256,7 @@ export default function CatalogClient({
           {list.length === 0 && <div className="mm-empty">{t.empty}</div>}
           {list.map((p) => {
             const merkt = has(p.id);
-            const hasPrice = p.priceCents != null;
+            const hasPrice = (p.lowestPriceCents ?? p.priceCents) != null;
             return (
               <article key={p.id} className="mm-card">
                 {/* Etiketten oben im weißen Bereich */}
@@ -316,7 +319,8 @@ export default function CatalogClient({
                   <div className="mm-card-price">
                     {SHOW_PRICES && hasPrice ? (
                       <span style={{ fontSize: 13, fontWeight: 600, color: "#0f1a16" }}>
-                        {formatPrice(p.priceCents)}
+                        <span style={{ fontSize: 11, color: "#94a3b8", marginRight: 3, fontWeight: 500 }}>ab</span>
+                        {formatPrice(p.lowestPriceCents ?? p.priceCents)}
                         <span style={{ fontSize: 10, color: "#94a3b8", marginLeft: 3 }}>/ Stk</span>
                       </span>
                     ) : (
