@@ -177,7 +177,7 @@ export async function createOrder(
     if (zeroPriced.length > 0) {
       return {
         ok: false,
-        error: `Für folgende Artikel gilt „Preis auf Anfrage" – bitte fordern Sie ein Angebot an: ${zeroPriced.map((i) => i.productName).join(", ")}`,
+        error: `Für folgende Artikel gilt Preis auf Anfrage – bitte fordern Sie ein Angebot an: ${zeroPriced.map((i) => i.productName).join(", ")}`,
       };
     }
 

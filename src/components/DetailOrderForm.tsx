@@ -221,7 +221,7 @@ export default function DetailOrderForm({
     setErr("");
     // Fiyatsız ürün sepete eklenemez — teklif talebi gerekir
     if (!hasPrice) {
-      setErr("Für dieses Produkt gilt „Preis auf Anfrage". Bitte fordern Sie ein Angebot an.");
+      setErr("Für dieses Produkt gilt Preis auf Anfrage. Bitte fordern Sie ein Angebot an.");
       return;
     }
     if (totalQty === 0) {
