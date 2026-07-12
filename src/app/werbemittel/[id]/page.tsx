@@ -356,29 +356,101 @@ export default async function ProductDetailPage({
               {dt.relatedKicker && <p className="kicker">{dt.relatedKicker}</p>}
               <h3>{dt.relatedTitle}</h3>
             </div>
-            <div className="mm-related-grid">
+            {/* Katalogdaki kartlarla BİREBİR aynı yapı (mm-card / mm-grid) */}
+            <div className="mm-grid">
               {related.map((r) => {
                 const rImages = split(r.images);
                 const rImg = rImages[0] || null;
+                const rColors = split(r.colors);
+                // Kademeli fiyatlardaki en düşük fiyat (listedeki "ab" mantığı)
+                const rLowest = (() => {
+                  try {
+                    const tiers = JSON.parse((r as { priceTiers?: string }).priceTiers ?? "[]");
+                    const tierCents = Array.isArray(tiers)
+                      ? tiers.map((x: { cents?: number }) => x?.cents)
+                          .filter((c: unknown): c is number => typeof c === "number" && c > 0)
+                      : [];
+                    const base = typeof r.priceCents === "number" && r.priceCents > 0 ? [r.priceCents] : [];
+                    const all = [...base, ...tierCents];
+                    return all.length > 0 ? Math.min(...all) : null;
+                  } catch {
+                    return r.priceCents;
+                  }
+                })();
+                // cardCrop (zoom/pan) — katalogla aynı
+                let zoom = 1, tx = 0, ty = 0;
+                try {
+                  const cc = (r as { cardCrop?: string }).cardCrop;
+                  if (cc) {
+                    const c = JSON.parse(cc);
+                    zoom = Number(c.zoom) || 1;
+                    tx = Number(c.x) || 0;
+                    ty = Number(c.y) || 0;
+                  }
+                } catch {}
+
                 return (
-                  <Link key={r.id} href={`/werbemittel/${r.id}`} className="mm-related-card">
-                    <div
-                      className="mm-related-img"
-                      style={rImg ? { backgroundImage: `url(${rImg})` } : undefined}
-                    >
-                      {!rImg && <span className="mm-related-img-fallback">INKII</span>}
+                  <article key={r.id} className="mm-card">
+                    <div className="mm-card-tags">
+                      {r.isNew && <span className="mm-tag tag-new">NEU</span>}
+                      {r.stock > 0 && <span className="mm-tag tag-stock">AB LAGER</span>}
+                      {r.isEco && <span className="mm-tag tag-eco">✦ NACHHALTIG</span>}
                     </div>
-                    <div className="mm-related-body">
-                      <div className="mm-related-name">{r.name}</div>
-                      {r.subtitle && <div className="mm-related-sub">{r.subtitle}</div>}
-                      <span className="mm-related-cta">
-                        {dt.relatedCta ?? "Ansehen"}
-                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
-                          <path d="M5 12h14M13 6l6 6-6 6"/>
-                        </svg>
-                      </span>
-                    </div>
-                  </Link>
+
+                    <Link href={`/werbemittel/${r.id}`} className="mm-card-link">
+                      <div className="mm-card-img">
+                        {rImg ? (
+                          /* eslint-disable-next-line @next/next/no-img-element */
+                          <img
+                            src={rImg}
+                            alt={r.name}
+                            style={{
+                              width: "100%",
+                              height: "100%",
+                              objectFit: "contain",
+                              objectPosition: "center",
+                              transform: (zoom !== 1 || tx !== 0 || ty !== 0)
+                                ? `scale(${zoom}) translate(${-tx}%, ${ty}%)`
+                                : undefined,
+                              transformOrigin: "center",
+                              padding: 4,
+                            }}
+                          />
+                        ) : (
+                          <span className="mm-related-img-fallback">INKII</span>
+                        )}
+                        <span className="mm-quick">{dt.relatedCta ?? "Details"}</span>
+                      </div>
+
+                      {rColors.length > 0 && (
+                        <div className="mm-card-colors">
+                          {rColors.slice(0, 12).map((x) => (
+                            <span
+                              key={x}
+                              className="mm-card-color"
+                              style={{ background: colorHex(x) }}
+                              title={colorLabel(x)}
+                            />
+                          ))}
+                        </div>
+                      )}
+
+                      <div className="mm-card-name">{r.name}</div>
+                      <div className="mm-card-price">
+                        {rLowest != null ? (
+                          <span style={{ fontSize: 13, fontWeight: 600, color: "#0f1a16" }}>
+                            <span style={{ fontSize: 11, color: "#94a3b8", marginRight: 3, fontWeight: 500 }}>ab</span>
+                            {(rLowest / 100).toLocaleString("de-DE", { minimumFractionDigits: 2, maximumFractionDigits: 2 })} €
+                            <span style={{ fontSize: 10, color: "#94a3b8", marginLeft: 3 }}>/ Stk</span>
+                          </span>
+                        ) : (
+                          <span style={{ fontSize: 12, color: "#94a3b8", fontStyle: "italic" }}>
+                            Preis auf Anfrage
+                          </span>
+                        )}
+                      </div>
+                    </Link>
+                  </article>
                 );
               })}
             </div>
