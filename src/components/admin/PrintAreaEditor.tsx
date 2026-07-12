@@ -29,8 +29,51 @@ export default function PrintAreaEditor({
   const [widthCm, setWidthCm] = useState(initial?.widthCm ?? 25);
   const [heightCm, setHeightCm] = useState(initial?.heightCm ?? 30);
   const containerRef = useRef<HTMLDivElement>(null);
+  const imgRef = useRef<HTMLImageElement>(null);
   const drawStart = useRef<{ x: number; y: number } | null>(null);
   const [drawing, setDrawing] = useState(false);
+
+  /**
+   * object-fit:contain → Bild füllt den quadratischen Rahmen nicht komplett.
+   * Koordinaten MÜSSEN relativ zum BILD gespeichert werden (nicht zum Rahmen),
+   * sonst sitzt der Druckbereich im Shop (anderes Rahmen-Verhältnis, z. B.
+   * mobil 4:5) an einer anderen Stelle als hier gezeichnet.
+   */
+  const [imgBox, setImgBox] = useState({ left: 0, top: 0, width: 100, height: 100 });
+
+  useEffect(() => {
+    function measure() {
+      const el = containerRef.current;
+      const img = imgRef.current;
+      if (!el || !img || !img.naturalWidth || !img.naturalHeight) return;
+      const cw = el.clientWidth;
+      const ch = el.clientHeight;
+      if (!cw || !ch) return;
+
+      const imgAspect = img.naturalWidth / img.naturalHeight;
+      const contAspect = cw / ch;
+      let w: number, h: number, x: number, y: number;
+      if (imgAspect > contAspect) {
+        w = cw; h = cw / imgAspect; x = 0; y = (ch - h) / 2;
+      } else {
+        h = ch; w = ch * imgAspect; x = (cw - w) / 2; y = 0;
+      }
+      setImgBox({
+        left: (x / cw) * 100,
+        top: (y / ch) * 100,
+        width: (w / cw) * 100,
+        height: (h / ch) * 100,
+      });
+    }
+    measure();
+    const img = imgRef.current;
+    if (img && !img.complete) img.addEventListener("load", measure);
+    window.addEventListener("resize", measure);
+    return () => {
+      if (img) img.removeEventListener("load", measure);
+      window.removeEventListener("resize", measure);
+    };
+  }, [firstImage]);
 
   useEffect(() => {
     if (initial) {
@@ -40,15 +83,20 @@ export default function PrintAreaEditor({
     }
   }, [initial?.left, initial?.top]);
 
+  /** Mausposition → Prozent RELATIV ZUM BILD (nicht zum Rahmen). */
   function pointToPercent(clientX: number, clientY: number) {
     const el = containerRef.current;
     if (!el) return { x: 0, y: 0 };
     const rect = el.getBoundingClientRect();
-    const x = ((clientX - rect.left) / rect.width) * 100;
-    const y = ((clientY - rect.top) / rect.height) * 100;
+    // Position im Rahmen (%)
+    const cx = ((clientX - rect.left) / rect.width) * 100;
+    const cy = ((clientY - rect.top) / rect.height) * 100;
+    // In Bild-Koordinaten umrechnen
+    const ix = imgBox.width > 0 ? ((cx - imgBox.left) / imgBox.width) * 100 : 0;
+    const iy = imgBox.height > 0 ? ((cy - imgBox.top) / imgBox.height) * 100 : 0;
     return {
-      x: Math.max(0, Math.min(100, x)),
-      y: Math.max(0, Math.min(100, y)),
+      x: Math.max(0, Math.min(100, ix)),
+      y: Math.max(0, Math.min(100, iy)),
     };
   }
 
@@ -118,6 +166,7 @@ export default function PrintAreaEditor({
         >
           {firstImage ? (
             <img
+              ref={imgRef}
               src={firstImage}
               alt="Produkt"
               draggable={false}
@@ -129,15 +178,16 @@ export default function PrintAreaEditor({
             </div>
           )}
 
-          {/* Çizilen baskı alanı */}
+          {/* Çizilen baskı alanı — box BILD-relativ gespeichert,
+              zur Anzeige zurück in Rahmen-Koordinaten umrechnen */}
           {box && (
             <div
               style={{
                 position: "absolute",
-                left: `${box.left}%`,
-                top: `${box.top}%`,
-                width: `${box.right - box.left}%`,
-                height: `${box.bottom - box.top}%`,
+                left: `${imgBox.left + (box.left / 100) * imgBox.width}%`,
+                top: `${imgBox.top + (box.top / 100) * imgBox.height}%`,
+                width: `${((box.right - box.left) / 100) * imgBox.width}%`,
+                height: `${((box.bottom - box.top) / 100) * imgBox.height}%`,
                 border: "2px dashed #004537",
                 background: "rgba(0, 69, 55, 0.12)",
                 pointerEvents: "none",
