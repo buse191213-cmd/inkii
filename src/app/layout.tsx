@@ -8,6 +8,7 @@ import JsonLd from "@/components/JsonLd";
 import CookieBanner from "@/components/CookieBanner";
 import WhatsAppButton from "@/components/WhatsAppButton";
 import GlobalBrandSwitcher from "@/components/GlobalBrandSwitcher";
+import ServiceWorkerRegistration from "@/components/ServiceWorkerRegistration";
 import { COMPANY } from "@/lib/company";
 import "./globals.css";
 
@@ -71,8 +72,20 @@ export const metadata: Metadata = {
     description: "Textildruck, Teamwear und Werbemittel aus einer Hand.",
     images: ["/og-default.png"],
   },
+  // PWA: manifest + Icons (Startbildschirm / App-Installation)
+  manifest: "/manifest.json",
   icons: {
-    icon: "/icon.svg",
+    icon: [
+      { url: "/icon.svg", type: "image/svg+xml" },
+      { url: "/icon-192.png", sizes: "192x192", type: "image/png" },
+      { url: "/icon-512.png", sizes: "512x512", type: "image/png" },
+    ],
+    apple: [{ url: "/apple-touch-icon.png", sizes: "180x180" }],
+  },
+  appleWebApp: {
+    capable: true,
+    statusBarStyle: "default",
+    title: "INKII Works",
   },
 };
 
@@ -80,7 +93,7 @@ export const viewport = {
   width: "device-width",
   initialScale: 1,
   maximumScale: 5,
-  themeColor: "#1c2722",
+  themeColor: "#004537",
 };
 
 export default async function RootLayout({
@@ -107,6 +120,7 @@ export default async function RootLayout({
         <WhatsAppButton phone={COMPANY.phone} message={waMsg} label={waLabel} />
         <JsonLd data={organizationSchema()} />
         <JsonLd data={localBusinessSchema()} />
+        <ServiceWorkerRegistration />
       </body>
     </html>
   );
