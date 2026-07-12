@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { usePathname } from "next/navigation";
 
 /**
  * Schwebender WhatsApp-Button unten rechts.
@@ -17,14 +18,15 @@ export default function WhatsAppButton({
   label: string;
 }) {
   const [mounted, setMounted] = useState(false);
+  const pathname = usePathname();
 
   useEffect(() => {
     const t = setTimeout(() => setMounted(true), 800);
     return () => clearTimeout(t);
   }, []);
 
-  // Auf Admin-Seiten nicht anzeigen
-  if (typeof window !== "undefined" && window.location.pathname.startsWith("/admin")) {
+  // Auf Admin- und Login-Seiten nicht anzeigen
+  if (pathname?.startsWith("/admin") || pathname?.startsWith("/login")) {
     return null;
   }
 

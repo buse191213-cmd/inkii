@@ -21,7 +21,9 @@ export default function DeleteCustomerButton({
     startTransition(async () => {
       const res = await deleteCustomer(customerId);
       if (res.ok) {
+        // Liste sayfasını yeniden yükle (silinen kaydın detayına gitmeyi önler)
         router.refresh();
+        setConfirming(false);
       } else {
         alert(res.error || "Löschen fehlgeschlagen.");
         setConfirming(false);
