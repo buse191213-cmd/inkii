@@ -12,15 +12,16 @@ function euro(c: number): string {
   return (c / 100).toLocaleString("de-DE", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
 }
 
-const FREE_FROM = 10000; // 100€
-const SHIPPING_COST = 599; // 5.99€
-
 type Props = {
   t: Dictionary["cart"];
   tSteps: Dictionary["checkout"]["steps"];
+  shipping: {
+    standardCostCents: number;
+    freeShippingFromCents: number;
+  };
 };
 
-export default function WarenkorbClient({ t, tSteps }: Props) {
+export default function WarenkorbClient({ t, tSteps, shipping }: Props) {
   const { items, subtotalCents, updateQuantity, removeItem, clearCart, isLoaded } = useCart();
   const [lightbox, setLightbox] = useState<{ url: string; label: string } | null>(null);
 
@@ -32,7 +33,9 @@ export default function WarenkorbClient({ t, tSteps }: Props) {
     );
   }
 
-  const shippingCents = subtotalCents >= FREE_FROM ? 0 : SHIPPING_COST;
+  // Versandkosten aus Admin-Einstellungen (identisch zur Kasse)
+  const FREE_FROM = shipping.freeShippingFromCents;
+  const shippingCents = subtotalCents >= FREE_FROM ? 0 : shipping.standardCostCents;
   // Fiyatlar KDV DAHİL — total = subtotal + shipping (KDV zaten içinde)
   const totalCents = subtotalCents + shippingCents;
   // KDV içerden hesaplanır (brutto / 1.19 * 0.19)
