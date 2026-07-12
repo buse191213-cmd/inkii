@@ -4582,7 +4582,7 @@ body:has(.hero-full) header.site .brand-other img{filter:none;height:52px}
   /* Breite begrenzen (nicht max-height!) — so bleibt der Rahmen quadratisch
      und der Druckbereich sitzt korrekt. */
   .mm-detail-gallery .gallery {
-    max-width: 560px !important;
+    max-width: 720px !important;
   }
   /* WICHTIG — Druckbereich-Genauigkeit:
      Der Admin-Editor zeichnet in einen QUADRATISCHEN Rahmen (300x300)
