@@ -1,4 +1,4 @@
-import { getCurrentCustomerId } from "@/lib/customer-auth";
+import { getCurrentCustomer } from "@/lib/customer-auth";
 import { redirect } from "next/navigation";
 import { getHomeImage } from "@/lib/home-images";
 import LoginClient from "./LoginClient";
@@ -13,8 +13,12 @@ export default async function LoginPage({
 }: {
   searchParams: Promise<{ next?: string }>;
 }) {
-  const id = await getCurrentCustomerId();
-  if (id) {
+  // WICHTIG: getCurrentCustomer (DB-Check), nicht nur die Cookie-ID.
+  // Sonst Redirect-Loop, wenn das Cookie auf einen gelöschten Kunden zeigt:
+  // /login sähe eine ID und leitet zu /konto, /konto findet keinen Kunden
+  // und leitet zurück zu /login.
+  const customer = await getCurrentCustomer();
+  if (customer) {
     const params = await searchParams;
     redirect(params.next || "/konto");
   }
