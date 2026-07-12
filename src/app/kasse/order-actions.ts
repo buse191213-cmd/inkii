@@ -188,6 +188,22 @@ export async function createOrder(
     // ohne Normalisierung schlägt findUnique fehl und create wirft Unique-Fehler)
     const normalizedEmail = c.email.trim().toLowerCase();
 
+    // GÜVENLİK: Kayıtlı hesabı (şifresi) olan biri oturum açmadan sipariş veremez.
+    // Bu kontrol EN BAŞTA — hem yeni kayıt hem güncelleme yolunu kapsar.
+    if (!loggedInCustomerId) {
+      const existingAccount = await db.customer.findUnique({
+        where: { email: normalizedEmail },
+        select: { password: true },
+      });
+      const hasPassword = !!existingAccount?.password && existingAccount.password.trim().length > 0;
+      if (hasPassword) {
+        return {
+          ok: false,
+          error: "Für diese E-Mail existiert bereits ein Konto. Bitte melden Sie sich an, um fortzufahren.",
+        };
+      }
+    }
+
     // 1) Customer'ı bul veya oluştur
     let customer = loggedInCustomerId
       ? await db.customer.findUnique({ where: { id: loggedInCustomerId } })
@@ -227,14 +243,6 @@ export async function createOrder(
         }
       }
     } else {
-      // Registriertes Konto (mit Passwort) → Gast-Checkout nicht erlaubt.
-      // Nur wenn nicht eingeloggt: zum Login auffordern.
-      if (!loggedInCustomerId && customer.password) {
-        return {
-          ok: false,
-          error: "Für diese E-Mail existiert bereits ein Konto. Bitte melden Sie sich an, um fortzufahren.",
-        };
-      }
       // Update existing customer data
       customer = await db.customer.update({
         where: { id: customer.id },
