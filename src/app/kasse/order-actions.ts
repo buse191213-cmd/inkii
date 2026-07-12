@@ -184,33 +184,57 @@ export async function createOrder(
     // 0) Login durumu — varsa müşteriye direkt bağla
     const loggedInCustomerId = await getCurrentCustomerId();
 
+    // E-Mail normalisieren (Registrierung speichert lowercase/trimmed —
+    // ohne Normalisierung schlägt findUnique fehl und create wirft Unique-Fehler)
+    const normalizedEmail = c.email.trim().toLowerCase();
+
     // 1) Customer'ı bul veya oluştur
     let customer = loggedInCustomerId
       ? await db.customer.findUnique({ where: { id: loggedInCustomerId } })
-      : await db.customer.findUnique({ where: { email: c.email } });
+      : await db.customer.findUnique({ where: { email: normalizedEmail } });
     if (!customer) {
-      customer = await db.customer.create({
-        data: {
-          email: c.email,
-          salutation: c.salutation,
-          firstName: c.firstName,
-          lastName: c.lastName,
-          phone: c.phone,
-          firmname: c.firmname,
-          ustId: c.ustId,
-          billingStreet: c.billingStreet,
-          billingZip: c.billingZip,
-          billingCity: c.billingCity,
-          billingCountry: c.billingCountry,
-          shippingDiffers: c.shippingDiffers,
-          shippingStreet: c.shippingStreet,
-          shippingZip: c.shippingZip,
-          shippingCity: c.shippingCity,
-          shippingCountry: c.shippingCountry,
-          isGuest: true,
-        },
-      });
+      try {
+        customer = await db.customer.create({
+          data: {
+            email: normalizedEmail,
+            salutation: c.salutation,
+            firstName: c.firstName,
+            lastName: c.lastName,
+            phone: c.phone,
+            firmname: c.firmname,
+            ustId: c.ustId,
+            billingStreet: c.billingStreet,
+            billingZip: c.billingZip,
+            billingCity: c.billingCity,
+            billingCountry: c.billingCountry,
+            shippingDiffers: c.shippingDiffers,
+            shippingStreet: c.shippingStreet,
+            shippingZip: c.shippingZip,
+            shippingCity: c.shippingCity,
+            shippingCountry: c.shippingCountry,
+            isGuest: true,
+          },
+        });
+      } catch (createErr) {
+        // Race condition / bereits vorhanden → nochmal laden statt Fehler werfen
+        customer = await db.customer.findUnique({ where: { email: normalizedEmail } });
+        if (!customer) {
+          console.error("[createOrder] customer create failed", createErr);
+          return {
+            ok: false,
+            error: "Mit dieser E-Mail existiert bereits ein Konto. Bitte melden Sie sich an oder verwenden Sie eine andere E-Mail-Adresse.",
+          };
+        }
+      }
     } else {
+      // Registriertes Konto (mit Passwort) → Gast-Checkout nicht erlaubt.
+      // Nur wenn nicht eingeloggt: zum Login auffordern.
+      if (!loggedInCustomerId && customer.password) {
+        return {
+          ok: false,
+          error: "Für diese E-Mail existiert bereits ein Konto. Bitte melden Sie sich an, um fortzufahren.",
+        };
+      }
       // Update existing customer data
       customer = await db.customer.update({
         where: { id: customer.id },

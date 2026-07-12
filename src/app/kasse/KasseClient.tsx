@@ -700,8 +700,27 @@ export default function KasseClient({ paymentMethods, shipping, prefill, isLogge
           </div>
 
           {generalError && (
-            <div style={{ marginTop: 16, padding: 12, background: "#fee2e2", color: "#991b1b", fontSize: 13 }}>
+            <div style={{ marginTop: 16, padding: 12, background: "#fee2e2", color: "#991b1b", fontSize: 13, borderRadius: 7 }}>
               {generalError}
+              {generalError.includes("Konto") && (
+                <div style={{ marginTop: 8 }}>
+                  <a
+                    href={`/login?next=/kasse${email ? `&email=${encodeURIComponent(email)}` : ""}`}
+                    style={{
+                      display: "inline-block",
+                      background: "#991b1b",
+                      color: "#fff",
+                      padding: "7px 14px",
+                      borderRadius: 6,
+                      fontWeight: 700,
+                      fontSize: 12,
+                      textDecoration: "none",
+                    }}
+                  >
+                    Jetzt anmelden →
+                  </a>
+                </div>
+              )}
             </div>
           )}
 
