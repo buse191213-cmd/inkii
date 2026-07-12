@@ -126,7 +126,7 @@ export default function PrintAreaEditor({
           onMouseLeave={handleMouseUp}
           style={{
             width: 320,
-            aspectRatio: "4 / 3",
+            aspectRatio: "5 / 4",
             background: "#f4f5f3",
             border: "1px solid #e5e7eb",
             position: "relative",
