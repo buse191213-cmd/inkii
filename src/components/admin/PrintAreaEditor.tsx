@@ -31,6 +31,26 @@ export default function PrintAreaEditor({
   const containerRef = useRef<HTMLDivElement>(null);
   const drawStart = useRef<{ x: number; y: number } | null>(null);
   const [drawing, setDrawing] = useState(false);
+  /**
+   * Rahmen übernimmt das Seitenverhältnis des Bildes — genau wie die
+   * Shop-Galerie. Dadurch füllt das Bild den Rahmen komplett aus (kein
+   * Leerraum durch contain) und die gezeichneten Prozentwerte liegen im
+   * Shop exakt an derselben Stelle — auf Desktop wie auf dem Handy.
+   */
+  const [imgAspect, setImgAspect] = useState<number | null>(null);
+
+  useEffect(() => {
+    if (!firstImage) { setImgAspect(null); return; }
+    let cancelled = false;
+    const im = new window.Image();
+    im.onload = () => {
+      if (!cancelled && im.naturalWidth && im.naturalHeight) {
+        setImgAspect(im.naturalWidth / im.naturalHeight);
+      }
+    };
+    im.src = firstImage;
+    return () => { cancelled = true; };
+  }, [firstImage]);
 
   useEffect(() => {
     if (initial) {
@@ -106,7 +126,7 @@ export default function PrintAreaEditor({
           onMouseLeave={handleMouseUp}
           style={{
             width: 300,
-            height: 300,
+            aspectRatio: imgAspect ? String(imgAspect) : "1 / 1",
             background: "#f4f5f3",
             border: "1px solid #e5e7eb",
             position: "relative",

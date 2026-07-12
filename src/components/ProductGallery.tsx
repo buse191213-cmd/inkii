@@ -342,6 +342,10 @@ export default function ProductGallery({
   });
 
   const canvasRef = useRef<HTMLDivElement>(null);
+  // Ürün görselinin doğal oranı — kutu bu oranı alır, böylece görsel
+  // ne kesilir ne küçülür (tam sığar). Admin-Editor kullanır aynı mantığı,
+  // bu yüzden çizilen baskı alanı koordinatları birebir tutar.
+  const [productAspect, setProductAspect] = useState<number | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const dragRef = useRef<{ x: number; y: number; startVal: number; startVal2: number; mode: "move" | "resize" | null }>({ x: 0, y: 0, startVal: 0, startVal2: 0, mode: null });
   const [atBoundary, setAtBoundary] = useState(false);
@@ -456,6 +460,23 @@ export default function ProductGallery({
   useEffect(() => {
     if (side === "back" && !hasBack) setSide("front");
   }, [side, hasBack]);
+
+  // Aktif ürün görselinin doğal oranını ölç (kutu bu oranı alacak)
+  useEffect(() => {
+    if (!activeImage) {
+      setProductAspect(null);
+      return;
+    }
+    let cancelled = false;
+    const im = new window.Image();
+    im.onload = () => {
+      if (!cancelled && im.naturalWidth && im.naturalHeight) {
+        setProductAspect(im.naturalWidth / im.naturalHeight);
+      }
+    };
+    im.src = activeImage;
+    return () => { cancelled = true; };
+  }, [activeImage]);
 
   // Galeri side değişince sekmelere bildir (senkron için)
   useEffect(() => {
@@ -723,6 +744,7 @@ export default function ProductGallery({
       <div
         className="gallery-main"
         ref={canvasRef}
+        style={productAspect ? { aspectRatio: String(productAspect) } : undefined}
         onPointerMove={handlePointerMove}
         onPointerUp={handlePointerUp}
         onPointerCancel={handlePointerUp}
