@@ -348,8 +348,12 @@ export default function ProductGallery({
   // Gerçek görsel kutusu (object-fit:contain nedeniyle konteynırdan küçük olabilir).
   // Print area görselin ÜSTÜNDE olmalı, konteynıra göre değil — yoksa
   // farklı ekran oranlarında (mobil/web) alan kayar.
-  const [imgBox, setImgBox] = useState<{ left: number; top: number; width: number; height: number }>({
+  const [imgBox, setImgBox] = useState<{
+    left: number; top: number; width: number; height: number;   // % (konteynıra göre)
+    pxLeft: number; pxTop: number; pxWidth: number; pxHeight: number; // piksel
+  }>({
     left: 0, top: 0, width: 100, height: 100,
+    pxLeft: 0, pxTop: 0, pxWidth: 0, pxHeight: 0,
   });
   const fileInputRef = useRef<HTMLInputElement>(null);
   const dragRef = useRef<{ x: number; y: number; startVal: number; startVal2: number; mode: "move" | "resize" | null }>({ x: 0, y: 0, startVal: 0, startVal2: 0, mode: null });
@@ -510,6 +514,10 @@ export default function ProductGallery({
         top: (y / ch) * 100,
         width: (w / cw) * 100,
         height: (h / ch) * 100,
+        pxLeft: x,
+        pxTop: y,
+        pxWidth: w,
+        pxHeight: h,
       });
     }
 
@@ -600,11 +608,9 @@ export default function ProductGallery({
       const start = dragRef.current;
       if (!start.mode || !currentDesign || !canvasRef.current) return;
 
-      const canvas = canvasRef.current.getBoundingClientRect();
-      // Koordinatlar GÖRSELE göre (imgBox), konteynıra göre değil.
-      // Sürükleme farkını da görselin gerçek boyutuna oranla → mobil/web tutarlı.
-      const imgW = (canvas.width * imgBox.width) / 100;
-      const imgH = (canvas.height * imgBox.height) / 100;
+      // Koordinatlar GÖRSELE göre (imgBox px), konteynıra göre değil.
+      const imgW = imgBox.pxWidth;
+      const imgH = imgBox.pxHeight;
       if (!imgW || !imgH) return;
       const dx = ((e.clientX - start.x) / imgW) * 100;
       const dy = ((e.clientY - start.y) / imgH) * 100;
@@ -819,10 +825,12 @@ export default function ProductGallery({
           <div
             className={`gal-print-area${currentDesign ? " has-design" : ""}${atBoundary ? " at-boundary" : ""}${isDragging ? " is-dragging" : ""}`}
             style={{
-              left: `${imgBox.left + (printArea.left / 100) * imgBox.width}%`,
-              top: `${imgBox.top + (printArea.top / 100) * imgBox.height}%`,
-              width: `${((printArea.right - printArea.left) / 100) * imgBox.width}%`,
-              height: `${((printArea.bottom - printArea.top) / 100) * imgBox.height}%`,
+              // Piksel ile konumlandır — % kullanılırsa konteynır oranı
+              // (mobilde 4:5, webde 1:1) kutuyu bozar/uzatır.
+              left: `${imgBox.pxLeft + (printArea.left / 100) * imgBox.pxWidth}px`,
+              top: `${imgBox.pxTop + (printArea.top / 100) * imgBox.pxHeight}px`,
+              width: `${((printArea.right - printArea.left) / 100) * imgBox.pxWidth}px`,
+              height: `${((printArea.bottom - printArea.top) / 100) * imgBox.pxHeight}px`,
             }}
             aria-hidden
           >
@@ -836,10 +844,10 @@ export default function ProductGallery({
           <div
             className={`gal-design-layer${isDragging ? " is-dragging" : ""}`}
             style={{
-              // Design koordinatları da GÖRSELE göre — imgBox'a map edilir
-              left: `${imgBox.left + (currentDesign.x / 100) * imgBox.width}%`,
-              top: `${imgBox.top + (currentDesign.y / 100) * imgBox.height}%`,
-              width: `${(currentDesign.width / 100) * imgBox.width}%`,
+              // Piksel ile — konteynır oranından bağımsız, her ekranda aynı
+              left: `${imgBox.pxLeft + (currentDesign.x / 100) * imgBox.pxWidth}px`,
+              top: `${imgBox.pxTop + (currentDesign.y / 100) * imgBox.pxHeight}px`,
+              width: `${(currentDesign.width / 100) * imgBox.pxWidth}px`,
               transform: `translate(-50%, -50%) rotate(${currentDesign.rotation}deg)`,
             }}
             onPointerDown={(e) => handlePointerDown(e, "move")}
