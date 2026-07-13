@@ -477,8 +477,17 @@ export default function WarenkorbClient({ t, tSteps, shipping }: Props) {
                   </Link>
 
                   {hasQuoteOnly && (
-                    <p style={{ fontSize: 11, color: "#92400e", marginTop: 10, padding: 8, background: "#fef3c7", lineHeight: 1.4 }}>
-                      ℹ️ {t.quoteOnlyInfo}
+                    <p style={{
+                      fontSize: 11,
+                      color: "#6b7671",
+                      marginTop: 10,
+                      padding: "10px 12px",
+                      background: "#fafbf9",
+                      borderLeft: "2px solid #004537",
+                      borderRadius: 7,
+                      lineHeight: 1.5,
+                    }}>
+                      {t.quoteOnlyInfo}
                     </p>
                   )}
                 </>
