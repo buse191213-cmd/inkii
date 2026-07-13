@@ -363,9 +363,11 @@ export default function CartDrawer({ open, onClose }: Props) {
                         </button>
                       </div>
 
-                      {/* Fiyat detayı */}
+                      {/* Fiyat detayı — „Preis auf Anfrage" hängt NUR am Produktpreis.
+                          (unitPriceCents + dtfPriceCents) wäre falsch: ohne Produktpreis,
+                          aber mit DTF (z. B. 8 €) würde fälschlich ein Preis erscheinen. */}
                       <div style={{ textAlign: "right" }}>
-                        {lineUnitCents > 0 ? (
+                        {item.unitPriceCents > 0 ? (
                           <>
                             <div style={{ fontSize: 14, fontWeight: 700, color: "#1f2937" }}>
                               {euro(lineTotalCents)} €
@@ -396,12 +398,27 @@ export default function CartDrawer({ open, onClose }: Props) {
                 flexShrink: 0,
               }}
             >
-              {subtotalCents > 0 && (
-                <div style={{ display: "flex", justifyContent: "space-between", marginBottom: 10, fontSize: 14 }}>
-                  <span>{t.zwischensumme}</span>
-                  <span style={{ fontWeight: 700 }}>{euro(subtotalCents)} €</span>
-                </div>
-              )}
+              {(() => {
+                // Artikel ohne Produktpreis → Zwischensumme wäre irreführend
+                // (sie enthielte nur DTF/Versand). Stattdessen Hinweis.
+                const quoteOnly = items.some((i) => !i.unitPriceCents || i.unitPriceCents <= 0);
+                if (quoteOnly) {
+                  return (
+                    <div style={{ fontSize: 12, color: "#6b7671", marginBottom: 10, lineHeight: 1.5 }}>
+                      Preis auf Anfrage — wir erstellen Ihnen ein individuelles Angebot.
+                    </div>
+                  );
+                }
+                if (subtotalCents > 0) {
+                  return (
+                    <div style={{ display: "flex", justifyContent: "space-between", marginBottom: 10, fontSize: 14 }}>
+                      <span>{t.zwischensumme}</span>
+                      <span style={{ fontWeight: 700 }}>{euro(subtotalCents)} €</span>
+                    </div>
+                  );
+                }
+                return null;
+              })()}
               <p style={{ fontSize: 11, color: "#64748b", margin: "0 0 14px", lineHeight: 1.4 }}>
                 {t.drawerCheckoutHint}
               </p>
