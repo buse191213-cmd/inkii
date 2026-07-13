@@ -362,15 +362,21 @@ export default async function ProductDetailPage({
               rel="noopener noreferrer"
               className="mm-trust-item mm-trust-link"
             >
+              {/* Offizielles Trustpilot-Logo: grüner Stern + Wortmarke */}
+              <div className="mm-trust-tp-logo" aria-label="Trustpilot">
+                <svg width="17" height="17" viewBox="0 0 24 24" fill="#00b67a" aria-hidden>
+                  <path d="M12 1.5l2.95 6.4 7.05.82-5.2 4.78 1.42 6.9L12 16.98l-6.22 3.42 1.42-6.9L2 8.72l7.05-.82z" />
+                </svg>
+                <span className="mm-trust-tp-word">Trustpilot</span>
+              </div>
               <div className="mm-trust-stars" aria-hidden>
                 {[0, 1, 2, 3, 4].map((i) => (
-                  <svg key={i} width="13" height="13" viewBox="0 0 24 24" fill="currentColor">
+                  <svg key={i} width="12" height="12" viewBox="0 0 24 24" fill="currentColor">
                     <path d="M12 2l2.9 6.3 6.9.8-5.1 4.7 1.4 6.8L12 17.3 5.9 20.6l1.4-6.8L2.2 9.1l6.9-.8z" />
                   </svg>
                 ))}
               </div>
-              <div className="mm-trust-title">Ausgezeichnet</div>
-              <div className="mm-trust-text">Bewertungen auf Trustpilot</div>
+              <div className="mm-trust-text">Bewerten Sie uns auf Trustpilot</div>
             </a>
 
             <div className="mm-trust-item">

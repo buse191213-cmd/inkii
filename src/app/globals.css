@@ -5081,7 +5081,11 @@ body:has(.hero-full) header.site .brand-other img{filter:none;height:52px}
 .mm-trust-link{transition:opacity .18s}
 .mm-trust-link:hover{opacity:.72}
 .mm-trust-icon{color:#004537;margin-bottom:2px}
-.mm-trust-stars{display:flex;gap:1px;color:#00b67a;margin-bottom:2px}
+/* Trustpilot-Wortmarke + Stern (offizielle Farbe #00b67a) */
+.mm-trust-tp-logo{display:flex;align-items:center;gap:5px;margin-bottom:6px}
+.mm-trust-tp-word{font-family:var(--display);font-size:.92rem;font-weight:700;
+  color:#0f1a16;letter-spacing:-.02em}
+.mm-trust-stars{display:flex;gap:1px;color:#00b67a;margin-bottom:4px}
 .mm-trust-title{font-family:var(--display);font-size:.86rem;font-weight:600;
   color:#0f1a16;letter-spacing:-.01em}
 .mm-trust-text{font-size:.76rem;color:#8a938d;line-height:1.5}
