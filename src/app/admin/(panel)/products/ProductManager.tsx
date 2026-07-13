@@ -31,6 +31,8 @@ export type AdminProduct = {
   status: string;
   isNew: boolean;
   isEco: boolean;
+  isBestseller?: boolean;
+  deliveryDays?: number;
   colors: string;
   material: string;
   images: string;
@@ -55,7 +57,7 @@ const MAX_IMAGES = 15;
 const EMPTY: AdminProduct = {
   id: "", code: "INKI-", name: "", subtitle: "", description: "", icon: "box",
   priceCents: null, priceTiers: "[]", sizes: "[]", stock: 0, minOrderQty: 1, recommendedIds: "", status: "active",
-  isNew: false, isEco: false,
+  isNew: false, isEco: false, isBestseller: false, deliveryDays: 0,
   colors: "", material: "", images: "", colorImages: "{}", careSymbols: "", displayOrder: 0, cardFit: "cover", cardCrop: "", visiblePages: [], categoryId: "", categoryName: "",
 };
 
@@ -1289,6 +1291,28 @@ export default function ProductManager({
                   <label>
                     <input type="checkbox" name="isEco" defaultChecked={modal.isEco} /> Öko-Artikel
                   </label>
+                  <label>
+                    <input
+                      type="checkbox"
+                      name="isBestseller"
+                      defaultChecked={(modal as { isBestseller?: boolean }).isBestseller ?? false}
+                    />{" "}
+                    Meistverkauft
+                  </label>
+                </div>
+                <div className="field">
+                  <label>Lieferzeit (Tage)</label>
+                  <input
+                    type="number"
+                    name="deliveryDays"
+                    min={0}
+                    max={365}
+                    defaultValue={(modal as { deliveryDays?: number }).deliveryDays ?? 0}
+                    placeholder="z. B. 15 — 0 = kein Badge"
+                  />
+                  <p style={{ fontSize: 12, color: "#64748b", marginTop: 4 }}>
+                    Zeigt ein Badge „15 TAGE" auf der Produktkarte. 0 = ausblenden.
+                  </p>
                 </div>
               </div>
               <div className="modal-foot">

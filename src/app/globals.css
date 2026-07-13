@@ -1601,6 +1601,10 @@ body:has(.home-services) footer.site{margin-top:0}
 .mm-tag.tag-new{border-color:#c9a155;color:#7a5a1e}
 .mm-tag.tag-stock{color:var(--muted)}
 .mm-tag.tag-eco{border-color:var(--leaf);color:var(--leaf-deep)}
+/* Meistverkauft — auffällig, aber nicht schreiend */
+.mm-tag.tag-best{border-color:#004537;background:#004537;color:#fff;font-weight:700}
+/* Lieferzeit in Tagen */
+.mm-tag.tag-days{border-color:#cbd5e1;color:#475569;background:#f8fafc}
 .mm-card-link{display:flex;flex-direction:column;text-decoration:none;color:inherit;
   flex:1}
 .mm-card-img{position:relative;background:#f4f5f3;aspect-ratio:1/1;

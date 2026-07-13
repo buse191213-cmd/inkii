@@ -162,6 +162,14 @@ export default async function ProductDetailPage({
             <div className="mm-detail-gallery">
               <div className="mm-detail-tags">
                 {product.isNew && <span className="mm-tag tag-new">NEU</span>}
+                {(product as { isBestseller?: boolean }).isBestseller && (
+                  <span className="mm-tag tag-best">★ MEISTVERKAUFT</span>
+                )}
+                {((product as { deliveryDays?: number }).deliveryDays ?? 0) > 0 && (
+                  <span className="mm-tag tag-days">
+                    {(product as { deliveryDays?: number }).deliveryDays} TAGE
+                  </span>
+                )}
                 {product.stock > 0 && <span className="mm-tag tag-stock">AB LAGER</span>}
                 {product.isEco && <span className="mm-tag tag-eco">✦ NACHHALTIG</span>}
               </div>
@@ -393,6 +401,14 @@ export default async function ProductDetailPage({
                   <article key={r.id} className="mm-card">
                     <div className="mm-card-tags">
                       {r.isNew && <span className="mm-tag tag-new">NEU</span>}
+                      {(r as { isBestseller?: boolean }).isBestseller && (
+                        <span className="mm-tag tag-best">★ MEISTVERKAUFT</span>
+                      )}
+                      {((r as { deliveryDays?: number }).deliveryDays ?? 0) > 0 && (
+                        <span className="mm-tag tag-days">
+                          {(r as { deliveryDays?: number }).deliveryDays} TAGE
+                        </span>
+                      )}
                       {r.stock > 0 && <span className="mm-tag tag-stock">AB LAGER</span>}
                       {r.isEco && <span className="mm-tag tag-eco">✦ NACHHALTIG</span>}
                     </div>

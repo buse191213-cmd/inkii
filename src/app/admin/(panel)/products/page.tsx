@@ -33,6 +33,8 @@ export default async function ProductsPage() {
     status: p.status,
     isNew: p.isNew,
     isEco: p.isEco,
+    isBestseller: (p as { isBestseller?: boolean }).isBestseller ?? false,
+    deliveryDays: (p as { deliveryDays?: number }).deliveryDays ?? 0,
     colors: p.colors,
     material: p.material,
     images: p.images,

@@ -38,6 +38,8 @@ model Product {
   status      String   @default("active") // active | draft
   isNew       Boolean  @default(false)
   isEco       Boolean  @default(false)
+  isBestseller Boolean @default(false) // "Meistverkauft" Badge
+  deliveryDays Int     @default(0)     // z.B. 15 → Badge "15 Tage". 0 = kein Badge
   colors      String   @default("") // kommagetrennt, z. B. "blau,schwarz"
   material    String   @default("") // kommagetrennt, z. B. "metall,kunststoff"
   images      String   @default("") // kommagetrennte Bild-URLs (max. 15)

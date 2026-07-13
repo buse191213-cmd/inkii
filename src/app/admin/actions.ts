@@ -190,6 +190,8 @@ export async function saveProduct(formData: FormData): Promise<ActionResult> {
     status: String(formData.get("status") ?? "active"),
     isNew: formData.get("isNew") === "on",
     isEco: formData.get("isEco") === "on",
+    isBestseller: formData.get("isBestseller") === "on",
+    deliveryDays: Number(formData.get("deliveryDays") ?? 0) || 0,
     colors: String(formData.get("colors") ?? "")
       .split(",")
       .map((c) => {

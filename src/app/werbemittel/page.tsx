@@ -64,6 +64,8 @@ export default async function WerbemittelPage() {
     stock: p.stock,
     isNew: p.isNew,
     isEco: p.isEco,
+    isBestseller: (p as { isBestseller?: boolean }).isBestseller ?? false,
+    deliveryDays: (p as { deliveryDays?: number }).deliveryDays ?? 0,
     colors: p.colors ? String(p.colors).split(",").map((c: string) => c.trim()).filter(Boolean) : [],
     material: p.material ? String(p.material).split(",").map((m: string) => m.trim()).filter(Boolean) : [],
     categorySlug: p.category.slug,

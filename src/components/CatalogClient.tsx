@@ -6,7 +6,6 @@ import { useSearchParams } from "next/navigation";
 import { ProductIcon } from "@/lib/icons";
 import { formatPrice } from "@/lib/format";
 import { colorHex, colorLabel, materialLabel } from "@/lib/catalog-options";
-import { useMerkliste } from "./MerklisteProvider";
 import { SHOW_PRICES } from "@/lib/feature-flags";
 import type { Dictionary } from "@/dictionaries/types";
 
@@ -22,6 +21,8 @@ export type CatalogProduct = {
   stock: number;
   isNew: boolean;
   isEco: boolean;
+  isBestseller: boolean;
+  deliveryDays: number;
   colors: string[];
   material: string[];
   categorySlug: string;
@@ -82,7 +83,6 @@ export default function CatalogClient({
   const [minStock, setMinStock] = useState(0);
   const [sort, setSort] = useState<SortKey>("standard");
   const [open, setOpen] = useState(false);
-  const { has, toggle } = useMerkliste();
 
   const total = products.length;
 
@@ -255,13 +255,16 @@ export default function CatalogClient({
         <div className="mm-grid">
           {list.length === 0 && <div className="mm-empty">{t.empty}</div>}
           {list.map((p) => {
-            const merkt = has(p.id);
             const hasPrice = (p.lowestPriceCents ?? p.priceCents) != null;
             return (
               <article key={p.id} className="mm-card">
                 {/* Etiketten oben im weißen Bereich */}
                 <div className="mm-card-tags">
                   {p.isNew && <span className="mm-tag tag-new">NEU</span>}
+                  {p.isBestseller && <span className="mm-tag tag-best">★ MEISTVERKAUFT</span>}
+                  {p.deliveryDays > 0 && (
+                    <span className="mm-tag tag-days">{p.deliveryDays} TAGE</span>
+                  )}
                   {p.stock > 0 && <span className="mm-tag tag-stock">AB LAGER</span>}
                   {p.isEco && <span className="mm-tag tag-eco">✦ NACHHALTIG</span>}
                 </div>
@@ -330,22 +333,6 @@ export default function CatalogClient({
                     )}
                   </div>
                 </Link>
-
-                <button
-                  type="button"
-                  className={`mm-card-merk${merkt ? " is-merkt" : ""}`}
-                  onClick={() =>
-                    toggle({ id: p.id, code: p.code, name: p.name, image: p.images[0] ?? null })
-                  }
-                  aria-label={merkt ? c.gemerkt : c.merken}
-                  title={merkt ? "Aus Merkzettel entfernen" : "Zum Merkzettel hinzufügen"}
-                >
-                  <svg width="16" height="16" viewBox="0 0 24 24" fill={merkt ? "currentColor" : "none"} stroke="currentColor" strokeWidth="1.8" aria-hidden="true">
-                    <circle cx="9" cy="21" r="1"/>
-                    <circle cx="20" cy="21" r="1"/>
-                    <path d="M1 1h4l2.68 13.39a2 2 0 002 1.61h9.72a2 2 0 002-1.61L23 6H6" strokeLinecap="round" strokeLinejoin="round"/>
-                  </svg>
-                </button>
               </article>
             );
           })}
