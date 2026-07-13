@@ -896,14 +896,14 @@ export default function ProductGallery({
             </svg>
           </div>
           <div className="gal-contact-body">
-            <div className="gal-contact-title">Rückseiten-Druck gewünscht?</div>
+            <div className="gal-contact-title">Beidseitiger Druck</div>
             <div className="gal-contact-text">
-              Kein Problem — senden Sie uns eine Anfrage und wir erstellen Ihnen ein individuelles Angebot für den Rückseiten-Druck.
+              Für dieses Produkt erstellen wir Ihnen gerne ein individuelles Angebot mit Rückseiten-Druck — inklusive Vorschau.
             </div>
           </div>
           <div className="gal-contact-actions">
             <Link href="/kontakt" className="gal-contact-btn primary">
-              Anfrage senden →
+              Angebot anfordern
             </Link>
             <a
               href="mailto:info@inkiiworks.de?subject=Anfrage%20R%C3%BCckseiten-Druck&body=Hallo%20INKII%20Works%2C%0A%0Aich%20m%C3%B6chte%20die%20R%C3%BCckseite%20eines%20Produkts%20bedrucken%20lassen.%20Bitte%20senden%20Sie%20mir%20ein%20Angebot.%0A%0AProdukt%3A%20%0AMenge%3A%20%0A%0AVielen%20Dank%21"
@@ -1296,23 +1296,27 @@ export default function ProductGallery({
           transform: translateX(-50%) translateY(-1px);
           box-shadow: 0 6px 18px rgba(0,0,0,0.3);
         }
+        /* Premium-Hinweis: kein Warnkasten (Gelb wirkt billig),
+           sondern eine ruhige Einladung in Markenfarbe. */
         .gal-contact-cta {
           display: flex;
           align-items: center;
-          gap: 14px;
-          padding: 16px 18px;
-          margin-top: 12px;
-          background: linear-gradient(135deg, #fff8e6 0%, #fef3c7 100%);
-          border: 1px solid #fbbf24;
-          border-radius: 6px;
+          gap: 16px;
+          padding: 18px 20px;
+          margin-top: 14px;
+          background: #fafbf9;
+          border: 1px solid #e3e8e3;
+          border-left: 3px solid #004537;
+          border-radius: 7px;
           flex-wrap: wrap;
         }
         .gal-contact-icon {
-          width: 42px;
-          height: 42px;
-          background: #fbbf24;
-          color: #78350f;
-          border-radius: 50%;
+          width: 40px;
+          height: 40px;
+          background: #fff;
+          color: #004537;
+          border: 1px solid #d9e0d9;
+          border-radius: 7px;
           display: flex;
           align-items: center;
           justify-content: center;
@@ -1320,18 +1324,20 @@ export default function ProductGallery({
         }
         .gal-contact-body {
           flex: 1;
-          min-width: 200px;
+          min-width: 220px;
         }
         .gal-contact-title {
-          font-weight: 700;
-          font-size: 0.92rem;
-          color: #78350f;
-          margin-bottom: 4px;
+          font-family: var(--display);
+          font-weight: 600;
+          font-size: 1rem;
+          color: #0f1a16;
+          letter-spacing: -0.01em;
+          margin-bottom: 3px;
         }
         .gal-contact-text {
-          font-size: 0.78rem;
-          color: #92400e;
-          line-height: 1.4;
+          font-size: 0.82rem;
+          color: #6b7671;
+          line-height: 1.5;
         }
         .gal-contact-actions {
           display: flex;
@@ -1339,30 +1345,34 @@ export default function ProductGallery({
           flex-wrap: wrap;
         }
         .gal-contact-btn {
-          padding: 9px 16px;
+          padding: 10px 18px;
           font-size: 0.78rem;
-          font-weight: 700;
-          letter-spacing: 0.3px;
+          font-weight: 600;
+          letter-spacing: 0.2px;
           text-decoration: none;
-          border-radius: 4px;
-          transition: transform 0.15s;
+          border-radius: 7px;
+          transition: background 0.18s, color 0.18s, border-color 0.18s;
           display: inline-flex;
           align-items: center;
         }
-        .gal-contact-btn:hover { transform: translateY(-1px); }
         .gal-contact-btn.primary {
-          background: #0f1a16;
+          background: #004537;
           color: #fff;
-        }
-        .gal-contact-btn.mail {
-          background: #fff;
-          color: #004537;
           border: 1px solid #004537;
         }
-        .gal-contact-btn.wa {
-          background: #25d366;
-          color: #fff;
+        .gal-contact-btn.primary:hover { background: #00382c; }
+        .gal-contact-btn.mail {
+          background: #fff;
+          color: #0f1a16;
+          border: 1px solid #d9e0d9;
         }
+        .gal-contact-btn.mail:hover { border-color: #004537; color: #004537; }
+        .gal-contact-btn.wa {
+          background: #fff;
+          color: #0f1a16;
+          border: 1px solid #d9e0d9;
+        }
+        .gal-contact-btn.wa:hover { border-color: #25d366; color: #128c4a; }
         @media (max-width: 640px) {
           .gal-status-detail { margin-left: 0; width: 100%; }
           .gal-contact-cta { flex-direction: column; align-items: stretch; text-align: left; }
