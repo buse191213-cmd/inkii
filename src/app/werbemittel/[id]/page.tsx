@@ -362,13 +362,17 @@ export default async function ProductDetailPage({
               rel="noopener noreferrer"
               className="mm-trust-item mm-trust-link"
             >
-              {/* Offizielles Trustpilot-Logo: grüner Stern + Wortmarke */}
-              <div className="mm-trust-tp-logo" aria-label="Trustpilot">
-                <svg width="17" height="17" viewBox="0 0 24 24" fill="#00b67a" aria-hidden>
-                  <path d="M12 1.5l2.95 6.4 7.05.82-5.2 4.78 1.42 6.9L12 16.98l-6.22 3.42 1.42-6.9L2 8.72l7.05-.82z" />
-                </svg>
-                <span className="mm-trust-tp-word">Trustpilot</span>
-              </div>
+              {/* Offizielles Trustpilot-Logo (dunkle Variante — heller Hintergrund).
+                  brand-assets/4.3.0/logo-black.svg von Trustpilot. */}
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img
+                src="https://cdn.trustpilot.net/brand-assets/4.3.0/logo-black.svg"
+                alt="Trustpilot"
+                className="mm-trust-tp-logo-img"
+                width={110}
+                height={27}
+                loading="lazy"
+              />
               <div className="mm-trust-stars" aria-hidden>
                 {[0, 1, 2, 3, 4].map((i) => (
                   <svg key={i} width="12" height="12" viewBox="0 0 24 24" fill="currentColor">
