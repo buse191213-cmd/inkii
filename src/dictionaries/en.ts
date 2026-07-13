@@ -693,7 +693,7 @@ const en: Dictionary = {
   },
   detailForm: {
     title: "Choose color, quantity & design",
-    subtitle: "Size distribution is set in the cart.",
+    subtitle: "You can select the sizes in your cart.",
     color: "Color",
     colorTip: "Tip: Other colors? Choose one, add it, then switch color and add the next variant.",
     quantity: "Quantity",

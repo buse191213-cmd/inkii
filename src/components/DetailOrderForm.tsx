@@ -42,7 +42,7 @@ function findTier(tiers: PriceTier[], qty: number): PriceTier | null {
 // Fallback (Almanca) — prop gelmezse
 const DEFAULT_T: Dictionary["detailForm"] = {
   title: "Farbe, Menge & Design wählen",
-  subtitle: "Größenverteilung legen Sie im Warenkorb fest.",
+  subtitle: "Sie können die Größen in Ihrem Warenkorb auswählen.",
   color: "Farbe", colorTip: "", quantity: "{t.quantity}", sizesInCart: "Größen wählen Sie im Warenkorb",
   staffelpreise: "Staffelpreise", inklTransfer: "inkl. Transfer", current: "Aktuell", perStueck: "/ Stück",
   spart: "Spart", pricesInklTransfer: "Preise inkl. Transfer", choosePersonalization: "Personalisierungstechnik auswählen",
@@ -340,7 +340,10 @@ export default function DetailOrderForm({
               <span className="det-order-qty-hint">{t.sizesInCart}</span>
             )}
           </span>
-          <div className="det-order-qty-input">
+          <div
+            className="det-order-qty-input"
+            style={{ display: "flex", flexDirection: "row", alignItems: "center", gap: 10, width: "100%" }}
+          >
             <input
               type="number"
               inputMode="numeric"
@@ -349,8 +352,14 @@ export default function DetailOrderForm({
               value={qty["__default"] || ""}
               onChange={(e) => setSizeQty("__default", parseInt(e.target.value || "0", 10))}
               placeholder={minOrderQty > 1 ? `min. ${minOrderQty}` : "0"}
+              style={{ flex: "1 1 auto", minWidth: 0 }}
             />
-            <span className="det-order-qty-unit">Stück</span>
+            <span
+              className="det-order-qty-unit"
+              style={{ flexShrink: 0, whiteSpace: "nowrap" }}
+            >
+              Stück
+            </span>
           </div>
         </label>
       </div>

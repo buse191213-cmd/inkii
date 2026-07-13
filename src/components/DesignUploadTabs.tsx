@@ -70,7 +70,8 @@ export default function DesignUploadTabs() {
         </div>
         {totalCount > 0 && (
           <span className="dut-badge">
-            {totalCount} Design{totalCount > 1 ? "s" : ""} ✓
+            {totalCount} Design{totalCount > 1 ? "s" : ""}
+            <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" style={{ marginLeft: 4, verticalAlign: "-1px" }} aria-hidden="true"><path d="M20 6L9 17l-5-5"/></svg>
           </span>
         )}
       </header>
@@ -93,7 +94,23 @@ export default function DesignUploadTabs() {
         >
           Rückseite
           {designs.back && <span className="dut-navtab-dot" />}
-          {!hasBack && <span className="dut-navtab-lock">🔒</span>}
+          {!hasBack && (
+            <svg
+              className="dut-navtab-lock"
+              width="11"
+              height="11"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              aria-hidden="true"
+            >
+              <rect x="4" y="11" width="16" height="10" rx="2" />
+              <path d="M8 11V7a4 4 0 0 1 8 0v4" />
+            </svg>
+          )}
         </button>
       </div>
 
@@ -113,7 +130,7 @@ export default function DesignUploadTabs() {
               <span className="dut-loaded-label">
                 {active === "front" ? "Vorderseite" : "Rückseite"}
               </span>
-              <span className="dut-loaded-status">Hochgeladen ✓</span>
+              <span className="dut-loaded-status">Hochgeladen<svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" style={{ marginLeft: 4, verticalAlign: "-1px" }} aria-hidden="true"><path d="M20 6L9 17l-5-5"/></svg></span>
               <div className="dut-loaded-actions">
                 <button
                   type="button"
@@ -235,7 +252,7 @@ export default function DesignUploadTabs() {
           background: #5e8470;
           display: inline-block;
         }
-        .dut-navtab-lock { font-size: 0.8rem; }
+        .dut-navtab-lock { opacity: 0.55; flex-shrink: 0; }
         /* Panel */
         .dut-panel { min-height: 90px; }
         .dut-upload {

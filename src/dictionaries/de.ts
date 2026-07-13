@@ -693,7 +693,7 @@ const de: Dictionary = {
   },
   detailForm: {
     title: "Farbe, Menge & Design wählen",
-    subtitle: "Größenverteilung legen Sie im Warenkorb fest.",
+    subtitle: "Sie können die Größen in Ihrem Warenkorb auswählen.",
     color: "Farbe",
     colorTip: "Tipp: Andere Farben? Wählen Sie eine, fügen Sie sie hinzu, dann wechseln Sie die Farbe und fügen die nächste Variante hinzu.",
     quantity: "Menge",

@@ -693,7 +693,7 @@ const tr: Dictionary = {
   },
   detailForm: {
     title: "Renk, Miktar & Tasarım seçin",
-    subtitle: "Beden dağıtımını sepette yaparsınız.",
+    subtitle: "Bedenleri sepetinizde seçebilirsiniz.",
     color: "Renk",
     colorTip: "İpucu: Başka renkler? Birini seçip ekleyin, sonra rengi değiştirip bir sonraki varyantı ekleyin.",
     quantity: "Miktar",
