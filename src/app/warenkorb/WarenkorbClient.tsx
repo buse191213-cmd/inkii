@@ -384,8 +384,11 @@ export default function WarenkorbClient({ t, tSteps, shipping }: Props) {
             </p>
 
             {(() => {
-              // "Preis auf Anfrage" = HEM ürün fiyatı HEM dtf fiyatı 0 olan
-              const hasQuoteOnly = items.some((i) => (i.unitPriceCents + i.dtfPriceCents) === 0);
+              // "Preis auf Anfrage" = ÜRÜN fiyatı 0 olan.
+              // WICHTIG: DTF-Preis darf hier NICHT mitgerechnet werden — sonst
+              // wäre ein Artikel ohne Produktpreis (0 €) aber mit DTF (9 €)
+              // plötzlich "kaufbar" und der Kunde bekäme das Produkt gratis.
+              const hasQuoteOnly = items.some((i) => !i.unitPriceCents || i.unitPriceCents <= 0);
 
               // Beden dağıtımı eksik/hatalı olan ürün var mı?
               const sizeIssue = items.find((i) => {
