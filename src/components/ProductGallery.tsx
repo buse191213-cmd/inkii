@@ -320,6 +320,7 @@ export default function ProductGallery({
   iconName,
   printAreaType,
   customPrintArea,
+  galleryCrop,
 }: {
   images: string[];
   colorImages?: Record<string, string[]>;
@@ -329,12 +330,29 @@ export default function ProductGallery({
   cardCrop?: string;
   printAreaType?: string;
   customPrintArea?: string;
+  galleryCrop?: string;
 }) {
   // Ürün tipine göre aktif baskı alanı. Admin manuel çizdiyse (customPrintArea) onu kullan.
   const printArea = useMemo(
     () => parseCustomPrintArea(customPrintArea) ?? getPrintArea(printAreaType),
     [customPrintArea, printAreaType]
   );
+
+  // Admin'de ayarlanan galeri zoom/pan — ürün fotoğrafındaki beyaz boşluğu
+  // kırpar, ürün çerçeveyi doldurur.
+  const cropTransform = useMemo(() => {
+    if (!galleryCrop) return undefined;
+    try {
+      const c = JSON.parse(galleryCrop);
+      const zoom = Number(c.zoom) || 1;
+      const cx = Number(c.x) || 0;
+      const cy = Number(c.y) || 0;
+      if (zoom === 1 && cx === 0 && cy === 0) return undefined;
+      return `scale(${zoom}) translate(${cx}%, ${cy}%)`;
+    } catch {
+      return undefined;
+    }
+  }, [galleryCrop]);
 
   const [activeColor, setActiveColor] = useState<string | null>(colors?.[0] ?? null);
   const [side, setSide] = useState<Side>("front");
@@ -752,7 +770,12 @@ export default function ProductGallery({
       >
         {activeImage ? (
           /* eslint-disable-next-line @next/next/no-img-element */
-          <img src={activeImage} alt={`${name} — ${side === "front" ? "Vorderseite" : "Rückseite"}`} draggable={false} />
+          <img
+            src={activeImage}
+            alt={`${name} — ${side === "front" ? "Vorderseite" : "Rückseite"}`}
+            draggable={false}
+            style={cropTransform ? { transform: cropTransform, transformOrigin: "center" } : undefined}
+          />
         ) : (
           <div className="gallery-empty"><ProductIcon name={iconName} /></div>
         )}

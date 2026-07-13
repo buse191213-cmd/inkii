@@ -5,16 +5,21 @@ import { useState, useEffect } from "react";
 type CropValues = { zoom: number; x: number; y: number };
 
 /**
- * Vitrin görseli için interaktif kırpma editörü.
- * Zoom (1x-3x) + X/Y offset (-100% to 100%) slider'larıyla preview gösterir.
- * Form submit'e hidden input "cardCrop" JSON olarak gönderir.
+ * Interaktiver Zuschnitt-Editor (Zoom + Pan).
+ * Wird für zwei Felder genutzt:
+ *  - cardCrop     → Vitrin-/Katalogbild
+ *  - galleryCrop  → grosses Detail-Galeriebild (Designer)
  */
 export default function CropEditor({
   firstImage,
   initial,
+  fieldName = "cardCrop",
+  label,
 }: {
   firstImage?: string;
   initial: CropValues;
+  fieldName?: string;
+  label?: string;
 }) {
   const [zoom, setZoom] = useState(initial.zoom || 1);
   const [x, setX] = useState(initial.x || 0);
@@ -32,8 +37,10 @@ export default function CropEditor({
 
   return (
     <div>
-      <input type="hidden" name="cardCrop" value={cropJson} readOnly />
-
+      <input type="hidden" name={fieldName} value={cropJson} readOnly />
+      {label && (
+        <div style={{ fontSize: 12, color: "#64748b", marginBottom: 8 }}>{label}</div>
+      )}
       <div style={{ display: "flex", gap: 18, alignItems: "flex-start", flexWrap: "wrap" }}>
         {/* Preview (kare, catalog ile aynı oran) */}
         <div

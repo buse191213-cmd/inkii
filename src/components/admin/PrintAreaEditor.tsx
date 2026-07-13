@@ -21,9 +21,11 @@ type PrintAreaBox = {
 export default function PrintAreaEditor({
   firstImage,
   initial,
+  galleryCrop,
 }: {
   firstImage?: string;
   initial?: PrintAreaBox | null;
+  galleryCrop?: string;
 }) {
   const [box, setBox] = useState<PrintAreaBox | null>(initial ?? null);
   const [widthCm, setWidthCm] = useState(initial?.widthCm ?? 25);
@@ -141,7 +143,25 @@ export default function PrintAreaEditor({
               src={firstImage}
               alt="Produkt"
               draggable={false}
-              style={{ width: "100%", height: "100%", objectFit: "cover", pointerEvents: "none" }}
+              style={{
+                width: "100%",
+                height: "100%",
+                objectFit: "cover",
+                pointerEvents: "none",
+                // Galerie-Zoom auch hier anwenden — sonst zeichnet man auf einem
+                // anderen Bildausschnitt als der Kunde später sieht.
+                ...(() => {
+                  try {
+                    if (!galleryCrop) return {};
+                    const c = JSON.parse(galleryCrop);
+                    const z = Number(c.zoom) || 1;
+                    const cx = Number(c.x) || 0;
+                    const cy = Number(c.y) || 0;
+                    if (z === 1 && cx === 0 && cy === 0) return {};
+                    return { transform: `scale(${z}) translate(${cx}%, ${cy}%)`, transformOrigin: "center" };
+                  } catch { return {}; }
+                })(),
+              }}
             />
           ) : (
             <div style={{ display: "flex", alignItems: "center", justifyContent: "center", height: "100%", color: "#94a3b8", fontSize: 13 }}>

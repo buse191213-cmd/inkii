@@ -30,6 +30,7 @@ export default async function ProductsPage() {
     recommendedIds: (p as { recommendedIds?: string }).recommendedIds || "",
     printAreaType: (p as { printAreaType?: string }).printAreaType || "tshirt",
     customPrintArea: (p as { customPrintArea?: string }).customPrintArea || "",
+    galleryCrop: (p as { galleryCrop?: string }).galleryCrop || "",
     status: p.status,
     isNew: p.isNew,
     isEco: p.isEco,

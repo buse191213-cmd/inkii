@@ -174,6 +174,7 @@ export default async function ProductDetailPage({
                 cardCrop={(product as { cardCrop?: string }).cardCrop || ""}
                 printAreaType={effectivePrintAreaType}
                 customPrintArea={(product as { customPrintArea?: string }).customPrintArea || ""}
+                galleryCrop={(product as { galleryCrop?: string }).galleryCrop || ""}
               />
             </div>
 

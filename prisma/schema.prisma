@@ -46,6 +46,9 @@ model Product {
   displayOrder Int     @default(0) // Anzeige-Reihenfolge im Katalog (höher = oben)
   cardFit     String   @default("cover") // legacy
   cardCrop    String   @default("") // JSON: {"zoom":1.2,"x":0,"y":-15} — Zoom & Pan für Vitrin-Bild
+  // Zoom & Pan für das GROSSE Detail-Galeriebild (Designer).
+  // Damit füllt das Produkt den Rahmen aus, auch wenn das Foto viel Weißraum hat.
+  galleryCrop String   @default("") // JSON: {"zoom":1.15,"x":0,"y":0}
   visiblePages String  @default("[]")
   categoryId  String
   category    Category @relation(fields: [categoryId], references: [id])
