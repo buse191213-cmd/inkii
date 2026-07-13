@@ -9,6 +9,7 @@ import CookieBanner from "@/components/CookieBanner";
 import WhatsAppButton from "@/components/WhatsAppButton";
 import GlobalBrandSwitcher from "@/components/GlobalBrandSwitcher";
 import ServiceWorkerRegistration from "@/components/ServiceWorkerRegistration";
+import Script from "next/script";
 import { COMPANY } from "@/lib/company";
 import "./globals.css";
 
@@ -121,6 +122,15 @@ export default async function RootLayout({
         <JsonLd data={organizationSchema()} />
         <JsonLd data={localBusinessSchema()} />
         <ServiceWorkerRegistration />
+
+        {/* Trustpilot — Einladungs-Skript (Bewertungsanfragen nach Bestellung) */}
+        <Script id="trustpilot-invite" strategy="afterInteractive">
+          {`(function(w,d,s,r,n){w.TrustpilotObject=n;w[n]=w[n]||function(){(w[n].q=w[n].q||[]).push(arguments)};
+            var a=d.createElement(s);a.async=1;a.src=r;a.type='text/java'+s;
+            var f=d.getElementsByTagName(s)[0];f.parentNode.insertBefore(a,f)})
+            (window,document,'script','https://invitejs.trustpilot.com/tp.min.js','tp');
+            tp('register','JhPuZDfA4Bn3sXtx');`}
+        </Script>
       </body>
     </html>
   );

@@ -352,6 +352,58 @@ export default async function ProductDetailPage({
         </div>
       </section>
 
+      {/* Vertrauens-Leiste — Social Proof vor den Empfehlungen */}
+      <section className="mm-trust">
+        <div className="wrap-wide">
+          <div className="mm-trust-grid">
+            <a
+              href="https://de.trustpilot.com/review/inkiiworks.de"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="mm-trust-item mm-trust-link"
+            >
+              <div className="mm-trust-stars" aria-hidden>
+                {[0, 1, 2, 3, 4].map((i) => (
+                  <svg key={i} width="13" height="13" viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M12 2l2.9 6.3 6.9.8-5.1 4.7 1.4 6.8L12 17.3 5.9 20.6l1.4-6.8L2.2 9.1l6.9-.8z" />
+                  </svg>
+                ))}
+              </div>
+              <div className="mm-trust-title">Ausgezeichnet</div>
+              <div className="mm-trust-text">Bewertungen auf Trustpilot</div>
+            </a>
+
+            <div className="mm-trust-item">
+              <svg className="mm-trust-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+                <circle cx="12" cy="12" r="9" />
+                <path d="M3 12h18M12 3a15 15 0 0 1 0 18M12 3a15 15 0 0 0 0 18" />
+              </svg>
+              <div className="mm-trust-title">Weltweite Lieferung</div>
+              <div className="mm-trust-text">EU, UK und USA</div>
+            </div>
+
+            <div className="mm-trust-item">
+              <svg className="mm-trust-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+                <path d="M12 3l7 3v5c0 4.4-3 8.4-7 10-4-1.6-7-5.6-7-10V6z" />
+                <path d="M9 12l2 2 4-4" />
+              </svg>
+              <div className="mm-trust-title">Qualitätskontrolle</div>
+              <div className="mm-trust-text">Jede Bestellung wird vor der Produktion doppelt geprüft</div>
+            </div>
+
+            <div className="mm-trust-item">
+              <svg className="mm-trust-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+                <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" />
+                <circle cx="9" cy="7" r="4" />
+                <path d="M23 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75" />
+              </svg>
+              <div className="mm-trust-title">Sie vertrauen uns</div>
+              <div className="mm-trust-text">Firmen, Vereine und Agenturen aus ganz Deutschland</div>
+            </div>
+          </div>
+        </div>
+      </section>
+
       {related.length > 0 && (
         <section className="mm-related">
           <div className="wrap-wide">
