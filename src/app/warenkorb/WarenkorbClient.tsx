@@ -129,7 +129,10 @@ export default function WarenkorbClient({ t, tSteps, shipping }: Props) {
                 {item.hasDtf && (
                   <div style={{ marginTop: 6 }}>
                     <div style={{ fontSize: 12, color: "#0d9488", fontWeight: 600 }}>
-                      + {t.transfer} (DTF) {item.dtfSize && `· ${item.dtfSize}`} — {euro(item.dtfPriceCents)} € {t.perStk}
+                      {/* Preis auf Anfrage → auch DTF-Preis ausblenden,
+                          sonst wirkt der Artikel teilweise bepreist. */}
+                      + {t.transfer} (DTF) {item.dtfSize && `· ${item.dtfSize}`}
+                      {item.unitPriceCents > 0 && ` — ${euro(item.dtfPriceCents)} € ${t.perStk}`}
                     </div>
                     {(() => {
                       // dtfDesignUrl = JSON {front, back, frontSize, backSize, frontMockup, backMockup}
@@ -291,14 +294,22 @@ export default function WarenkorbClient({ t, tSteps, shipping }: Props) {
               </div>
 
               <div className="cart-item-price" style={{ textAlign: "right" }}>
-                <div style={{ fontWeight: 600, fontSize: 15 }}>
-                  {euro(cartItemTotalCents(item))} €
-                </div>
-                <div style={{ fontSize: 11, color: "#64748b", marginTop: 2 }}>
-                  {item.quantity > 0
-                    ? `Ø ${euro(Math.round(cartItemTotalCents(item) / item.quantity))} € ${t.perStk}`
-                    : "—"}
-                </div>
+                {item.unitPriceCents > 0 ? (
+                  <>
+                    <div style={{ fontWeight: 600, fontSize: 15 }}>
+                      {euro(cartItemTotalCents(item))} €
+                    </div>
+                    <div style={{ fontSize: 11, color: "#64748b", marginTop: 2 }}>
+                      {item.quantity > 0
+                        ? `Ø ${euro(Math.round(cartItemTotalCents(item) / item.quantity))} € ${t.perStk}`
+                        : "—"}
+                    </div>
+                  </>
+                ) : (
+                  <div style={{ fontSize: 12, color: "#8a938d", fontStyle: "italic", lineHeight: 1.4 }}>
+                    Preis auf<br />Anfrage
+                  </div>
+                )}
               </div>
             </div>
           ))}
