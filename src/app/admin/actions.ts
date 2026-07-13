@@ -187,7 +187,6 @@ export async function saveProduct(formData: FormData): Promise<ActionResult> {
     recommendedIds: String(formData.get("recommendedIds") ?? ""),
     printAreaType: String(formData.get("printAreaType") ?? "tshirt"),
     customPrintArea: String(formData.get("customPrintArea") ?? ""),
-    galleryCrop: String(formData.get("galleryCrop") ?? ""),
     status: String(formData.get("status") ?? "active"),
     isNew: formData.get("isNew") === "on",
     isEco: formData.get("isEco") === "on",

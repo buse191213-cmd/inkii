@@ -742,9 +742,8 @@ footer.site ul a:hover{color:var(--leaf)}
 
 .detail-grid{display:grid;grid-template-columns:1fr 1fr;gap:48px;align-items:start}
 .gallery{display:flex;flex-direction:column;gap:12px}
-.gallery-main{aspect-ratio:1/1;border:1px solid var(--line);background:#f7f8f6;
-  display:grid;place-items:center;overflow:hidden;border-radius:5px;
-  width:100%}
+.gallery-main{aspect-ratio:1;border:1px solid var(--line);background:#f7f8f6;
+  display:grid;place-items:center;overflow:hidden;border-radius:5px}
 .gallery-main img{width:100%;height:100%;object-fit:contain}
 .gallery-empty svg{width:160px;height:160px;color:#2f7a47}
 .gallery-thumbs{display:flex;gap:10px;flex-wrap:wrap}
@@ -4573,31 +4572,29 @@ body:has(.hero-full) header.site .brand-other img{filter:none;height:52px}
   padding: 4px 0 !important;
 }
 
-/* (Galerie-Breite wird weiter unten gesetzt — quadratisch, 560px) */
+/* 2) Görseli biraz küçült */
+@media (min-width: 1024px) {
+  .mm-detail-gallery .gallery {
+    max-width: 460px !important;
+  }
+}
 
 /* DetailOrderForm — hafif yuvarlak köşeler (radius korunur) */
 
 /* === Monday Merch BIREBIR uyumlu final layout === */
 @media (min-width: 1024px) {
-  /* Breite begrenzen (nicht max-height!) — so bleibt der Rahmen quadratisch
-     und der Druckbereich sitzt korrekt. */
+  /* Image kolon dolduracak - artık 460 sınırı yok */
   .mm-detail-gallery .gallery {
-    max-width: 720px !important;
+    max-width: 100% !important;
   }
-  /* WICHTIG — Druckbereich-Genauigkeit:
-     Der Admin-Editor zeichnet in einen QUADRATISCHEN Rahmen (300x300)
-     mit object-fit:contain. Damit die gespeicherten Prozentwerte im Shop
-     exakt an derselben Stelle liegen, MUSS die Galerie identisch sein:
-     quadratisch + Bild füllt 100%/100% mit contain.
-     max-height/width:auto würden den Rahmen verzerren → Bereich verschiebt sich. */
   .mm-detail-gallery .gallery-main {
+    max-height: 560px;
     background: #f5f5f5 !important;
   }
   .mm-detail-gallery .gallery-main img {
-    width: 100%;
-    height: 100%;
-    object-fit: contain;
-    margin: 0;
+    max-height: 560px;
+    width: auto;
+    margin: 0 auto;
   }
 }
 
@@ -5040,8 +5037,8 @@ body:has(.hero-full) header.site .brand-other img{filter:none;height:52px}
 .mm-detail-gallery .gallery-main img {
   object-fit: contain !important;
   object-position: center !important;
-  width: 100%;
-  height: 100%;
+  max-width: 100%;
+  max-height: 100%;
 }
 
 /* === Admin ürün listesindeki thumbnail — 40x40 === */

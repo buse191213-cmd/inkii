@@ -21,11 +21,9 @@ type PrintAreaBox = {
 export default function PrintAreaEditor({
   firstImage,
   initial,
-  galleryCrop,
 }: {
   firstImage?: string;
   initial?: PrintAreaBox | null;
-  galleryCrop?: string;
 }) {
   const [box, setBox] = useState<PrintAreaBox | null>(initial ?? null);
   const [widthCm, setWidthCm] = useState(initial?.widthCm ?? 25);
@@ -33,26 +31,6 @@ export default function PrintAreaEditor({
   const containerRef = useRef<HTMLDivElement>(null);
   const drawStart = useRef<{ x: number; y: number } | null>(null);
   const [drawing, setDrawing] = useState(false);
-  /**
-   * Rahmen übernimmt das Seitenverhältnis des Bildes — genau wie die
-   * Shop-Galerie. Dadurch füllt das Bild den Rahmen komplett aus (kein
-   * Leerraum durch contain) und die gezeichneten Prozentwerte liegen im
-   * Shop exakt an derselben Stelle — auf Desktop wie auf dem Handy.
-   */
-  const [imgAspect, setImgAspect] = useState<number | null>(null);
-
-  useEffect(() => {
-    if (!firstImage) { setImgAspect(null); return; }
-    let cancelled = false;
-    const im = new window.Image();
-    im.onload = () => {
-      if (!cancelled && im.naturalWidth && im.naturalHeight) {
-        setImgAspect(im.naturalWidth / im.naturalHeight);
-      }
-    };
-    im.src = firstImage;
-    return () => { cancelled = true; };
-  }, [firstImage]);
 
   useEffect(() => {
     if (initial) {
@@ -127,8 +105,8 @@ export default function PrintAreaEditor({
           onMouseUp={handleMouseUp}
           onMouseLeave={handleMouseUp}
           style={{
-            width: 320,
-            aspectRatio: "1 / 1",
+            width: 300,
+            height: 300,
             background: "#f4f5f3",
             border: "1px solid #e5e7eb",
             position: "relative",
@@ -143,25 +121,7 @@ export default function PrintAreaEditor({
               src={firstImage}
               alt="Produkt"
               draggable={false}
-              style={{
-                width: "100%",
-                height: "100%",
-                objectFit: "contain",
-                pointerEvents: "none",
-                // Galerie-Zoom auch hier anwenden — sonst zeichnet man auf einem
-                // anderen Bildausschnitt als der Kunde später sieht.
-                ...(() => {
-                  try {
-                    if (!galleryCrop) return {};
-                    const c = JSON.parse(galleryCrop);
-                    const z = Number(c.zoom) || 1;
-                    const cx = Number(c.x) || 0;
-                    const cy = Number(c.y) || 0;
-                    if (z === 1 && cx === 0 && cy === 0) return {};
-                    return { transform: `scale(${z}) translate(${cx}%, ${cy}%)`, transformOrigin: "center" };
-                  } catch { return {}; }
-                })(),
-              }}
+              style={{ width: "100%", height: "100%", objectFit: "contain", pointerEvents: "none" }}
             />
           ) : (
             <div style={{ display: "flex", alignItems: "center", justifyContent: "center", height: "100%", color: "#94a3b8", fontSize: 13 }}>

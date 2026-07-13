@@ -28,7 +28,6 @@ export type AdminProduct = {
   recommendedIds?: string;
   printAreaType?: string;
   customPrintArea?: string;
-  galleryCrop?: string;
   status: string;
   isNew: boolean;
   isEco: boolean;
@@ -1252,32 +1251,6 @@ export default function ProductManager({
                   })()}
                 </div>
 
-                {/* Galerie-Zoom (Detailseite / Designer) */}
-                <div className="field">
-                  <label>Galerie-Bild Zoom (Detailseite)</label>
-                  {(() => {
-                    const firstImg = images[0]?.preview || images[0]?.url;
-                    const gData = (() => {
-                      try {
-                        const raw = (modal as { galleryCrop?: string }).galleryCrop || "";
-                        if (raw) {
-                          const p = JSON.parse(raw);
-                          return { zoom: p.zoom || 1, x: p.x || 0, y: p.y || 0 };
-                        }
-                      } catch {}
-                      return { zoom: 1, x: 0, y: 0 };
-                    })();
-                    return (
-                      <CropEditor
-                        firstImage={firstImg}
-                        initial={gData}
-                        fieldName="galleryCrop"
-                        label="Zoom für das große Produktbild auf der Detailseite. Falls das Foto viel Weißraum hat, hier hineinzoomen — dann füllt das Produkt den Rahmen aus."
-                      />
-                    );
-                  })()}
-                </div>
-
                 {/* Druckbereich zeichnen (Werbeartikel) */}
                 <div className="field">
                   <label>Druckbereich zeichnen (für Werbeartikel)</label>
@@ -1290,13 +1263,7 @@ export default function ProductManager({
                       } catch {}
                       return null;
                     })();
-                    return (
-                      <PrintAreaEditor
-                        firstImage={firstImg}
-                        initial={paData}
-                        galleryCrop={(modal as { galleryCrop?: string }).galleryCrop || ""}
-                      />
-                    );
+                    return <PrintAreaEditor firstImage={firstImg} initial={paData} />;
                   })()}
                 </div>
                 <div className="field">

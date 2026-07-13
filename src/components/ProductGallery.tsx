@@ -110,7 +110,7 @@ async function generateMockupDataUrl(
     ctx.fillStyle = "#ffffff";
     ctx.fillRect(0, 0, outSize, outSize);
 
-    // Ürün contain (galeri ile aynı — tamamı görünür)
+    // Ürün contain
     const prodAspect = productImg.width / productImg.height;
     let pw = outSize, ph = outSize, px = 0, py = 0;
     if (prodAspect > 1) {
@@ -318,7 +318,6 @@ export default function ProductGallery({
   iconName,
   printAreaType,
   customPrintArea,
-  galleryCrop,
 }: {
   images: string[];
   colorImages?: Record<string, string[]>;
@@ -328,29 +327,12 @@ export default function ProductGallery({
   cardCrop?: string;
   printAreaType?: string;
   customPrintArea?: string;
-  galleryCrop?: string;
 }) {
   // Ürün tipine göre aktif baskı alanı. Admin manuel çizdiyse (customPrintArea) onu kullan.
   const printArea = useMemo(
     () => parseCustomPrintArea(customPrintArea) ?? getPrintArea(printAreaType),
     [customPrintArea, printAreaType]
   );
-
-  // Admin'de ayarlanan galeri zoom/pan — ürün fotoğrafındaki beyaz boşluğu
-  // kırpar, ürün çerçeveyi doldurur.
-  const cropTransform = useMemo(() => {
-    if (!galleryCrop) return undefined;
-    try {
-      const c = JSON.parse(galleryCrop);
-      const zoom = Number(c.zoom) || 1;
-      const cx = Number(c.x) || 0;
-      const cy = Number(c.y) || 0;
-      if (zoom === 1 && cx === 0 && cy === 0) return undefined;
-      return `scale(${zoom}) translate(${cx}%, ${cy}%)`;
-    } catch {
-      return undefined;
-    }
-  }, [galleryCrop]);
 
   const [activeColor, setActiveColor] = useState<string | null>(colors?.[0] ?? null);
   const [side, setSide] = useState<Side>("front");
@@ -360,10 +342,6 @@ export default function ProductGallery({
   });
 
   const canvasRef = useRef<HTMLDivElement>(null);
-  // Ürün görselinin doğal oranı — kutu bu oranı alır, böylece görsel
-  // ne kesilir ne küçülür (tam sığar). Admin-Editor kullanır aynı mantığı,
-  // bu yüzden çizilen baskı alanı koordinatları birebir tutar.
-  const [productAspect, setProductAspect] = useState<number | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const dragRef = useRef<{ x: number; y: number; startVal: number; startVal2: number; mode: "move" | "resize" | null }>({ x: 0, y: 0, startVal: 0, startVal2: 0, mode: null });
   const [atBoundary, setAtBoundary] = useState(false);
@@ -478,23 +456,6 @@ export default function ProductGallery({
   useEffect(() => {
     if (side === "back" && !hasBack) setSide("front");
   }, [side, hasBack]);
-
-  // Aktif ürün görselinin doğal oranını ölç (kutu bu oranı alacak)
-  useEffect(() => {
-    if (!activeImage) {
-      setProductAspect(null);
-      return;
-    }
-    let cancelled = false;
-    const im = new window.Image();
-    im.onload = () => {
-      if (!cancelled && im.naturalWidth && im.naturalHeight) {
-        setProductAspect(im.naturalWidth / im.naturalHeight);
-      }
-    };
-    im.src = activeImage;
-    return () => { cancelled = true; };
-  }, [activeImage]);
 
   // Galeri side değişince sekmelere bildir (senkron için)
   useEffect(() => {
@@ -768,12 +729,7 @@ export default function ProductGallery({
       >
         {activeImage ? (
           /* eslint-disable-next-line @next/next/no-img-element */
-          <img
-            src={activeImage}
-            alt={`${name} — ${side === "front" ? "Vorderseite" : "Rückseite"}`}
-            draggable={false}
-            style={cropTransform ? { transform: cropTransform, transformOrigin: "center" } : undefined}
-          />
+          <img src={activeImage} alt={`${name} — ${side === "front" ? "Vorderseite" : "Rückseite"}`} draggable={false} />
         ) : (
           <div className="gallery-empty"><ProductIcon name={iconName} /></div>
         )}
