@@ -110,17 +110,19 @@ async function generateMockupDataUrl(
     ctx.fillStyle = "#ffffff";
     ctx.fillRect(0, 0, outSize, outSize);
 
-    // Ürün contain
+    // Ürün COVER (galeri ile birebir aynı görünüm)
     const prodAspect = productImg.width / productImg.height;
-    let pw = outSize, ph = outSize, px = 0, py = 0;
+    let sw = productImg.width, sh = productImg.height, sx = 0, sy = 0;
     if (prodAspect > 1) {
-      ph = outSize / prodAspect;
-      py = (outSize - ph) / 2;
-    } else {
-      pw = outSize * prodAspect;
-      px = (outSize - pw) / 2;
+      // Görsel geniş → yanlardan kırp
+      sw = productImg.height;
+      sx = (productImg.width - sw) / 2;
+    } else if (prodAspect < 1) {
+      // Görsel uzun → üst/alttan kırp
+      sh = productImg.width;
+      sy = (productImg.height - sh) / 2;
     }
-    ctx.drawImage(productImg, px, py, pw, ph);
+    ctx.drawImage(productImg, sx, sy, sw, sh, 0, 0, outSize, outSize);
 
     // Design
     if (design) {
@@ -633,17 +635,17 @@ export default function ProductGallery({
       ctx.fillStyle = "#ffffff";
       ctx.fillRect(0, 0, OUT_SIZE, OUT_SIZE);
 
-      // Ürün görselini contain olarak çiz
+      // Ürün görselini COVER olarak çiz (galeri ile aynı)
       const prodAspect = productImg.width / productImg.height;
-      let pw = OUT_SIZE, ph = OUT_SIZE, px = 0, py = 0;
+      let sw = productImg.width, sh = productImg.height, sx = 0, sy = 0;
       if (prodAspect > 1) {
-        ph = OUT_SIZE / prodAspect;
-        py = (OUT_SIZE - ph) / 2;
-      } else {
-        pw = OUT_SIZE * prodAspect;
-        px = (OUT_SIZE - pw) / 2;
+        sw = productImg.height;
+        sx = (productImg.width - sw) / 2;
+      } else if (prodAspect < 1) {
+        sh = productImg.width;
+        sy = (productImg.height - sh) / 2;
       }
-      ctx.drawImage(productImg, px, py, pw, ph);
+      ctx.drawImage(productImg, sx, sy, sw, sh, 0, 0, OUT_SIZE, OUT_SIZE);
 
       // Design varsa çiz
       if (currentDesign) {

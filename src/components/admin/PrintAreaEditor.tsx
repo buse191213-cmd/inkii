@@ -141,7 +141,7 @@ export default function PrintAreaEditor({
               src={firstImage}
               alt="Produkt"
               draggable={false}
-              style={{ width: "100%", height: "100%", objectFit: "contain", pointerEvents: "none" }}
+              style={{ width: "100%", height: "100%", objectFit: "cover", pointerEvents: "none" }}
             />
           ) : (
             <div style={{ display: "flex", alignItems: "center", justifyContent: "center", height: "100%", color: "#94a3b8", fontSize: 13 }}>
