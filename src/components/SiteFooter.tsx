@@ -53,7 +53,7 @@ export default function SiteFooter({
             <ul>
               <li><Link href="/impressum">{t.lImpressum}</Link></li>
               <li><Link href="/datenschutz">{t.lDatenschutz}</Link></li>
-              <li><Link href="/kontakt">{t.lAgb}</Link></li>
+              <li><Link href="/agb">{t.lAgb}</Link></li>
               <li><Link href="/widerrufsbelehrung">{t.lWiderruf}</Link></li>
               <li><CookieSettingsLink label={cookieLabel} /></li>
             </ul>

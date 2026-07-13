@@ -687,7 +687,7 @@ export default function KasseClient({ paymentMethods, shipping, prefill, isLogge
                 style={{ marginTop: 3, flexShrink: 0 }}
               />
               <span>
-                {t.form.acceptTerms1} <Link href="/kontakt" style={{ color: "#004537", textDecoration: "underline" }}>{t.form.agb}</Link>,{" "}
+                {t.form.acceptTerms1} <Link href="/agb" style={{ color: "#004537", textDecoration: "underline" }}>{t.form.agb}</Link>,{" "}
                 <Link href="/datenschutz" style={{ color: "#004537", textDecoration: "underline" }}>{t.form.privacy}</Link>{" "}
                 {t.form.acceptTerms2} *
               </span>
