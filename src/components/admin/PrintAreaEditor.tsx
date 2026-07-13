@@ -146,7 +146,7 @@ export default function PrintAreaEditor({
               style={{
                 width: "100%",
                 height: "100%",
-                objectFit: "cover",
+                objectFit: "contain",
                 pointerEvents: "none",
                 // Galerie-Zoom auch hier anwenden — sonst zeichnet man auf einem
                 // anderen Bildausschnitt als der Kunde später sieht.
