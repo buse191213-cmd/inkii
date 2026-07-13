@@ -66,7 +66,7 @@ const de: Dictionary = {
     lAgb: "AGB",
     lWiderruf: "Widerruf",
     copyright: "Alle Rechte vorbehalten.",
-    note: "Alle Preise exkl. gesetzl. Mehrwertsteuer zzgl. Versandkosten und ggf. Nachnahmegebühren, wenn nicht anders angegeben.",
+    note: "Alle Preise inkl. gesetzl. MwSt., zzgl. Versandkosten. Preisangaben gemäß § 1 PAngV.",
   },
   home: {
     hero: {

@@ -66,7 +66,7 @@ const tr: Dictionary = {
     lAgb: "Şartlar",
     lWiderruf: "Cayma Hakkı",
     copyright: "Tüm hakları saklıdır.",
-    note: "Aksi belirtilmedikçe tüm fiyatlara yasal KDV dahil değildir; kargo ve varsa kapıda ödeme ücretleri ayrıca eklenir.",
+    note: "Tüm fiyatlara yasal KDV dahildir; kargo ücreti ayrıca eklenir.",
   },
   home: {
     hero: {

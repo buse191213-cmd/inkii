@@ -66,7 +66,7 @@ const en: Dictionary = {
     lAgb: "Terms",
     lWiderruf: "Right of Withdrawal",
     copyright: "All rights reserved.",
-    note: "All prices exclude statutory VAT, plus shipping and any cash-on-delivery fees unless stated otherwise.",
+    note: "All prices include statutory VAT, plus shipping costs.",
   },
   home: {
     hero: {
