@@ -394,20 +394,6 @@ export default async function ProductDetailPage({
 
                 return (
                   <article key={r.id} className="mm-card">
-                    <div className="mm-card-tags">
-                      {r.isNew && <span className="mm-tag tag-new">NEU</span>}
-                      {(r as { isBestseller?: boolean }).isBestseller && (
-                        <span className="mm-tag tag-best">★ MEISTVERKAUFT</span>
-                      )}
-                      {((r as { deliveryDays?: number }).deliveryDays ?? 0) > 0 && (
-                        <span className="mm-tag tag-days">
-                          {(r as { deliveryDays?: number }).deliveryDays} TAGE
-                        </span>
-                      )}
-                      {r.stock > 0 && <span className="mm-tag tag-stock">AB LAGER</span>}
-                      {r.isEco && <span className="mm-tag tag-eco">✦ NACHHALTIG</span>}
-                    </div>
-
                     <Link href={`/werbemittel/${r.id}`} className="mm-card-link">
                       <div className="mm-card-img">
                         {rImg ? (
@@ -430,6 +416,19 @@ export default async function ProductDetailPage({
                         ) : (
                           <span className="mm-related-img-fallback">INKII</span>
                         )}
+                        <div className="mm-card-tags mm-card-tags-overlay">
+                          {r.isNew && <span className="mm-tag tag-new">NEU</span>}
+                          {(r as { isBestseller?: boolean }).isBestseller && (
+                            <span className="mm-tag tag-best">★ MEISTVERKAUFT</span>
+                          )}
+                          {((r as { deliveryDays?: number }).deliveryDays ?? 0) > 0 && (
+                            <span className="mm-tag tag-days">
+                              {(r as { deliveryDays?: number }).deliveryDays} TAGE
+                            </span>
+                          )}
+                          {r.stock > 0 && <span className="mm-tag tag-stock">AB LAGER</span>}
+                          {r.isEco && <span className="mm-tag tag-eco">✦ NACHHALTIG</span>}
+                        </div>
                         <span className="mm-quick">{dt.relatedCta ?? "Details"}</span>
                       </div>
 

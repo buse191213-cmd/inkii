@@ -1594,6 +1594,14 @@ body:has(.home-services) footer.site{margin-top:0}
 /* Karte */
 .mm-card{position:relative;background:#fff;display:flex;flex-direction:column}
 .mm-card-tags{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:10px;min-height:30px}
+/* Badges über dem Produktbild (statt darüber im weißen Bereich) */
+.mm-card-tags-overlay{position:absolute;top:10px;left:10px;right:10px;z-index:2;
+  margin:0;min-height:0;gap:5px;pointer-events:none}
+.mm-card-tags-overlay .mm-tag{
+  background:rgba(255,255,255,.92);backdrop-filter:blur(4px);
+  box-shadow:0 1px 3px rgba(15,26,22,.06)}
+.mm-card-tags-overlay .mm-tag.tag-best{
+  background:#004537;color:#fff;border-color:#004537}
 .mm-tag{display:inline-flex;align-items:center;gap:5px;
   border:1px solid var(--line);background:#fff;color:var(--ink);
   padding:6px 11px;font-size:.7rem;font-weight:700;letter-spacing:.08em;

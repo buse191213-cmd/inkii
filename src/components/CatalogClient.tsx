@@ -258,17 +258,6 @@ export default function CatalogClient({
             const hasPrice = (p.lowestPriceCents ?? p.priceCents) != null;
             return (
               <article key={p.id} className="mm-card">
-                {/* Etiketten oben im weißen Bereich */}
-                <div className="mm-card-tags">
-                  {p.isNew && <span className="mm-tag tag-new">NEU</span>}
-                  {p.isBestseller && <span className="mm-tag tag-best">★ MEISTVERKAUFT</span>}
-                  {p.deliveryDays > 0 && (
-                    <span className="mm-tag tag-days">{p.deliveryDays} TAGE</span>
-                  )}
-                  {p.stock > 0 && <span className="mm-tag tag-stock">AB LAGER</span>}
-                  {p.isEco && <span className="mm-tag tag-eco">✦ NACHHALTIG</span>}
-                </div>
-
                 <Link href={`/werbemittel/${p.id}`} className="mm-card-link">
                   <div className="mm-card-img">
                     {p.images.length > 0 ? (() => {
@@ -302,6 +291,16 @@ export default function CatalogClient({
                     })() : (
                       <ProductIcon name={p.icon} />
                     )}
+                    {/* Badges liegen ÜBER dem Bild */}
+                    <div className="mm-card-tags mm-card-tags-overlay">
+                      {p.isNew && <span className="mm-tag tag-new">NEU</span>}
+                      {p.isBestseller && <span className="mm-tag tag-best">★ MEISTVERKAUFT</span>}
+                      {p.deliveryDays > 0 && (
+                        <span className="mm-tag tag-days">{p.deliveryDays} TAGE</span>
+                      )}
+                      {p.stock > 0 && <span className="mm-tag tag-stock">AB LAGER</span>}
+                      {p.isEco && <span className="mm-tag tag-eco">✦ NACHHALTIG</span>}
+                    </div>
                     <span className="mm-quick">{t.details}</span>
                   </div>
 
