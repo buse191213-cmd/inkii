@@ -461,7 +461,7 @@ export default function WarenkorbClient({ t, tSteps, shipping }: Props) {
                       alignItems: "flex-start",
                       gap: 8,
                     }}>
-                      <span style={{ fontSize: 16, flexShrink: 0 }}>⚠️</span>
+                      <span style={{ flexShrink: 0, color: "#c9a155", display: "flex" }}><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" style={{ flexShrink: 0 }} aria-hidden><path d="M12 3l9.5 16.5H2.5z"/><path d="M12 9v4M12 17h.01"/></svg></span>
                       <span>
                         {t.minQtyWarn.replace("{n}", String(sizeIssue.minOrderQty || sizeIssue.quantity))}
                       </span>
@@ -483,32 +483,39 @@ export default function WarenkorbClient({ t, tSteps, shipping }: Props) {
                         borderRadius: 0,
                       }}
                     >
-                      🛒 {hasQuoteOnly ? t.checkoutQuoteOnly : t.checkoutSizesMissing}
+                      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" style={{ flexShrink: 0 }} aria-hidden><circle cx="9" cy="21" r="1.4"/><circle cx="19" cy="21" r="1.4"/><path d="M2 3h3l2.5 12h11L21 7H6"/></svg>
+                      {hasQuoteOnly ? t.checkoutQuoteOnly : t.checkoutSizesMissing}
                     </div>
                   ) : (
                     <Link
                       href="/kasse"
                       style={{
-                        display: "block",
+                        display: "flex",
+                        alignItems: "center",
+                        justifyContent: "center",
+                        gap: 8,
                         background: "#004537",
                         color: "#fff",
                         padding: "13px 16px",
-                        textAlign: "center",
                         fontWeight: 600,
                         textDecoration: "none",
                         fontSize: 14,
                         marginBottom: 8,
-                        borderRadius: 0,
+                        borderRadius: 7,
                       }}
                     >
-                      🛒 {t.toCheckout}
+                      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" style={{ flexShrink: 0 }} aria-hidden><circle cx="9" cy="21" r="1.4"/><circle cx="19" cy="21" r="1.4"/><path d="M2 3h3l2.5 12h11L21 7H6"/></svg>
+                      {t.toCheckout}
                     </Link>
                   )}
 
                   <Link
                     href="/warenkorb/anfrage"
                     style={{
-                      display: "block",
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "center",
+                      gap: 8,
                       background: "#fff",
                       color: "#004537",
                       border: "1px solid #004537",
@@ -519,7 +526,8 @@ export default function WarenkorbClient({ t, tSteps, shipping }: Props) {
                       fontSize: 14,
                     }}
                   >
-                    ✉️ {t.requestQuote}
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" style={{ flexShrink: 0 }} aria-hidden><rect x="2" y="4" width="20" height="16" rx="2"/><path d="M2 7l10 6 10-6"/></svg>
+                    {t.requestQuote}
                   </Link>
 
                   {hasQuoteOnly && (

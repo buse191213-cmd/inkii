@@ -121,7 +121,7 @@ export default function CartDrawer({ open, onClose }: Props) {
               textAlign: "center",
             }}
           >
-            <div style={{ fontSize: 56, color: "#cbd5e1", marginBottom: 12 }}>🛒</div>
+            <div style={{ color: "#cbd5e1", marginBottom: 12 }}><svg width="52" height="52" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round" aria-hidden><circle cx="9" cy="21" r="1.4"/><circle cx="19" cy="21" r="1.4"/><path d="M2 3h3l2.5 12h11L21 7H6"/></svg></div>
             <p style={{ color: "#64748b", marginBottom: 24 }}>{t.empty}</p>
             <Link
               href="/werbemittel"
@@ -427,7 +427,10 @@ export default function CartDrawer({ open, onClose }: Props) {
                 href="/warenkorb"
                 onClick={onClose}
                 style={{
-                  display: "block",
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  gap: 8,
                   background: "#004537",
                   color: "#fff",
                   padding: "13px 16px",
@@ -439,14 +442,18 @@ export default function CartDrawer({ open, onClose }: Props) {
                   borderRadius: 8,
                 }}
               >
-                🛒 {t.drawerShow}
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" style={{ flexShrink: 0 }} aria-hidden><circle cx="9" cy="21" r="1.4"/><circle cx="19" cy="21" r="1.4"/><path d="M2 3h3l2.5 12h11L21 7H6"/></svg>
+                {t.drawerShow}
               </Link>
 
               <Link
                 href="/warenkorb/anfrage"
                 onClick={onClose}
                 style={{
-                  display: "block",
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  gap: 8,
                   background: "#fff",
                   color: "#004537",
                   border: "1px solid #004537",
@@ -458,7 +465,8 @@ export default function CartDrawer({ open, onClose }: Props) {
                   borderRadius: 8,
                 }}
               >
-                ✉️ {t.requestQuote}
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" style={{ flexShrink: 0 }} aria-hidden><rect x="2" y="4" width="20" height="16" rx="2"/><path d="M2 7l10 6 10-6"/></svg>
+                {t.requestQuote}
               </Link>
             </div>
           </>
