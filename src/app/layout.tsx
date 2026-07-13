@@ -123,8 +123,10 @@ export default async function RootLayout({
         <JsonLd data={localBusinessSchema()} />
         <ServiceWorkerRegistration />
 
-        {/* Trustpilot — Einladungs-Skript (Bewertungsanfragen nach Bestellung) */}
-        <Script id="trustpilot-invite" strategy="afterInteractive">
+        {/* Trustpilot — Einladungs-Skript + Domain-Verifizierung.
+            beforeInteractive: Verifizierungs-Crawler von Trustpilot findet
+            das Snippet zuverlässiger als bei afterInteractive. */}
+        <Script id="trustpilot-invite" strategy="beforeInteractive">
           {`(function(w,d,s,r,n){w.TrustpilotObject=n;w[n]=w[n]||function(){(w[n].q=w[n].q||[]).push(arguments)};
             var a=d.createElement(s);a.async=1;a.src=r;a.type='text/java'+s;
             var f=d.getElementsByTagName(s)[0];f.parentNode.insertBefore(a,f)})
