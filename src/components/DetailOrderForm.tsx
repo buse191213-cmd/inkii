@@ -42,7 +42,7 @@ function findTier(tiers: PriceTier[], qty: number): PriceTier | null {
 // Fallback (Almanca) — prop gelmezse
 const DEFAULT_T: Dictionary["detailForm"] = {
   title: "Farbe, Menge & Design wählen",
-  subtitle: "Wählen Sie Farbe und Menge. Die Größenverteilung legen Sie im Warenkorb fest.",
+  subtitle: "Größenverteilung legen Sie im Warenkorb fest.",
   color: "Farbe", colorTip: "", quantity: "{t.quantity}", sizesInCart: "Größen wählen Sie im Warenkorb",
   staffelpreise: "Staffelpreise", inklTransfer: "inkl. Transfer", current: "Aktuell", perStueck: "/ Stück",
   spart: "Spart", pricesInklTransfer: "Preise inkl. Transfer", choosePersonalization: "Personalisierungstechnik auswählen",
@@ -340,15 +340,18 @@ export default function DetailOrderForm({
               <span className="det-order-qty-hint">{t.sizesInCart}</span>
             )}
           </span>
-          <input
-            type="number"
-            inputMode="numeric"
-            min="0"
-            step="1"
-            value={qty["__default"] || ""}
-            onChange={(e) => setSizeQty("__default", parseInt(e.target.value || "0", 10))}
-            placeholder={minOrderQty > 1 ? `min. ${minOrderQty}` : "0"}
-          />
+          <div className="det-order-qty-input">
+            <input
+              type="number"
+              inputMode="numeric"
+              min="0"
+              step="1"
+              value={qty["__default"] || ""}
+              onChange={(e) => setSizeQty("__default", parseInt(e.target.value || "0", 10))}
+              placeholder={minOrderQty > 1 ? `min. ${minOrderQty}` : "0"}
+            />
+            <span className="det-order-qty-unit">Stück</span>
+          </div>
         </label>
       </div>
 

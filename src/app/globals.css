@@ -1685,8 +1685,8 @@ body:has(.home-services) footer.site{margin-top:0}
 .mm-tabs{margin-bottom:32px}
 .mm-tabs-nav{display:flex;gap:0;border-bottom:1px solid var(--line);margin-bottom:20px;
   overflow-x:auto}
-.mm-tab{background:none;border:0;padding:12px 4px;margin-right:24px;cursor:pointer;
-  font-family:var(--display);font-weight:600;font-size:.76rem;letter-spacing:.1em;
+.mm-tab{background:none;border:0;padding:10px 4px;margin-right:20px;cursor:pointer;
+  font-family:var(--display);font-weight:600;font-size:.68rem;letter-spacing:.08em;
   color:var(--muted);transition:.18s;position:relative;flex-shrink:0;
   text-transform:uppercase}
 .mm-tab:hover{color:var(--ink)}
@@ -3027,6 +3027,7 @@ body:has(.home-services) footer.site{margin-top:0}
 /* === Detail-Order Form === */
 .det-order{background:#fff;border:1px solid #eceeea;border-radius:7px;
   padding:22px;display:flex;flex-direction:column;gap:0;margin-top:0}
+.det-order-head{margin-bottom:2px}
 .det-order-head h3{font-family:var(--display);font-size:.95rem;font-weight:600;
   color:#1c2722;margin:0 0 2px;letter-spacing:-.01em}
 .det-order-head p{font-size:.74rem;color:#9ea7a2;margin:0;line-height:1.4}
@@ -3059,18 +3060,22 @@ body:has(.home-services) footer.site{margin-top:0}
 .det-tier-price{font-weight:800;font-size:.84rem}
 
 /* Tek adet girişi (bedenler sepette) */
-.det-order-qty-single{margin:0;background:none;border:0;border-top:1px solid #f0f2ee;
-  border-radius:0;padding:18px 0 0}
+.det-order-qty-single{margin:14px 0 0;background:none;border:0;border-top:1px solid #f0f2ee;
+  border-radius:0;padding:14px 0 0}
 .det-order-qty-single label{display:flex;flex-direction:column;gap:6px}
 .det-order-qty-label{display:flex;justify-content:space-between;align-items:baseline;
   font-size:.82rem;font-weight:600;color:#0f1a16}
 .det-order-qty-hint{font-size:.68rem;font-weight:400;color:#9ea7a2;font-style:normal}
-.det-order-qty-single input{padding:12px 14px;border:1.5px solid #d9ddd5;border-radius:7px;
+.det-order-qty-input{position:relative;display:flex;align-items:center}
+.det-order-qty-input input{flex:1;padding-right:52px !important}
+.det-order-qty-unit{position:absolute;right:14px;font-size:.75rem;color:#a8b0aa;
+  pointer-events:none;font-weight:400}
+.det-order-qty-single input{padding:11px 14px;border:1px solid #e3e8e3;border-radius:7px;
   font-size:1.1rem;font-weight:700;color:#0f1a16;width:100%;transition:border-color .15s}
 .det-order-qty-single input:focus{outline:none;border-color:#004537}
 
 /* Staffelpreise — variante içinde, aktif tier işaretli */
-.det-staffel{background:none;border:0;border-top:1px solid #f0f2ee;border-radius:0;padding:18px 0 0;margin:18px 0 0}
+.det-staffel{background:none;border:0;border-top:1px solid #f0f2ee;border-radius:0;padding:14px 0 0;margin:14px 0 0}
 .det-staffel-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px}
 .det-staffel-head > span:first-child{font-size:.7rem;font-weight:600;letter-spacing:.04em;text-transform:uppercase;color:#0f1a16}
 .det-staffel-active-hint{font-size:.66rem;font-weight:600;color:#004537;background:#f0fdf4;padding:3px 10px;border-radius:999px}
@@ -3093,8 +3098,8 @@ body:has(.home-services) footer.site{margin-top:0}
   font-size:.72rem;color:#004537;font-weight:600;text-align:center}
 
 /* Total summary — Produktionszeit + Gesamt */
-.det-order-summary{background:none;border:0;border-top:1px solid #f0f2ee;border-radius:0;padding:18px 0 0;margin:18px 0 0;
-  display:flex;flex-direction:column;gap:7px}
+.det-order-summary{background:none;border:0;border-top:1px solid #f0f2ee;border-radius:0;padding:14px 0 0;margin:14px 0 0;
+  display:flex;flex-direction:column;gap:6px}
 .det-summary-row{display:flex;justify-content:space-between;align-items:center;gap:12px}
 .det-summary-lbl{font-size:.85rem;color:#5a6660;font-weight:500}
 .det-summary-val{font-size:.9rem;color:#0f1a16;font-weight:700}
@@ -3117,7 +3122,7 @@ body:has(.home-services) footer.site{margin-top:0}
 }
 
 /* Personalisierung / Transfer seçimi */
-.det-transfer{background:none;border:0;border-top:1px solid #f0f2ee;border-radius:0;padding:18px 0 0;margin:18px 0 0}
+.det-transfer{background:none;border:0;border-top:1px solid #f0f2ee;border-radius:0;padding:14px 0 0;margin:14px 0 0}
 .det-transfer-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;gap:10px}
 .det-transfer-title{font-size:.7rem;font-weight:600;letter-spacing:.04em;text-transform:uppercase;color:#0f1a16}
 .det-transfer-badge{background:#dcfce7;color:#065f46;padding:3px 10px;border-radius:999px;font-size:.66rem;font-weight:600}
@@ -3146,8 +3151,8 @@ body:has(.home-services) footer.site{margin-top:0}
 .det-transfer-side-total{border-top:1px solid #e3e6df;padding-top:8px;margin-top:2px;font-weight:800}
 .det-transfer-side-total span:last-child{color:#004537}
 
-.det-order-total{background:#fafbf9;border:0;border-top:1px solid #f0f2ee;border-radius:0;
-  padding:18px 0 0;margin:18px 0 0;display:flex;justify-content:space-between;gap:14px;flex-wrap:wrap;
+.det-order-total{background:none;border:0;border-top:1px solid #f0f2ee;border-radius:0;
+  padding:14px 0 0;margin:14px 0 0;display:flex;justify-content:space-between;gap:14px;flex-wrap:wrap;
   align-items:baseline}
 .det-order-total > div{display:flex;flex-direction:column;gap:1px}
 .det-order-total-lbl{font-size:.64rem;letter-spacing:.1em;text-transform:uppercase;
@@ -3241,8 +3246,8 @@ body:has(.home-services) footer.site{margin-top:0}
 }
 
 /* === Detail Color Picker === */
-.det-order-colors{display:flex;flex-direction:column;gap:10px;
-  background:none;border:0;border-top:1px solid #f0f2ee;border-radius:0;padding:18px 0 0;margin:18px 0 0}
+.det-order-colors{display:flex;flex-direction:column;gap:8px;
+  background:none;border:0;border-top:1px solid #f0f2ee;border-radius:0;padding:14px 0 0;margin:14px 0 0}
 .det-order-colors-head{display:flex;align-items:baseline;gap:10px}
 .det-order-colors-label{font-size:.65rem;letter-spacing:.1em;text-transform:uppercase;
   color:#9ea7a2;font-weight:600}

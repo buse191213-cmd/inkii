@@ -693,10 +693,10 @@ const en: Dictionary = {
   },
   detailForm: {
     title: "Choose color, quantity & design",
-    subtitle: "Select color and quantity. You set the size distribution (e.g. S, M, L) afterwards in the cart.",
+    subtitle: "Size distribution is set in the cart.",
     color: "Color",
     colorTip: "Tip: Other colors? Choose one, add it, then switch color and add the next variant.",
-    quantity: "Quantity (pcs)",
+    quantity: "Quantity",
     sizesInCart: "Choose sizes in the cart",
     staffelpreise: "Volume pricing",
     inklTransfer: "incl. transfer",

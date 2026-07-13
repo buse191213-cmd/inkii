@@ -693,10 +693,10 @@ const de: Dictionary = {
   },
   detailForm: {
     title: "Farbe, Menge & Design wählen",
-    subtitle: "Wählen Sie Farbe und Menge. Die Größenverteilung (z. B. S, M, L) legen Sie anschließend im Warenkorb fest.",
+    subtitle: "Größenverteilung legen Sie im Warenkorb fest.",
     color: "Farbe",
     colorTip: "Tipp: Andere Farben? Wählen Sie eine, fügen Sie sie hinzu, dann wechseln Sie die Farbe und fügen die nächste Variante hinzu.",
-    quantity: "Menge (Stück)",
+    quantity: "Menge",
     sizesInCart: "Größen wählen Sie im Warenkorb",
     staffelpreise: "Staffelpreise",
     inklTransfer: "inkl. Transfer",

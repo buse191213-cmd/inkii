@@ -693,10 +693,10 @@ const tr: Dictionary = {
   },
   detailForm: {
     title: "Renk, Miktar & Tasarım seçin",
-    subtitle: "Renk ve miktar seçin. Beden dağıtımını (örn. S, M, L) sonra sepette yaparsınız.",
+    subtitle: "Beden dağıtımını sepette yaparsınız.",
     color: "Renk",
     colorTip: "İpucu: Başka renkler? Birini seçip ekleyin, sonra rengi değiştirip bir sonraki varyantı ekleyin.",
-    quantity: "Miktar (Adet)",
+    quantity: "Miktar",
     sizesInCart: "Bedenleri sepette seçin",
     staffelpreise: "Kademeli fiyatlar",
     inklTransfer: "transfer dahil",
