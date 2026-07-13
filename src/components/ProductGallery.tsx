@@ -891,7 +891,7 @@ export default function ProductGallery({
       {!hasBack && (
         <div className="gal-contact-cta">
           <div className="gal-contact-icon">
-            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
               <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
             </svg>
           </div>
@@ -1301,9 +1301,9 @@ export default function ProductGallery({
         .gal-contact-cta {
           display: flex;
           align-items: center;
-          gap: 16px;
-          padding: 18px 20px;
-          margin-top: 14px;
+          gap: 12px;
+          padding: 13px 15px;
+          margin-top: 12px;
           background: #fafbf9;
           border: 1px solid #e3e8e3;
           border-left: 3px solid #004537;
@@ -1311,8 +1311,8 @@ export default function ProductGallery({
           flex-wrap: wrap;
         }
         .gal-contact-icon {
-          width: 40px;
-          height: 40px;
+          width: 32px;
+          height: 32px;
           background: #fff;
           color: #004537;
           border: 1px solid #d9e0d9;
@@ -1329,15 +1329,15 @@ export default function ProductGallery({
         .gal-contact-title {
           font-family: var(--display);
           font-weight: 600;
-          font-size: 1rem;
+          font-size: 0.88rem;
           color: #0f1a16;
           letter-spacing: -0.01em;
-          margin-bottom: 3px;
+          margin-bottom: 2px;
         }
         .gal-contact-text {
-          font-size: 0.82rem;
-          color: #6b7671;
-          line-height: 1.5;
+          font-size: 0.76rem;
+          color: #8a938d;
+          line-height: 1.45;
         }
         .gal-contact-actions {
           display: flex;
@@ -1345,8 +1345,8 @@ export default function ProductGallery({
           flex-wrap: wrap;
         }
         .gal-contact-btn {
-          padding: 10px 18px;
-          font-size: 0.78rem;
+          padding: 8px 14px;
+          font-size: 0.73rem;
           font-weight: 600;
           letter-spacing: 0.2px;
           text-decoration: none;
