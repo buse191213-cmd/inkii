@@ -113,6 +113,16 @@ export default async function RootLayout({
       : "Hallo INKII Works, ich möchte ein Angebot anfragen.";
   return (
     <html lang={locale} className={`${display.variable} ${body.variable}`}>
+      <head>
+        {/* Trustpilot JavaScript Integration.
+            Laut Trustpilot-Doku MUSS das Snippet im <head> jeder Seite stehen —
+            der Verifizierungs-Crawler sucht es dort im ausgelieferten HTML. */}
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `(function(w,d,s,r,n){w.TrustpilotObject=n;w[n]=w[n]||function(){(w[n].q=w[n].q||[]).push(arguments)};a=d.createElement(s);a.async=1;a.src=r;a.type='text/java'+s;f=d.getElementsByTagName(s)[0];f.parentNode.insertBefore(a,f)})(window,document,'script','https://invitejs.trustpilot.com/tp.min.js','tp');tp('register','JhPuZDfA4Bn3sXtx');`,
+          }}
+        />
+      </head>
       <body>
         {children}
         <CookieBanner dict={d.cookie} />
@@ -122,19 +132,6 @@ export default async function RootLayout({
         <JsonLd data={localBusinessSchema()} />
         <ServiceWorkerRegistration />
 
-        {/* Trustpilot — als ROHES <script> im HTML.
-            Der Verifizierungs-Crawler von Trustpilot führt kein JavaScript aus,
-            er sucht das Snippet im gelieferten HTML. next/script würde es erst
-            per JS einfügen → Domain-Verifizierung schlägt fehl. */}
-        <script
-          dangerouslySetInnerHTML={{
-            __html: `(function(w,d,s,r,n){w.TrustpilotObject=n;w[n]=w[n]||function(){(w[n].q=w[n].q||[]).push(arguments)};
-              var a=d.createElement(s);a.async=1;a.src=r;a.type='text/java'+s;
-              var f=d.getElementsByTagName(s)[0];f.parentNode.insertBefore(a,f)})
-              (window,document,'script','https://invitejs.trustpilot.com/tp.min.js','tp');
-              tp('register','JhPuZDfA4Bn3sXtx');`,
-          }}
-        />
       </body>
     </html>
   );
