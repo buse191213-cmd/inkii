@@ -239,17 +239,15 @@ export default async function ProductDetailPage({
                     {showFromPrefix && (
                       <span style={{
                         fontSize: 13,
-                        color: "#64748b",
-                        fontWeight: 500,
-                        textTransform: "uppercase",
-                        letterSpacing: "1px",
+                        color: "#94a3b8",
+                        fontWeight: 400,
                       }}>
                         ab
                       </span>
                     )}
                     <span style={{
-                      fontSize: "2rem",
-                      fontWeight: 800,
+                      fontSize: "1.75rem",
+                      fontWeight: 500,
                       color: "#0f1a16",
                       letterSpacing: "-0.02em",
                       lineHeight: 1,
@@ -258,20 +256,17 @@ export default async function ProductDetailPage({
                     </span>
                     <span style={{
                       fontSize: 13,
-                      color: "#64748b",
-                      fontWeight: 500,
+                      color: "#94a3b8",
+                      fontWeight: 400,
                     }}>
                       / Stück
                     </span>
                   </div>
                 );
               })()}
-              <p style={{ fontSize: 11, color: "#94a3b8", marginTop: 2, marginBottom: 16 }}>
+              {/* Ein Hinweis reicht — vorher stand „zzgl. Versand" doppelt */}
+              <p style={{ fontSize: 12, color: "#a8b0aa", marginTop: 6, marginBottom: 20 }}>
                 inkl. MwSt., zzgl. Versand
-              </p>
-
-              <p className="mm-detail-meta">
-                Produktionszeit: <strong>Auf Anfrage</strong> · exkl. Versand
               </p>
 
               {/* ÜBERSICHT + DETAILS tabs yan yana — fiyatın hemen altında */}

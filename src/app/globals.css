@@ -1676,8 +1676,8 @@ body:has(.home-services) footer.site{margin-top:0}
 .mm-detail-h1{font-family:var(--display);font-weight:600;
   font-size:clamp(1.5rem,2.6vw,2.1rem);line-height:1.15;letter-spacing:-.015em;
   color:var(--ink);margin:0 0 6px}
-.mm-detail-sub{font-size:1.05rem;color:var(--muted);line-height:1.4;
-  margin:0 0 10px;font-weight:500}
+.mm-detail-sub{font-size:1rem;color:var(--muted);line-height:1.5;
+  margin:0 0 10px;font-weight:400}
 .mm-detail-meta{font-size:.9rem;color:#3b4540;margin:0 0 14px}
 .mm-detail-meta strong{color:var(--ink);font-weight:600}
 
