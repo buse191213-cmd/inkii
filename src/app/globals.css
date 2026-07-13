@@ -5077,12 +5077,14 @@ body:has(.hero-full) header.site .brand-other img{filter:none;height:52px}
 /* === Vertrauens-Leiste (Social Proof) — Produktdetailseite === */
 .mm-trust{padding:44px 0;border-top:1px solid #f0f2ee;background:#fafbf9}
 .mm-trust-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:32px}
-.mm-trust-item{display:flex;flex-direction:column;gap:5px;text-decoration:none;color:inherit}
+.mm-trust-item{display:flex;flex-direction:column;gap:5px;text-decoration:none;color:inherit;
+  align-items:flex-start;text-align:left}
 .mm-trust-link{transition:opacity .18s}
 .mm-trust-link:hover{opacity:.72}
 .mm-trust-icon{color:#004537;margin-bottom:2px}
 /* Offizielles Trustpilot-Logo (SVG von cdn.trustpilot.net) */
-.mm-trust-tp-logo-img{height:22px;width:auto;display:block;margin-bottom:7px}
+.mm-trust-tp-logo-img{height:22px;width:auto;display:block;margin:0 auto 7px 0;
+  align-self:flex-start}
 .mm-trust-stars{display:flex;gap:1px;color:#00b67a;margin-bottom:4px}
 .mm-trust-title{font-family:var(--display);font-size:.86rem;font-weight:600;
   color:#0f1a16;letter-spacing:-.01em}
