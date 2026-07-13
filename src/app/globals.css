@@ -3074,12 +3074,11 @@ body:has(.home-services) footer.site{margin-top:0}
 .det-order-qty-label{display:flex;justify-content:space-between;align-items:baseline;
   font-size:.82rem;font-weight:600;color:#0f1a16}
 .det-order-qty-hint{font-size:.68rem;font-weight:400;color:#9ea7a2;font-style:normal}
-.det-order-qty-input{display:flex;align-items:center;gap:8px}
-.det-order-qty-input input{flex:1}
-.det-order-qty-unit{font-size:.78rem;color:#9ea7a2;font-weight:400;white-space:nowrap}
+.det-order-qty-input{display:flex;align-items:center;gap:10px;width:100%}
+.det-order-qty-unit{font-size:.78rem;color:#9ea7a2;font-weight:400;white-space:nowrap;flex-shrink:0}
 .det-order-qty-single input{padding:11px 14px;border:1px solid #e3e8e3;border-radius:7px;
-  font-size:1rem;font-weight:500;color:#0f1a16;width:auto;min-width:0;flex:1;
-  transition:border-color .15s}
+  font-size:1rem;font-weight:500;color:#0f1a16;width:100%;min-width:0;flex:1 1 auto;
+  transition:border-color .15s;box-sizing:border-box}
 .det-order-qty-single input:focus{outline:none;border-color:#004537}
 
 /* Staffelpreise — variante içinde, aktif tier işaretli */
