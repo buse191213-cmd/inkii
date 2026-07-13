@@ -333,48 +333,80 @@ export default function WarenkorbClient({ t, tSteps, shipping }: Props) {
         >
           <h3 style={{ fontWeight: 700, fontSize: 18, marginBottom: 16 }}>Zusammenfassung</h3>
 
-          <div style={{ display: "flex", flexDirection: "column", gap: 8, fontSize: 14 }}>
-            <div style={{ display: "flex", justifyContent: "space-between" }}>
-              <span>{t.zwischensumme}</span>
-              <span>{euro(subtotalCents)} €</span>
-            </div>
-            <div style={{ display: "flex", justifyContent: "space-between" }}>
-              <span>{t.shipping} {shippingCents === 0 && <small style={{ color: "#0d9488" }}>({t.free})</small>}</span>
-              <span>{euro(shippingCents)} €</span>
-            </div>
-            <div style={{ display: "flex", justifyContent: "space-between", color: "#64748b" }}>
-              <span>{t.davonMwst}</span>
-              <span>{euro(taxCents)} €</span>
-            </div>
-            <div
-              style={{
-                display: "flex",
-                justifyContent: "space-between",
-                marginTop: 12,
-                paddingTop: 12,
-                borderTop: "1px solid #cbd5e1",
-                fontWeight: 700,
-                fontSize: 18,
-              }}
-            >
-              <span>{t.gesamt}</span>
-              <span>{euro(totalCents)} €</span>
-            </div>
-          </div>
+          {(() => {
+            // Preis auf Anfrage im Warenkorb → Preissummen ergeben keinen Sinn
+            // (Produktpreis fehlt). Stattdessen Hinweis zum Angebot.
+            const quoteOnly = items.some((i) => !i.unitPriceCents || i.unitPriceCents <= 0);
 
-          {subtotalCents < FREE_FROM && (
-            <div
-              style={{
-                marginTop: 16,
-                padding: 10,
-                background: "#fef3c7",
-                fontSize: 12,
-                color: "#92400e",
-              }}
-            >
-              {t.freeShippingHint.replace("{amount}", euro(FREE_FROM - subtotalCents))}
-            </div>
-          )}
+            if (quoteOnly) {
+              return (
+                <div style={{
+                  padding: "14px 16px",
+                  background: "#fafbf9",
+                  borderLeft: "2px solid #004537",
+                  borderRadius: 7,
+                  fontSize: 13,
+                  color: "#5b6560",
+                  lineHeight: 1.6,
+                }}>
+                  <strong style={{ display: "block", color: "#0f1a16", fontWeight: 600, marginBottom: 4, fontSize: 13 }}>
+                    Preis auf Anfrage
+                  </strong>
+                  Für mindestens einen Artikel liegt kein Preis vor. Wir erstellen Ihnen ein
+                  individuelles Angebot inkl. Versandkosten.
+                </div>
+              );
+            }
+
+            return (
+              <>
+                <div style={{ display: "flex", flexDirection: "column", gap: 8, fontSize: 14 }}>
+                  <div style={{ display: "flex", justifyContent: "space-between" }}>
+                    <span>{t.zwischensumme}</span>
+                    <span>{euro(subtotalCents)} €</span>
+                  </div>
+                  <div style={{ display: "flex", justifyContent: "space-between" }}>
+                    <span>{t.shipping} {shippingCents === 0 && <small style={{ color: "#0d9488" }}>({t.free})</small>}</span>
+                    <span>{euro(shippingCents)} €</span>
+                  </div>
+                  <div style={{ display: "flex", justifyContent: "space-between", color: "#64748b" }}>
+                    <span>{t.davonMwst}</span>
+                    <span>{euro(taxCents)} €</span>
+                  </div>
+                  <div
+                    style={{
+                      display: "flex",
+                      justifyContent: "space-between",
+                      marginTop: 12,
+                      paddingTop: 12,
+                      borderTop: "1px solid #cbd5e1",
+                      fontWeight: 700,
+                      fontSize: 18,
+                    }}
+                  >
+                    <span>{t.gesamt}</span>
+                    <span>{euro(totalCents)} €</span>
+                  </div>
+                </div>
+
+                {subtotalCents < FREE_FROM && (
+                  <div
+                    style={{
+                      marginTop: 16,
+                      padding: 10,
+                      background: "#fafbf9",
+                      borderLeft: "2px solid #c9a155",
+                      borderRadius: 7,
+                      fontSize: 12,
+                      color: "#6b7671",
+                    }}
+                  >
+                    {t.freeShippingHint.replace("{amount}", euro(FREE_FROM - subtotalCents))}
+                  </div>
+                )}
+              </>
+            );
+          })()}
 
           {/* B2B 2 ÇIKIŞ: Angebot anfragen + Direkt kaufen */}
           <div style={{ marginTop: 24, padding: 16, background: "#fff", border: "1px solid #e5e7eb" }}>
