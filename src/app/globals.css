@@ -1685,8 +1685,8 @@ body:has(.home-services) footer.site{margin-top:0}
 .mm-tabs{margin-bottom:32px}
 .mm-tabs-nav{display:flex;gap:0;border-bottom:1px solid var(--line);margin-bottom:20px;
   overflow-x:auto}
-.mm-tab{background:none;border:0;padding:10px 4px;margin-right:20px;cursor:pointer;
-  font-family:var(--display);font-weight:600;font-size:.68rem;letter-spacing:.08em;
+.mm-tab{background:none;border:0;padding:9px 4px;margin-right:18px;cursor:pointer;
+  font-family:var(--display);font-weight:600;font-size:.62rem;letter-spacing:.07em;
   color:var(--muted);transition:.18s;position:relative;flex-shrink:0;
   text-transform:uppercase}
 .mm-tab:hover{color:var(--ink)}
@@ -3066,10 +3066,9 @@ body:has(.home-services) footer.site{margin-top:0}
 .det-order-qty-label{display:flex;justify-content:space-between;align-items:baseline;
   font-size:.82rem;font-weight:600;color:#0f1a16}
 .det-order-qty-hint{font-size:.68rem;font-weight:400;color:#9ea7a2;font-style:normal}
-.det-order-qty-input{position:relative;display:flex;align-items:center}
-.det-order-qty-input input{flex:1;padding-right:52px !important}
-.det-order-qty-unit{position:absolute;right:14px;font-size:.75rem;color:#a8b0aa;
-  pointer-events:none;font-weight:400}
+.det-order-qty-input{display:flex;align-items:center;gap:8px}
+.det-order-qty-input input{flex:1}
+.det-order-qty-unit{font-size:.78rem;color:#9ea7a2;font-weight:400;white-space:nowrap}
 .det-order-qty-single input{padding:11px 14px;border:1px solid #e3e8e3;border-radius:7px;
   font-size:1.1rem;font-weight:700;color:#0f1a16;width:100%;transition:border-color .15s}
 .det-order-qty-single input:focus{outline:none;border-color:#004537}

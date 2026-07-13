@@ -151,11 +151,11 @@ export default function DesignUploadTabs() {
 
       <style jsx>{`
         .dut-wrap {
-          margin: 24px 0;
-          padding: 20px;
-          background: #fafbf9;
-          border: 1px solid #e3e6df;
-          border-radius: 6px;
+          margin: 20px 0;
+          padding: 0;
+          background: none;
+          border: 0;
+          border-radius: 0;
         }
         .dut-head {
           display: flex;
@@ -200,13 +200,13 @@ export default function DesignUploadTabs() {
         .dut-navtab {
           background: none;
           border: 0;
-          padding: 12px 4px;
-          margin-right: 28px;
+          padding: 9px 4px;
+          margin-right: 20px;
           cursor: pointer;
           position: relative;
-          font-size: 0.9rem;
-          font-weight: 600;
-          color: #7a857f;
+          font-size: 0.78rem;
+          font-weight: 500;
+          color: #9ea7a2;
           font-family: inherit;
           display: inline-flex;
           align-items: center;
@@ -240,10 +240,10 @@ export default function DesignUploadTabs() {
         .dut-panel { min-height: 90px; }
         .dut-upload {
           width: 100%;
-          background: #fff;
-          border: 1.5px dashed #cbd2ca;
-          border-radius: 6px;
-          padding: 24px 16px;
+          background: none;
+          border: 1px dashed #d9ddd5;
+          border-radius: 7px;
+          padding: 22px 16px;
           cursor: pointer;
           display: flex;
           flex-direction: column;
