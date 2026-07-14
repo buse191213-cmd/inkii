@@ -63,6 +63,8 @@ export default function CookieBanner({ dict }: { dict: CookieDict }) {
           timestamp: new Date().toISOString(),
         })
       );
+      // Analytics-Komponenten sofort informieren (ohne Reload)
+      window.dispatchEvent(new Event("inkii-cookie-consent-changed"));
     } catch {}
     setShow(false);
   };

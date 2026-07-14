@@ -9,6 +9,9 @@ import CookieBanner from "@/components/CookieBanner";
 import WhatsAppButton from "@/components/WhatsAppButton";
 import GlobalBrandSwitcher from "@/components/GlobalBrandSwitcher";
 import ServiceWorkerRegistration from "@/components/ServiceWorkerRegistration";
+import GoogleAnalytics from "@/components/GoogleAnalytics";
+import { Analytics } from "@vercel/analytics/next";
+import { SpeedInsights } from "@vercel/speed-insights/next";
 import { COMPANY } from "@/lib/company";
 import "./globals.css";
 
@@ -132,6 +135,12 @@ export default async function RootLayout({
         <JsonLd data={localBusinessSchema()} />
         <ServiceWorkerRegistration />
 
+        {/* Vercel Analytics — cookiefrei, keine Einwilligung nötig */}
+        <Analytics />
+        <SpeedInsights />
+
+        {/* Google Analytics — lädt nur nach Cookie-Einwilligung (DSGVO) */}
+        <GoogleAnalytics />
       </body>
     </html>
   );

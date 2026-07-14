@@ -371,6 +371,8 @@ export type Dictionary = {
     datenschutz3: string;
     datenschutz4Title: string;
     datenschutz4: string;
+    datenschutz5Title: string;
+    datenschutz5: string;
     widerrufTitle: string;
     widerruf1Title: string;
     widerruf1a: string;

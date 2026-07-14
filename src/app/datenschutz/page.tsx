@@ -38,6 +38,9 @@ export default async function DatenschutzPage() {
 
           <h2>{t.datenschutz4Title}</h2>
           <p>{t.datenschutz4}</p>
+
+          <h2>{t.datenschutz5Title}</h2>
+          <p>{t.datenschutz5}</p>
         </div>
       </section>
     </SiteShell>
