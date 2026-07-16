@@ -4607,13 +4607,20 @@ body:has(.hero-full) header.site .brand-other img{filter:none;height:52px}
     max-width: 100% !important;
   }
   .mm-detail-gallery .gallery-main {
-    max-height: 680px;
+    /* Reines Quadrat (aspect-ratio:1 aus der Basis-Regel) — KEIN max-height,
+       das würde das Quadrat stauchen und die Koordinaten verfälschen. */
     background: #f5f5f5 !important;
   }
   .mm-detail-gallery .gallery-main img {
-    max-height: 680px;
-    width: auto;
-    margin: 0 auto;
+    /* Wie im Admin-PrintAreaEditor: Bild füllt den quadratischen Rahmen
+       vollständig (width/height 100 %) mit object-fit:contain. Nur so
+       stimmen Druckbereich-Koordinaten (Prozent) 1:1 zwischen Admin und
+       Website überein. Kein width:auto / margin:auto mehr — das verschob
+       das Bild und damit die Koordinaten. */
+    width: 100% !important;
+    height: 100% !important;
+    object-fit: contain !important;
+    margin: 0 !important;
   }
 }
 
