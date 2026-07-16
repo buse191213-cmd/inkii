@@ -131,6 +131,15 @@ export default function DetailOrderForm({
         if (ce.detail.front || ce.detail.back) {
           setTransferEnabled(true);
         }
+        // Vorschau auf „Das könnte Ihnen gefallen"-Karten aktualisieren
+        // (Vorderseiten-Logo, oder null zum Entfernen)
+        if (typeof window !== "undefined") {
+          window.dispatchEvent(
+            new CustomEvent("inkii-design-preview", {
+              detail: { logoUrl: ce.detail.front?.imageDataUrl || null },
+            })
+          );
+        }
       }
     }
     window.addEventListener("designs-updated", onDesigns as EventListener);

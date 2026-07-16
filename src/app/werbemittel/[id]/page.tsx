@@ -17,6 +17,7 @@ import DetailOrderForm from "@/components/DetailOrderForm";
 import ProductDetailTabs, { type DetailTab } from "@/components/ProductDetailTabs";
 import { CARE_SYMBOLS } from "@/lib/care-symbols";
 import { getShopConfig } from "@/app/admin/(panel)/settings/shop-config-actions";
+import RelatedLogoPreview from "@/components/RelatedLogoPreview";
 
 export const dynamic = "force-dynamic";
 
@@ -418,6 +419,7 @@ export default async function ProductDetailPage({
 
       {related.length > 0 && (
         <section className="mm-related">
+          <RelatedLogoPreview />
           <div className="wrap-wide">
             <div className="mm-related-head">
               {dt.relatedKicker && <p className="kicker">{dt.relatedKicker}</p>}
@@ -459,7 +461,7 @@ export default async function ProductDetailPage({
                 return (
                   <article key={r.id} className="mm-card">
                     <Link href={`/werbemittel/${r.id}`} className="mm-card-link">
-                      <div className="mm-card-img">
+                      <div className="mm-card-img" data-related-card="1">
                         {rImg ? (
                           /* eslint-disable-next-line @next/next/no-img-element */
                           <img
