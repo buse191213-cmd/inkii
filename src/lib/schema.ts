@@ -183,6 +183,21 @@ export function localBusinessSchema(): Json {
     schema.sameAs = COMPANY.sameAs;
   }
 
+  // Angebotene Leistungen — hilft Google, lokale Suchanfragen zuzuordnen
+  schema.makesOffer = [
+    "Textildruck in Essen",
+    "DTF Druck",
+    "Siebdruck",
+    "Stickerei",
+    "Firmenbekleidung",
+    "Werbemittel",
+    "Express-Lieferung",
+    "Abholung in Essen",
+  ].map((name) => ({
+    "@type": "Offer",
+    itemOffered: { "@type": "Service", name },
+  }));
+
   return schema;
 }
 
