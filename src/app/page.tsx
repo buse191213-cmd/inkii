@@ -80,9 +80,15 @@ export default async function HomePage() {
           <div className="hero-marquee-track">
             <span>{d.utility.center}</span>
             <span>•</span>
-            <span>{d.utility.center}</span>
+            <span>Textildruck in Essen</span>
+            <span>•</span>
+            <span>DTF · Stickerei · Siebdruck</span>
             <span>•</span>
             <span>{d.utility.center}</span>
+            <span>•</span>
+            <span>Textildruck in Essen</span>
+            <span>•</span>
+            <span>DTF · Stickerei · Siebdruck</span>
             <span>•</span>
           </div>
         </div>

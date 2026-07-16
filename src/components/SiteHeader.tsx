@@ -188,7 +188,8 @@ function SiteHeaderInner({
           >
             <button
               className="burger"
-              aria-label={t.search}
+              aria-label="Menü öffnen"
+              aria-expanded={open}
               onClick={() => setOpen(true)}
             >
               <span></span>

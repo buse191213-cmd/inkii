@@ -87,8 +87,11 @@ export default function DetailOrderForm({
   }, [selectedColor, colorImages, productImage]);
   const [qty, setQty] = useState<Record<string, number>>(() => {
     const init: Record<string, number> = {};
+    // Startmenge = Mindestbestellmenge (oder 1) — so ist „Gesamt" sofort
+    // gefüllt statt leer („—"), was den ersten Eindruck verbessert.
+    const startQty = minOrderQty > 1 ? minOrderQty : 1;
     sizes.forEach((s) => (init[s.name] = 0));
-    if (sizes.length === 0) init["__default"] = 0;
+    if (sizes.length === 0) init["__default"] = startQty;
     return init;
   });
   const [note, setNote] = useState("");

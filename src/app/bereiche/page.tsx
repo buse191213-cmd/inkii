@@ -58,6 +58,26 @@ export default async function BereichePage() {
               <h3 className="mm-page-tile-title">{t.werbe.title}</h3>
               <p className="mm-page-tile-desc">{t.werbe.text}</p>
             </Link>
+            <Link
+              href="/webdesign"
+              className="mm-page-tile mm-page-tile-link"
+            >
+              <div className="mm-page-tile-label">INKII Marketing</div>
+              <h3 className="mm-page-tile-title">Webdesign</h3>
+              <p className="mm-page-tile-desc">
+                Moderne Websites und Online-Shops — von der Gestaltung bis zum Launch.
+              </p>
+            </Link>
+            <Link
+              href="/marketing"
+              className="mm-page-tile mm-page-tile-link"
+            >
+              <div className="mm-page-tile-label">INKII Marketing</div>
+              <h3 className="mm-page-tile-title">Marketing</h3>
+              <p className="mm-page-tile-desc">
+                Social Media, Kampagnen und Markenauftritt aus einer Hand.
+              </p>
+            </Link>
           </div>
         </div>
       </section>
