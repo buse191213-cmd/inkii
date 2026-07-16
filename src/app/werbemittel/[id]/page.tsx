@@ -461,7 +461,13 @@ export default async function ProductDetailPage({
                 return (
                   <article key={r.id} className="mm-card">
                     <Link href={`/werbemittel/${r.id}`} className="mm-card-link">
-                      <div className="mm-card-img" data-related-card="1">
+                      <div
+                        className="mm-card-img"
+                        data-related-card="1"
+                        data-crop-zoom={zoom}
+                        data-crop-tx={tx}
+                        data-crop-ty={ty}
+                      >
                         {rImg ? (
                           /* eslint-disable-next-line @next/next/no-img-element */
                           <img

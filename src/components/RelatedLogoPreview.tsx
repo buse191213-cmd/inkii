@@ -27,24 +27,43 @@ export default function RelatedLogoPreview() {
         card.querySelectorAll(`.${OVERLAY_CLASS}`).forEach((el) => el.remove());
         if (!logoUrl) return;
 
-        // Sicherstellen, dass das Overlay relativ zur Karte positioniert wird
         if (getComputedStyle(card).position === "static") {
           card.style.position = "relative";
         }
 
-        // Position/Größe aus dem Konfigurator übernehmen (Prozentwerte,
-        // relativ zum Produktbild — passt 1:1 auf die quadratische Karte).
-        // Fallback: Brusthöhe zentriert, falls keine Platzierung vorliegt.
+        // cardCrop (Zoom/Pan) der Karte — das Produktbild ist evtl. gezoomt,
+        // also muss das Logo denselben Transform bekommen, sonst sitzt es
+        // relativ zum Bild verschoben.
+        const zoom = parseFloat(card.dataset.cropZoom || "1") || 1;
+        const tx = parseFloat(card.dataset.cropTx || "0") || 0;
+        const ty = parseFloat(card.dataset.cropTy || "0") || 0;
+
+        // Position/Größe aus dem Konfigurator (Prozent, wie im Hauptbild).
         const x = placement?.x ?? 50;
         const y = placement?.y ?? 38;
         const width = placement?.width ?? 26;
         const rotation = placement?.rotation ?? 0;
 
+        // Wrapper trägt den cardCrop-Transform (identisch zum Produktbild:
+        // scale + translate, gleiche Origin, gleiches padding von 4px).
+        const wrap = document.createElement("div");
+        wrap.className = OVERLAY_CLASS;
+        wrap.setAttribute("aria-hidden", "true");
+        Object.assign(wrap.style, {
+          position: "absolute",
+          inset: "0", // gallery-main hat kein padding → identisches Koordinatensystem
+          pointerEvents: "none",
+          zIndex: "3",
+          transform: (zoom !== 1 || tx !== 0 || ty !== 0)
+            ? `scale(${zoom}) translate(${-tx}%, ${ty}%)`
+            : "",
+          transformOrigin: "center",
+          overflow: "hidden",
+        } as CSSStyleDeclaration);
+
         const img = document.createElement("img");
         img.src = logoUrl;
         img.alt = "";
-        img.className = OVERLAY_CLASS;
-        img.setAttribute("aria-hidden", "true");
         Object.assign(img.style, {
           position: "absolute",
           left: `${x}%`,
@@ -52,12 +71,12 @@ export default function RelatedLogoPreview() {
           width: `${width}%`,
           transform: `translate(-50%, -50%) rotate(${rotation}deg)`,
           objectFit: "contain",
-          pointerEvents: "none",
-          zIndex: "3",
           filter: "drop-shadow(0 1px 2px rgba(0,0,0,.12))",
           opacity: "0.96",
         } as CSSStyleDeclaration);
-        card.appendChild(img);
+
+        wrap.appendChild(img);
+        card.appendChild(wrap);
       });
     }
 
