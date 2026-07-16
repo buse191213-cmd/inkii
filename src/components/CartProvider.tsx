@@ -46,10 +46,13 @@ export function cartItemTotalCents(item: CartItem): number {
   const transferPerUnit = item.dtfPriceCents || 0;
   const baseCents = item.unitPriceCents; // ham base (priceCents)
 
-  // Toplam adet
-  const totalQty = item.sizeBreakdown && Object.keys(item.sizeBreakdown).length > 0
+  // Preis-relevante Menge: verteilte Menge, sonst Zielmenge (quantity).
+  // So bleibt der Staffelpreis korrekt, auch bevor der Kunde die Größen
+  // im Warenkorb verteilt hat (er kam ja mit z. B. 10 Stück).
+  const distributedQty = item.sizeBreakdown && Object.keys(item.sizeBreakdown).length > 0
     ? Object.values(item.sizeBreakdown).reduce((s, n) => s + (n || 0), 0)
-    : item.quantity;
+    : 0;
+  const totalQty = distributedQty > 0 ? distributedQty : item.quantity;
 
   // Aktif tier fiyatını bul (toplam adete göre)
   let activeTierCents = baseCents;
@@ -63,24 +66,24 @@ export function cartItemTotalCents(item: CartItem): number {
   // İndirim oranı: aktif tier / base
   const ratio = baseCents > 0 ? activeTierCents / baseCents : 1;
 
-  // Beden dağılımı varsa: her beden kendi fiyatından × ratio
-  if (item.sizeBreakdown && Object.keys(item.sizeBreakdown).length > 0) {
+  // Beden dağılımı varsa VE en az bir bedene adet girilmişse: her beden kendi
+  // fiyatından × ratio. Henüz hiç dağıtılmadıysa (hepsi 0) aşağıdaki Zielmengen-
+  // Fallback greift, damit der Preis nicht auf 0 fällt.
+  if (distributedQty > 0) {
     let total = 0;
-    for (const [size, qty] of Object.entries(item.sizeBreakdown)) {
+    for (const [size, qty] of Object.entries(item.sizeBreakdown!)) {
       const n = qty || 0;
       if (n <= 0) continue;
-      // Beden HAM fiyatı (özel varsa o, yoksa base)
       const rawSizePrice = (item.sizePrices?.[size] && item.sizePrices[size] > 0)
         ? item.sizePrices[size]
         : baseCents;
-      // ratio uygula (Staffel indirimi bu bedene de yansır)
       const effectivePrice = Math.round(rawSizePrice * ratio);
       total += (effectivePrice + transferPerUnit) * n;
     }
     return total;
   }
 
-  // Beden yoksa: aktif tier fiyatı × adet
+  // Beden yoksa ODER noch nicht verteilt: aktif tier fiyatı × Zielmenge
   return (activeTierCents + transferPerUnit) * item.quantity;
 }
 

@@ -50,12 +50,19 @@ export default function CartSizeDistributor({
   const remaining = quantity - currentTotal;
   const belowMin = currentTotal < minOrderQty;
 
-  // Aktif tier ratio (toplam adete göre)
+  // Aktif tier ratio.
+  // Preisbasis = die tatsächlich verteilte Menge, sofern schon verteilt wurde.
+  // Ist noch NICHTS verteilt (currentTotal === 0), nutzen wir die Zielmenge
+  // (quantity), mit der der Kunde ins Warenkorb kam — so sieht er sofort den
+  // korrekten Staffelpreis (z. B. 36,09 € bei 10 Stück) statt erst den
+  // ungestaffelten Listenpreis. Sobald er verteilt/reduziert, greift die
+  // echte verteilte Menge.
+  const priceQty = currentTotal > 0 ? currentTotal : quantity;
   let activeTierCents = basePriceCents;
-  if (priceTiers && priceTiers.length > 0 && currentTotal > 0) {
+  if (priceTiers && priceTiers.length > 0 && priceQty > 0) {
     const sorted = [...priceTiers].sort((a, b) => a.qty - b.qty);
     for (const t of sorted) {
-      if (currentTotal >= t.qty) activeTierCents = t.cents;
+      if (priceQty >= t.qty) activeTierCents = t.cents;
     }
   }
   const ratio = basePriceCents > 0 ? activeTierCents / basePriceCents : 1;

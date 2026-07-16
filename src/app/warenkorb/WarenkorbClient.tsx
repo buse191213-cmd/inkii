@@ -300,9 +300,15 @@ export default function WarenkorbClient({ t, tSteps, shipping }: Props) {
                       {euro(cartItemTotalCents(item))} €
                     </div>
                     <div style={{ fontSize: 11, color: "#64748b", marginTop: 2 }}>
-                      {item.quantity > 0
-                        ? `Ø ${euro(Math.round(cartItemTotalCents(item) / item.quantity))} € ${t.perStk}`
-                        : "—"}
+                      {(() => {
+                        // Ø ÷ tatsächlich verteilte Menge (nicht Zielmenge)
+                        const effQty = item.sizeBreakdown && Object.keys(item.sizeBreakdown).length > 0
+                          ? Object.values(item.sizeBreakdown).reduce((s, n) => s + (n || 0), 0)
+                          : item.quantity;
+                        return effQty > 0
+                          ? `Ø ${euro(Math.round(cartItemTotalCents(item) / effQty))} € ${t.perStk}`
+                          : "—";
+                      })()}
                     </div>
                   </>
                 ) : (
