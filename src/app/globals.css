@@ -662,6 +662,8 @@ footer.site ul a:hover{color:var(--leaf)}
   place-items:center;z-index:80;padding:24px}
 .adm .modal{background:#fff;width:100%;max-width:920px;max-height:94vh;overflow:auto;
   border-radius:12px;box-shadow:0 30px 80px rgba(0,0,0,.22)}
+/* Breite Variante für das Produkt-Formular (viele Felder, mehr Arbeitsfläche) */
+.adm .modal.modal-wide{max-width:1400px;max-height:96vh;width:96vw}
 .adm .modal-head{display:flex;justify-content:space-between;align-items:center;
   padding:20px 28px;border-bottom:1px solid var(--line);position:sticky;top:0;background:#fff;z-index:5}
 .adm .modal-head h3{font-family:var(--display);font-size:1.2rem;font-weight:800}

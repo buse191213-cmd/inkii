@@ -11,6 +11,7 @@ import { parseSizesField, stringifySizesFromDrafts } from "@/lib/sizes";
 import RichEditor from "@/components/admin/RichEditor";
 import CropEditor from "@/components/admin/CropEditor";
 import PrintAreaEditor from "@/components/admin/PrintAreaEditor";
+import RecLogoEditor from "@/components/admin/RecLogoEditor";
 import { CARE_SYMBOLS, careLabel } from "@/lib/care-symbols";
 
 export type AdminProduct = {
@@ -26,6 +27,7 @@ export type AdminProduct = {
   stock: number;
   minOrderQty?: number;
   recommendedIds?: string;
+  recommendedLogos?: string;
   printAreaType?: string;
   customPrintArea?: string;
   status: string;
@@ -111,6 +113,11 @@ export default function ProductManager({
   const [tiers, setTiers] = useState<TierDraft[]>([]);
   const [sizes, setSizes] = useState<Array<{ nameText: string; extraText: string }>>([]);
   const [selRecommended, setSelRecommended] = useState<string[]>([]);
+  // Logo-Position je empfohlenem Produkt: { productId: { x, y, width, rotation } }
+  type LogoPos = { x: number; y: number; width: number; rotation: number };
+  const [recLogos, setRecLogos] = useState<Record<string, LogoPos>>({});
+  // Welche Empfehlung wird gerade positioniert (Produkt-ID) — für den Editor
+  const [posEditFor, setPosEditFor] = useState<string | null>(null);
   const [customColor, setCustomColor] = useState("#3f9c5c");
   const [customColorName, setCustomColorName] = useState("");
   const fileInput = useRef<HTMLInputElement>(null);
@@ -304,6 +311,13 @@ export default function ProductManager({
     );
     setSizes(parseSizesField(p.sizes ?? "[]"));
     setSelRecommended((p.recommendedIds || "").split(",").map((s) => s.trim()).filter(Boolean));
+    try {
+      const raw = (p as { recommendedLogos?: string }).recommendedLogos;
+      setRecLogos(raw ? JSON.parse(raw) : {});
+    } catch {
+      setRecLogos({});
+    }
+    setPosEditFor(null);
     setModal({ ...p });
   }
 
@@ -416,6 +430,12 @@ export default function ProductManager({
 
     // Empfohlene Produkte (Cross-Sell)
     fd.set("recommendedIds", selRecommended.join(","));
+    // Nur Positionen behalten, deren Produkt auch ausgewählt ist
+    const cleanedLogos: Record<string, LogoPos> = {};
+    for (const id of selRecommended) {
+      if (recLogos[id]) cleanedLogos[id] = recLogos[id];
+    }
+    fd.set("recommendedLogos", JSON.stringify(cleanedLogos));
 
     // visiblePages: alle gleichnamigen Felder einsammeln und als JSON serialisieren
     const checkedPages = fd.getAll("visiblePages").filter((v): v is string => typeof v === "string");
@@ -603,7 +623,7 @@ export default function ProductManager({
       {modal && (
         <div className="modal-bg">
           {/* Overlay click ile kapanmaz - sadece X butonu ve Abbrechen ile */}
-          <div className="modal">
+          <div className="modal modal-wide">
             <form onSubmit={handleSave}>
               <div className="modal-head">
                 <h3>{modal.id ? "Produkt bearbeiten" : "Neues Produkt"}</h3>
@@ -855,6 +875,60 @@ export default function ProductManager({
                         })
                     )}
                   </div>
+
+                  {/* Logo-Position je ausgewähltem Empfehlungsprodukt */}
+                  {selRecommended.length > 0 && (
+                    <div style={{ marginTop: 14 }}>
+                      <div className="tier-help" style={{ marginBottom: 8 }}>
+                        Logo-Position pro Empfehlung festlegen (optional). Ohne
+                        Angabe erscheint das Logo mittig auf Brusthöhe.
+                      </div>
+                      <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
+                        {selRecommended.map((rid) => {
+                          const rp = products.find((x) => x.id === rid);
+                          if (!rp) return null;
+                          const thumb = splitImages(rp.images)[0] || null;
+                          const isOpen = posEditFor === rid;
+                          const pos = recLogos[rid] || { x: 50, y: 38, width: 26, rotation: 0 };
+                          return (
+                            <div key={rid} style={{ border: "1px solid #e5e7eb", borderRadius: 7 }}>
+                              <button
+                                type="button"
+                                onClick={() => setPosEditFor(isOpen ? null : rid)}
+                                style={{
+                                  width: "100%", display: "flex", alignItems: "center", gap: 10,
+                                  padding: "8px 12px", background: isOpen ? "#f0fdf4" : "#fff",
+                                  border: "none", cursor: "pointer", borderRadius: 7,
+                                }}
+                              >
+                                <div style={{
+                                  width: 32, height: 32, flexShrink: 0,
+                                  background: thumb ? `#f4f5f3 url(${thumb}) center/contain no-repeat` : "#f4f5f3",
+                                  border: "1px solid #e5e7eb", borderRadius: 4,
+                                }} />
+                                <span style={{ flex: 1, textAlign: "left", fontSize: 13, fontWeight: 600, color: "#0f1a16" }}>
+                                  {rp.name}
+                                </span>
+                                <span style={{ fontSize: 12, color: "#059669" }}>
+                                  {recLogos[rid] ? "Position gesetzt ✓" : "Position festlegen"}
+                                </span>
+                                <span style={{ fontSize: 12, color: "#94a3b8" }}>{isOpen ? "▲" : "▼"}</span>
+                              </button>
+                              {isOpen && (
+                                <div style={{ padding: "12px", borderTop: "1px solid #f1f5f9" }}>
+                                  <RecLogoEditor
+                                    image={thumb}
+                                    value={pos}
+                                    onChange={(v) => setRecLogos((cur) => ({ ...cur, [rid]: v }))}
+                                  />
+                                </div>
+                              )}
+                            </div>
+                          );
+                        })}
+                      </div>
+                    </div>
+                  )}
                 </div>
 
                 <div className="field">

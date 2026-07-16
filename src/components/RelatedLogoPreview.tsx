@@ -31,14 +31,19 @@ export default function RelatedLogoPreview() {
           card.style.position = "relative";
         }
 
-        // Position aus dem Konfigurator (Prozent). Die GRÖSSE des Logos soll
-        // aber auf ALLEN Karten gleich sein — daher wird der cardCrop-Zoom
-        // hier bewusst NICHT auf das Logo angewendet (sonst wäre das Logo auf
-        // gezoomten Karten größer als auf normalen).
-        const x = placement?.x ?? 50;
-        const y = placement?.y ?? 38;
-        const width = placement?.width ?? 26;
-        const rotation = placement?.rotation ?? 0;
+        // Position: Vorrang hat die vom Admin PRO Empfehlungsprodukt
+        // festgelegte Position (data-logo-*). Fehlt sie, nutzen wir die
+        // Platzierung aus dem Konfigurator, sonst Brusthöhe zentriert.
+        const adminX = card.dataset.logoX;
+        const adminY = card.dataset.logoY;
+        const adminW = card.dataset.logoWidth;
+        const adminR = card.dataset.logoRotation;
+        const hasAdminPos = adminX !== "" && adminX != null;
+
+        const x = hasAdminPos ? Number(adminX) : (placement?.x ?? 50);
+        const y = hasAdminPos ? Number(adminY) : (placement?.y ?? 38);
+        const width = hasAdminPos ? Number(adminW) : (placement?.width ?? 26);
+        const rotation = hasAdminPos ? Number(adminR) : (placement?.rotation ?? 0);
 
         const img = document.createElement("img");
         img.src = logoUrl;

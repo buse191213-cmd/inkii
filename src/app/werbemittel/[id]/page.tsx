@@ -427,10 +427,17 @@ export default async function ProductDetailPage({
             </div>
             {/* Katalogdaki kartlarla BİREBİR aynı yapı (mm-card / mm-grid) */}
             <div className="mm-grid">
-              {related.map((r) => {
+              {(() => {
+                // Vom Admin gesetzte Logo-Positionen je Empfehlung
+                let recLogos: Record<string, { x: number; y: number; width: number; rotation: number }> = {};
+                try {
+                  recLogos = JSON.parse((product as { recommendedLogos?: string }).recommendedLogos ?? "{}") || {};
+                } catch {}
+                return related.map((r) => {
                 const rImages = split(r.images);
                 const rImg = rImages[0] || null;
                 const rColors = split(r.colors);
+                const rLogoPos = recLogos[r.id] || null;
                 // Kademeli fiyatlardaki en düşük fiyat (listedeki "ab" mantığı)
                 const rLowest = (() => {
                   try {
@@ -467,6 +474,10 @@ export default async function ProductDetailPage({
                         data-crop-zoom={zoom}
                         data-crop-tx={tx}
                         data-crop-ty={ty}
+                        data-logo-x={rLogoPos?.x ?? ""}
+                        data-logo-y={rLogoPos?.y ?? ""}
+                        data-logo-width={rLogoPos?.width ?? ""}
+                        data-logo-rotation={rLogoPos?.rotation ?? ""}
                       >
                         {rImg ? (
                           /* eslint-disable-next-line @next/next/no-img-element */
@@ -534,7 +545,8 @@ export default async function ProductDetailPage({
                     </Link>
                   </article>
                 );
-              })}
+              });
+              })()}
             </div>
           </div>
         </section>

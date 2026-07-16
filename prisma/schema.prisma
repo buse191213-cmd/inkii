@@ -31,6 +31,7 @@ model Product {
   stock       Int      @default(0)
   minOrderQty Int      @default(1) // Mindestbestellmenge (z.B. 25 Stück)
   recommendedIds String @default("") // Manuel önerilen ürün ID'leri (virgülle ayrılmış)
+  recommendedLogos String @default("{}") // JSON: { "<productId>": { x, y, width, rotation } } — Logo-Position je Empfehlung
   printAreaType String @default("tshirt") // Baskı alanı tipi: tshirt, bag, cap, mug, notebook
   // Manuel baskı alanı (admin görsel üstünde çizer). Boşsa printAreaType preset'i kullanılır.
   // JSON: {"left":30,"top":40,"right":70,"bottom":80,"widthCm":25,"heightCm":30}
