@@ -94,27 +94,6 @@ export default async function HomePage() {
         </div>
       </section>
 
-      {/* USP-/SEO-Leiste — lokale Keywords sichtbar + für Google lesbar */}
-      <section className="home-usp" aria-label="Leistungen">
-        <div className="home-usp-inner">
-          {[
-            locale === "tr" ? "Essen'de Tekstil Baskı" : locale === "en" ? "Textile Printing in Essen" : "Textildruck in Essen",
-            "DTF Druck",
-            locale === "tr" ? "Nakış" : locale === "en" ? "Embroidery" : "Stickerei",
-            locale === "tr" ? "Firma Kıyafeti" : locale === "en" ? "Corporate Wear" : "Firmenbekleidung",
-            locale === "tr" ? "Express Teslimat" : locale === "en" ? "Express Delivery" : "Express-Lieferung",
-            locale === "tr" ? "Essen'de Teslim Alma" : locale === "en" ? "Pickup in Essen" : "Abholung in Essen",
-          ].map((label) => (
-            <span key={label} className="home-usp-item">
-              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
-                <path d="M20 6L9 17l-5-5" />
-              </svg>
-              {label}
-            </span>
-          ))}
-        </div>
-      </section>
-
       {/* === 2 große Bildkacheln === */}
       <section className="home-tiles">
         <Link href="/werbemittel?cat=kleidung" className="home-tile">

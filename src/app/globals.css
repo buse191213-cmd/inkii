@@ -5097,18 +5097,6 @@ body:has(.hero-full) header.site .brand-other img{filter:none;height:52px}
   .mm-trust-grid{grid-template-columns:1fr;gap:20px}
 }
 
-/* === USP-/SEO-Leiste (unter Hero) === */
-.home-usp{background:#004537;padding:15px 0}
-.home-usp-inner{max-width:1280px;margin:0 auto;padding:0 24px;
-  display:flex;flex-wrap:wrap;justify-content:center;gap:10px 28px}
-.home-usp-item{display:inline-flex;align-items:center;gap:7px;
-  color:#fff;font-size:.82rem;font-weight:500;letter-spacing:.01em;white-space:nowrap}
-.home-usp-item svg{color:#7fd4a8;flex-shrink:0}
-@media(max-width:640px){
-  .home-usp{padding:13px 0}
-  .home-usp-inner{gap:9px 18px}
-  .home-usp-item{font-size:.75rem}
-}
 
 /* Pflichtfeld-Markierung im Kontaktformular */
 .req-star{color:#c0392b;font-weight:600}
