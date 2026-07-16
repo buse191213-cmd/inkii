@@ -13,12 +13,15 @@ import { NAV_KEYS, type NavKey, getAllNavItems } from "@/lib/nav";
 export type ActionResult = { ok: boolean; error?: string };
 
 const MAX_IMAGES = 5;
-const MAX_FILE_BYTES = 4 * 1024 * 1024; // 4 MB pro Bild
+const MAX_FILE_BYTES = 12 * 1024 * 1024; // 12 MB pro Bild (Handy-Fotos sind oft groß)
 const EXT: Record<string, string> = {
   "image/jpeg": "jpg",
   "image/png": "png",
   "image/webp": "webp",
   "image/gif": "gif",
+  "image/heic": "heic",
+  "image/heif": "heif",
+  "image/avif": "avif",
 };
 
 function refreshAll() {
@@ -38,18 +41,30 @@ function refreshPublicPages() {
 
 /** Lädt Bilddateien zu Vercel Blob hoch und liefert ihre öffentlichen URLs. */
 async function saveUploadedImages(files: File[]): Promise<string[]> {
+  // Ohne Blob-Token schlägt put() fehl — klare Meldung statt kryptischer Fehler.
+  if (files.length > 0 && !process.env.BLOB_READ_WRITE_TOKEN) {
+    throw new Error(
+      "Bild-Upload nicht konfiguriert (BLOB_READ_WRITE_TOKEN fehlt). Bitte in den Vercel-Einstellungen hinterlegen."
+    );
+  }
   const urls: string[] = [];
   for (const file of files) {
     if (file.size === 0) continue;
     if (file.size > MAX_FILE_BYTES) {
-      throw new Error(`„${file.name}" ist zu groß (max. 4 MB pro Bild).`);
+      throw new Error(`„${file.name}" ist zu groß (max. 12 MB pro Bild).`);
     }
     const ext = EXT[file.type] ?? "jpg";
     const name = `products/${Date.now()}-${Math.random()
       .toString(36)
       .slice(2, 9)}.${ext}`;
-    const blob = await put(name, file, { access: "public" });
-    urls.push(blob.url);
+    try {
+      const blob = await put(name, file, { access: "public" });
+      urls.push(blob.url);
+    } catch (e) {
+      throw new Error(
+        `Upload von „${file.name}" fehlgeschlagen: ${e instanceof Error ? e.message : "unbekannter Fehler"}`
+      );
+    }
   }
   return urls;
 }
