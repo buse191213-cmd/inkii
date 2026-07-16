@@ -863,6 +863,7 @@ const en: Dictionary = {
     acceptPrivacy: "Please accept the privacy policy.",
     privacyText: "I have read the",
     privacyLink: "Privacy Policy",
+    privacyText2: "and accept it.",
     yourInquiry: "Your inquiry",
     sending: "Sending…",
     submit: "Send inquiry →",

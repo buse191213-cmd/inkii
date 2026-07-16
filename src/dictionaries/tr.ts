@@ -863,6 +863,7 @@ const tr: Dictionary = {
     acceptPrivacy: "Lütfen gizliliği kabul edin.",
     privacyText: "Şunu okudum:",
     privacyLink: "Gizlilik Politikası",
+    privacyText2: "okudum ve kabul ediyorum.",
     yourInquiry: "Talebiniz",
     sending: "Gönderiliyor…",
     submit: "Talep gönder →",

@@ -715,6 +715,7 @@ export type Dictionary = {
     acceptPrivacy: string;
     privacyText: string;
     privacyLink: string;
+    privacyText2: string;
     yourInquiry: string;
     sending: string;
     submit: string;

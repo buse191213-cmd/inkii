@@ -14,6 +14,14 @@ import { useEffect } from "react";
 export default function ServiceWorkerRegistration() {
   useEffect(() => {
     if (typeof window === "undefined") return;
+
+    // Chunk-Reload-Flag zurücksetzen: Wenn diese Komponente mountet, wurde
+    // die Seite erfolgreich geladen — ein evtl. gesetztes Flag aus einem
+    // früheren ChunkLoadError darf einen künftigen Auto-Reload nicht blockieren.
+    try {
+      sessionStorage.removeItem("inkii-chunk-reload");
+    } catch {}
+
     if (!("serviceWorker" in navigator)) return;
     if (window.location.hostname === "localhost") return;
 

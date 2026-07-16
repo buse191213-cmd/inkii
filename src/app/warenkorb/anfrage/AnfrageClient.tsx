@@ -278,7 +278,7 @@ export default function AnfrageClient({ prefill, t, tCart }: { prefill?: Prefill
           <label style={{ display: "flex", gap: 10, fontSize: 13, lineHeight: 1.5, cursor: "pointer", marginBottom: 16 }}>
             <input type="checkbox" checked={accepts} onChange={(e) => setAccepts(e.target.checked)} style={{ marginTop: 3, flexShrink: 0 }} />
             <span>
-              {t.privacyText} <Link href="/datenschutz" style={{ color: "#004537", textDecoration: "underline" }}>{t.privacyLink}</Link>.
+              {t.privacyText} <Link href="/datenschutz" style={{ color: "#004537", textDecoration: "underline" }}>{t.privacyLink}</Link> {t.privacyText2}
             </span>
           </label>
 
