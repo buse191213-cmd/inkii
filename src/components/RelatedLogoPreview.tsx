@@ -18,7 +18,9 @@ export default function RelatedLogoPreview() {
   useEffect(() => {
     const OVERLAY_CLASS = "related-logo-overlay";
 
-    function apply(logoUrl: string | null) {
+    type Placement = { x: number; y: number; width: number; rotation: number } | null;
+
+    function apply(logoUrl: string | null, placement: Placement) {
       const cards = document.querySelectorAll<HTMLElement>('[data-related-card="1"]');
       cards.forEach((card) => {
         // Alte Overlays entfernen
@@ -30,19 +32,25 @@ export default function RelatedLogoPreview() {
           card.style.position = "relative";
         }
 
+        // Position/Größe aus dem Konfigurator übernehmen (Prozentwerte,
+        // relativ zum Produktbild — passt 1:1 auf die quadratische Karte).
+        // Fallback: Brusthöhe zentriert, falls keine Platzierung vorliegt.
+        const x = placement?.x ?? 50;
+        const y = placement?.y ?? 38;
+        const width = placement?.width ?? 26;
+        const rotation = placement?.rotation ?? 0;
+
         const img = document.createElement("img");
         img.src = logoUrl;
         img.alt = "";
         img.className = OVERLAY_CLASS;
         img.setAttribute("aria-hidden", "true");
-        // Feste Platzierung: Brusthöhe, leicht oberhalb der Mitte, zentriert
         Object.assign(img.style, {
           position: "absolute",
-          top: "38%",
-          left: "50%",
-          width: "26%",
-          maxWidth: "26%",
-          transform: "translate(-50%, -50%)",
+          left: `${x}%`,
+          top: `${y}%`,
+          width: `${width}%`,
+          transform: `translate(-50%, -50%) rotate(${rotation}deg)`,
           objectFit: "contain",
           pointerEvents: "none",
           zIndex: "3",
@@ -53,10 +61,10 @@ export default function RelatedLogoPreview() {
       });
     }
 
-    // Event vom Upload-Bereich: { front: url | null }
+    // Event vom Upload-Bereich: { logoUrl, placement }
     function onPreview(e: Event) {
-      const ce = e as CustomEvent<{ logoUrl?: string | null }>;
-      apply(ce.detail?.logoUrl ?? null);
+      const ce = e as CustomEvent<{ logoUrl?: string | null; placement?: Placement }>;
+      apply(ce.detail?.logoUrl ?? null, ce.detail?.placement ?? null);
     }
 
     window.addEventListener("inkii-design-preview", onPreview);

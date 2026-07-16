@@ -403,7 +403,19 @@ export default function ProductGallery({
       if (cancelled) return;
       const detail = {
         front: designs.front
-          ? { imageDataUrl: designs.front.imageDataUrl, sizeCm: frontSize, mockupDataUrl: frontMockup }
+          ? {
+              imageDataUrl: designs.front.imageDataUrl,
+              sizeCm: frontSize,
+              mockupDataUrl: frontMockup,
+              // Platzierung (Prozent, relativ zum Produktbild) — damit die
+              // Vorschau auf den Empfehlungskarten an derselben Stelle sitzt.
+              placement: {
+                x: designs.front.x,
+                y: designs.front.y,
+                width: designs.front.width,
+                rotation: designs.front.rotation,
+              },
+            }
           : null,
         back: designs.back
           ? { imageDataUrl: designs.back.imageDataUrl, sizeCm: backSize, mockupDataUrl: backMockup }

@@ -110,7 +110,7 @@ export default function DetailOrderForm({
   useEffect(() => {
     function onDesigns(e: Event) {
       const ce = e as CustomEvent<{
-        front: { imageDataUrl: string; sizeCm?: { widthCm: number; heightCm: number }; mockupDataUrl?: string | null } | null;
+        front: { imageDataUrl: string; sizeCm?: { widthCm: number; heightCm: number }; mockupDataUrl?: string | null; placement?: { x: number; y: number; width: number; rotation: number } } | null;
         back: { imageDataUrl: string; sizeCm?: { widthCm: number; heightCm: number }; mockupDataUrl?: string | null } | null;
       }>;
       if (ce.detail) {
@@ -132,11 +132,14 @@ export default function DetailOrderForm({
           setTransferEnabled(true);
         }
         // Vorschau auf „Das könnte Ihnen gefallen"-Karten aktualisieren
-        // (Vorderseiten-Logo, oder null zum Entfernen)
+        // (Vorderseiten-Logo an derselben Position wie im Konfigurator)
         if (typeof window !== "undefined") {
           window.dispatchEvent(
             new CustomEvent("inkii-design-preview", {
-              detail: { logoUrl: ce.detail.front?.imageDataUrl || null },
+              detail: {
+                logoUrl: ce.detail.front?.imageDataUrl || null,
+                placement: ce.detail.front?.placement || null,
+              },
             })
           );
         }
