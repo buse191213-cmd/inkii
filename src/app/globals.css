@@ -5109,3 +5109,7 @@ body:has(.hero-full) header.site .brand-other img{filter:none;height:52px}
   .home-usp-inner{gap:9px 18px}
   .home-usp-item{font-size:.75rem}
 }
+
+/* Pflichtfeld-Markierung im Kontaktformular */
+.req-star{color:#c0392b;font-weight:600}
+.req-note{font-size:.78rem;color:#8a938d;margin:0 0 10px}

@@ -490,7 +490,7 @@ export default function DetailOrderForm({
           <span className="det-summary-lbl">{t.gesamt}</span>
           <span className="det-summary-val-big">
             {totalQty > 0 && subtotalCents != null
-              ? `€${euro(subtotalCents + transferCostCents * totalQty)}`
+              ? `${euro(subtotalCents + transferCostCents * totalQty)} €`
               : "—"}
           </span>
         </div>

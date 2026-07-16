@@ -252,7 +252,7 @@ export default async function ProductDetailPage({
                       letterSpacing: "-0.02em",
                       lineHeight: 1,
                     }}>
-                      €{euroVal}
+                      {euroVal} €
                     </span>
                     <span style={{
                       fontSize: 13,

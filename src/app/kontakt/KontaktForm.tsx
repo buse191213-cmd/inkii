@@ -62,18 +62,18 @@ export default function KontaktForm({
 
       <div className="kf-row">
         <div className="kf-field">
-          <label htmlFor="vorname">Vorname</label>
+          <label htmlFor="vorname">Vorname <span className="req-star">*</span></label>
           <input id="vorname" name="vorname" type="text" placeholder="Vorname" required />
         </div>
         <div className="kf-field">
-          <label htmlFor="nachname">Nachname</label>
+          <label htmlFor="nachname">Nachname <span className="req-star">*</span></label>
           <input id="nachname" name="nachname" type="text" placeholder="Nachname" required />
         </div>
       </div>
 
       <div className="kf-row">
         <div className="kf-field">
-          <label htmlFor="email">E-Mail</label>
+          <label htmlFor="email">E-Mail <span className="req-star">*</span></label>
           <input id="email" name="email" type="email" placeholder="name@firma.de" required />
         </div>
         <div className="kf-field">
@@ -154,11 +154,13 @@ export default function KontaktForm({
           id="message"
           name="message"
           rows={5}
-          placeholder="Lass uns wissen, was wir für dich tun können."
+          placeholder="Sagen Sie uns, was wir für Sie tun können."
           value={message}
           onChange={(e) => setMessage(e.target.value)}
         />
       </div>
+
+      <p className="req-note"><span className="req-star">*</span> Pflichtfeld</p>
 
       <button className="kf-submit" type="submit" disabled={pending}>
         {pending ? "Wird gesendet …" : "Anfrage senden"}

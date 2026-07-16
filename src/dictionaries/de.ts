@@ -567,7 +567,7 @@ const de: Dictionary = {
     },
     processing: {
       title: "Dein Design wird optimiert",
-      sub: "Unsere KI analysiert dein Design für den Druck.",
+      sub: "Unsere KI analysiert Ihr Design für den Druck.",
       modelNote: "Erste Optimierung lädt das KI-Modell (~25 MB, einmalig — danach sofort).",
     },
     processSteps: { load: "Datei analysieren", removeBg: "Hintergrund entfernen (KI)", upscale: "Auflösung & Schärfe verbessern" },

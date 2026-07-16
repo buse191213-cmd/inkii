@@ -1,8 +1,8 @@
-/** Wandelt Cent-Beträge in deutsche Preisdarstellung um. */
+/** Wandelt Cent-Beträge in deutsche Preisdarstellung um (z. B. "28,49 €").
+ *  Kein „ab"-Präfix hier — das setzt die aufrufende Komponente bei Bedarf. */
 export function formatPrice(cents: number | null | undefined): string {
   if (cents === null || cents === undefined) return "Preis auf Anfrage";
   return (
-    "ab " +
     (cents / 100).toLocaleString("de-DE", {
       minimumFractionDigits: 2,
       maximumFractionDigits: 2,
