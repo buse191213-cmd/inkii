@@ -4607,11 +4607,11 @@ body:has(.hero-full) header.site .brand-other img{filter:none;height:52px}
     max-width: 100% !important;
   }
   .mm-detail-gallery .gallery-main {
-    max-height: 560px;
+    max-height: 680px;
     background: #f5f5f5 !important;
   }
   .mm-detail-gallery .gallery-main img {
-    max-height: 560px;
+    max-height: 680px;
     width: auto;
     margin: 0 auto;
   }
