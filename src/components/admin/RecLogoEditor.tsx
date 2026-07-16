@@ -22,14 +22,40 @@ export default function RecLogoEditor({
   onChange: (v: LogoPos) => void;
 }) {
   const frameRef = useRef<HTMLDivElement>(null);
+  const imgRef = useRef<HTMLImageElement>(null);
   const [dragging, setDragging] = useState(false);
+  // Neu-Rendern erzwingen, wenn das Bild geladen ist (für korrekte Box).
+  const [, setImgLoaded] = useState(0);
 
-  function pointerToPercent(e: React.PointerEvent | PointerEvent) {
+  // Sichtbare Bildfläche innerhalb des quadratischen Rahmens bei contain.
+  function imageBox() {
     const frame = frameRef.current;
+    const img = imgRef.current;
     if (!frame) return null;
     const rect = frame.getBoundingClientRect();
-    const x = ((e.clientX - rect.left) / rect.width) * 100;
-    const y = ((e.clientY - rect.top) / rect.height) * 100;
+    const nW = img?.naturalWidth || 1;
+    const nH = img?.naturalHeight || 1;
+    const scale = Math.min(rect.width / nW, rect.height / nH);
+    const dispW = nW * scale;
+    const dispH = nH * scale;
+    return {
+      rect,
+      dispW,
+      dispH,
+      offX: (rect.width - dispW) / 2,
+      offY: (rect.height - dispH) / 2,
+    };
+  }
+
+  function pointerToPercent(e: React.PointerEvent | PointerEvent) {
+    const box = imageBox();
+    if (!box) return null;
+    // Klickposition relativ zur SICHTBAREN Bildfläche (nicht zum Rahmen),
+    // damit die Prozentwerte 1:1 zur Website-Vorschau passen.
+    const px = e.clientX - box.rect.left - box.offX;
+    const py = e.clientY - box.rect.top - box.offY;
+    const x = (px / box.dispW) * 100;
+    const y = (py / box.dispH) * 100;
     return { x: Math.max(0, Math.min(100, x)), y: Math.max(0, Math.min(100, y)) };
   }
 
@@ -77,9 +103,11 @@ export default function RecLogoEditor({
         {image ? (
           // eslint-disable-next-line @next/next/no-img-element
           <img
+            ref={imgRef}
             src={image}
             alt="Produkt"
             draggable={false}
+            onLoad={() => setImgLoaded((n) => n + 1)}
             style={{ width: "100%", height: "100%", objectFit: "contain", pointerEvents: "none" }}
           />
         ) : (
@@ -88,28 +116,43 @@ export default function RecLogoEditor({
           </div>
         )}
 
-        {/* Logo-Platzhalter */}
-        <div
-          style={{
-            position: "absolute",
-            left: `${value.x}%`,
-            top: `${value.y}%`,
-            width: `${value.width}%`,
-            aspectRatio: "1 / 1",
-            transform: `translate(-50%, -50%) rotate(${value.rotation}deg)`,
-            border: "1.5px dashed #004537",
-            background: "rgba(0,69,55,.14)",
-            borderRadius: 3,
-            display: "grid",
-            placeItems: "center",
-            fontSize: 10,
-            color: "#004537",
-            fontWeight: 600,
-            pointerEvents: "none",
-          }}
-        >
-          LOGO
-        </div>
+        {/* Logo-Platzhalter — relativ zur sichtbaren Bildfläche */}
+        {(() => {
+          const box = imageBox();
+          // Prozent (Bildfläche) → Prozent (Rahmen) für die Anzeige
+          let leftPct = value.x, topPct = value.y, widthPct = value.width;
+          if (box && box.rect.width > 0) {
+            const pxLeft = box.offX + (value.x / 100) * box.dispW;
+            const pxTop = box.offY + (value.y / 100) * box.dispH;
+            const pxWidth = (value.width / 100) * box.dispW;
+            leftPct = (pxLeft / box.rect.width) * 100;
+            topPct = (pxTop / box.rect.height) * 100;
+            widthPct = (pxWidth / box.rect.width) * 100;
+          }
+          return (
+            <div
+              style={{
+                position: "absolute",
+                left: `${leftPct}%`,
+                top: `${topPct}%`,
+                width: `${widthPct}%`,
+                aspectRatio: "1 / 1",
+                transform: `translate(-50%, -50%) rotate(${value.rotation}deg)`,
+                border: "1.5px dashed #004537",
+                background: "rgba(0,69,55,.14)",
+                borderRadius: 3,
+                display: "grid",
+                placeItems: "center",
+                fontSize: 10,
+                color: "#004537",
+                fontWeight: 600,
+                pointerEvents: "none",
+              }}
+            >
+              LOGO
+            </div>
+          );
+        })()}
       </div>
 
       {/* Regler */}

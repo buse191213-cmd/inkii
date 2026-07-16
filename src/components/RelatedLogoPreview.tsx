@@ -38,12 +38,42 @@ export default function RelatedLogoPreview() {
         const adminY = card.dataset.logoY;
         const adminW = card.dataset.logoWidth;
         const adminR = card.dataset.logoRotation;
-        const hasAdminPos = adminX !== "" && adminX != null;
+        const hasAdminPos = adminX !== "" && adminX != null && adminX !== undefined;
 
         const x = hasAdminPos ? Number(adminX) : (placement?.x ?? 50);
         const y = hasAdminPos ? Number(adminY) : (placement?.y ?? 38);
         const width = hasAdminPos ? Number(adminW) : (placement?.width ?? 26);
         const rotation = hasAdminPos ? Number(adminR) : (placement?.rotation ?? 0);
+
+        // Das Kartenbild finden, um seine tatsächlich sichtbare Fläche zu
+        // berücksichtigen. Bei object-fit:contain lässt ein nicht-quadratisches
+        // Bild oben/unten (oder seitlich) Rand — die im Admin gesetzten
+        // Prozentwerte beziehen sich aber auf DIESE Bildfläche. Ohne Korrektur
+        // sitzt das Logo verschoben.
+        const cardImg = card.querySelector<HTMLImageElement>('img:not(.' + OVERLAY_CLASS + ')');
+
+        const place = (imgNatW: number, imgNatH: number) => {
+          const rect = card.getBoundingClientRect();
+          const cw = rect.width, ch = rect.height;
+          // Sichtbare Bildfläche bei contain
+          let dispW = cw, dispH = ch, offX = 0, offY = 0;
+          if (imgNatW > 0 && imgNatH > 0) {
+            const scale = Math.min(cw / imgNatW, ch / imgNatH);
+            dispW = imgNatW * scale;
+            dispH = imgNatH * scale;
+            offX = (cw - dispW) / 2;
+            offY = (ch - dispH) / 2;
+          }
+          // Prozent (relativ zur Bildfläche) → Pixel in der Karte
+          const pxLeft = offX + (x / 100) * dispW;
+          const pxTop = offY + (y / 100) * dispH;
+          const pxWidth = (width / 100) * dispW;
+
+          img.style.left = `${(pxLeft / cw) * 100}%`;
+          img.style.top = `${(pxTop / ch) * 100}%`;
+          img.style.width = `${(pxWidth / cw) * 100}%`;
+          img.style.transform = `translate(-50%, -50%) rotate(${rotation}deg)`;
+        };
 
         const img = document.createElement("img");
         img.src = logoUrl;
@@ -52,10 +82,6 @@ export default function RelatedLogoPreview() {
         img.setAttribute("aria-hidden", "true");
         Object.assign(img.style, {
           position: "absolute",
-          left: `${x}%`,
-          top: `${y}%`,
-          width: `${width}%`,
-          transform: `translate(-50%, -50%) rotate(${rotation}deg)`,
           objectFit: "contain",
           pointerEvents: "none",
           zIndex: "3",
@@ -63,6 +89,18 @@ export default function RelatedLogoPreview() {
           opacity: "0.96",
         } as CSSStyleDeclaration);
         card.appendChild(img);
+
+        // Position berechnen — sobald die natürlichen Maße des Produktbildes
+        // bekannt sind (für die contain-Korrektur).
+        if (cardImg && cardImg.naturalWidth > 0) {
+          place(cardImg.naturalWidth, cardImg.naturalHeight);
+        } else if (cardImg) {
+          cardImg.addEventListener("load", () => place(cardImg.naturalWidth, cardImg.naturalHeight), { once: true });
+          // Fallback, falls schon geladen aber Maße 0 (Cache-Fälle)
+          place(1, 1);
+        } else {
+          place(1, 1);
+        }
       });
     }
 
