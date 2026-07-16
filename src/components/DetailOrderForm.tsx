@@ -215,6 +215,10 @@ export default function DetailOrderForm({
       colorLabel: selectedColor ? colorLabel(selectedColor) : null,
     });
     setAdded(true);
+    // Header informieren → Warenkorb-Drawer öffnet sich als Bestätigung
+    if (typeof window !== "undefined") {
+      window.dispatchEvent(new Event("inkii-cart-added"));
+    }
   }
 
   function handleAddToCart() {

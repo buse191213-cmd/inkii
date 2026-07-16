@@ -143,8 +143,13 @@ export default function CartDrawer({ open, onClose }: Props) {
             {/* Items scrollable */}
             <div style={{ flex: 1, overflowY: "auto", padding: "8px 20px" }}>
               {items.map((item) => {
-                const lineUnitCents = item.unitPriceCents + item.dtfPriceCents;
                 const lineTotalCents = cartItemTotalCents(item);
+                // Stückpreis = Gesamt ÷ Menge (inkl. Staffelrabatt) — identisch
+                // zur Warenkorb-Seite. item.unitPriceCents wäre der Listenpreis
+                // OHNE Rabatt und würde nicht zum angezeigten Gesamt passen.
+                const lineUnitCents = item.quantity > 0
+                  ? Math.round(lineTotalCents / item.quantity)
+                  : item.unitPriceCents + item.dtfPriceCents;
                 const colorHexCode = item.color ? colorHex(item.color) : "";
                 return (
                 <div
@@ -373,7 +378,7 @@ export default function CartDrawer({ open, onClose }: Props) {
                               {euro(lineTotalCents)} €
                             </div>
                             <div style={{ fontSize: 10, color: "#94a3b8", marginTop: 1 }}>
-                              {euro(lineUnitCents)} € / Stk
+                              Ø {euro(lineUnitCents)} € / Stk
                             </div>
                           </>
                         ) : (

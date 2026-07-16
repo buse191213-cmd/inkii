@@ -3,7 +3,7 @@
 import Link from "next/link";
 import Image from "next/image";
 import { usePathname, useSearchParams } from "next/navigation";
-import { Suspense, useState } from "react";
+import { Suspense, useState, useEffect } from "react";
 import { useMerkliste } from "./MerklisteProvider";
 import { useCart } from "./CartProvider";
 import CartDrawer from "./CartDrawer";
@@ -65,6 +65,14 @@ function SiteHeaderInner({
   const [cartOpen, setCartOpen] = useState(false);
   const { count } = useMerkliste();
   const { itemCount: cartCount } = useCart();
+
+  // Wenn irgendwo ein Produkt in den Warenkorb gelegt wird, Drawer öffnen
+  // (klares visuelles Feedback statt nur stiller Zähler-Erhöhung).
+  useEffect(() => {
+    const openDrawer = () => setCartOpen(true);
+    window.addEventListener("inkii-cart-added", openDrawer);
+    return () => window.removeEventListener("inkii-cart-added", openDrawer);
+  }, []);
   const searchParams = useSearchParams();
   const currentCat = searchParams.get("cat");
 
