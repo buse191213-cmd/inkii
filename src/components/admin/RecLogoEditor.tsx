@@ -33,9 +33,11 @@ export default function RecLogoEditor({
   function imageBox() {
     const img = imgRef.current;
     if (!img) return null;
+    // Bild noch nicht geladen → keine verlässliche contain-Berechnung möglich.
+    if (!img.naturalWidth || !img.naturalHeight) return null;
     const rect = img.getBoundingClientRect();
-    const nW = img.naturalWidth || 1;
-    const nH = img.naturalHeight || 1;
+    const nW = img.naturalWidth;
+    const nH = img.naturalHeight;
     const scale = Math.min(rect.width / nW, rect.height / nH);
     const dispW = nW * scale;
     const dispH = nH * scale;
