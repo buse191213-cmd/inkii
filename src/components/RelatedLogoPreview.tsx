@@ -72,6 +72,13 @@ export default function RelatedLogoPreview() {
           img.style.left = `${(pxLeft / cw) * 100}%`;
           img.style.top = `${(pxTop / ch) * 100}%`;
           img.style.width = `${(pxWidth / cw) * 100}%`;
+          // Höhe = Breite (quadratischer Rahmen), damit translate(-50%,-50%)
+          // exakt wie im Admin-Editor zentriert. Das Logo selbst wird per
+          // object-fit:contain in dieses Quadrat eingepasst — sonst würde ein
+          // breites Logo eine geringe Höhe bekommen und optisch nach oben
+          // rutschen (Ursache der Verschiebung).
+          img.style.aspectRatio = "1 / 1";
+          img.style.height = "auto";
           img.style.transform = `translate(-50%, -50%) rotate(${rotation}deg)`;
         };
 

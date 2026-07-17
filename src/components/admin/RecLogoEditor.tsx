@@ -57,7 +57,6 @@ export default function RecLogoEditor({
     const py = e.clientY - box.rect.top - box.offY;
     const x = (px / box.dispW) * 100;
     const y = (py / box.dispH) * 100;
-    console.log(`[CALC] clientY=${Math.round(e.clientY)} rect.top=${Math.round(box.rect.top)} offY=${Math.round(box.offY)} dispH=${Math.round(box.dispH)} → py=${Math.round(py)} y=${y.toFixed(1)}`);
     return { x: Math.max(0, Math.min(100, x)), y: Math.max(0, Math.min(100, y)) };
   }
 
@@ -80,7 +79,6 @@ export default function RecLogoEditor({
 
   function handleUp() {
     setDragging(false);
-    console.log(`[ADMIN-FINAL] gespeicherte Position: x=${value.x.toFixed(1)} y=${value.y.toFixed(1)} width=${value.width}`);
   }
 
   return (
