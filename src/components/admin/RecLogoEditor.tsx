@@ -65,7 +65,10 @@ export default function RecLogoEditor({
   function handleDown(e: React.PointerEvent) {
     e.preventDefault();
     setDragging(true);
-    (e.target as HTMLElement).setPointerCapture?.(e.pointerId);
+    // Pointer auf dem RAHMEN einfangen (nicht auf dem Bild/Platzhalter),
+    // damit pointermove zuverlässig weiter am Rahmen ankommt — auch wenn
+    // der Finger über andere Kindelemente zieht.
+    frameRef.current?.setPointerCapture?.(e.pointerId);
     const p = pointerToPercent(e);
     if (p) onChange({ ...value, x: p.x, y: p.y });
   }
@@ -78,6 +81,7 @@ export default function RecLogoEditor({
 
   function handleUp() {
     setDragging(false);
+    console.log(`[ADMIN-FINAL] gespeicherte Position: x=${value.x.toFixed(1)} y=${value.y.toFixed(1)} width=${value.width}`);
   }
 
   return (
