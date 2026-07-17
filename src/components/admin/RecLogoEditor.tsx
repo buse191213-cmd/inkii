@@ -53,12 +53,11 @@ export default function RecLogoEditor({
   function pointerToPercent(e: React.PointerEvent | PointerEvent) {
     const box = imageBox();
     if (!box) return null;
-    // Klickposition relativ zur SICHTBAREN Bildfläche (nicht zum Rahmen),
-    // damit die Prozentwerte 1:1 zur Website-Vorschau passen.
     const px = e.clientX - box.rect.left - box.offX;
     const py = e.clientY - box.rect.top - box.offY;
     const x = (px / box.dispW) * 100;
     const y = (py / box.dispH) * 100;
+    console.log(`[CALC] clientY=${Math.round(e.clientY)} rect.top=${Math.round(box.rect.top)} offY=${Math.round(box.offY)} dispH=${Math.round(box.dispH)} → py=${Math.round(py)} y=${y.toFixed(1)}`);
     return { x: Math.max(0, Math.min(100, x)), y: Math.max(0, Math.min(100, y)) };
   }
 
