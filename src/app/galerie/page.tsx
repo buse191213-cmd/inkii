@@ -2,6 +2,7 @@ import Link from "next/link";
 import SiteShell from "@/components/SiteShell";
 import type { Metadata } from "next";
 import { db } from "@/lib/db";
+import { getHomeImage } from "@/lib/home-images";
 
 export const dynamic = "force-dynamic";
 
@@ -13,6 +14,7 @@ export const metadata: Metadata = {
 };
 
 export default async function GaleriePage() {
+  const heroImg = await getHomeImage("galerie-hero");
   let items: { id: string; imageUrl: string; title: string }[] = [];
   try {
     items = await db.galleryItem.findMany({
@@ -24,7 +26,10 @@ export default async function GaleriePage() {
 
   return (
     <SiteShell>
-      <section className="mm-page-hero">
+      <section
+        className="mm-page-hero"
+        style={heroImg ? { backgroundImage: `url(${heroImg})` } : undefined}
+      >
         <div className="mm-page-hero-inner">
           <div className="mm-page-crumb">
             <Link href="/">Home</Link>

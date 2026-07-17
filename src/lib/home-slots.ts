@@ -53,6 +53,7 @@ export const HOME_SLOTS: HomeSlot[] = [
   { slot: "wa-4", label: "Werbeartikel — 04 Werbegeschenke", group: "werbeartikel-img", size: "800×1000", ratio: "4/5" },
 
   { slot: "nh-hero", label: "Nachhaltigkeit — Titelbild (großer Hero-Bereich)", group: "nachhaltigkeit", size: "1920×900", ratio: "21/9" },
+  { slot: "galerie-hero", label: "Galerie — Titelbild (Hero-Bereich)", group: "page", size: "1920×900", ratio: "21/9" },
   { slot: "nh-1", label: "Nachhaltigkeit — Karte 1: Faire Textilien", group: "nachhaltigkeit", size: "800×1000", ratio: "4/5" },
   { slot: "nh-2", label: "Nachhaltigkeit — Karte 2: Wassersparende Verfahren", group: "nachhaltigkeit", size: "800×1000", ratio: "4/5" },
   { slot: "nh-3", label: "Nachhaltigkeit — Karte 3: Langlebigkeit", group: "nachhaltigkeit", size: "800×1000", ratio: "4/5" },
