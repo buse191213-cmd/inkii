@@ -18,9 +18,7 @@ export default function RelatedLogoPreview() {
   useEffect(() => {
     const OVERLAY_CLASS = "related-logo-overlay";
 
-    type Placement = { x: number; y: number; width: number; rotation: number } | null;
-
-    function apply(logoUrl: string | null, placement: Placement) {
+    function apply(logoUrl: string | null) {
       const cards = document.querySelectorAll<HTMLElement>('[data-related-card="1"]');
       cards.forEach((card) => {
         card.querySelectorAll(`.${OVERLAY_CLASS}`).forEach((el) => el.remove());
@@ -30,18 +28,20 @@ export default function RelatedLogoPreview() {
           card.style.position = "relative";
         }
 
-        // Vom Admin PRO Empfehlung gesetzte Position hat Vorrang, sonst die
-        // Platzierung des Kunden, sonst Brusthöhe zentriert.
+        // Nur anzeigen, wenn der Admin für DIESES Empfehlungsprodukt eine
+        // Position festgelegt hat. Ohne Admin-Position lieber gar kein Logo,
+        // als ein Logo an einer möglicherweise falschen Stelle.
         const adminX = card.dataset.logoX;
         const adminY = card.dataset.logoY;
         const adminW = card.dataset.logoWidth;
         const adminR = card.dataset.logoRotation;
         const hasAdminPos = adminX !== "" && adminX != null && adminX !== undefined;
+        if (!hasAdminPos) return;
 
-        const x = hasAdminPos ? Number(adminX) : (placement?.x ?? 50);
-        const y = hasAdminPos ? Number(adminY) : (placement?.y ?? 38);
-        const width = hasAdminPos ? Number(adminW) : (placement?.width ?? 26);
-        const rotation = hasAdminPos ? Number(adminR) : (placement?.rotation ?? 0);
+        const x = Number(adminX);
+        const y = Number(adminY);
+        const width = Number(adminW);
+        const rotation = Number(adminR);
 
         const img = document.createElement("img");
         img.src = logoUrl;
@@ -69,8 +69,8 @@ export default function RelatedLogoPreview() {
     }
 
     function onPreview(e: Event) {
-      const ce = e as CustomEvent<{ logoUrl?: string | null; placement?: Placement }>;
-      apply(ce.detail?.logoUrl ?? null, ce.detail?.placement ?? null);
+      const ce = e as CustomEvent<{ logoUrl?: string | null }>;
+      apply(ce.detail?.logoUrl ?? null);
     }
 
     window.addEventListener("inkii-design-preview", onPreview);
