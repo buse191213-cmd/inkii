@@ -73,10 +73,6 @@ export default function RelatedLogoPreview() {
           img.style.top = `${(pxTop / ch) * 100}%`;
           img.style.width = `${(pxWidth / cw) * 100}%`;
           img.style.transform = `translate(-50%, -50%) rotate(${rotation}deg)`;
-
-          console.log(
-            `[SITE] y-in=${y.toFixed(0)} nat=${imgNatW}x${imgNatH} card=${Math.round(cw)}x${Math.round(ch)} disp=${Math.round(dispW)}x${Math.round(dispH)} offY=${Math.round(offY)} → top=${Math.round((pxTop / ch) * 100)}%`
-          );
         };
 
         const img = document.createElement("img");
