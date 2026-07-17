@@ -364,7 +364,9 @@ export default async function ProductDetailPage({
               className="mm-trust-item mm-trust-link"
             >
               {/* Offizielles Trustpilot-Logo (dunkle Variante — heller Hintergrund).
-                  brand-assets/4.3.0/logo-black.svg von Trustpilot. */}
+                  brand-assets/4.3.0/logo-black.svg von Trustpilot.
+                  KEINE Sterne/Bewertung — wir zeigen nur eine ehrliche Einladung
+                  zur Bewertung, um keine Sternebewertung vorzutäuschen (UWG). */}
               {/* eslint-disable-next-line @next/next/no-img-element */}
               <img
                 src="https://cdn.trustpilot.net/brand-assets/4.3.0/logo-black.svg"
@@ -374,14 +376,8 @@ export default async function ProductDetailPage({
                 height={27}
                 loading="lazy"
               />
-              <div className="mm-trust-stars" aria-hidden>
-                {[0, 1, 2, 3, 4].map((i) => (
-                  <svg key={i} width="12" height="12" viewBox="0 0 24 24" fill="currentColor">
-                    <path d="M12 2l2.9 6.3 6.9.8-5.1 4.7 1.4 6.8L12 17.3 5.9 20.6l1.4-6.8L2.2 9.1l6.9-.8z" />
-                  </svg>
-                ))}
-              </div>
-              <div className="mm-trust-text">Bewerten Sie uns auf Trustpilot</div>
+              <div className="mm-trust-title">Bewerten Sie uns</div>
+              <div className="mm-trust-text">Teilen Sie Ihre Erfahrung auf Trustpilot</div>
             </a>
 
             <div className="mm-trust-item">
