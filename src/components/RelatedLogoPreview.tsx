@@ -73,6 +73,15 @@ export default function RelatedLogoPreview() {
           img.style.top = `${(pxTop / ch) * 100}%`;
           img.style.width = `${(pxWidth / cw) * 100}%`;
           img.style.transform = `translate(-50%, -50%) rotate(${rotation}deg)`;
+
+          console.log("[LogoPlace]", {
+            inputX: x, inputY: y,
+            imgNatW, imgNatH,
+            cw: Math.round(cw), ch: Math.round(ch),
+            dispW: Math.round(dispW), dispH: Math.round(dispH),
+            offY: Math.round(offY),
+            finalTopPct: Math.round((pxTop / ch) * 100),
+          });
         };
 
         const img = document.createElement("img");
