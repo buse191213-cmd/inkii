@@ -12,6 +12,38 @@
   --body:var(--font-body),'Hanken Grotesk',sans-serif;
 }
 *{box-sizing:border-box;margin:0;padding:0}
+
+/* ============================================================
+   Barrierefreiheit: Sichtbarer Fokusrahmen für Tastaturnutzer.
+   :focus-visible greift NUR bei Tastatur-Navigation (Tab), nicht bei
+   Maus-/Touch-Klicks — so bleibt die Optik bei Mausbedienung sauber,
+   während Tastatur- und Screenreader-Nutzer klar sehen, wo sie sind.
+   (Erfüllt WCAG 2.4.7 / BITV, relevant u. a. für B2B-/Behörden-Kunden.)
+   ============================================================ */
+:focus-visible{
+  outline:2px solid var(--leaf-deep);
+  outline-offset:2px;
+  border-radius:3px;
+}
+/* Auf dunklen/farbigen Flächen (Hero, Footer) heller Rahmen für Kontrast. */
+.hero-full :focus-visible,
+header.site.is-home :focus-visible,
+footer :focus-visible{
+  outline-color:#dff36b;
+}
+/* Reine Maus-/Touch-Fokusse bekommen keinen Rahmen (verhindert „hässliche"
+   Umrandung nach Klick, ohne die Tastatur-Zugänglichkeit zu verlieren). */
+:focus:not(:focus-visible){outline:none}
+/* Formularfelder: Tastatur-Fokus zusätzlich mit Rahmen sichtbar machen
+   (die :focus-Regeln setzen sonst outline:none und wären für Tastatur
+   schlechter erkennbar). */
+.field input:focus-visible,.field select:focus-visible,.field textarea:focus-visible,
+.kf-field input:focus-visible,.kf-field select:focus-visible,.kf-field textarea:focus-visible,
+.adm .field input:focus-visible,.adm .field select:focus-visible,.adm .field textarea:focus-visible{
+  outline:2px solid var(--leaf-deep);
+  outline-offset:1px;
+}
+
 html{scroll-behavior:smooth}
 body{font-family:var(--body);background:var(--white);color:var(--ink);
   -webkit-font-smoothing:antialiased;overflow-x:hidden}
