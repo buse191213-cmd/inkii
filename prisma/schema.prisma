@@ -89,6 +89,15 @@ model TeamMember {
   createdAt  DateTime @default(now())
 }
 
+// Galerie: unsere eigenen Druck-/Design-Arbeiten (Portfolio ohne Firmennamen)
+model GalleryItem {
+  id        String   @id @default(cuid())
+  imageUrl  String                    // Vercel-Blob-URL
+  title     String   @default("")     // optional: kurze Bezeichnung (z. B. "DTF-Druck Hoodie")
+  sortOrder Int      @default(0)
+  createdAt DateTime @default(now())
+}
+
 // Header-Navigation: pro Schlüssel ein Eintrag. Wenn keine Zeile existiert,
 // gilt der Eintrag als aktiv (Standard für frische Installation).
 model NavSetting {

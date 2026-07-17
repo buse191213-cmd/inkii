@@ -43,6 +43,7 @@ export default function SiteFooter({
             <ul>
               {/* 3D-Designer linki kaldırıldı (canlı sürüm) */}
               <li><Link href="/nachhaltigkeit">{t.lNachhaltigkeit}</Link></li>
+              <li><Link href="/galerie">Galerie</Link></li>
               <li><Link href="/kontakt">{t.lFaq}</Link></li>
               <li><Link href="/kontakt">{t.lKontakt}</Link></li>
               <li><Link href="/ueber-uns">{t.lUeberUns}</Link></li>

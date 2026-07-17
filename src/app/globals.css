@@ -5110,3 +5110,34 @@ body:has(.hero-full) header.site .brand-other img{filter:none;height:52px}
 /* Pflichtfeld-Markierung im Kontaktformular */
 .req-star{color:#c0392b;font-weight:600}
 .req-note{font-size:.78rem;color:#8a938d;margin:0 0 10px}
+
+/* === Galerie (Portfolio unserer Arbeiten) === */
+.galerie-section{padding:56px 0 72px}
+.galerie-empty{text-align:center;color:#8a938d;font-size:1rem;padding:60px 0}
+.galerie-grid{
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:18px;
+}
+.galerie-item{
+  margin:0;position:relative;overflow:hidden;border-radius:8px;
+  background:#f4f5f3;aspect-ratio:1/1;
+  box-shadow:0 1px 3px rgba(0,0,0,.06);
+}
+.galerie-item img{
+  width:100%;height:100%;object-fit:cover;display:block;
+  transition:transform .4s ease;
+}
+.galerie-item:hover img{transform:scale(1.04)}
+.galerie-cap{
+  position:absolute;left:0;right:0;bottom:0;
+  padding:10px 12px;font-size:.8rem;color:#fff;font-weight:500;
+  background:linear-gradient(transparent,rgba(0,0,0,.6));
+}
+@media(max-width:900px){
+  .galerie-grid{grid-template-columns:repeat(2,1fr);gap:12px}
+}
+@media(max-width:520px){
+  .galerie-grid{grid-template-columns:1fr}
+  .galerie-section{padding:36px 0 48px}
+}

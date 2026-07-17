@@ -758,3 +758,88 @@ export async function moveNavItem(key: string, direction: "up" | "down"): Promis
     return { ok: false, error: "Verschieben fehlgeschlagen." };
   }
 }
+
+// ============================================================
+// GALERIE — unsere eigenen Druck-/Design-Arbeiten
+// ============================================================
+
+/** Ein oder mehrere Galerie-Bilder hochladen. */
+export async function saveGalleryItems(formData: FormData): Promise<ActionResult> {
+  if (!process.env.BLOB_READ_WRITE_TOKEN) {
+    return { ok: false, error: "Bild-Upload nicht konfiguriert (BLOB_READ_WRITE_TOKEN fehlt)." };
+  }
+  const files = formData
+    .getAll("images")
+    .filter((f): f is File => f instanceof File && f.size > 0);
+
+  if (files.length === 0) {
+    return { ok: false, error: "Bitte mindestens ein Bild auswählen." };
+  }
+
+  // Aktuell höchsten sortOrder ermitteln, neue Bilder hinten anhängen.
+  let nextSort = 0;
+  try {
+    const last = await db.galleryItem.findFirst({ orderBy: { sortOrder: "desc" } });
+    nextSort = (last?.sortOrder ?? 0) + 10;
+  } catch {
+    /* leere Tabelle */
+  }
+
+  try {
+    for (const file of files) {
+      if (file.size > MAX_FILE_BYTES) {
+        return { ok: false, error: `„${file.name}" ist zu groß (max. 12 MB).` };
+      }
+      const ext = EXT[file.type] ?? "jpg";
+      const blob = await put(
+        `gallery/${Date.now()}-${Math.random().toString(36).slice(2, 9)}.${ext}`,
+        file,
+        { access: "public" }
+      );
+      await db.galleryItem.create({
+        data: { imageUrl: blob.url, title: "", sortOrder: nextSort },
+      });
+      nextSort += 10;
+    }
+    revalidatePath("/admin/galerie");
+    revalidatePath("/galerie");
+    return { ok: true };
+  } catch (e) {
+    return {
+      ok: false,
+      error: e instanceof Error ? `Upload fehlgeschlagen: ${e.message}` : "Upload fehlgeschlagen.",
+    };
+  }
+}
+
+/** Titel eines Galerie-Bildes aktualisieren (optional). */
+export async function updateGalleryTitle(id: string, title: string): Promise<ActionResult> {
+  try {
+    await db.galleryItem.update({ where: { id }, data: { title: title.trim() } });
+    revalidatePath("/admin/galerie");
+    revalidatePath("/galerie");
+    return { ok: true };
+  } catch {
+    return { ok: false, error: "Speichern fehlgeschlagen." };
+  }
+}
+
+/** Galerie-Bild löschen (inkl. Blob). */
+export async function deleteGalleryItem(id: string): Promise<ActionResult> {
+  try {
+    const item = await db.galleryItem.findUnique({ where: { id } });
+    if (item?.imageUrl) {
+      try {
+        await del(item.imageUrl);
+      } catch {
+        /* ignorieren */
+      }
+    }
+    await db.galleryItem.delete({ where: { id } });
+    revalidatePath("/admin/galerie");
+    revalidatePath("/galerie");
+    return { ok: true };
+  } catch {
+    return { ok: false, error: "Löschen fehlgeschlagen." };
+  }
+}
