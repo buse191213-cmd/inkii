@@ -67,7 +67,11 @@ export default function RecLogoEditor({
     setDragging(true);
     (e.target as HTMLElement).setPointerCapture?.(e.pointerId);
     const p = pointerToPercent(e);
-    if (p) onChange({ ...value, x: p.x, y: p.y });
+    if (p) {
+      const box = imageBox();
+      console.log(`[ADMIN] klick y=${p.y.toFixed(0)} (box: rect=${box ? Math.round(box.rect.width)+'x'+Math.round(box.rect.height) : 'null'} disp=${box ? Math.round(box.dispW)+'x'+Math.round(box.dispH) : '-'} offY=${box ? Math.round(box.offY) : '-'})`);
+      onChange({ ...value, x: p.x, y: p.y });
+    }
   }
 
   function handleMove(e: React.PointerEvent) {
