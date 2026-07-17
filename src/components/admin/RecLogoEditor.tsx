@@ -27,14 +27,15 @@ export default function RecLogoEditor({
   // Neu-Rendern erzwingen, wenn das Bild geladen ist (für korrekte Box).
   const [, setImgLoaded] = useState(0);
 
-  // Sichtbare Bildfläche innerhalb des quadratischen Rahmens bei contain.
+  // Sichtbare Bildfläche innerhalb des Rahmens bei contain.
+  // Wir nutzen die tatsächliche Bounding-Box des <img>-Elements als Basis —
+  // so spielen Border/Padding des Rahmens keine Rolle (identisch zur Website).
   function imageBox() {
-    const frame = frameRef.current;
     const img = imgRef.current;
-    if (!frame) return null;
-    const rect = frame.getBoundingClientRect();
-    const nW = img?.naturalWidth || 1;
-    const nH = img?.naturalHeight || 1;
+    if (!img) return null;
+    const rect = img.getBoundingClientRect();
+    const nW = img.naturalWidth || 1;
+    const nH = img.naturalHeight || 1;
     const scale = Math.min(rect.width / nW, rect.height / nH);
     const dispW = nW * scale;
     const dispH = nH * scale;
@@ -90,7 +91,7 @@ export default function RecLogoEditor({
           height: 200,
           aspectRatio: "1 / 1",
           background: "#f4f5f3",
-          border: "1px solid #e5e7eb",
+          outline: "1px solid #e5e7eb",
           borderRadius: 6,
           position: "relative",
           flexShrink: 0,

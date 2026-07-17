@@ -493,7 +493,6 @@ export default async function ProductDetailPage({
                                 ? `scale(${zoom}) translate(${-tx}%, ${ty}%)`
                                 : undefined,
                               transformOrigin: "center",
-                              padding: 4,
                             }}
                           />
                         ) : (
