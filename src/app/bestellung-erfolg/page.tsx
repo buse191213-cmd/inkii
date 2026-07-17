@@ -77,14 +77,23 @@ export default async function BestellungErfolgPage({ searchParams }: Props) {
               textAlign: "left",
             }}
           >
-            <h3 style={{ margin: "0 0 16px 0", color: "#004537", fontSize: 18, fontWeight: 700 }}>
-              💳 {ts.payTitle}
+            <h3 style={{ margin: "0 0 16px 0", color: "#004537", fontSize: 18, fontWeight: 700, display: "flex", alignItems: "center", gap: 8 }}>
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                <rect x="2" y="5" width="20" height="14" rx="2" />
+                <line x1="2" y1="10" x2="22" y2="10" />
+              </svg>
+              {ts.payTitle}
             </h3>
             <p style={{ margin: "0 0 8px 0", fontSize: 14, color: "#1f2937", lineHeight: 1.6 }}>
               {ts.payInstruction} <strong>{euro(totalCents)} €</strong>.
             </p>
-            <p style={{ margin: "0 0 18px 0", fontSize: 14, color: "#0d9488", fontWeight: 600, lineHeight: 1.5 }}>
-              ℹ️ {ts.afterPaymentNote}
+            <p style={{ margin: "0 0 18px 0", fontSize: 14, color: "#0d9488", fontWeight: 600, lineHeight: 1.5, display: "flex", alignItems: "flex-start", gap: 7 }}>
+              <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true" style={{ flexShrink: 0, marginTop: 2 }}>
+                <circle cx="12" cy="12" r="10" />
+                <line x1="12" y1="16" x2="12" y2="12" />
+                <line x1="12" y1="8" x2="12.01" y2="8" />
+              </svg>
+              <span>{ts.afterPaymentNote}</span>
             </p>
             <table style={{ width: "100%", fontSize: 14, borderCollapse: "collapse" }}>
               <tbody>
@@ -135,9 +144,17 @@ export default async function BestellungErfolgPage({ searchParams }: Props) {
                 fontSize: 12,
                 color: "#78350f",
                 lineHeight: 1.6,
+                display: "flex",
+                alignItems: "flex-start",
+                gap: 7,
               }}
             >
-              ⚠️ <strong>{ts.important}</strong> {ts.referenceNote}
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true" style={{ flexShrink: 0, marginTop: 1 }}>
+                <path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z" />
+                <line x1="12" y1="9" x2="12" y2="13" />
+                <line x1="12" y1="17" x2="12.01" y2="17" />
+              </svg>
+              <span><strong>{ts.important}</strong> {ts.referenceNote}</span>
             </p>
           </div>
         )}

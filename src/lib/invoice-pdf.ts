@@ -326,7 +326,7 @@ export async function generateInvoicePDF(data: InvoiceData): Promise<Buffer> {
         doc.text(`Verwendungszweck: ${data.invoiceNumber}`, 60, bRow);
 
         doc.fontSize(8).fillColor(MUTED);
-        doc.text(`Zahlbar innerhalb von ${COMPANY.paymentTermDays} Tagen ohne Abzug.`, 60, boxTop + boxHeight - 14);
+        doc.text(`Zahlbar innerhalb von ${COMPANY.paymentTermDays} Tagen ohne Abzug. Nach Zahlungseingang wird Ihre Bestellung bearbeitet und produziert.`, 60, boxTop + boxHeight - 20, { width: 470 });
         rowY = boxTop + boxHeight + 10;
       }
 
