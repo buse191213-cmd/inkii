@@ -5,12 +5,14 @@ import { useRef, useState } from "react";
 export type LogoPos = { x: number; y: number; width: number; rotation: number };
 
 /**
- * Kleiner Editor, um die Logo-Position auf EINEM empfohlenen Produkt
- * festzulegen. Der Admin sieht das Produktbild und ein Platzhalter-Rechteck
- * (das Logo). Ziehen = verschieben. Slider = Größe.
+ * Editor für die Logo-Position auf EINEM empfohlenen Produkt.
  *
- * Werte sind Prozent relativ zum quadratischen Bildrahmen — exakt dasselbe
- * Koordinatensystem wie in der Galerie/Empfehlungskarte auf der Website.
+ * Einfaches, robustes Koordinatensystem: Alle Prozentwerte (x, y, width)
+ * beziehen sich auf den QUADRATISCHEN Rahmen, NICHT auf die sichtbare
+ * Bildfläche. Das Produktbild liegt per object-fit:contain zentriert im
+ * Rahmen — und auf der Website liegt dasselbe Bild ebenso in einer
+ * quadratischen Karte. „50 % des Rahmens" = „50 % der Karte", ohne
+ * Letterbox-Umrechnung (die zuvor die Fehlerquelle war).
  */
 export default function RecLogoEditor({
   image,
@@ -22,50 +24,20 @@ export default function RecLogoEditor({
   onChange: (v: LogoPos) => void;
 }) {
   const frameRef = useRef<HTMLDivElement>(null);
-  const imgRef = useRef<HTMLImageElement>(null);
   const [dragging, setDragging] = useState(false);
-  // Neu-Rendern erzwingen, wenn das Bild geladen ist (für korrekte Box).
-  const [, setImgLoaded] = useState(0);
-
-  // Sichtbare Bildfläche innerhalb des Rahmens bei contain.
-  // Wir nutzen die tatsächliche Bounding-Box des <img>-Elements als Basis —
-  // so spielen Border/Padding des Rahmens keine Rolle (identisch zur Website).
-  function imageBox() {
-    const img = imgRef.current;
-    if (!img) return null;
-    // Bild noch nicht geladen → keine verlässliche contain-Berechnung möglich.
-    if (!img.naturalWidth || !img.naturalHeight) return null;
-    const rect = img.getBoundingClientRect();
-    const nW = img.naturalWidth;
-    const nH = img.naturalHeight;
-    const scale = Math.min(rect.width / nW, rect.height / nH);
-    const dispW = nW * scale;
-    const dispH = nH * scale;
-    return {
-      rect,
-      dispW,
-      dispH,
-      offX: (rect.width - dispW) / 2,
-      offY: (rect.height - dispH) / 2,
-    };
-  }
 
   function pointerToPercent(e: React.PointerEvent | PointerEvent) {
-    const box = imageBox();
-    if (!box) return null;
-    const px = e.clientX - box.rect.left - box.offX;
-    const py = e.clientY - box.rect.top - box.offY;
-    const x = (px / box.dispW) * 100;
-    const y = (py / box.dispH) * 100;
+    const frame = frameRef.current;
+    if (!frame) return null;
+    const rect = frame.getBoundingClientRect();
+    const x = ((e.clientX - rect.left) / rect.width) * 100;
+    const y = ((e.clientY - rect.top) / rect.height) * 100;
     return { x: Math.max(0, Math.min(100, x)), y: Math.max(0, Math.min(100, y)) };
   }
 
   function handleDown(e: React.PointerEvent) {
     e.preventDefault();
     setDragging(true);
-    // Pointer auf dem RAHMEN einfangen (nicht auf dem Bild/Platzhalter),
-    // damit pointermove zuverlässig weiter am Rahmen ankommt — auch wenn
-    // der Finger über andere Kindelemente zieht.
     frameRef.current?.setPointerCapture?.(e.pointerId);
     const p = pointerToPercent(e);
     if (p) onChange({ ...value, x: p.x, y: p.y });
@@ -108,12 +80,17 @@ export default function RecLogoEditor({
         {image ? (
           // eslint-disable-next-line @next/next/no-img-element
           <img
-            ref={imgRef}
             src={image}
             alt="Produkt"
             draggable={false}
-            onLoad={() => setImgLoaded((n) => n + 1)}
-            style={{ width: "100%", height: "100%", objectFit: "contain", pointerEvents: "none" }}
+            style={{
+              position: "absolute",
+              inset: 0,
+              width: "100%",
+              height: "100%",
+              objectFit: "contain",
+              pointerEvents: "none",
+            }}
           />
         ) : (
           <div style={{ display: "grid", placeItems: "center", height: "100%", color: "#94a3b8", fontSize: 12 }}>
@@ -121,46 +98,29 @@ export default function RecLogoEditor({
           </div>
         )}
 
-        {/* Logo-Platzhalter — relativ zur sichtbaren Bildfläche */}
-        {(() => {
-          const box = imageBox();
-          // Prozent (Bildfläche) → Prozent (Rahmen) für die Anzeige
-          let leftPct = value.x, topPct = value.y, widthPct = value.width;
-          if (box && box.rect.width > 0) {
-            const pxLeft = box.offX + (value.x / 100) * box.dispW;
-            const pxTop = box.offY + (value.y / 100) * box.dispH;
-            const pxWidth = (value.width / 100) * box.dispW;
-            leftPct = (pxLeft / box.rect.width) * 100;
-            topPct = (pxTop / box.rect.height) * 100;
-            widthPct = (pxWidth / box.rect.width) * 100;
-          }
-          return (
-            <div
-              style={{
-                position: "absolute",
-                left: `${leftPct}%`,
-                top: `${topPct}%`,
-                width: `${widthPct}%`,
-                aspectRatio: "1 / 1",
-                transform: `translate(-50%, -50%) rotate(${value.rotation}deg)`,
-                border: "1.5px dashed #004537",
-                background: "rgba(0,69,55,.14)",
-                borderRadius: 3,
-                display: "grid",
-                placeItems: "center",
-                fontSize: 10,
-                color: "#004537",
-                fontWeight: 600,
-                pointerEvents: "none",
-              }}
-            >
-              LOGO
-            </div>
-          );
-        })()}
+        <div
+          style={{
+            position: "absolute",
+            left: `${value.x}%`,
+            top: `${value.y}%`,
+            width: `${value.width}%`,
+            aspectRatio: "1 / 1",
+            transform: `translate(-50%, -50%) rotate(${value.rotation}deg)`,
+            border: "1.5px dashed #004537",
+            background: "rgba(0,69,55,.14)",
+            borderRadius: 3,
+            display: "grid",
+            placeItems: "center",
+            fontSize: 11,
+            color: "#004537",
+            fontWeight: 700,
+            pointerEvents: "none",
+          }}
+        >
+          LOGO
+        </div>
       </div>
 
-      {/* Regler */}
       <div style={{ display: "flex", flexDirection: "column", gap: 12, minWidth: 180 }}>
         <div>
           <label style={{ fontSize: 12, color: "#475569", display: "block", marginBottom: 4 }}>
@@ -189,8 +149,7 @@ export default function RecLogoEditor({
           />
         </div>
         <p style={{ fontSize: 11, color: "#94a3b8", margin: 0, lineHeight: 1.5 }}>
-          Klicken/ziehen Sie im Bild, um die Logo-Position zu setzen. So erscheint
-          das Kundenlogo später auf diesem Empfehlungsprodukt.
+          Klicken oder ziehen Sie im Bild, um die Logo-Position zu setzen.
         </p>
       </div>
     </div>

@@ -3,16 +3,16 @@
 import { useEffect } from "react";
 
 /**
- * Blendet das vom Kunden hochgeladene Logo als kleine Vorschau auf die
- * „Das könnte Ihnen auch gefallen"-Produktkarten ein.
+ * Blendet das vom Kunden hochgeladene Logo als Vorschau auf die
+ * „Das könnte Ihnen auch gefallen"-Produktkarten ein (Cross-Selling).
  *
- * Idee: Wenn der Kunde oben ein Design hochlädt, sieht er unten sofort,
- * wie sein Motiv auf den empfohlenen Produkten wirken könnte → Cross-Selling.
- *
- * Umsetzung bewusst einfach: feste Position (Brusthöhe, zentriert). Das Logo
- * kommt aus dem globalen Event „inkii-design-preview", das DetailOrderForm/
- * DesignUploadTabs beim Upload feuert. Ohne Logo passiert nichts — die Karten
- * bleiben unverändert.
+ * Koordinatensystem — bewusst identisch zum Admin-Editor (RecLogoEditor):
+ * x/y/width sind Prozent des QUADRATISCHEN Kartenrahmens. Keine
+ * Letterbox-Umrechnung. Das Produktbild liegt hier wie im Admin per
+ * object-fit:contain im Quadrat, also entspricht „40 % im Admin" exakt
+ * „40 % hier". Das Logo bekommt einen quadratischen Rahmen (aspect-ratio:1)
+ * mit object-fit:contain — genau wie der LOGO-Platzhalter im Admin —, damit
+ * translate(-50%,-50%) in beiden Fällen gleich zentriert.
  */
 export default function RelatedLogoPreview() {
   useEffect(() => {
@@ -23,7 +23,6 @@ export default function RelatedLogoPreview() {
     function apply(logoUrl: string | null, placement: Placement) {
       const cards = document.querySelectorAll<HTMLElement>('[data-related-card="1"]');
       cards.forEach((card) => {
-        // Alte Overlays entfernen
         card.querySelectorAll(`.${OVERLAY_CLASS}`).forEach((el) => el.remove());
         if (!logoUrl) return;
 
@@ -31,9 +30,8 @@ export default function RelatedLogoPreview() {
           card.style.position = "relative";
         }
 
-        // Position: Vorrang hat die vom Admin PRO Empfehlungsprodukt
-        // festgelegte Position (data-logo-*). Fehlt sie, nutzen wir die
-        // Platzierung aus dem Konfigurator, sonst Brusthöhe zentriert.
+        // Vom Admin PRO Empfehlung gesetzte Position hat Vorrang, sonst die
+        // Platzierung des Kunden, sonst Brusthöhe zentriert.
         const adminX = card.dataset.logoX;
         const adminY = card.dataset.logoY;
         const adminW = card.dataset.logoWidth;
@@ -45,47 +43,21 @@ export default function RelatedLogoPreview() {
         const width = hasAdminPos ? Number(adminW) : (placement?.width ?? 26);
         const rotation = hasAdminPos ? Number(adminR) : (placement?.rotation ?? 0);
 
-        // Das Kartenbild finden, um seine tatsächlich sichtbare Fläche zu
-        // berücksichtigen. Bei object-fit:contain lässt ein nicht-quadratisches
-        // Bild oben/unten (oder seitlich) Rand — die im Admin gesetzten
-        // Prozentwerte beziehen sich aber auf DIESE Bildfläche. Ohne Korrektur
-        // sitzt das Logo verschoben.
-        const cardImg = card.querySelector<HTMLImageElement>('img:not(.' + OVERLAY_CLASS + ')');
-
-        const place = (imgNatW: number, imgNatH: number) => {
-          const rect = card.getBoundingClientRect();
-          const cw = rect.width, ch = rect.height;
-          // Sichtbare Bildfläche bei contain
-          let dispW = cw, dispH = ch, offX = 0, offY = 0;
-          if (imgNatW > 0 && imgNatH > 0) {
-            const scale = Math.min(cw / imgNatW, ch / imgNatH);
-            dispW = imgNatW * scale;
-            dispH = imgNatH * scale;
-            offX = (cw - dispW) / 2;
-            offY = (ch - dispH) / 2;
-          }
-          // Prozent (relativ zur Bildfläche) → Pixel in der Karte
-          const pxLeft = offX + (x / 100) * dispW;
-          const pxTop = offY + (y / 100) * dispH;
-          const pxWidth = (width / 100) * dispW;
-
-          img.style.left = `${(pxLeft / cw) * 100}%`;
-          img.style.top = `${(pxTop / ch) * 100}%`;
-          img.style.width = `${(pxWidth / cw) * 100}%`;
-          img.style.aspectRatio = "1 / 1";
-          img.style.height = "auto";
-          img.style.transform = `translate(-50%, -50%) rotate(${rotation}deg)`;
-
-          console.log(`[SITE] adminY="${adminY}" hasAdmin=${hasAdminPos} usedY=${y} | card=${Math.round(cw)}x${Math.round(ch)} nat=${imgNatW}x${imgNatH} disp=${Math.round(dispW)}x${Math.round(dispH)} offY=${Math.round(offY)} → topStyle=${Math.round((pxTop/ch)*100)}%`);
-        };
-
         const img = document.createElement("img");
         img.src = logoUrl;
         img.alt = "";
         img.className = OVERLAY_CLASS;
         img.setAttribute("aria-hidden", "true");
+        // Direkt in Karten-Prozent (kein Letterbox), quadratisch zentriert —
+        // exakt wie der LOGO-Platzhalter im Admin-Editor.
         Object.assign(img.style, {
           position: "absolute",
+          left: `${x}%`,
+          top: `${y}%`,
+          width: `${width}%`,
+          aspectRatio: "1 / 1",
+          height: "auto",
+          transform: `translate(-50%, -50%) rotate(${rotation}deg)`,
           objectFit: "contain",
           pointerEvents: "none",
           zIndex: "3",
@@ -93,22 +65,9 @@ export default function RelatedLogoPreview() {
           opacity: "0.96",
         } as CSSStyleDeclaration);
         card.appendChild(img);
-
-        // Position berechnen — sobald die natürlichen Maße des Produktbildes
-        // bekannt sind (für die contain-Korrektur).
-        if (cardImg && cardImg.naturalWidth > 0) {
-          place(cardImg.naturalWidth, cardImg.naturalHeight);
-        } else if (cardImg) {
-          cardImg.addEventListener("load", () => place(cardImg.naturalWidth, cardImg.naturalHeight), { once: true });
-          // Fallback, falls schon geladen aber Maße 0 (Cache-Fälle)
-          place(1, 1);
-        } else {
-          place(1, 1);
-        }
       });
     }
 
-    // Event vom Upload-Bereich: { logoUrl, placement }
     function onPreview(e: Event) {
       const ce = e as CustomEvent<{ logoUrl?: string | null; placement?: Placement }>;
       apply(ce.detail?.logoUrl ?? null, ce.detail?.placement ?? null);

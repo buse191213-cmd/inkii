@@ -489,10 +489,6 @@ export default async function ProductDetailPage({
                               height: "100%",
                               objectFit: "contain",
                               objectPosition: "center",
-                              transform: (zoom !== 1 || tx !== 0 || ty !== 0)
-                                ? `scale(${zoom}) translate(${-tx}%, ${ty}%)`
-                                : undefined,
-                              transformOrigin: "center",
                             }}
                           />
                         ) : (
