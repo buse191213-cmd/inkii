@@ -168,6 +168,8 @@ export default function AnfrageClient({ prefill, t, tCart }: { prefill?: Prefill
           quantity: i.quantity,
           hasDtf: i.hasDtf,
           dtfSize: i.dtfSize,
+          productImage: i.productImage || "",
+          dtfDesignUrl: i.dtfDesignUrl || "",
         })),
         message,
         subtotalCents,

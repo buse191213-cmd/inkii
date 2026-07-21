@@ -37,7 +37,7 @@ function euro(c: number): string {
 
 export async function sendQuoteRequest(input: {
   customer: { firstName: string; lastName: string; email: string; phone: string; firmname: string };
-  items: { productName: string; productCode: string; color: string; size: string; quantity: number; hasDtf: boolean; dtfSize: string }[];
+  items: { productName: string; productCode: string; color: string; size: string; quantity: number; hasDtf: boolean; dtfSize: string; productImage?: string; dtfDesignUrl?: string }[];
   message: string;
   subtotalCents: number;
 }): Promise<{ ok: boolean; error?: string }> {
@@ -47,8 +47,11 @@ export async function sendQuoteRequest(input: {
     // Inquiry kaydet
     const itemsList = items
       .map(
-        (i) =>
-          `• ${i.productName} (${i.productCode})${i.color ? ` · ${i.color}` : ""}${i.size ? ` · ${i.size}` : ""} · ${i.quantity} Stk${i.hasDtf ? ` · + DTF ${i.dtfSize}` : ""}`
+        (i) => {
+          const imgPart = i.productImage ? `\n   Produktbild: ${i.productImage}` : "";
+          const designPart = i.dtfDesignUrl ? `\n   Kunden-Design: ${i.dtfDesignUrl}` : "";
+          return `• ${i.productName} (${i.productCode})${i.color ? ` · ${i.color}` : ""}${i.size ? ` · ${i.size}` : ""} · ${i.quantity} Stk${i.hasDtf ? ` · + DTF ${i.dtfSize}` : ""}${imgPart}${designPart}`;
+        }
       )
       .join("\n");
 
@@ -63,6 +66,31 @@ export async function sendQuoteRequest(input: {
         status: "new",
       },
     });
+
+    // Admin-Mail: mit Produktbild + hochgeladenem Design (falls vorhanden)
+    const adminItemsHtml = items
+      .map((i) => {
+        const prodImg = i.productImage
+          ? `<img src="${i.productImage}" alt="" width="70" height="70" style="width:70px;height:70px;object-fit:contain;background:#f4f5f3;border:1px solid #eee;border-radius:6px;vertical-align:middle;margin-right:10px;">`
+          : "";
+        const designImg = i.dtfDesignUrl
+          ? `<div style="margin-top:6px;"><small style="color:#666;">Kunden-Design:</small><br><img src="${i.dtfDesignUrl}" alt="" width="90" style="max-width:90px;height:auto;border:1px solid #eee;border-radius:6px;margin-top:4px;"></div>`
+          : "";
+        return `
+          <tr>
+            <td style="padding:10px;border-bottom:1px solid #eee;vertical-align:top;">
+              ${prodImg}
+              <span style="vertical-align:middle;">
+                <strong>${i.productName}</strong><br>
+                <small style="color:#666;">${i.productCode}${i.color ? ` · ${i.color}` : ""}${i.size ? ` · ${i.size}` : ""}${i.hasDtf ? ` · + DTF ${i.dtfSize}` : ""}</small>
+              </span>
+              ${designImg}
+            </td>
+            <td style="padding:10px;border-bottom:1px solid #eee;text-align:right;vertical-align:top;">${i.quantity} Stk</td>
+          </tr>
+        `;
+      })
+      .join("");
 
     // Customer e-mail
     const itemsHtml = items
@@ -117,7 +145,7 @@ export async function sendQuoteRequest(input: {
             ${c.phone ? `Tel: ${c.phone}<br>` : ""}
             ${c.firmname ? `Firma: ${c.firmname}<br>` : ""}</p>
             ${message ? `<p><strong>Nachricht:</strong><br>${message.replace(/\n/g, "<br>")}</p>` : ""}
-            <table style="width: 100%; border-collapse: collapse;">${itemsHtml}</table>
+            <table style="width: 100%; border-collapse: collapse;">${adminItemsHtml}</table>
             ${subtotalCents > 0 ? `<p>Vorläufige Summe: <strong>${euro(subtotalCents)} €</strong></p>` : ""}
           </div>
         `
