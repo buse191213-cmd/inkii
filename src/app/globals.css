@@ -5199,30 +5199,28 @@ body:has(.hero-full) header.site .brand-other img{filter:none;height:52px}
 
 /* === Produkt-Formular als Vollseite (kein Popup, INNERHALB des Admin-
    Layouts — Sidebar & Topbar bleiben unberührt) === */
-.modal-bg.pf-fullpage-bg{
-  position:static;background:transparent;padding:0;display:block;
-  z-index:auto;overflow:visible;width:100%;
+.adm .modal-bg.pf-fullpage-bg{
+  position:static !important;inset:auto !important;background:transparent !important;
+  padding:0 !important;display:block !important;
+  z-index:auto !important;overflow:visible;width:100%;place-items:initial !important;
 }
-.modal.pf-fullpage{
+.adm .modal.pf-fullpage{
   max-width:100%;width:100%;margin:0;
   max-height:none;box-shadow:none;border-radius:0;
   background:transparent;overflow:visible;
 }
-.modal.pf-fullpage .modal-body{padding:8px 0 24px;max-height:none;overflow:visible}
-/* Kopf & Fuß im normalen Fluss (kein sticky → keine z-index-Konflikte mit
-   Sidebar/Topbar). */
-.pf-fullpage-head{
+.adm .modal.pf-fullpage .modal-body{padding:8px 0 24px;max-height:none;overflow:visible}
+.adm .pf-fullpage-head{
   display:flex;align-items:center;justify-content:space-between;
   background:#fff;border-bottom:1px solid #e5e7eb;
   padding:16px 20px !important;border-radius:10px 10px 0 0;
 }
-.modal.pf-fullpage .modal-foot{
+.adm .modal.pf-fullpage .modal-foot{
   background:#fff;border-top:1px solid #e5e7eb;
   padding:16px 20px;border-radius:0 0 10px 10px;
-  display:flex;justify-content:flex-end;gap:10px;
+  display:flex;justify-content:flex-end;gap:10px;position:static;
 }
-/* Panels bekommen weißen Karten-Look */
-.modal.pf-fullpage .pf-tabs,
-.modal.pf-fullpage .pf-panels{background:#fff;padding-left:20px;padding-right:20px}
-.modal.pf-fullpage .pf-tabs{padding-top:14px}
-.modal.pf-fullpage .pf-panels{padding-bottom:8px}
+.adm .modal.pf-fullpage .pf-tabs,
+.adm .modal.pf-fullpage .pf-panels{background:#fff;padding-left:20px;padding-right:20px}
+.adm .modal.pf-fullpage .pf-tabs{padding-top:14px}
+.adm .modal.pf-fullpage .pf-panels{padding-bottom:8px}
