@@ -5172,3 +5172,25 @@ body:has(.hero-full) header.site .brand-other img{filter:none;height:52px}
   .galerie-grid{grid-template-columns:1fr}
   .galerie-section{padding:36px 0 48px}
 }
+
+/* === Produkt-Formular: Tabs === */
+.pf-tabs{display:flex;flex-wrap:wrap;gap:4px;margin-bottom:20px;border-bottom:1px solid #e5e7eb;padding-bottom:0}
+.pf-tab{
+  appearance:none;border:none;background:none;cursor:pointer;
+  padding:10px 16px;font-size:14px;font-weight:600;color:#64748b;
+  border-bottom:2px solid transparent;margin-bottom:-1px;
+  transition:color .15s,border-color .15s;white-space:nowrap;
+}
+.pf-tab:hover{color:#0f1a16}
+.pf-tab.active{color:#004537;border-bottom-color:#004537}
+/* Panel-Sichtbarkeit: nur Blöcke des aktiven Tabs zeigen. */
+.pf-panels [data-pf-tab]{display:none}
+.pf-panels[data-active="allgemein"] [data-pf-tab="allgemein"],
+.pf-panels[data-active="preise"] [data-pf-tab="preise"],
+.pf-panels[data-active="groessen"] [data-pf-tab="groessen"],
+.pf-panels[data-active="bilder"] [data-pf-tab="bilder"],
+.pf-panels[data-active="details"] [data-pf-tab="details"],
+.pf-panels[data-active="empfehlungen"] [data-pf-tab="empfehlungen"]{display:block}
+/* field-row bleibt flex, wenn sichtbar */
+.pf-panels[data-active="allgemein"] .field-row[data-pf-tab="allgemein"],
+.pf-panels[data-active="preise"] .field-row[data-pf-tab="preise"]{display:flex}

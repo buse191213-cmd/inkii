@@ -101,6 +101,7 @@ export default function ProductManager({
   const [search, setSearch] = useState("");
   const [sort, setSort] = useState("newest");
   const [modal, setModal] = useState<AdminProduct | null>(null);
+  const [formTab, setFormTab] = useState<string>("allgemein");
   const [error, setError] = useState("");
   const [busy, setBusy] = useState(false);
   const [images, setImages] = useState<ImgItem[]>([]);
@@ -274,6 +275,7 @@ export default function ProductManager({
     setSizes([]);
     setSelRecommended([]);
     setModal({ ...EMPTY, categoryId: categories[0]?.id ?? "" });
+    setFormTab("allgemein");
   }
   function openEdit(p: AdminProduct) {
     setError("");
@@ -320,6 +322,7 @@ export default function ProductManager({
     }
     setPosEditFor(null);
     setModal({ ...p });
+    setFormTab("allgemein");
   }
 
   function toggleColor(k: string) {
@@ -637,7 +640,34 @@ export default function ProductManager({
                 <input type="hidden" name="id" defaultValue={modal.id} />
                 <input type="hidden" name="icon" defaultValue={modal.icon} />
 
-                <div className="field-row">
+                {/* Tab-Leiste — gruppiert die Felder für bessere Übersicht.
+                    Umsetzung via data-pf-tab + CSS (display:none), damit die
+                    bestehende Formularstruktur unverändert bleibt und ALLE
+                    Felder immer im DOM sind (Speichern erfasst alle Werte,
+                    egal welcher Tab gerade sichtbar ist). */}
+                <div className="pf-tabs">
+                  {[
+                    { key: "allgemein", label: "Allgemein" },
+                    { key: "preise", label: "Preise & Staffel" },
+                    { key: "groessen", label: "Größen" },
+                    { key: "bilder", label: "Bilder & Farben" },
+                    { key: "details", label: "Details" },
+                    { key: "empfehlungen", label: "Empfehlungen" },
+                  ].map((tb) => (
+                    <button
+                      key={tb.key}
+                      type="button"
+                      className={`pf-tab${formTab === tb.key ? " active" : ""}`}
+                      onClick={() => setFormTab(tb.key)}
+                    >
+                      {tb.label}
+                    </button>
+                  ))}
+                </div>
+
+                <div className="pf-panels" data-active={formTab}>
+
+                <div className="field-row" data-pf-tab="allgemein">
                   <div className="field">
                     <label>Artikelnummer</label>
                     <input name="code" defaultValue={modal.code} required />
@@ -650,7 +680,7 @@ export default function ProductManager({
                     </select>
                   </div>
                 </div>
-                <div className="field">
+                <div className="field" data-pf-tab="allgemein">
                   <label>
                     Bezugsquelle / Lieferanten-Link{" "}
                     <span style={{ color: "#94a3b8", fontWeight: 400, fontSize: 12 }}>
@@ -663,17 +693,17 @@ export default function ProductManager({
                     placeholder="z. B. https://lieferant.de/artikel-123 oder Notiz zur Bezugsquelle"
                   />
                 </div>
-                <div className="field">
+                <div className="field" data-pf-tab="allgemein">
                   <label>Produktname</label>
                   <input name="name" defaultValue={modal.name} required />
                 </div>
-                <div className="field">
+                <div className="field" data-pf-tab="allgemein">
                   <label>Kurzbeschreibung</label>
                   <input name="subtitle" defaultValue={modal.subtitle} />
                 </div>
 
                 {/* --- Produktbilder --- */}
-                <div className="field">
+                <div className="field" data-pf-tab="bilder">
                   <label>Produktbilder (max. {MAX_IMAGES})</label>
                   <div style={{ fontSize: 12, color: "#5a6660", marginBottom: 10, padding: "8px 12px", background: "#fafbf9", border: "1px solid #e3e6df", borderRadius: 4 }}>
                     💡 <b>Wichtig:</b> Das <b>1. Bild</b> = <b>Vorderseite</b>, das <b>2. Bild</b> = <b>Rückseite</b>. Kunden können damit ihre Designs auf Vorder- und Rückseite platzieren.
@@ -738,7 +768,7 @@ export default function ProductManager({
                   </p>
                 </div>
 
-                <div className="field">
+                <div className="field" data-pf-tab="allgemein">
                   <label>Kategorie</label>
                   <select name="categoryId" defaultValue={modal.categoryId} required>
                     {categories.map((c) => (
@@ -749,7 +779,7 @@ export default function ProductManager({
                   </select>
                 </div>
 
-                <div className="field">
+                <div className="field" data-pf-tab="allgemein">
                   <label>Auf welchen Seiten soll das Produkt erscheinen?</label>
                   <div className="pages-grid">
                     {(["kleidung", "taschen", "werbeartikel"] as const).map((slug) => {
@@ -787,7 +817,7 @@ export default function ProductManager({
                     Navigations-Sub-Seiten das Produkt zusätzlich erscheint. Du kannst mehrere auswählen.
                   </p>
                 </div>
-                <div className="field-row">
+                <div className="field-row" data-pf-tab="preise">
                   <div className="field">
                     <label>Preis (€) — leer = auf Anfrage</label>
                     <input
@@ -807,7 +837,7 @@ export default function ProductManager({
                 </div>
 
                 {/* Druckbereich-Typ (Print Area) */}
-                <div className="field">
+                <div className="field" data-pf-tab="details">
                   <label>Druckbereich (Designer-Position)</label>
                   <div className="tier-help" style={{ marginBottom: 8 }}>
                     Bestimmt, wo das Logo im Designer platziert werden kann. Für T-Shirts, Taschen, Caps usw. unterschiedlich.
@@ -823,7 +853,7 @@ export default function ProductManager({
                 </div>
 
                 {/* Empfohlene Produkte (Cross-Sell) */}
-                <div className="field">
+                <div className="field" data-pf-tab="empfehlungen">
                   <label>Empfohlene Produkte (Cross-Sell)</label>
                   <div className="tier-help" style={{ marginBottom: 10 }}>
                     Bis zu 4 Produkte für „Weitere Artikel" auf der Detailseite.
@@ -945,7 +975,7 @@ export default function ProductManager({
                   )}
                 </div>
 
-                <div className="field">
+                <div className="field" data-pf-tab="preise">
                   <label>Mengenstaffel-Preise (optional)</label>
                   <div className="tier-help">
                     Beispiel: 15 Stk = 14,91 € / 50 Stk = 13,49 € / 100 Stk = 13,15 €
@@ -1006,7 +1036,7 @@ export default function ProductManager({
                 </div>
 
                 {/* Größen mit individuellem Stückpreis */}
-                <div className="field">
+                <div className="field" data-pf-tab="groessen">
                   <label>Größen & Stückpreise (optional)</label>
                   <div className="tier-help">
                     Stückpreis pro Größe. Leer oder 0 = wie Basispreis. Beispiel mit Basispreis €1,00:
@@ -1065,7 +1095,7 @@ export default function ProductManager({
                     + Größe hinzufügen
                   </button>
                 </div>
-                <div className="field">
+                <div className="field" data-pf-tab="bilder">
                   <label>Farben</label>
                   <div className="opt-palette">
                     {PRODUCT_COLORS.map((c) => (
@@ -1149,7 +1179,7 @@ export default function ProductManager({
                     </button>
                   </div>
                 </div>
-                <div className="field">
+                <div className="field" data-pf-tab="bilder">
                   <label>Material</label>
                   <div className="opt-chips">
                     {PRODUCT_MATERIALS.map((m) => (
@@ -1277,7 +1307,7 @@ export default function ProductManager({
                     </div>
                   </div>
                 )}
-                <div className="field">
+                <div className="field" data-pf-tab="details">
                   <label>Pflegesymbole (Wäsche, Bügeln, Reinigung)</label>
                   <p className="form-note" style={{ marginBottom: 8, marginTop: 0 }}>
                     Wählen Sie die Pflegesymbole, die auf der Produktseite unter „DETAILS" angezeigt werden.
@@ -1307,7 +1337,7 @@ export default function ProductManager({
                     })}
                   </div>
                 </div>
-                <div className="field">
+                <div className="field" data-pf-tab="details">
                   <label>Anzeige-Reihenfolge im Katalog</label>
                   <p className="form-note" style={{ marginBottom: 6, marginTop: 0 }}>
                     Höhere Zahl = weiter oben. Beispiel: 100 (ganz oben), 0 (Standard).
@@ -1320,7 +1350,7 @@ export default function ProductManager({
                     style={{ width: 120 }}
                   />
                 </div>
-                <div className="field">
+                <div className="field" data-pf-tab="bilder">
                   <label>Vitrin-Bild zuschneiden (Zoom & Position)</label>
                   <p className="form-note" style={{ marginBottom: 10, marginTop: 0 }}>
                     Stellen Sie ein, wie das erste Produktbild im Katalog dargestellt wird.
@@ -1342,7 +1372,7 @@ export default function ProductManager({
                 </div>
 
                 {/* Druckbereich zeichnen (Werbeartikel) */}
-                <div className="field">
+                <div className="field" data-pf-tab="details">
                   <label>Druckbereich zeichnen (für Werbeartikel)</label>
                   {(() => {
                     const firstImg = images[0]?.preview || images[0]?.url;
@@ -1356,7 +1386,7 @@ export default function ProductManager({
                     return <PrintAreaEditor firstImage={firstImg} initial={paData} />;
                   })()}
                 </div>
-                <div className="field">
+                <div className="field" data-pf-tab="allgemein">
                   <label>Beschreibung</label>
                   <RichEditor
                     key={modal.id || "new"}
@@ -1388,7 +1418,7 @@ export default function ProductManager({
                     Meistverkauft
                   </label>
                 </div>
-                <div className="field">
+                <div className="field" data-pf-tab="details">
                   <label>Lieferzeit (Tage)</label>
                   <input
                     type="number"
@@ -1402,6 +1432,7 @@ export default function ProductManager({
                     Zeigt ein Badge „15 TAGE" auf der Produktkarte. 0 = ausblenden.
                   </p>
                 </div>
+                </div>{/* /.pf-panels */}
               </div>
               <div className="modal-foot">
                 <button type="button" className="btn-ghost" onClick={closeModal}>
