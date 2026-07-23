@@ -5223,4 +5223,4 @@ body:has(.hero-full) header.site .brand-other img{filter:none;height:52px}
 .adm .modal.pf-fullpage .pf-tabs,
 .adm .modal.pf-fullpage .pf-panels{background:#fff;padding-left:20px;padding-right:20px}
 .adm .modal.pf-fullpage .pf-tabs{padding-top:14px}
-.adm .modal.pf-fullpage .pf-panels{padding-bottom:8px}
+.adm .modal.pf-fullpage .pf-panels{padding-top:24px;padding-bottom:8px}
