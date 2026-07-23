@@ -708,14 +708,14 @@ footer.site ul a:hover{color:var(--leaf)}
 
 /* "Auf welchen Seiten erscheinen?" Checkbox-Gruppe */
 .adm .pages-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:6px}
-.adm .page-chip{display:flex;align-items:center;justify-content:center;gap:14px;padding:14px 16px;
+.adm .page-chip{display:flex !important;align-items:center;justify-content:center;gap:14px;padding:14px 16px;
   border:1.5px solid var(--line);border-radius:10px;cursor:pointer;transition:.2s;
-  background:#fff;user-select:none;text-align:center}
+  background:#fff;user-select:none;text-align:center;margin-bottom:0 !important}
 .adm .page-chip:hover{border-color:var(--leaf);background:#f7faf6}
 .adm .page-chip.active{border-color:var(--leaf-deep);background:#eef5e8;
   box-shadow:0 0 0 1px var(--leaf-deep) inset}
-.adm .page-chip input{accent-color:var(--leaf-deep);width:18px;height:18px;cursor:pointer;flex-shrink:0}
-.adm .page-chip-label{font-weight:600;font-size:.95rem;color:var(--ink)}
+.adm .page-chip input{accent-color:var(--leaf-deep);width:18px;height:18px;cursor:pointer;flex-shrink:0;margin:0}
+.adm .page-chip-label{font-weight:600;font-size:.95rem;color:var(--ink);line-height:1;margin:0}
 @media(max-width:700px){.adm .pages-grid{grid-template-columns:1fr}}
 .adm .empty{padding:40px;text-align:center;color:var(--muted)}
 .adm .status-select{border:1px solid var(--line);background:#fff;padding:7px 10px;font-size:.85rem;color:var(--ink)}
