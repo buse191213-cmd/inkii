@@ -1400,7 +1400,7 @@ export default function ProductManager({
                     Sätze).
                   </p>
                 </div>
-                <div className="checkrow">
+                <div className="checkrow" data-pf-tab="details">
                   <label>
                     <input type="checkbox" name="isNew" defaultChecked={modal.isNew} /> Als „Neu"
                     markieren

@@ -5194,6 +5194,7 @@ body:has(.hero-full) header.site .brand-other img{filter:none;height:52px}
 /* field-row bleibt flex, wenn sichtbar */
 .pf-panels[data-active="allgemein"] .field-row[data-pf-tab="allgemein"],
 .pf-panels[data-active="preise"] .field-row[data-pf-tab="preise"]{display:flex}
+.pf-panels[data-active="details"] .checkrow[data-pf-tab="details"]{display:flex}
 
 /* === Produkt-Formular als Vollseite (kein Popup) === */
 .modal-bg.pf-fullpage-bg{
