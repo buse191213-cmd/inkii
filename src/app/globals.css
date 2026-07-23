@@ -5190,34 +5190,34 @@ body:has(.hero-full) header.site .brand-other img{filter:none;height:52px}
 .pf-panels[data-active="groessen"] [data-pf-tab="groessen"],
 .pf-panels[data-active="bilder"] [data-pf-tab="bilder"],
 .pf-panels[data-active="details"] [data-pf-tab="details"],
-.pf-panels[data-active="empfehlungen"] [data-pf-tab="empfehlungen"]{display:block}
+.pf-panels[data-active="empfehlungen"] [data-pf-tab="empfehlungen"],
+.pf-panels[data-active="lieferant"] [data-pf-tab="lieferant"]{display:block}
 /* field-row bleibt flex, wenn sichtbar */
 .pf-panels[data-active="allgemein"] .field-row[data-pf-tab="allgemein"],
 .pf-panels[data-active="preise"] .field-row[data-pf-tab="preise"]{display:flex}
 .pf-panels[data-active="details"] .checkrow[data-pf-tab="details"]{display:flex}
 
-/* === Produkt-Formular als Vollseite (kein Popup) === */
+/* === Produkt-Formular als Vollseite (kein Popup, aber INNERHALB des
+   Admin-Layouts — Sidebar & Kopf bleiben sichtbar) === */
 .modal-bg.pf-fullpage-bg{
-  /* Kein abgedunkelter Overlay, kein Zentrieren — volle Fläche. */
-  position:fixed;inset:0;background:#fff;padding:0;display:block;
-  z-index:200;overflow-y:auto;
+  /* Kein fixed/inset — normaler Fluss im Admin-Content. Kein Overlay,
+     kein eigener Scroll-Container (sonst „Scroll im Scroll"). */
+  position:static;background:transparent;padding:0;display:block;
+  z-index:auto;overflow:visible;
 }
 .modal.pf-fullpage{
-  max-width:1100px;width:100%;margin:0 auto;
+  max-width:100%;width:100%;margin:0;
   max-height:none;box-shadow:none;border-radius:0;
-  background:#fff;
+  background:#fff;overflow:visible;
 }
-.modal.pf-fullpage .modal-body{padding:24px 28px 40px}
-/* Kopf klebt oben, mit dezenter Trennlinie */
+.modal.pf-fullpage .modal-body{padding:24px 4px 40px;max-height:none;overflow:visible}
+/* Kopf: klebt am oberen Rand des Content-Bereichs. */
 .pf-fullpage-head{
   position:sticky;top:0;z-index:10;background:#fff;
-  border-bottom:1px solid #e5e7eb;padding:18px 28px !important;
+  border-bottom:1px solid #e5e7eb;padding:16px 4px !important;
 }
-/* Fuß (Speichern/Abbrechen) klebt unten */
+/* Fuß (Speichern/Abbrechen): klebt am unteren Rand. */
 .modal.pf-fullpage .modal-foot{
   position:sticky;bottom:0;background:#fff;border-top:1px solid #e5e7eb;
-  padding:16px 28px;
-}
-@media(max-width:1140px){
-  .modal.pf-fullpage{max-width:100%}
+  padding:16px 4px;
 }

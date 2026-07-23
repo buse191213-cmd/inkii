@@ -467,9 +467,11 @@ export default function ProductManager({
   return (
     <>
       <p className="crumb">
-        Admin <b>/ Produkte</b>
+        Admin <b>/ Produkte</b>{modal ? <> / {modal.id ? "Bearbeiten" : "Neu"}</> : null}
       </p>
 
+      {!modal && (
+      <>
       <div className="toolbar">
         <div style={{ display: "flex", gap: 14, alignItems: "center", flexWrap: "wrap" }}>
           <div className="filter-tabs">
@@ -623,6 +625,8 @@ export default function ProductManager({
           </table>
         </div>
       </div>
+      </>
+      )}
 
       {modal && (
         <div className="modal-bg pf-fullpage-bg">
@@ -652,6 +656,7 @@ export default function ProductManager({
                     { key: "bilder", label: "Bilder & Farben" },
                     { key: "details", label: "Details" },
                     { key: "empfehlungen", label: "Empfehlungen" },
+                    { key: "lieferant", label: "Bezugsquelle" },
                   ].map((tb) => (
                     <button
                       key={tb.key}
@@ -679,7 +684,7 @@ export default function ProductManager({
                     </select>
                   </div>
                 </div>
-                <div className="field" data-pf-tab="allgemein">
+                <div className="field" data-pf-tab="lieferant">
                   <label>
                     Bezugsquelle / Lieferanten-Link{" "}
                     <span style={{ color: "#94a3b8", fontWeight: 400, fontSize: 12 }}>
