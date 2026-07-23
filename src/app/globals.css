@@ -5197,27 +5197,32 @@ body:has(.hero-full) header.site .brand-other img{filter:none;height:52px}
 .pf-panels[data-active="preise"] .field-row[data-pf-tab="preise"]{display:flex}
 .pf-panels[data-active="details"] .checkrow[data-pf-tab="details"]{display:flex}
 
-/* === Produkt-Formular als Vollseite (kein Popup, aber INNERHALB des
-   Admin-Layouts — Sidebar & Kopf bleiben sichtbar) === */
+/* === Produkt-Formular als Vollseite (kein Popup, INNERHALB des Admin-
+   Layouts — Sidebar & Topbar bleiben unberührt) === */
 .modal-bg.pf-fullpage-bg{
-  /* Kein fixed/inset — normaler Fluss im Admin-Content. Kein Overlay,
-     kein eigener Scroll-Container (sonst „Scroll im Scroll"). */
   position:static;background:transparent;padding:0;display:block;
-  z-index:auto;overflow:visible;
+  z-index:auto;overflow:visible;width:100%;
 }
 .modal.pf-fullpage{
   max-width:100%;width:100%;margin:0;
   max-height:none;box-shadow:none;border-radius:0;
-  background:#fff;overflow:visible;
+  background:transparent;overflow:visible;
 }
-.modal.pf-fullpage .modal-body{padding:24px 4px 40px;max-height:none;overflow:visible}
-/* Kopf: klebt am oberen Rand des Content-Bereichs. */
+.modal.pf-fullpage .modal-body{padding:8px 0 24px;max-height:none;overflow:visible}
+/* Kopf & Fuß im normalen Fluss (kein sticky → keine z-index-Konflikte mit
+   Sidebar/Topbar). */
 .pf-fullpage-head{
-  position:sticky;top:0;z-index:10;background:#fff;
-  border-bottom:1px solid #e5e7eb;padding:16px 4px !important;
+  display:flex;align-items:center;justify-content:space-between;
+  background:#fff;border-bottom:1px solid #e5e7eb;
+  padding:16px 20px !important;border-radius:10px 10px 0 0;
 }
-/* Fuß (Speichern/Abbrechen): klebt am unteren Rand. */
 .modal.pf-fullpage .modal-foot{
-  position:sticky;bottom:0;background:#fff;border-top:1px solid #e5e7eb;
-  padding:16px 4px;
+  background:#fff;border-top:1px solid #e5e7eb;
+  padding:16px 20px;border-radius:0 0 10px 10px;
+  display:flex;justify-content:flex-end;gap:10px;
 }
+/* Panels bekommen weißen Karten-Look */
+.modal.pf-fullpage .pf-tabs,
+.modal.pf-fullpage .pf-panels{background:#fff;padding-left:20px;padding-right:20px}
+.modal.pf-fullpage .pf-tabs{padding-top:14px}
+.modal.pf-fullpage .pf-panels{padding-bottom:8px}
