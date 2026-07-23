@@ -276,6 +276,8 @@ export default function CatalogClient({
                           src={p.images[0]}
                           alt={p.name}
                           style={{
+                            position: "absolute",
+                            inset: 0,
                             width: "100%",
                             height: "100%",
                             objectFit: "contain",
@@ -284,7 +286,6 @@ export default function CatalogClient({
                               ? `scale(${zoom}) translate(${-tx}%, ${ty}%)`
                               : undefined,
                             transformOrigin: "center",
-                            padding: 4,
                           }}
                         />
                       );

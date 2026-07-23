@@ -481,6 +481,8 @@ export default async function ProductDetailPage({
                             src={rImg}
                             alt={r.name}
                             style={{
+                              position: "absolute",
+                              inset: 0,
                               width: "100%",
                               height: "100%",
                               objectFit: "contain",
