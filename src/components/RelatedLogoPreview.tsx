@@ -43,6 +43,11 @@ export default function RelatedLogoPreview() {
         const width = Number(adminW);
         const rotation = Number(adminR);
 
+        // Debug: welches Produkt, welche Werte, welche Kartengröße
+        const rect = card.getBoundingClientRect();
+        const cardName = card.closest("article")?.querySelector(".mm-card-name, .mm-card-title, h3, h4")?.textContent?.trim().slice(0, 20) || "?";
+        console.log(`[REL] "${cardName}" x=${x} y=${y} w=${width} | card=${Math.round(rect.width)}x${Math.round(rect.height)} ratio=${(rect.width/rect.height).toFixed(2)}`);
+
         const img = document.createElement("img");
         img.src = logoUrl;
         img.alt = "";
