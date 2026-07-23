@@ -708,9 +708,9 @@ footer.site ul a:hover{color:var(--leaf)}
 
 /* "Auf welchen Seiten erscheinen?" Checkbox-Gruppe */
 .adm .pages-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:6px}
-.adm .page-chip{display:flex;align-items:center;gap:10px;padding:14px 16px;
+.adm .page-chip{display:flex;align-items:center;justify-content:center;gap:10px;padding:14px 16px;
   border:1.5px solid var(--line);border-radius:10px;cursor:pointer;transition:.2s;
-  background:#fff;user-select:none}
+  background:#fff;user-select:none;text-align:center}
 .adm .page-chip:hover{border-color:var(--leaf);background:#f7faf6}
 .adm .page-chip.active{border-color:var(--leaf-deep);background:#eef5e8;
   box-shadow:0 0 0 1px var(--leaf-deep) inset}
