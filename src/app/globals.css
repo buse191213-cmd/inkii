@@ -5194,3 +5194,29 @@ body:has(.hero-full) header.site .brand-other img{filter:none;height:52px}
 /* field-row bleibt flex, wenn sichtbar */
 .pf-panels[data-active="allgemein"] .field-row[data-pf-tab="allgemein"],
 .pf-panels[data-active="preise"] .field-row[data-pf-tab="preise"]{display:flex}
+
+/* === Produkt-Formular als Vollseite (kein Popup) === */
+.modal-bg.pf-fullpage-bg{
+  /* Kein abgedunkelter Overlay, kein Zentrieren — volle Fläche. */
+  position:fixed;inset:0;background:#fff;padding:0;display:block;
+  z-index:200;overflow-y:auto;
+}
+.modal.pf-fullpage{
+  max-width:1100px;width:100%;margin:0 auto;
+  max-height:none;box-shadow:none;border-radius:0;
+  background:#fff;
+}
+.modal.pf-fullpage .modal-body{padding:24px 28px 40px}
+/* Kopf klebt oben, mit dezenter Trennlinie */
+.pf-fullpage-head{
+  position:sticky;top:0;z-index:10;background:#fff;
+  border-bottom:1px solid #e5e7eb;padding:18px 28px !important;
+}
+/* Fuß (Speichern/Abbrechen) klebt unten */
+.modal.pf-fullpage .modal-foot{
+  position:sticky;bottom:0;background:#fff;border-top:1px solid #e5e7eb;
+  padding:16px 28px;
+}
+@media(max-width:1140px){
+  .modal.pf-fullpage{max-width:100%}
+}

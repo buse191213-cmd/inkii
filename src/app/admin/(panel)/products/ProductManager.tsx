@@ -625,11 +625,10 @@ export default function ProductManager({
       </div>
 
       {modal && (
-        <div className="modal-bg">
-          {/* Overlay click ile kapanmaz - sadece X butonu ve Abbrechen ile */}
-          <div className="modal modal-wide">
+        <div className="modal-bg pf-fullpage-bg">
+          <div className="modal modal-wide pf-fullpage">
             <form onSubmit={handleSave}>
-              <div className="modal-head">
+              <div className="modal-head pf-fullpage-head">
                 <h3>{modal.id ? "Produkt bearbeiten" : "Neues Produkt"}</h3>
                 <button type="button" className="x" onClick={closeModal}>
                   ✕
