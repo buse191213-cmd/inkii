@@ -43,17 +43,6 @@ export default function RelatedLogoPreview() {
         const width = Number(adminW);
         const rotation = Number(adminR);
 
-        // Debug: welches Produkt, Werte, UND die tatsächliche Bildposition
-        const rect = card.getBoundingClientRect();
-        const cardName = card.closest("article")?.querySelector(".mm-card-name, .mm-card-title, h3, h4")?.textContent?.trim().slice(0, 20) || "?";
-        const cardImg = card.querySelector<HTMLImageElement>("img:not(." + OVERLAY_CLASS + ")");
-        let imgInfo = "kein img";
-        if (cardImg) {
-          const ir = cardImg.getBoundingClientRect();
-          imgInfo = `img=${Math.round(ir.width)}x${Math.round(ir.height)} imgTop-cardTop=${Math.round(ir.top - rect.top)} nat=${cardImg.naturalWidth}x${cardImg.naturalHeight}`;
-        }
-        console.log(`[REL] "${cardName}" x=${x} y=${y} | card=${Math.round(rect.width)}x${Math.round(rect.height)} | ${imgInfo}`);
-
         const img = document.createElement("img");
         img.src = logoUrl;
         img.alt = "";

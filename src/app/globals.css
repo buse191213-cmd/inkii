@@ -1651,7 +1651,7 @@ body:has(.home-services) footer.site{margin-top:0}
   flex:1}
 .mm-card-img{position:relative;background:#f4f5f3;aspect-ratio:1/1;
   display:grid;place-items:center;overflow:hidden;transition:.25s;border-radius:5px}
-.mm-card-img img{width:100%;height:100%;object-fit:contain !important;transition:transform .35s ease}
+.mm-card-img img{position:absolute;inset:0;width:100%;height:100%;object-fit:contain !important;transition:transform .35s ease}
 .mm-card-img svg{width:46%;height:46%;color:var(--muted);opacity:.6}
 .mm-card:hover .mm-card-img img{/* hover scale inline cardCrop'u ezerdi */}
 .mm-quick{position:absolute;left:14px;right:14px;bottom:14px;
