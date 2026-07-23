@@ -1178,7 +1178,7 @@ export default function ProductManager({
                     </button>
                   </div>
                 </div>
-                <div className="field" data-pf-tab="bilder">
+                <div className="field" data-pf-tab="details">
                   <label>Material</label>
                   <div className="opt-chips">
                     {PRODUCT_MATERIALS.map((m) => (
@@ -1239,7 +1239,7 @@ export default function ProductManager({
                   </div>
                 </div>
                 {selColors.length > 0 && (
-                  <div className="field">
+                  <div className="field" data-pf-tab="bilder">
                     <label>Bilder pro Farbe (optional)</label>
                     <p className="form-note" style={{ marginBottom: 12, marginTop: 0 }}>
                       <strong>Optional:</strong> Wenn Sie pro Farbe spezifische Bilder hochladen wollen, machen Sie das hier.
