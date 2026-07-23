@@ -32,6 +32,7 @@ export default async function ProductsPage() {
     printAreaType: (p as { printAreaType?: string }).printAreaType || "tshirt",
     customPrintArea: (p as { customPrintArea?: string }).customPrintArea || "",
     status: p.status,
+    supplierNote: (p as { supplierNote?: string }).supplierNote || "",
     isNew: p.isNew,
     isEco: p.isEco,
     isBestseller: (p as { isBestseller?: boolean }).isBestseller ?? false,

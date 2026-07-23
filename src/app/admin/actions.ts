@@ -204,6 +204,7 @@ export async function saveProduct(formData: FormData): Promise<ActionResult> {
     printAreaType: String(formData.get("printAreaType") ?? "tshirt"),
     customPrintArea: String(formData.get("customPrintArea") ?? ""),
     status: String(formData.get("status") ?? "active"),
+    supplierNote: String(formData.get("supplierNote") ?? ""),
     isNew: formData.get("isNew") === "on",
     isEco: formData.get("isEco") === "on",
     isBestseller: formData.get("isBestseller") === "on",

@@ -37,6 +37,7 @@ model Product {
   // JSON: {"left":30,"top":40,"right":70,"bottom":80,"widthCm":25,"heightCm":30}
   customPrintArea String @default("")
   status      String   @default("active") // active | draft
+  supplierNote String  @default("")        // Intern: Bezugsquelle/Lieferanten-Link (nur für Admin, NICHT öffentlich)
   isNew       Boolean  @default(false)
   isEco       Boolean  @default(false)
   isBestseller Boolean @default(false) // "Meistverkauft" Badge

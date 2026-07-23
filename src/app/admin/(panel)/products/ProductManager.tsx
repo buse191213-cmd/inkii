@@ -31,6 +31,7 @@ export type AdminProduct = {
   printAreaType?: string;
   customPrintArea?: string;
   status: string;
+  supplierNote?: string;
   isNew: boolean;
   isEco: boolean;
   isBestseller?: boolean;
@@ -58,7 +59,7 @@ const MAX_IMAGES = 15;
 
 const EMPTY: AdminProduct = {
   id: "", code: "INKI-", name: "", subtitle: "", description: "", icon: "box",
-  priceCents: null, priceTiers: "[]", sizes: "[]", stock: 0, minOrderQty: 1, recommendedIds: "", status: "active",
+  priceCents: null, priceTiers: "[]", sizes: "[]", stock: 0, minOrderQty: 1, recommendedIds: "", status: "active", supplierNote: "",
   isNew: false, isEco: false, isBestseller: false, deliveryDays: 0,
   colors: "", material: "", images: "", colorImages: "{}", careSymbols: "", displayOrder: 0, cardFit: "cover", cardCrop: "", visiblePages: [], categoryId: "", categoryName: "",
 };
@@ -648,6 +649,19 @@ export default function ProductManager({
                       <option value="draft">Entwurf</option>
                     </select>
                   </div>
+                </div>
+                <div className="field">
+                  <label>
+                    Bezugsquelle / Lieferanten-Link{" "}
+                    <span style={{ color: "#94a3b8", fontWeight: 400, fontSize: 12 }}>
+                      (intern — nur für Sie, nicht öffentlich sichtbar)
+                    </span>
+                  </label>
+                  <input
+                    name="supplierNote"
+                    defaultValue={modal.supplierNote ?? ""}
+                    placeholder="z. B. https://lieferant.de/artikel-123 oder Notiz zur Bezugsquelle"
+                  />
                 </div>
                 <div className="field">
                   <label>Produktname</label>
