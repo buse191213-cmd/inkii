@@ -560,7 +560,7 @@ footer.site ul a:hover{color:var(--leaf)}
 
 .adm .shell{display:grid;grid-template-columns:262px 1fr;min-height:100vh;background:#f4f5f1}
 .adm .side{background:#fff;color:#1c2722;display:flex;flex-direction:column;
-  position:sticky;top:0;height:100vh;border-right:1px solid #e8e8e6}
+  position:sticky;top:0;height:100vh;border-right:1px solid #e8e8e6;z-index:50}
 .adm .side-logo{display:flex;align-items:center;gap:10px;font-family:var(--display);
   padding:24px;border-bottom:1px solid #f0f0ec}
 .adm .side-logo img{height:30px;width:auto;display:block;opacity:1}
@@ -593,7 +593,7 @@ footer.site ul a:hover{color:var(--leaf)}
 .adm .side-user b{font-size:.88rem;display:block;color:#1c2722;font-weight:600}
 .adm .side-user span{font-size:.74rem;color:#9ea7a2}
 
-.adm .admin-body{display:flex;flex-direction:column;min-width:0}
+.adm .admin-body{display:flex;flex-direction:column;min-width:0;position:relative;z-index:1}
 .adm .topbar{background:#fff;border-bottom:1px solid #e8e8e6;height:68px;display:flex;
   align-items:center;justify-content:space-between;padding:0 32px;position:sticky;top:0;z-index:20}
 .adm .topbar h1{font-family:var(--display);font-size:1.18rem;font-weight:700;color:#1c2722}
@@ -609,7 +609,7 @@ footer.site ul a:hover{color:var(--leaf)}
   border-radius:8px}
 .adm .btn-ghost:hover{border-color:#1c2722;background:#fafbf9}
 .adm .btn-sm{padding:7px 12px;font-size:.8rem}
-.adm .content{padding:32px;flex:1}
+.adm .content{padding:32px;flex:1;min-width:0;overflow-x:hidden}
 .adm .crumb{font-size:.82rem;color:#7a857f;margin-bottom:20px}
 .adm .crumb b{color:#1c2722}
 
