@@ -5229,12 +5229,12 @@ body:has(.hero-full) header.site .brand-other img{filter:none;height:52px}
 .det-order-sizes{display:block;margin:18px 0}
 .det-order-sizes .det-order-qty-label{display:block;font-weight:600;font-size:.9rem;margin-bottom:10px;color:var(--ink)}
 /* Her beden kendi çerçeveli kutuda: beden solda, adet input sağda (yan yana). */
-.det-size-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(108px,1fr));gap:8px}
+.det-size-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(128px,1fr));gap:8px}
 .det-size-row{display:flex;flex-direction:row;align-items:center;justify-content:space-between;gap:8px;
   padding:8px 10px;border:1.5px solid var(--line);border-radius:9px;background:#fff;transition:.15s}
 .det-size-row.has{border-color:var(--leaf-deep);background:#f7faf6}
 .det-size-name{font-weight:700;font-size:.92rem;color:var(--ink);flex-shrink:0}
-.det-size-qty{width:46px;flex-shrink:0;text-align:center;padding:6px 4px;border:1px solid var(--line);
+.det-size-qty{width:72px;flex-shrink:0;text-align:center;padding:6px 4px;border:1px solid var(--line);
   border-radius:7px;font-size:.92rem;font-weight:700;color:var(--ink);background:#fafafa}
 .det-size-qty:focus{border-color:var(--leaf-deep);outline:none;background:#fff}
 .det-size-total{display:flex;align-items:center;justify-content:space-between;
