@@ -49,7 +49,7 @@ const STATUS_EMAILS: Record<string, { subject: string; intro: string }> = {
   },
   IN_PRODUKTION: {
     subject: "Ihre Bestellung ist in Produktion",
-    intro: "Wir haben mit der Produktion Ihrer Bestellung begonnen. Sie werden informiert, sobald wir versandbereit sind.",
+    intro: "Wir haben mit der Produktion Ihrer Bestellung begonnen. Sobald Ihre Bestellung versandbereit ist, werden wir Sie selbstverständlich informieren.",
   },
   VERSANDBEREIT: {
     subject: "Ihre Bestellung ist versandbereit",
