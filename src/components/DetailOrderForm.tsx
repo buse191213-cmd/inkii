@@ -364,33 +364,16 @@ export default function DetailOrderForm({
             {sizes.map((s) => (
               <div key={s.name} className={`det-size-row${(qty[s.name] || 0) > 0 ? " has" : ""}`}>
                 <span className="det-size-name">{s.name}</span>
-                <div className="det-size-input">
-                  <button
-                    type="button"
-                    className="det-size-btn"
-                    aria-label="weniger"
-                    onClick={() => setSizeQty(s.name, Math.max(0, (qty[s.name] || 0) - 1))}
-                  >
-                    −
-                  </button>
-                  <input
-                    type="number"
-                    inputMode="numeric"
-                    min="0"
-                    step="1"
-                    value={qty[s.name] || ""}
-                    onChange={(e) => setSizeQty(s.name, parseInt(e.target.value || "0", 10))}
-                    placeholder="0"
-                  />
-                  <button
-                    type="button"
-                    className="det-size-btn"
-                    aria-label="mehr"
-                    onClick={() => setSizeQty(s.name, (qty[s.name] || 0) + 1)}
-                  >
-                    +
-                  </button>
-                </div>
+                <input
+                  className="det-size-qty"
+                  type="number"
+                  inputMode="numeric"
+                  min="0"
+                  step="1"
+                  value={qty[s.name] || ""}
+                  onChange={(e) => setSizeQty(s.name, parseInt(e.target.value || "0", 10))}
+                  placeholder="0"
+                />
               </div>
             ))}
           </div>
