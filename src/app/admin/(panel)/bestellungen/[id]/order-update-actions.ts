@@ -6,7 +6,7 @@ import { isAuthenticated } from "@/lib/auth";
 import nodemailer from "nodemailer";
 import { generateInvoicePDF, generateInvoiceNumber, type InvoiceData } from "@/lib/invoice-pdf";
 import { getCompanyInfo } from "@/lib/company-info";
-import { renderShippedEmail, shippedEmailSubject } from "@/lib/shipped-email";
+import { renderShippedEmail, shippedEmailSubject, renderStatusEmail } from "@/lib/shipped-email";
 
 function isSmtpConfigured(): boolean {
   return Boolean(process.env.SMTP_HOST && process.env.SMTP_USER && process.env.SMTP_PASS);
@@ -42,92 +42,59 @@ async function sendMail(
   await transporter.sendMail({ from, to, subject, html, attachments });
 }
 
-const STATUS_EMAILS: Record<string, { subject: string; intro: string }> = {
+const STATUS_EMAILS: Record<string, { subject: string; intro: string; bannerIcon: string; bannerTitle: string; bannerSubtitle: string }> = {
   BEZAHLT: {
     subject: "Zahlung eingegangen",
     intro: "Wir haben Ihre Zahlung erhalten. Vielen Dank! Wir beginnen nun mit der Bearbeitung Ihrer Bestellung.",
+    bannerIcon: "💳",
+    bannerTitle: "Zahlung erhalten!",
+    bannerSubtitle: "Vielen Dank für Ihre Zahlung",
   },
   IN_PRODUKTION: {
     subject: "Ihre Bestellung ist in Produktion",
     intro: "Wir haben mit der Produktion Ihrer Bestellung begonnen. Sobald Ihre Bestellung versandbereit ist, werden wir Sie selbstverständlich informieren.",
+    bannerIcon: "🏭",
+    bannerTitle: "In Produktion!",
+    bannerSubtitle: "Wir fertigen Ihre Bestellung",
   },
   VERSANDBEREIT: {
     subject: "Ihre Bestellung ist versandbereit",
     intro: "Ihre Bestellung ist fertig und wird in Kürze versendet.",
+    bannerIcon: "📦",
+    bannerTitle: "Versandbereit!",
+    bannerSubtitle: "Ihre Bestellung ist fertig",
   },
   VERSENDET: {
     subject: "Ihre Bestellung wurde versendet",
     intro: "Ihre Bestellung ist auf dem Weg zu Ihnen.",
+    bannerIcon: "🚚",
+    bannerTitle: "Unterwegs zu Ihnen!",
+    bannerSubtitle: "Ihre Bestellung wurde versendet",
   },
   ZUGESTELLT: {
     subject: "Ihre Bestellung wurde zugestellt",
-    intro: "Ihre Bestellung wurde laut Versanddienstleister zugestellt. Wir hoffen, alles ist zu Ihrer Zufriedenheit!",
+    intro: "Laut Versanddienstleister wurde Ihre Bestellung erfolgreich zugestellt. Wir hoffen, dass alles zu Ihrer Zufriedenheit ist und wünschen Ihnen viel Freude mit Ihrer Bestellung.",
+    bannerIcon: "🎉",
+    bannerTitle: "Zugestellt!",
+    bannerSubtitle: "Ihre Bestellung ist angekommen",
   },
   ABGESCHLOSSEN: {
     subject: "Bestellung abgeschlossen",
     intro: "Ihre Bestellung ist nun abgeschlossen. Vielen Dank für Ihr Vertrauen!",
+    bannerIcon: "✅",
+    bannerTitle: "Abgeschlossen!",
+    bannerSubtitle: "Vielen Dank für Ihr Vertrauen",
   },
   STORNIERT: {
     subject: "Bestellung storniert",
     intro: "Ihre Bestellung wurde storniert. Bei Fragen kontaktieren Sie uns bitte.",
+    bannerIcon: "❌",
+    bannerTitle: "Bestellung storniert",
+    bannerSubtitle: "Ihre Bestellung wurde storniert",
   },
 };
 
 // Reihenfolge der Hauptschritte für die Status-Zeitleiste in der E-Mail.
-const STATUS_FLOW: { key: string; label: string }[] = [
-  { key: "BEZAHLT", label: "Zahlung erhalten" },
-  { key: "IN_PRODUKTION", label: "In Produktion" },
-  { key: "VERSANDBEREIT", label: "Versandbereit" },
-  { key: "VERSENDET", label: "Versendet" },
-  { key: "ZUGESTELLT", label: "Zugestellt" },
-];
-
-/**
- * Rendert eine horizontale Status-Zeitleiste als E-Mail-taugliches HTML
- * (Tabellen-Layout, Inline-Styles — funktioniert in Outlook/Gmail/Apple Mail).
- * Erledigte + aktueller Schritt sind grün, kommende Schritte grau.
- */
-function renderStatusTimeline(currentStatus: string): string {
-  // ABGESCHLOSSEN zählt wie ZUGESTELLT (letzter Schritt erreicht).
-  const effective = currentStatus === "ABGESCHLOSSEN" ? "ZUGESTELLT" : currentStatus;
-  const currentIndex = STATUS_FLOW.findIndex((s) => s.key === effective);
-  if (currentIndex < 0) return ""; // z.B. STORNIERT → keine Zeitleiste
-
-  const cells = STATUS_FLOW.map((step, i) => {
-    const done = i <= currentIndex;
-    const dotBg = done ? "#004537" : "#e5e7eb";
-    const dotColor = done ? "#ffffff" : "#9ca3af";
-    const labelColor = done ? "#004537" : "#9ca3af";
-    const labelWeight = i === currentIndex ? "700" : "400";
-    const mark = done ? "&#10003;" : `${i + 1}`;
-    return `
-      <td align="center" valign="top" style="width:20%;padding:0 2px;font-family:Arial,sans-serif;">
-        <div style="width:26px;height:26px;line-height:26px;border-radius:50%;background:${dotBg};color:${dotColor};font-size:13px;font-weight:700;margin:0 auto;">${mark}</div>
-        <div style="font-size:11px;color:${labelColor};font-weight:${labelWeight};margin-top:6px;line-height:1.3;">${step.label}</div>
-      </td>`;
-  }).join("");
-
-  return `
-    <table role="presentation" cellpadding="0" cellspacing="0" width="100%" style="margin:20px 0 8px 0;border-collapse:collapse;">
-      <tr>${cells}</tr>
-    </table>`;
-}
-
-/**
- * Standard-Footer für ALLE Kunden-E-Mails (einheitlich).
- */
-function renderEmailFooter(): string {
-  return `
-    <div style="margin-top:28px;padding-top:16px;border-top:1px solid #e5e7eb;font-family:Arial,sans-serif;font-size:12px;color:#6b7280;line-height:1.7;">
-      <p style="margin:0 0 6px 0;">Bei Fragen stehen wir Ihnen jederzeit zur Verfügung.<br>
-      Schreiben Sie uns: <a href="mailto:info@inkiiworks.de" style="color:#004537;text-decoration:none;">info@inkiiworks.de</a></p>
-      <p style="margin:8px 0 0 0;color:#9ca3af;">
-        <strong style="color:#004537;">INKII WORKS</strong> · Sener Kirli · Westuferstr. 25 · 45356 Essen<br>
-        <a href="https://www.inkiiworks.de" style="color:#9ca3af;text-decoration:none;">www.inkiiworks.de</a> · USt-IdNr.: DE353055316
-      </p>
-    </div>`;
-}
-
 function carrierTrackingUrl(carrier: string, trackingNumber: string): string {
   const t = encodeURIComponent(trackingNumber);
   switch (carrier) {
@@ -182,18 +149,6 @@ export async function updateOrderStatus(
     const emailDef = STATUS_EMAILS[newStatus];
     if (emailDef) {
       try {
-        let trackingHtml = "";
-        if (newStatus === "VERSENDET" && order.trackingNumber && order.shippingCarrier) {
-          const url = carrierTrackingUrl(order.shippingCarrier, order.trackingNumber);
-          trackingHtml = `
-            <p style="background: #f0fdf4; padding: 12px; margin: 16px 0;">
-              <strong>Verfolgen Sie Ihre Sendung:</strong><br>
-              ${order.shippingCarrier} · ${order.trackingNumber}<br>
-              ${url ? `<a href="${url}" style="color: #004537;">→ Sendungsverfolgung öffnen</a>` : ""}
-            </p>
-          `;
-        }
-
         // PDF Rechnung erstellen (BEZAHLT veya ABGESCHLOSSEN durumlarında ekle)
         const attachments: Attachment[] = [];
         const attachInvoice = newStatus === "BEZAHLT" || newStatus === "ABGESCHLOSSEN";
@@ -294,28 +249,17 @@ export async function updateOrderStatus(
           );
           emailSent = true;
         } else {
-          // Andere Status: Template mit Status-Zeitleiste + Standard-Footer
-          const timelineHtml = renderStatusTimeline(newStatus);
-          const greeting = order.customer.salutation
-            ? `Sehr geehrte/r ${order.customer.salutation} ${order.customer.lastName},`
-            : `Sehr geehrte/r ${order.customer.firstName} ${order.customer.lastName},`;
-          const html = `
-            <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; color: #1f2937;">
-              <div style="background: #004537; padding: 20px 24px; border-radius: 8px 8px 0 0;">
-                <span style="color: #ffffff; font-size: 18px; font-weight: 700; letter-spacing: .5px;">INKII WORKS</span>
-              </div>
-              <div style="border: 1px solid #e5e7eb; border-top: none; border-radius: 0 0 8px 8px; padding: 24px;">
-                <h2 style="color: #004537; margin: 0 0 16px 0; font-size: 19px;">${emailDef.subject}</h2>
-                <p style="margin: 0 0 12px 0; line-height: 1.6;">${greeting}</p>
-                <p style="margin: 0 0 8px 0; line-height: 1.6;">${emailDef.intro}</p>
-                ${timelineHtml}
-                <p style="margin: 16px 0 0 0; line-height: 1.6;"><strong>Bestellnummer:</strong> ${order.orderNumber}</p>
-                ${attachments.length > 0 ? '<p style="background: #f0fdf4; border-left: 3px solid #004537; padding: 12px 14px; margin: 16px 0; font-size: 14px;"><strong>Die zugehörige Rechnung finden Sie als PDF im Anhang.</strong></p>' : ""}
-                ${trackingHtml}
-                ${renderEmailFooter()}
-              </div>
-            </div>
-          `;
+          // Andere Status: einheitliches Premium-Template (wie Versand-Mail)
+          const html = renderStatusEmail({
+            status: newStatus,
+            bannerIcon: emailDef.bannerIcon,
+            bannerTitle: emailDef.bannerTitle,
+            bannerSubtitle: emailDef.bannerSubtitle,
+            customerFirstName: order.customer.firstName,
+            intro: emailDef.intro,
+            orderNumber: order.orderNumber,
+            invoiceAttached: attachments.length > 0,
+          });
           await sendMail(
             order.customer.email,
             `INKII Works — ${emailDef.subject} (${order.orderNumber})`,
