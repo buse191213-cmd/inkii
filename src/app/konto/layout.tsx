@@ -32,6 +32,14 @@ export default async function KontoLayout({
       {/* SAĞ: Main Content */}
       <main className="konto-main">
         <div className="konto-content">
+          {/* Zurück zum Shop */}
+          <a href="/" className="konto-back-shop">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+              <path d="M19 12H5M12 19l-7-7 7-7" />
+            </svg>
+            {locale === "tr" ? "Mağazaya dön" : locale === "en" ? "Back to shop" : "Zurück zum Shop"}
+          </a>
+
           {/* Editorial Header */}
           <div style={{ marginBottom: 36, paddingBottom: 20, borderBottom: "1px solid #e5e5e5" }}>
             <p style={{
@@ -86,6 +94,25 @@ export default async function KontoLayout({
           max-width: 980px;
           margin: 0 auto;
           padding: 48px 40px 80px;
+        }
+        .konto-back-shop {
+          display: inline-flex;
+          align-items: center;
+          gap: 8px;
+          font-size: 14px;
+          font-weight: 600;
+          color: #004537;
+          text-decoration: none;
+          padding: 8px 16px 8px 12px;
+          border: 1.5px solid #d5e3d0;
+          border-radius: 999px;
+          background: #f7faf6;
+          margin-bottom: 28px;
+          transition: .15s;
+        }
+        .konto-back-shop:hover {
+          background: #eef5e8;
+          border-color: #004537;
         }
 
         /* Mobile */
