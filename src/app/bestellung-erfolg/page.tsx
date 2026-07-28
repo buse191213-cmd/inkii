@@ -63,7 +63,11 @@ export default async function BestellungErfolgPage({ searchParams }: Props) {
         )}
         <p style={{ color: "#64748b", marginBottom: 32, fontSize: 15, lineHeight: 1.6 }}>
           {ts.received}
-          {showBankDetails ? ` ${ts.bankTransfer}` : ` ${ts.contactSoon}`}
+          {showBankDetails ? (
+            <> <strong style={{ color: "#1f2937" }}>{ts.bankTransfer}</strong></>
+          ) : (
+            ` ${ts.contactSoon}`
+          )}
         </p>
 
         {/* Banka Bilgileri Kutusu — sadece Auf Rechnung + ödenmemiş ise */}
