@@ -45,7 +45,7 @@ async function sendMail(
 const STATUS_EMAILS: Record<string, { subject: string; intro: string }> = {
   BEZAHLT: {
     subject: "Zahlung eingegangen",
-    intro: "Wir haben Ihre Zahlung erhalten. Vielen Dank! Wir starten nun mit der Bearbeitung Ihrer Bestellung.",
+    intro: "Wir haben Ihre Zahlung erhalten. Vielen Dank! Wir beginnen nun mit der Bearbeitung Ihrer Bestellung.",
   },
   IN_PRODUKTION: {
     subject: "Ihre Bestellung ist in Produktion",
@@ -72,6 +72,61 @@ const STATUS_EMAILS: Record<string, { subject: string; intro: string }> = {
     intro: "Ihre Bestellung wurde storniert. Bei Fragen kontaktieren Sie uns bitte.",
   },
 };
+
+// Reihenfolge der Hauptschritte für die Status-Zeitleiste in der E-Mail.
+const STATUS_FLOW: { key: string; label: string }[] = [
+  { key: "BEZAHLT", label: "Zahlung erhalten" },
+  { key: "IN_PRODUKTION", label: "In Produktion" },
+  { key: "VERSANDBEREIT", label: "Versandbereit" },
+  { key: "VERSENDET", label: "Versendet" },
+  { key: "ZUGESTELLT", label: "Zugestellt" },
+];
+
+/**
+ * Rendert eine horizontale Status-Zeitleiste als E-Mail-taugliches HTML
+ * (Tabellen-Layout, Inline-Styles — funktioniert in Outlook/Gmail/Apple Mail).
+ * Erledigte + aktueller Schritt sind grün, kommende Schritte grau.
+ */
+function renderStatusTimeline(currentStatus: string): string {
+  // ABGESCHLOSSEN zählt wie ZUGESTELLT (letzter Schritt erreicht).
+  const effective = currentStatus === "ABGESCHLOSSEN" ? "ZUGESTELLT" : currentStatus;
+  const currentIndex = STATUS_FLOW.findIndex((s) => s.key === effective);
+  if (currentIndex < 0) return ""; // z.B. STORNIERT → keine Zeitleiste
+
+  const cells = STATUS_FLOW.map((step, i) => {
+    const done = i <= currentIndex;
+    const dotBg = done ? "#004537" : "#e5e7eb";
+    const dotColor = done ? "#ffffff" : "#9ca3af";
+    const labelColor = done ? "#004537" : "#9ca3af";
+    const labelWeight = i === currentIndex ? "700" : "400";
+    const mark = done ? "&#10003;" : `${i + 1}`;
+    return `
+      <td align="center" valign="top" style="width:20%;padding:0 2px;font-family:Arial,sans-serif;">
+        <div style="width:26px;height:26px;line-height:26px;border-radius:50%;background:${dotBg};color:${dotColor};font-size:13px;font-weight:700;margin:0 auto;">${mark}</div>
+        <div style="font-size:11px;color:${labelColor};font-weight:${labelWeight};margin-top:6px;line-height:1.3;">${step.label}</div>
+      </td>`;
+  }).join("");
+
+  return `
+    <table role="presentation" cellpadding="0" cellspacing="0" width="100%" style="margin:20px 0 8px 0;border-collapse:collapse;">
+      <tr>${cells}</tr>
+    </table>`;
+}
+
+/**
+ * Standard-Footer für ALLE Kunden-E-Mails (einheitlich).
+ */
+function renderEmailFooter(): string {
+  return `
+    <div style="margin-top:28px;padding-top:16px;border-top:1px solid #e5e7eb;font-family:Arial,sans-serif;font-size:12px;color:#6b7280;line-height:1.7;">
+      <p style="margin:0 0 6px 0;">Bei Fragen stehen wir Ihnen jederzeit zur Verfügung.<br>
+      Schreiben Sie uns: <a href="mailto:info@inkiiworks.de" style="color:#004537;text-decoration:none;">info@inkiiworks.de</a></p>
+      <p style="margin:8px 0 0 0;color:#9ca3af;">
+        <strong style="color:#004537;">INKII WORKS</strong> · Sener Kirli · Westuferstr. 25 · 45356 Essen<br>
+        <a href="https://www.inkiiworks.de" style="color:#9ca3af;text-decoration:none;">www.inkiiworks.de</a> · USt-IdNr.: DE353055316
+      </p>
+    </div>`;
+}
 
 function carrierTrackingUrl(carrier: string, trackingNumber: string): string {
   const t = encodeURIComponent(trackingNumber);
@@ -239,18 +294,26 @@ export async function updateOrderStatus(
           );
           emailSent = true;
         } else {
-          // Andere Status: einfache Template
+          // Andere Status: Template mit Status-Zeitleiste + Standard-Footer
+          const timelineHtml = renderStatusTimeline(newStatus);
+          const greeting = order.customer.salutation
+            ? `Sehr geehrte/r ${order.customer.salutation} ${order.customer.lastName},`
+            : `Sehr geehrte/r ${order.customer.firstName} ${order.customer.lastName},`;
           const html = `
-            <div style="font-family: Arial, sans-serif; max-width: 600px;">
-              <h2 style="color: #004537;">${emailDef.subject}</h2>
-              <p>Sehr geehrte/r ${order.customer.salutation} ${order.customer.firstName} ${order.customer.lastName},</p>
-              <p>${emailDef.intro}</p>
-              <p><strong>Bestellnummer:</strong> ${order.orderNumber}</p>
-              ${attachments.length > 0 ? '<p style="background: #f0fdf4; padding: 10px; margin: 12px 0;"><strong>📄 Die Rechnung finden Sie als PDF im Anhang.</strong></p>' : ""}
-              <p style="margin-top: 24px; color: #666; font-size: 12px;">
-                Bei Fragen schreiben Sie uns: <a href="mailto:info@inkiiworks.de">info@inkiiworks.de</a><br>
-                INKII WORKS · Sener Kirli · Westuferstr. 25 · 45356 Essen
-              </p>
+            <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; color: #1f2937;">
+              <div style="background: #004537; padding: 20px 24px; border-radius: 8px 8px 0 0;">
+                <span style="color: #ffffff; font-size: 18px; font-weight: 700; letter-spacing: .5px;">INKII WORKS</span>
+              </div>
+              <div style="border: 1px solid #e5e7eb; border-top: none; border-radius: 0 0 8px 8px; padding: 24px;">
+                <h2 style="color: #004537; margin: 0 0 16px 0; font-size: 19px;">${emailDef.subject}</h2>
+                <p style="margin: 0 0 12px 0; line-height: 1.6;">${greeting}</p>
+                <p style="margin: 0 0 8px 0; line-height: 1.6;">${emailDef.intro}</p>
+                ${timelineHtml}
+                <p style="margin: 16px 0 0 0; line-height: 1.6;"><strong>Bestellnummer:</strong> ${order.orderNumber}</p>
+                ${attachments.length > 0 ? '<p style="background: #f0fdf4; border-left: 3px solid #004537; padding: 12px 14px; margin: 16px 0; font-size: 14px;"><strong>Die zugehörige Rechnung finden Sie als PDF im Anhang.</strong></p>' : ""}
+                ${trackingHtml}
+                ${renderEmailFooter()}
+              </div>
             </div>
           `;
           await sendMail(

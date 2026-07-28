@@ -186,10 +186,14 @@ export async function sendOrderConfirmationEmail(orderId: string): Promise<{ ok:
             </tfoot>
           </table>
 
-          <p style="margin-top: 28px; color: #666; font-size: 12px; border-top: 1px solid #e5e7eb; padding-top: 14px;">
-            Bei Fragen schreiben Sie uns: <a href="mailto:${company.email}" style="color: #004537;">${company.email}</a><br>
-            ${company.name} · ${company.owner} · ${company.street} · ${company.zip} ${company.city}
-          </p>
+          <div style="margin-top: 28px; padding-top: 16px; border-top: 1px solid #e5e7eb; font-size: 12px; color: #6b7280; line-height: 1.7;">
+            <p style="margin: 0 0 6px 0;">Bei Fragen stehen wir Ihnen jederzeit zur Verfügung.<br>
+            Schreiben Sie uns: <a href="mailto:${company.email}" style="color: #004537; text-decoration: none;">${company.email}</a></p>
+            <p style="margin: 8px 0 0 0; color: #9ca3af;">
+              <strong style="color: #004537;">${company.name}</strong> · ${company.owner} · ${company.street} · ${company.zip} ${company.city}<br>
+              <a href="https://www.inkiiworks.de" style="color: #9ca3af; text-decoration: none;">www.inkiiworks.de</a>${company.ustId ? ` · USt-IdNr.: ${company.ustId}` : ""}
+            </p>
+          </div>
         </div>
       </div>
     `;
