@@ -729,6 +729,8 @@ const tr: Dictionary = {
     minOrderQty: "Minimum sipariş miktarı:",
     stueck: "Adet",
     noch: "kalan",
+    sizesTitle: "Beden ve adet seçin",
+    totalQtyLabel: "Toplam adet:",
   },
   konto: {
     nav: {

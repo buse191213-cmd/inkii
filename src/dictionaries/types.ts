@@ -574,6 +574,8 @@ export type Dictionary = {
     minOrderQty: string;
     stueck: string;
     noch: string;
+    sizesTitle: string;
+    totalQtyLabel: string;
   };
   konto: {
     nav: {

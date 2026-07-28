@@ -729,6 +729,8 @@ const de: Dictionary = {
     minOrderQty: "Mindestbestellmenge:",
     stueck: "Stück",
     noch: "noch",
+    sizesTitle: "Größen & Menge wählen",
+    totalQtyLabel: "Gesamtmenge:",
   },
   konto: {
     nav: {

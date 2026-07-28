@@ -53,6 +53,7 @@ const DEFAULT_T: Dictionary["detailForm"] = {
   addToCart: "In den Warenkorb", updateVariant: "Variante aktualisieren", addedToCart: "Zum Warenkorb hinzugefügt.",
   openCart: "Warenkorb öffnen →", minQtyEnter: "Bitte eine Menge eintragen.", enterQty: "Bitte eine Menge eintragen.",
   minQtyWarn: "Mindestmenge {n}.", minOrderQty: "Mindestbestellmenge:", stueck: "Stück", noch: "noch",
+  sizesTitle: "Größen & Menge wählen", totalQtyLabel: "Gesamtmenge:",
 };
 
 export default function DetailOrderForm({
@@ -273,6 +274,14 @@ export default function DetailOrderForm({
         sizePrices[s.name] = s.extraCents;
       }
     }
+    // Größen-Aufteilung direkt aus der Produktseite übernehmen (S:10, M:20 …)
+    const sizeBreakdown: Record<string, number> = {};
+    if (sizes.length > 0) {
+      for (const s of sizes) {
+        const q = qty[s.name] || 0;
+        if (q > 0) sizeBreakdown[s.name] = q;
+      }
+    }
     addToCart({
       productId,
       productCode,
@@ -285,7 +294,7 @@ export default function DetailOrderForm({
       minOrderQty,
       availableSizes: availableSizes.length > 0 ? availableSizes : undefined,
       sizePrices: Object.keys(sizePrices).length > 0 ? sizePrices : undefined,
-      sizeBreakdown: undefined, // sepette doldurulacak
+      sizeBreakdown: Object.keys(sizeBreakdown).length > 0 ? sizeBreakdown : undefined,
       priceTiers: tiers.length > 0 ? tiers.map((tr) => ({ qty: tr.qty, cents: tr.cents })) : undefined,
       hasDtf: transferEnabled && transferSidesCount > 0,
       dtfSize: dtfSizeLabel,
@@ -345,38 +354,82 @@ export default function DetailOrderForm({
         </div>
       )}
 
-      {/* Menge — tek adet girişi (bedenler sepette dağıtılır) */}
-      <div className="det-order-qty-single">
-        <label>
-          <span className="det-order-qty-label">
-            {t.quantity}
-            {sizes.length > 0 && (
-              <span className="det-order-qty-hint">{t.sizesInCart}</span>
-            )}
-          </span>
-          <div
-            className="det-order-qty-input"
-            style={{ display: "flex", flexDirection: "row", alignItems: "center", gap: 10, width: "100%" }}
-          >
-            <input
-              type="number"
-              inputMode="numeric"
-              min="0"
-              step="1"
-              value={qty["__default"] || ""}
-              onChange={(e) => setSizeQty("__default", parseInt(e.target.value || "0", 10))}
-              placeholder={minOrderQty > 1 ? `min. ${minOrderQty}` : "0"}
-              style={{ flex: "1 1 auto", minWidth: 0 }}
-            />
-            <span
-              className="det-order-qty-unit"
-              style={{ flexShrink: 0, whiteSpace: "nowrap" }}
-            >
-              Stück
-            </span>
+      {/* Menge — pro Größe eine Eingabe (falls Größen definiert), sonst
+          eine einzige Menge. Der Kunde trägt hier direkt die Stückzahl je
+          Größe ein; Gesamtmenge & Staffelpreis berechnen sich daraus. */}
+      {sizes.length > 0 ? (
+        <div className="det-order-sizes">
+          <span className="det-order-qty-label">{t.sizesTitle}</span>
+          <div className="det-size-grid">
+            {sizes.map((s) => (
+              <div key={s.name} className={`det-size-row${(qty[s.name] || 0) > 0 ? " has" : ""}`}>
+                <span className="det-size-name">{s.name}</span>
+                <div className="det-size-input">
+                  <button
+                    type="button"
+                    className="det-size-btn"
+                    aria-label="weniger"
+                    onClick={() => setSizeQty(s.name, Math.max(0, (qty[s.name] || 0) - 1))}
+                  >
+                    −
+                  </button>
+                  <input
+                    type="number"
+                    inputMode="numeric"
+                    min="0"
+                    step="1"
+                    value={qty[s.name] || ""}
+                    onChange={(e) => setSizeQty(s.name, parseInt(e.target.value || "0", 10))}
+                    placeholder="0"
+                  />
+                  <button
+                    type="button"
+                    className="det-size-btn"
+                    aria-label="mehr"
+                    onClick={() => setSizeQty(s.name, (qty[s.name] || 0) + 1)}
+                  >
+                    +
+                  </button>
+                </div>
+              </div>
+            ))}
           </div>
-        </label>
-      </div>
+          <div className="det-size-total">
+            <span>{t.totalQtyLabel}</span>
+            <strong>{totalQty} {t.stueck}</strong>
+          </div>
+          {minOrderQty > 1 && totalQty > 0 && totalQty < minOrderQty && (
+            <p className="det-size-minwarn">{t.minQtyWarn.replace("{n}", String(minOrderQty))}</p>
+          )}
+        </div>
+      ) : (
+        <div className="det-order-qty-single">
+          <label>
+            <span className="det-order-qty-label">{t.quantity}</span>
+            <div
+              className="det-order-qty-input"
+              style={{ display: "flex", flexDirection: "row", alignItems: "center", gap: 10, width: "100%" }}
+            >
+              <input
+                type="number"
+                inputMode="numeric"
+                min="0"
+                step="1"
+                value={qty["__default"] || ""}
+                onChange={(e) => setSizeQty("__default", parseInt(e.target.value || "0", 10))}
+                placeholder={minOrderQty > 1 ? `min. ${minOrderQty}` : "0"}
+                style={{ flex: "1 1 auto", minWidth: 0 }}
+              />
+              <span
+                className="det-order-qty-unit"
+                style={{ flexShrink: 0, whiteSpace: "nowrap" }}
+              >
+                Stück
+              </span>
+            </div>
+          </label>
+        </div>
+      )}
 
       {/* Staffelpreise — aktif tier işaretli */}
       {tiers.length > 0 && (
