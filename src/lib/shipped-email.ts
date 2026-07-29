@@ -49,7 +49,7 @@ export function renderShippedEmail(p: ShippedMailParams): string {
   <div style="background:linear-gradient(135deg,#004537 0%,#006b56 50%,#00a878 100%);padding:48px 28px 40px;text-align:center;color:#fff;">
 
     <!-- Truck Icon -->
-    <div style="font-size:72px;line-height:1;margin-bottom:8px;">🚚</div>
+    <div style="margin-bottom:12px;">${bannerIconSvg("package")}</div>
 
     <h1 style="margin:0;font-size:28px;font-weight:800;letter-spacing:-0.3px;">
       Unterwegs zu Ihnen!
@@ -217,6 +217,31 @@ export type StatusMailParams = {
   invoiceAttached?: boolean;
 };
 
+/**
+ * Sauberes weißes Linien-Icon (Stil „rounded lineal") als inline SVG fürs
+ * Banner — wirkt hochwertiger als Emojis und ist markenkonform.
+ */
+function bannerIconSvg(key: string): string {
+  const wrap = (inner: string) =>
+    `<svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="#ffffff" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block;">${inner}</svg>`;
+  switch (key) {
+    case "payment":
+      return wrap('<rect x="2" y="5" width="20" height="14" rx="2.5"/><line x1="2" y1="10" x2="22" y2="10"/><line x1="6" y1="15" x2="10" y2="15"/>');
+    case "production":
+      return wrap('<circle cx="12" cy="12" r="3"/><path d="M12 2v3M12 19v3M4.2 4.2l2.1 2.1M17.7 17.7l2.1 2.1M2 12h3M19 12h3M4.2 19.8l2.1-2.1M17.7 6.3l2.1-2.1"/>');
+    case "package":
+      return wrap('<path d="M21 8l-9-5-9 5v8l9 5 9-5z"/><path d="M3 8l9 5 9-5"/><line x1="12" y1="13" x2="12" y2="21"/>');
+    case "delivered":
+      return wrap('<path d="M3 11l9-8 9 8"/><path d="M5 10v9a1 1 0 001 1h12a1 1 0 001-1v-9"/><path d="M9 15l2 2 4-4"/>');
+    case "done":
+      return wrap('<circle cx="12" cy="12" r="9.5"/><path d="M8 12.5l2.5 2.5 5.5-5.5"/>');
+    case "cancelled":
+      return wrap('<circle cx="12" cy="12" r="9.5"/><line x1="9" y1="9" x2="15" y2="15"/><line x1="15" y1="9" x2="9" y2="15"/>');
+    default:
+      return wrap('<circle cx="12" cy="12" r="9.5"/>');
+  }
+}
+
 function renderTimelineRow(currentStatus: string): string {
   const effective = currentStatus === "ABGESCHLOSSEN" ? "ZUGESTELLT" : currentStatus;
   const currentIndex = STATUS_STEPS.findIndex((s) => s.key === effective);
@@ -266,8 +291,8 @@ export function renderStatusEmail(p: StatusMailParams): string {
 <div style="max-width:600px;margin:0 auto;background:#fff;">
 
   <!-- BANNER -->
-  <div style="background:linear-gradient(135deg,#004537 0%,#006b56 50%,#00a878 100%);padding:48px 28px 40px;text-align:center;color:#fff;">
-    <div style="font-size:72px;line-height:1;margin-bottom:8px;">${p.bannerIcon}</div>
+  <div style="background:linear-gradient(135deg,#004537 0%,#006b56 50%,#00a878 100%);padding:44px 28px 38px;text-align:center;color:#fff;">
+    <div style="margin-bottom:12px;">${bannerIconSvg(p.bannerIcon)}</div>
     <h1 style="margin:0;font-size:26px;font-weight:800;letter-spacing:-0.3px;">${p.bannerTitle}</h1>
     <p style="margin:8px 0 0;font-size:15px;opacity:0.95;">${p.bannerSubtitle}</p>
   </div>
