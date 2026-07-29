@@ -27,6 +27,7 @@ const tr: Dictionary = {
     bereiche: "Alanlar",
     nachhaltigkeit: "Sürdürülebilirlik",
     ueberUns: "Hakkımızda",
+    kollektionen: "Koleksiyonlar",
     kontakt: "İletişim",
     kleidung: "Tekstil İşleme",
     taschen: "Çantalar",

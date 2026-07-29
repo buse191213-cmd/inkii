@@ -37,6 +37,11 @@ model Product {
   // JSON: {"left":30,"top":40,"right":70,"bottom":80,"widthCm":25,"heightCm":30}
   customPrintArea String @default("")
   status      String   @default("active") // active | draft
+  // Kollektionen: eigene fertige Designs zum Direktverkauf (getrennt von
+  // kundenspezifischen Werbeartikeln). Wenn true, erscheint das Produkt unter
+  // /kollektionen statt im Werbemittel-Katalog.
+  isCollection Boolean @default(false)
+  collectionCategory String @default("") // z.B. "sommer", "weihnachten", "bestseller"
   supplierNote String  @default("")        // Intern: Bezugsquelle/Lieferanten-Link (nur für Admin, NICHT öffentlich)
   isNew       Boolean  @default(false)
   isEco       Boolean  @default(false)

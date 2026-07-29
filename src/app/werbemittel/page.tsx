@@ -21,7 +21,7 @@ export default async function WerbemittelPage() {
 
   const [dbProducts, dbCategories] = await Promise.all([
     db.product.findMany({
-      where: { status: "active" },
+      where: { status: "active", isCollection: false },
       include: { category: true },
       orderBy: [
         { displayOrder: "desc" },

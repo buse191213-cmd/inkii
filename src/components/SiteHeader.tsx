@@ -97,6 +97,7 @@ function SiteHeaderInner({
       <div className="utility">
         <div className="utility-inner">
           <div className="u-right">
+            <Link href="/kollektionen" className="u-collection-link">{nav.kollektionen ?? "Kollektionen"}</Link>
             <Link href="/ueber-uns">{nav.ueberUns}</Link>
             <Link href="/nachhaltigkeit">{nav.nachhaltigkeit}</Link>
             <Link href="/bereiche">{nav.bereiche}</Link>
@@ -296,6 +297,13 @@ function SiteHeaderInner({
 
         {/* Secondary nav — küçük linkler (KOYU renk) */}
         <div style={{ marginTop: 24, paddingTop: 16, borderTop: "1px solid #f0f0ec", display: "flex", flexDirection: "column", gap: 12 }}>
+          <Link
+            href="/kollektionen"
+            onClick={() => setOpen(false)}
+            style={{ color: "#10b981", textDecoration: "none", fontSize: 13, letterSpacing: "0.3px", fontWeight: 700 }}
+          >
+            Kollektionen
+          </Link>
           <Link
             href="/ueber-uns"
             onClick={() => setOpen(false)}

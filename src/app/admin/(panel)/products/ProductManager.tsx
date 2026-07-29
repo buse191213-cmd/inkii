@@ -32,6 +32,8 @@ export type AdminProduct = {
   customPrintArea?: string;
   status: string;
   supplierNote?: string;
+  isCollection?: boolean;
+  collectionCategory?: string;
   isNew: boolean;
   isEco: boolean;
   isBestseller?: boolean;
@@ -59,7 +61,7 @@ const MAX_IMAGES = 15;
 
 const EMPTY: AdminProduct = {
   id: "", code: "INKI-", name: "", subtitle: "", description: "", icon: "box",
-  priceCents: null, priceTiers: "[]", sizes: "[]", stock: 0, minOrderQty: 1, recommendedIds: "", status: "active", supplierNote: "",
+  priceCents: null, priceTiers: "[]", sizes: "[]", stock: 0, minOrderQty: 1, recommendedIds: "", status: "active", supplierNote: "", isCollection: false, collectionCategory: "",
   isNew: false, isEco: false, isBestseller: false, deliveryDays: 0,
   colors: "", material: "", images: "", colorImages: "{}", careSymbols: "", displayOrder: 0, cardFit: "cover", cardCrop: "", visiblePages: [], categoryId: "", categoryName: "",
 };
@@ -696,6 +698,30 @@ export default function ProductManager({
                     defaultValue={modal.supplierNote ?? ""}
                     placeholder="z. B. https://lieferant.de/artikel-123 oder Notiz zur Bezugsquelle"
                   />
+                </div>
+                <div className="field" data-pf-tab="allgemein" style={{ background: "#ecfdf5", border: "1px solid #a7f3d0", borderRadius: 8, padding: 12 }}>
+                  <label style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 8 }}>
+                    <input
+                      type="checkbox"
+                      name="isCollection"
+                      defaultChecked={modal.isCollection ?? false}
+                      style={{ width: 18, height: 18 }}
+                    />
+                    <span style={{ fontWeight: 700, color: "#065f46" }}>Kollektion-Produkt (Direktverkauf)</span>
+                  </label>
+                  <p style={{ fontSize: 12, color: "#047857", margin: "0 0 10px 0" }}>
+                    Aktivieren für eigene fertige Designs, die unter <strong>/kollektionen</strong> direkt verkauft werden (mit Preis, Größe, Warenkorb). Nicht für kundenspezifische Werbeartikel.
+                  </p>
+                  <label style={{ fontSize: 13, fontWeight: 600, display: "block", marginBottom: 4 }}>Kollektion-Kategorie</label>
+                  <select name="collectionCategory" defaultValue={modal.collectionCategory ?? ""} style={{ width: "100%" }}>
+                    <option value="">— keine —</option>
+                    <option value="bestseller">Bestseller</option>
+                    <option value="sommer">Sommer</option>
+                    <option value="winter">Winter</option>
+                    <option value="weihnachten">Weihnachten</option>
+                    <option value="neu">Neuheiten</option>
+                    <option value="basics">Basics</option>
+                  </select>
                 </div>
                 <div className="field" data-pf-tab="allgemein">
                   <label>Produktname</label>

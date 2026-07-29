@@ -27,6 +27,7 @@ const en: Dictionary = {
     bereiche: "Areas",
     nachhaltigkeit: "Sustainability",
     ueberUns: "About Us",
+    kollektionen: "Collections",
     kontakt: "Contact",
     kleidung: "Textile Finishing",
     taschen: "Bags",

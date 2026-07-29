@@ -17,6 +17,7 @@ export type Dictionary = {
     bereiche: string;
     nachhaltigkeit: string;
     ueberUns: string;
+    kollektionen: string;
     kontakt: string;
     kleidung: string;
     taschen: string;

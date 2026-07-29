@@ -5242,3 +5242,80 @@ body:has(.hero-full) header.site .brand-other img{filter:none;height:52px}
 .det-size-total span{font-size:.9rem;color:var(--muted)}
 .det-size-total strong{font-size:1.05rem;color:var(--leaf-deep)}
 .det-size-minwarn{color:#b45309;font-size:.82rem;margin-top:8px}
+
+/* === Kollektionen (eigene Designs, Direktverkauf) === */
+.koll-hero{background:linear-gradient(135deg,#ecfdf5,#d1fae5);padding:48px 0 40px;border-bottom:1px solid #e5e7eb}
+.koll-hero-inner{max-width:1200px;margin:0 auto;padding:0 24px}
+.koll-hero-h1{font-family:var(--display);font-size:2.4rem;color:#065f46;margin:10px 0 8px}
+.koll-hero-lead{color:#047857;font-size:1.05rem;margin:0}
+.koll-section{padding:36px 0 72px}
+.koll-cats{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:28px}
+.koll-cat{appearance:none;border:1.5px solid var(--line);background:#fff;color:var(--ink);
+  padding:8px 18px;border-radius:999px;font-size:14px;font-weight:600;cursor:pointer;transition:.15s}
+.koll-cat:hover{border-color:#10b981}
+.koll-cat.active{background:#10b981;border-color:#10b981;color:#fff}
+.koll-empty{text-align:center;color:#8a938d;padding:60px 0}
+.koll-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:22px}
+.koll-card{display:block;text-decoration:none;color:inherit;border-radius:12px;overflow:hidden;
+  background:#fff;border:1px solid #eef0ee;transition:.2s}
+.koll-card:hover{box-shadow:0 8px 24px rgba(0,0,0,.08);transform:translateY(-2px)}
+.koll-card-img{position:relative;aspect-ratio:3/4;background:#f4f5f3;overflow:hidden}
+.koll-card-img img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;transition:transform .4s}
+.koll-card:hover .koll-card-img img{transform:scale(1.05)}
+.koll-card-noimg{width:100%;height:100%;background:#f0f0ec}
+.koll-card.sold .koll-card-img img{opacity:.55}
+.koll-badge{position:absolute;top:12px;left:12px;padding:5px 12px;border-radius:999px;
+  font-size:11px;font-weight:700;letter-spacing:.3px;color:#fff}
+.koll-badge-new{background:#10b981}
+.koll-badge-best{background:#f59e0b}
+.koll-badge-sold{background:#6b7280;left:auto;right:12px}
+.koll-card-body{padding:14px 16px 18px}
+.koll-card-name{font-size:1rem;font-weight:700;color:var(--ink);margin:0 0 4px}
+.koll-card-sub{font-size:.85rem;color:var(--muted);margin:0 0 10px}
+.koll-card-price{font-size:1.15rem;font-weight:800;color:#065f46}
+@media(max-width:520px){
+  .koll-grid{grid-template-columns:repeat(2,1fr);gap:12px}
+  .koll-hero-h1{font-size:1.8rem}
+}
+
+/* === Kollektion Produktdetail === */
+.koll-detail{padding:24px 0 72px}
+.koll-detail-grid{display:grid;grid-template-columns:1fr 1fr;gap:48px}
+.koll-detail-main{aspect-ratio:3/4;background:#f4f5f3;border-radius:12px;overflow:hidden;position:relative}
+.koll-detail-main img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+.koll-detail-noimg{width:100%;height:100%;background:#f0f0ec}
+.koll-detail-thumbs{display:flex;gap:10px;margin-top:12px;flex-wrap:wrap}
+.koll-thumb{width:70px;height:88px;border:2px solid transparent;border-radius:8px;overflow:hidden;
+  cursor:pointer;background:#f4f5f3;padding:0}
+.koll-thumb.active{border-color:#10b981}
+.koll-thumb img{width:100%;height:100%;object-fit:cover;display:block}
+.koll-detail-name{font-family:var(--display);font-size:2rem;color:var(--ink);margin:0 0 6px}
+.koll-detail-sub{color:var(--muted);font-size:1.05rem;margin:0 0 16px}
+.koll-detail-price{font-size:1.8rem;font-weight:800;color:#065f46;margin-bottom:28px}
+.koll-detail-soldout{display:inline-block;background:#6b7280;color:#fff;padding:10px 20px;
+  border-radius:8px;font-weight:700;font-size:15px}
+.koll-detail-label{display:block;font-size:13px;font-weight:700;color:var(--ink);
+  text-transform:uppercase;letter-spacing:.5px;margin-bottom:10px}
+.koll-detail-sizes{margin-bottom:24px}
+.koll-size-btns{display:flex;flex-wrap:wrap;gap:8px}
+.koll-size-btn{min-width:52px;padding:12px 16px;border:1.5px solid var(--line);background:#fff;
+  border-radius:8px;font-size:15px;font-weight:700;cursor:pointer;transition:.15s;color:var(--ink)}
+.koll-size-btn:hover{border-color:#10b981}
+.koll-size-btn.active{background:#10b981;border-color:#10b981;color:#fff}
+.koll-detail-qty{margin-bottom:24px}
+.koll-qty-ctrl{display:inline-flex;align-items:center;gap:0;border:1.5px solid var(--line);border-radius:8px;overflow:hidden}
+.koll-qty-ctrl button{width:44px;height:44px;border:none;background:#fff;font-size:20px;cursor:pointer;color:var(--ink)}
+.koll-qty-ctrl button:hover{background:#ecfdf5}
+.koll-qty-ctrl input{width:56px;height:44px;border:none;border-left:1px solid var(--line);
+  border-right:1px solid var(--line);text-align:center;font-size:16px;font-weight:700}
+.koll-stock-hint{display:block;margin-top:8px;font-size:13px;color:#dc2626;font-weight:600}
+.koll-add-btn{width:100%;max-width:360px;padding:16px 24px;background:#10b981;color:#fff;
+  border:none;border-radius:10px;font-size:16px;font-weight:700;cursor:pointer;transition:.15s}
+.koll-add-btn:hover{background:#059669}
+.koll-detail-desc{margin-top:32px;padding-top:24px;border-top:1px solid #eef0ee}
+.koll-detail-desc h2{font-size:1.1rem;color:var(--ink);margin:0 0 10px}
+.koll-detail-desc p{color:var(--muted);line-height:1.7;margin:0}
+@media(max-width:768px){
+  .koll-detail-grid{grid-template-columns:1fr;gap:24px}
+  .koll-detail-name{font-size:1.6rem}
+}

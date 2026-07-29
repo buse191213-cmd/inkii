@@ -33,6 +33,8 @@ export default async function ProductsPage() {
     customPrintArea: (p as { customPrintArea?: string }).customPrintArea || "",
     status: p.status,
     supplierNote: (p as { supplierNote?: string }).supplierNote || "",
+    isCollection: (p as { isCollection?: boolean }).isCollection ?? false,
+    collectionCategory: (p as { collectionCategory?: string }).collectionCategory || "",
     isNew: p.isNew,
     isEco: p.isEco,
     isBestseller: (p as { isBestseller?: boolean }).isBestseller ?? false,

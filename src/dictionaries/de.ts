@@ -27,6 +27,7 @@ const de: Dictionary = {
     bereiche: "Bereiche",
     nachhaltigkeit: "Nachhaltigkeit",
     ueberUns: "Über Uns",
+    kollektionen: "Kollektionen",
     kontakt: "Kontakt",
     kleidung: "Textilveredelung",
     taschen: "Taschen",
