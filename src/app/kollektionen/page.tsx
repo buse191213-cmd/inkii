@@ -55,10 +55,8 @@ export default async function KollektionenPage() {
     };
   });
 
-  // Kategorien aus Admin; nur die mit Produkten anzeigen
-  const usedCats = dbCats
-    .filter((c) => products.some((p) => p.category === c.slug))
-    .map((c) => ({ key: c.slug, label: c.name, image: c.imageUrl }));
+  // Kategorien aus Admin (alle, die angelegt wurden)
+  const usedCats = dbCats.map((c) => ({ key: c.slug, label: c.name, image: c.imageUrl }));
 
   return (
     <SiteShell>

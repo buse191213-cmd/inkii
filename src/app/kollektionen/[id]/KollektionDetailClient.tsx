@@ -135,7 +135,7 @@ export default function KollektionDetailClient({ product }: { product: Kollektio
           {product.description && (
             <div className="koll-detail-desc">
               <h2>Beschreibung</h2>
-              <p>{product.description}</p>
+              <div className="koll-desc-html" dangerouslySetInnerHTML={{ __html: product.description }} />
             </div>
           )}
         </div>

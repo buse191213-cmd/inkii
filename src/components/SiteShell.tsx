@@ -23,21 +23,13 @@ export default async function SiteShell({
   const marketingLogo = await getHomeImage("marketing-logo");
   const customer = await getCurrentCustomer();
 
-  // Kollektion-Kategorien fürs Hover-Menü (nur die mit aktiven Produkten)
+  // Kollektion-Kategorien fürs Hover-Menü (alle Kategorien, die der Admin angelegt hat)
   let kollektionCats: { slug: string; name: string; imageUrl: string }[] = [];
   try {
-    const [cats, prods] = await Promise.all([
-      db.kollektionKategorie.findMany({
-        orderBy: [{ sortOrder: "desc" }, { createdAt: "asc" }],
-        select: { slug: true, name: true, imageUrl: true },
-      }),
-      db.product.findMany({
-        where: { status: "active", isCollection: true },
-        select: { collectionCategory: true },
-      }),
-    ]);
-    const usedSlugs = new Set(prods.map((p) => p.collectionCategory).filter(Boolean));
-    kollektionCats = cats.filter((c) => usedSlugs.has(c.slug));
+    kollektionCats = await db.kollektionKategorie.findMany({
+      orderBy: [{ sortOrder: "desc" }, { createdAt: "asc" }],
+      select: { slug: true, name: true, imageUrl: true },
+    });
   } catch {
     kollektionCats = [];
   }
