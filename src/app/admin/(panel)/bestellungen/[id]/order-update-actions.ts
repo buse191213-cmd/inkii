@@ -73,7 +73,7 @@ const STATUS_EMAILS: Record<string, { subject: string; intro: string; bannerIcon
   },
   ZUGESTELLT: {
     subject: "Ihre Bestellung wurde zugestellt",
-    intro: "Laut Versanddienstleister wurde Ihre Bestellung erfolgreich zugestellt. Wir hoffen, dass alles zu Ihrer Zufriedenheit ist und wünschen Ihnen viel Freude mit Ihrer Bestellung.",
+    intro: "Ihre Bestellung wurde laut Versanddienstleister zugestellt. Laut Versanddienstleister wurde Ihre Bestellung erfolgreich zugestellt. Wir hoffen, dass alles zu Ihrer Zufriedenheit ist und wünschen Ihnen viel Freude mit Ihrer Bestellung.",
     bannerIcon: "delivered",
     bannerTitle: "Zugestellt!",
     bannerSubtitle: "Ihre Bestellung ist angekommen",

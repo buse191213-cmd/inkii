@@ -32,7 +32,7 @@ export type ShippedMailParams = {
 
 export function renderShippedEmail(p: ShippedMailParams): string {
   const url = carrierTrackingUrl(p.carrier, p.trackingNumber);
-  const carrierStyle = CARRIER_COLORS[p.carrier] || { bg: "#004537", text: "#fff" };
+  const carrierStyle = CARRIER_COLORS[p.carrier] || { bg: "#10b981", text: "#fff" };
 
   return `
 <!DOCTYPE html>
@@ -46,7 +46,7 @@ export function renderShippedEmail(p: ShippedMailParams): string {
 <div style="max-width:600px;margin:0 auto;background:#fff;">
 
   <!-- ════════ TOP BANNER ════════ -->
-  <div style="background:linear-gradient(135deg,#004537 0%,#006b56 50%,#00a878 100%);padding:48px 28px 40px;text-align:center;color:#fff;">
+  <div style="background:linear-gradient(135deg,#10b981 0%,#059669 50%,#34d399 100%);padding:48px 28px 40px;text-align:center;color:#fff;">
 
     <!-- Truck Icon -->
     <div style="margin-bottom:12px;">${bannerIconSvg("package")}</div>
@@ -64,16 +64,16 @@ export function renderShippedEmail(p: ShippedMailParams): string {
     <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%" style="border-collapse:collapse;">
       <tr>
         <td align="center" width="20%">
-          <div style="width:36px;height:36px;background:#004537;color:#fff;border-radius:50%;display:inline-block;line-height:36px;text-align:center;font-size:16px;font-weight:700;">✓</div>
-          <div style="margin-top:6px;font-size:11px;color:#004537;font-weight:600;">Bezahlt</div>
+          <div style="width:36px;height:36px;background:#10b981;color:#fff;border-radius:50%;display:inline-block;line-height:36px;text-align:center;font-size:16px;font-weight:700;">✓</div>
+          <div style="margin-top:6px;font-size:11px;color:#10b981;font-weight:600;">Bezahlt</div>
         </td>
-        <td align="center" style="border-top:3px solid #004537;height:36px;">
+        <td align="center" style="border-top:3px solid #10b981;height:36px;">
         </td>
         <td align="center" width="20%">
-          <div style="width:36px;height:36px;background:#004537;color:#fff;border-radius:50%;display:inline-block;line-height:36px;text-align:center;font-size:16px;font-weight:700;">✓</div>
-          <div style="margin-top:6px;font-size:11px;color:#004537;font-weight:600;">Produktion</div>
+          <div style="width:36px;height:36px;background:#10b981;color:#fff;border-radius:50%;display:inline-block;line-height:36px;text-align:center;font-size:16px;font-weight:700;">✓</div>
+          <div style="margin-top:6px;font-size:11px;color:#10b981;font-weight:600;">Produktion</div>
         </td>
-        <td align="center" style="border-top:3px solid #004537;height:36px;">
+        <td align="center" style="border-top:3px solid #10b981;height:36px;">
         </td>
         <td align="center" width="20%">
           <!-- AKTIF -->
@@ -103,7 +103,7 @@ export function renderShippedEmail(p: ShippedMailParams): string {
     </p>
 
     <!-- Tracking Box -->
-    <div style="background:linear-gradient(135deg,#f0fdf4 0%,#dcfce7 100%);border:2px solid #004537;border-radius:12px;padding:24px;margin-bottom:24px;">
+    <div style="background:linear-gradient(135deg,#ecfdf5 0%,#d1fae5 100%);border:2px solid #10b981;border-radius:12px;padding:24px;margin-bottom:24px;">
 
       <!-- Carrier Badge -->
       <div style="text-align:center;margin-bottom:18px;">
@@ -127,7 +127,7 @@ export function renderShippedEmail(p: ShippedMailParams): string {
       <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%">
         <tr>
           <td align="center">
-            <a href="${url}" target="_blank" style="display:inline-block;background:linear-gradient(135deg,#004537,#006b56);color:#fff;padding:16px 36px;text-decoration:none;font-weight:700;font-size:16px;border-radius:8px;box-shadow:0 4px 12px rgba(0,69,55,0.3);">
+            <a href="${url}" target="_blank" style="display:inline-block;background:linear-gradient(135deg,#10b981,#059669);color:#fff;padding:16px 36px;text-decoration:none;font-weight:700;font-size:16px;border-radius:8px;box-shadow:0 4px 12px rgba(16,185,129,0.3);">
               🔍 Jetzt Sendung verfolgen →
             </a>
           </td>
@@ -165,16 +165,16 @@ export function renderShippedEmail(p: ShippedMailParams): string {
       Sollte etwas nicht stimmen oder das Paket nicht in 5 Werktagen ankommen, kontaktieren Sie uns bitte:
     </p>
     <p style="margin:0;font-size:14px;">
-      📧 <a href="mailto:info@inkiiworks.de" style="color:#004537;font-weight:600;text-decoration:none;">info@inkiiworks.de</a>
+      📧 <a href="mailto:info@inkiiworks.de" style="color:#10b981;font-weight:600;text-decoration:none;">info@inkiiworks.de</a>
       &nbsp;·&nbsp;
-      📞 <a href="tel:+4916067677001" style="color:#004537;font-weight:600;text-decoration:none;">+49 160 6767001</a>
+      📞 <a href="tel:+4916067677001" style="color:#10b981;font-weight:600;text-decoration:none;">+49 160 6767001</a>
     </p>
   </div>
 
   <!-- ════════ FOOTER ════════ -->
   <div style="background:#f8fafc;padding:24px 28px;text-align:center;border-top:1px solid #e5e7eb;">
     <p style="margin:0;font-size:12px;color:#64748b;line-height:1.6;">
-      <strong style="color:#004537;">INKII WORKS</strong> · Sener Kirli<br>
+      <strong style="color:#10b981;">INKII WORKS</strong> · Sener Kirli<br>
       Westuferstr. 25 · 45356 Essen<br>
       <span style="color:#94a3b8;">USt-IdNr: DE353055316</span>
     </p>
@@ -253,18 +253,18 @@ function renderTimelineRow(currentStatus: string): string {
     const active = i === currentIndex;
     let dot: string;
     if (active) {
-      dot = `<div style="width:42px;height:42px;background:linear-gradient(135deg,#00a878,#006b56);color:#fff;border-radius:50%;display:inline-block;line-height:42px;text-align:center;font-size:18px;font-weight:700;box-shadow:0 0 0 4px #dcfce7;">${step.icon}</div>
-             <div style="margin-top:6px;font-size:12px;color:#004537;font-weight:700;">${step.label}</div>`;
+      dot = `<div style="width:42px;height:42px;background:linear-gradient(135deg,#34d399,#10b981);color:#fff;border-radius:50%;display:inline-block;line-height:42px;text-align:center;font-size:18px;font-weight:700;box-shadow:0 0 0 4px #d1fae5;">${step.icon}</div>
+             <div style="margin-top:6px;font-size:12px;color:#10b981;font-weight:700;">${step.label}</div>`;
     } else if (done) {
-      dot = `<div style="width:36px;height:36px;background:#004537;color:#fff;border-radius:50%;display:inline-block;line-height:36px;text-align:center;font-size:16px;font-weight:700;">✓</div>
-             <div style="margin-top:6px;font-size:11px;color:#004537;font-weight:600;">${step.label}</div>`;
+      dot = `<div style="width:36px;height:36px;background:#10b981;color:#fff;border-radius:50%;display:inline-block;line-height:36px;text-align:center;font-size:16px;font-weight:700;">✓</div>
+             <div style="margin-top:6px;font-size:11px;color:#10b981;font-weight:600;">${step.label}</div>`;
     } else {
       dot = `<div style="width:36px;height:36px;background:#f1f5f9;color:#94a3b8;border-radius:50%;display:inline-block;line-height:36px;text-align:center;font-size:15px;">${i + 1}</div>
              <div style="margin-top:6px;font-size:11px;color:#94a3b8;font-weight:500;">${step.label}</div>`;
     }
     cells.push(`<td align="center" width="18%">${dot}</td>`);
     if (i < STATUS_STEPS.length - 1) {
-      const connColor = i < currentIndex ? "3px solid #004537" : "3px dashed #cbd5e1";
+      const connColor = i < currentIndex ? "3px solid #10b981" : "3px dashed #cbd5e1";
       cells.push(`<td align="center" style="border-top:${connColor};height:36px;"></td>`);
     }
   });
@@ -291,7 +291,7 @@ export function renderStatusEmail(p: StatusMailParams): string {
 <div style="max-width:600px;margin:0 auto;background:#fff;">
 
   <!-- BANNER -->
-  <div style="background:linear-gradient(135deg,#004537 0%,#006b56 50%,#00a878 100%);padding:44px 28px 38px;text-align:center;color:#fff;">
+  <div style="background:linear-gradient(135deg,#10b981 0%,#059669 50%,#34d399 100%);padding:44px 28px 38px;text-align:center;color:#fff;">
     <div style="margin-bottom:12px;">${bannerIconSvg(p.bannerIcon)}</div>
     <h1 style="margin:0;font-size:26px;font-weight:800;letter-spacing:-0.3px;">${p.bannerTitle}</h1>
     <p style="margin:8px 0 0;font-size:15px;opacity:0.95;">${p.bannerSubtitle}</p>
@@ -319,8 +319,8 @@ export function renderStatusEmail(p: StatusMailParams): string {
     </div>
 
     ${p.invoiceAttached ? `
-    <div style="background:#f0fdf4;border-left:4px solid #004537;padding:14px 16px;margin-bottom:24px;border-radius:4px;">
-      <div style="font-size:14px;color:#004537;font-weight:600;">Die zugehörige Rechnung finden Sie als PDF im Anhang.</div>
+    <div style="background:#ecfdf5;border-left:4px solid #10b981;padding:14px 16px;margin-bottom:24px;border-radius:4px;">
+      <div style="font-size:14px;color:#10b981;font-weight:600;">Die zugehörige Rechnung finden Sie als PDF im Anhang.</div>
     </div>` : ""}
 
     <!-- Kontakt -->
@@ -328,16 +328,16 @@ export function renderStatusEmail(p: StatusMailParams): string {
       Bei Fragen stehen wir Ihnen jederzeit zur Verfügung:
     </p>
     <p style="margin:0 0 8px;font-size:14px;">
-      📧 <a href="mailto:info@inkiiworks.de" style="color:#004537;font-weight:600;text-decoration:none;">info@inkiiworks.de</a>
+      📧 <a href="mailto:info@inkiiworks.de" style="color:#10b981;font-weight:600;text-decoration:none;">info@inkiiworks.de</a>
       &nbsp;·&nbsp;
-      📞 <a href="tel:+4916067677001" style="color:#004537;font-weight:600;text-decoration:none;">+49 160 6767001</a>
+      📞 <a href="tel:+4916067677001" style="color:#10b981;font-weight:600;text-decoration:none;">+49 160 6767001</a>
     </p>
   </div>
 
   <!-- FOOTER -->
   <div style="background:#f8fafc;padding:24px 28px;text-align:center;border-top:1px solid #e5e7eb;">
     <p style="margin:0;font-size:12px;color:#64748b;line-height:1.6;">
-      <strong style="color:#004537;">INKII WORKS</strong> · Sener Kirli<br>
+      <strong style="color:#10b981;">INKII WORKS</strong> · Sener Kirli<br>
       Westuferstr. 25 · 45356 Essen<br>
       <a href="https://www.inkiiworks.de" style="color:#94a3b8;text-decoration:none;">www.inkiiworks.de</a> · USt-IdNr: DE353055316
     </p>

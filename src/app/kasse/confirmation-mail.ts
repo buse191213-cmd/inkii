@@ -138,7 +138,7 @@ export async function sendOrderConfirmationEmail(orderId: string): Promise<{ ok:
 
     const customerHtml = `
       <div style="font-family: Arial, sans-serif; max-width: 600px;">
-        <div style="background: linear-gradient(135deg, #004537 0%, #006b56 100%); padding: 24px; text-align: center; color: #fff;">
+        <div style="background: linear-gradient(135deg, #10b981 0%, #006b56 100%); padding: 24px; text-align: center; color: #fff;">
           <h1 style="margin: 0; font-size: 22px;">Zahlung erhalten</h1>
           <p style="margin: 8px 0 0; opacity: 0.9; font-size: 13px;">Vielen Dank für Ihre Bestellung!</p>
         </div>
@@ -146,7 +146,7 @@ export async function sendOrderConfirmationEmail(orderId: string): Promise<{ ok:
           <p>Sehr geehrte/r ${order.customer.salutation} ${order.customer.firstName} ${order.customer.lastName},</p>
           <p>wir haben Ihre Zahlung erhalten und mit der Bearbeitung Ihrer Bestellung begonnen.</p>
 
-          <div style="background: #f0fdf4; padding: 14px; margin: 16px 0; border-left: 3px solid #004537;">
+          <div style="background: #f0fdf4; padding: 14px; margin: 16px 0; border-left: 3px solid #10b981;">
             <strong>Bestellnummer:</strong> ${order.orderNumber}<br>
             <strong>Zahlungsmethode:</strong> ${paymentLabel}<br>
             <strong>Status:</strong> ✓ Bezahlt
@@ -180,17 +180,17 @@ export async function sendOrderConfirmationEmail(orderId: string): Promise<{ ok:
                 <td style="padding: 8px; text-align: right; color: #666;">${euro(order.taxCents)} €</td>
               </tr>
               <tr>
-                <td colspan="2" style="padding: 10px 8px; text-align: right; font-weight: 700; border-top: 2px solid #004537;">Gesamt:</td>
-                <td style="padding: 10px 8px; text-align: right; font-weight: 700; border-top: 2px solid #004537; font-size: 16px;">${euro(order.totalCents)} €</td>
+                <td colspan="2" style="padding: 10px 8px; text-align: right; font-weight: 700; border-top: 2px solid #10b981;">Gesamt:</td>
+                <td style="padding: 10px 8px; text-align: right; font-weight: 700; border-top: 2px solid #10b981; font-size: 16px;">${euro(order.totalCents)} €</td>
               </tr>
             </tfoot>
           </table>
 
           <div style="margin-top: 28px; padding-top: 16px; border-top: 1px solid #e5e7eb; font-size: 12px; color: #6b7280; line-height: 1.7;">
             <p style="margin: 0 0 6px 0;">Bei Fragen stehen wir Ihnen jederzeit zur Verfügung.<br>
-            Schreiben Sie uns: <a href="mailto:${company.email}" style="color: #004537; text-decoration: none;">${company.email}</a></p>
+            Schreiben Sie uns: <a href="mailto:${company.email}" style="color: #10b981; text-decoration: none;">${company.email}</a></p>
             <p style="margin: 8px 0 0 0; color: #9ca3af;">
-              <strong style="color: #004537;">${company.name}</strong> · ${company.owner} · ${company.street} · ${company.zip} ${company.city}<br>
+              <strong style="color: #10b981;">${company.name}</strong> · ${company.owner} · ${company.street} · ${company.zip} ${company.city}<br>
               <a href="https://www.inkiiworks.de" style="color: #9ca3af; text-decoration: none;">www.inkiiworks.de</a>${company.ustId ? ` · USt-IdNr.: ${company.ustId}` : ""}
             </p>
           </div>
@@ -223,12 +223,12 @@ export async function sendOrderConfirmationEmail(orderId: string): Promise<{ ok:
         subject: `📦 Neue Bestellung (BEZAHLT): ${order.orderNumber} — ${euro(order.totalCents)} €`,
         html: `
           <div style="font-family: Arial, sans-serif;">
-            <h2 style="color: #004537;">Neue bezahlte Bestellung</h2>
+            <h2 style="color: #10b981;">Neue bezahlte Bestellung</h2>
             <p><strong>${order.orderNumber}</strong> · ${paymentLabel} · ${euro(order.totalCents)} €</p>
             <p>${order.customer.firstName} ${order.customer.lastName} · ${order.customer.email}</p>
             ${order.customer.firmname ? `<p>Firma: ${order.customer.firmname}</p>` : ""}
             <p style="margin-top: 16px;">
-              <a href="https://www.inkiiworks.de/admin/bestellungen/${order.id}" style="background: #004537; color: #fff; padding: 10px 20px; text-decoration: none;">
+              <a href="https://www.inkiiworks.de/admin/bestellungen/${order.id}" style="background: #10b981; color: #fff; padding: 10px 20px; text-decoration: none;">
                 In Admin öffnen →
               </a>
             </p>
