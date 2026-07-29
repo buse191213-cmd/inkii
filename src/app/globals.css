@@ -5244,9 +5244,9 @@ body:has(.hero-full) header.site .brand-other img{filter:none;height:52px}
 .det-size-minwarn{color:#b45309;font-size:.82rem;margin-top:8px}
 
 /* === Kollektionen (eigene Designs, Direktverkauf) === */
-.koll-top{padding-top:14px}
-.koll-hero-h1{font-family:var(--display);font-size:1.9rem;font-weight:500;color:#111;margin:6px 0 6px;letter-spacing:.3px}
-.koll-hero-lead{color:#777;font-size:.95rem;margin:0}
+.koll-top{padding-top:6px}
+.koll-hero-h1{font-family:var(--display);font-size:1.9rem;font-weight:500;color:#111;margin:4px 0 0;letter-spacing:.3px}
+.koll-hero-lead{color:#777;font-size:.95rem;margin:2px 0 0}
 .koll-section{padding:20px 0 80px}
 .koll-cats{display:flex;flex-wrap:wrap;gap:6px 24px;margin-bottom:32px;
   border-bottom:1px solid #ececec;padding-bottom:0}
