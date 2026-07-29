@@ -17,7 +17,7 @@ export type KollektionDetail = {
 };
 
 export default function KollektionDetailClient({ product }: { product: KollektionDetail }) {
-  const { addToCart } = useCart();
+  const { addItem } = useCart();
   const [activeImg, setActiveImg] = useState(0);
   const [size, setSize] = useState<string>(product.sizes[0] ?? "");
   const [qty, setQty] = useState(1);
@@ -29,7 +29,7 @@ export default function KollektionDetailClient({ product }: { product: Kollektio
   function handleAdd() {
     if (soldOut) return;
     if (needsSize && !size) return;
-    addToCart({
+    addItem({
       productId: product.id,
       productCode: product.code,
       productName: product.name,
