@@ -5245,6 +5245,7 @@ body:has(.hero-full) header.site .brand-other img{filter:none;height:52px}
 
 /* === Kollektionen (eigene Designs, Direktverkauf) === */
 .koll-top{padding-top:6px}
+.koll-top .mm-page-crumb{margin-bottom:8px}
 .koll-hero-h1{font-family:var(--display);font-size:1.9rem;font-weight:500;color:#111;margin:4px 0 0;letter-spacing:.3px}
 .koll-hero-lead{color:#777;font-size:.95rem;margin:2px 0 0}
 .koll-section{padding:20px 0 80px}
