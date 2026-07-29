@@ -60,19 +60,17 @@ export default async function KollektionenPage() {
 
   return (
     <SiteShell>
-      <section className="koll-hero">
-        <div className="koll-hero-inner">
-          <div className="mm-page-crumb">
-            <Link href="/">Home</Link>
-            <span className="mm-dot">•</span>
-            <span className="active">Kollektionen</span>
-          </div>
-          <h1 className="koll-hero-h1">Unsere Kollektionen</h1>
-          <p className="koll-hero-lead">
-            Eigene Designs, fertig für Sie – direkt bestellbar in Ihrer Größe.
-          </p>
+      <div className="wrap-wide koll-top">
+        <div className="mm-page-crumb">
+          <Link href="/">Home</Link>
+          <span className="mm-dot">•</span>
+          <span className="active">Kollektionen</span>
         </div>
-      </section>
+        <h1 className="koll-hero-h1">Unsere Kollektionen</h1>
+        <p className="koll-hero-lead">
+          Eigene Designs, fertig für Sie – direkt bestellbar in Ihrer Größe.
+        </p>
+      </div>
 
       <KollektionenClient products={products} categories={usedCats} />
     </SiteShell>
