@@ -5244,85 +5244,88 @@ body:has(.hero-full) header.site .brand-other img{filter:none;height:52px}
 .det-size-minwarn{color:#b45309;font-size:.82rem;margin-top:8px}
 
 /* === Kollektionen (eigene Designs, Direktverkauf) === */
-.koll-hero{background:linear-gradient(135deg,#ecfdf5,#d1fae5);padding:48px 0 40px;border-bottom:1px solid #e5e7eb}
+.koll-hero{background:#fff;padding:44px 0 8px;border-bottom:none}
 .koll-hero-inner{max-width:1200px;margin:0 auto;padding:0 24px}
-.koll-hero-h1{font-family:var(--display);font-size:2.4rem;color:#065f46;margin:10px 0 8px}
-.koll-hero-lead{color:#047857;font-size:1.05rem;margin:0}
-.koll-section{padding:36px 0 72px}
-.koll-cats{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:28px}
-.koll-cat{appearance:none;border:1.5px solid var(--line);background:#fff;color:var(--ink);
-  padding:8px 18px;border-radius:999px;font-size:14px;font-weight:600;cursor:pointer;transition:.15s}
-.koll-cat:hover{border-color:#10b981}
-.koll-cat.active{background:#10b981;border-color:#10b981;color:#fff}
-.koll-empty{text-align:center;color:#8a938d;padding:60px 0}
-.koll-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:22px}
-.koll-card{display:block;text-decoration:none;color:inherit;border-radius:12px;overflow:hidden;
-  background:#fff;border:1px solid #eef0ee;transition:.2s}
-.koll-card:hover{box-shadow:0 8px 24px rgba(0,0,0,.08);transform:translateY(-2px)}
-.koll-card-img{position:relative;aspect-ratio:3/4;background:#f4f5f3;overflow:hidden}
-.koll-card-img img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;transition:transform .4s}
-.koll-card:hover .koll-card-img img{transform:scale(1.05)}
+.koll-hero-h1{font-family:var(--display);font-size:1.9rem;font-weight:500;color:#111;margin:8px 0 6px;letter-spacing:.3px}
+.koll-hero-lead{color:#777;font-size:.95rem;margin:0}
+.koll-section{padding:24px 0 80px}
+.koll-cats{display:flex;flex-wrap:wrap;gap:6px 24px;margin-bottom:32px;
+  border-bottom:1px solid #ececec;padding-bottom:0}
+.koll-cat{appearance:none;border:none;background:transparent;color:#888;
+  padding:0 0 14px;font-size:13px;font-weight:500;cursor:pointer;transition:.15s;
+  letter-spacing:.5px;text-transform:uppercase;border-bottom:2px solid transparent;margin-bottom:-1px}
+.koll-cat:hover{color:#111}
+.koll-cat.active{color:#111;border-bottom-color:#111}
+.koll-empty{text-align:center;color:#999;padding:60px 0;font-size:.9rem}
+.koll-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:8px 16px}
+.koll-card{display:block;text-decoration:none;color:inherit;background:transparent;transition:.2s}
+.koll-card-img{position:relative;aspect-ratio:3/4;background:#f6f6f4;overflow:hidden}
+.koll-card-img img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;transition:transform .5s}
+.koll-card:hover .koll-card-img img{transform:scale(1.04)}
 .koll-card-noimg{width:100%;height:100%;background:#f0f0ec}
 .koll-card.sold .koll-card-img img{opacity:.55}
-.koll-badge{position:absolute;top:12px;left:12px;padding:5px 12px;border-radius:999px;
-  font-size:11px;font-weight:700;letter-spacing:.3px;color:#fff}
-.koll-badge-new{background:#10b981}
-.koll-badge-best{background:#f59e0b}
-.koll-badge-sold{background:#6b7280;left:auto;right:12px}
-.koll-card-body{padding:14px 16px 18px}
-.koll-card-name{font-size:1rem;font-weight:700;color:var(--ink);margin:0 0 4px}
-.koll-card-sub{font-size:.85rem;color:var(--muted);margin:0 0 10px}
-.koll-card-price{font-size:1.15rem;font-weight:800;color:#065f46}
+.koll-badge{position:absolute;top:10px;left:10px;padding:4px 10px;
+  font-size:10px;font-weight:600;letter-spacing:.6px;text-transform:uppercase;color:#fff}
+.koll-badge-new{background:#111}
+.koll-badge-best{background:#111}
+.koll-badge-sold{background:#888;left:auto;right:10px}
+.koll-card-body{padding:12px 2px 20px}
+.koll-card-name{font-size:.9rem;font-weight:500;color:#111;margin:0 0 4px;letter-spacing:.2px}
+.koll-card-sub{font-size:.8rem;color:#888;margin:0 0 8px}
+.koll-card-price{font-size:.92rem;font-weight:600;color:#111;letter-spacing:.3px}
 @media(max-width:520px){
   .koll-grid{grid-template-columns:repeat(2,1fr);gap:12px}
   .koll-hero-h1{font-size:1.8rem}
 }
 
-/* === Kollektion Produktdetail === */
-.koll-detail{padding:32px 0 80px;max-width:1080px;margin:0 auto}
-.koll-detail-grid{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,0.85fr);gap:56px;align-items:start}
-.koll-detail-main{aspect-ratio:4/5;background:#f4f5f3;border-radius:16px;overflow:hidden;position:relative}
+/* === Kollektion Produktdetail (minimal, clean — Zara/H&M Stil, ohne Radius) === */
+.koll-detail{padding:28px 0 96px;max-width:1200px;margin:0 auto}
+.koll-detail-grid{display:grid;grid-template-columns:minmax(0,1.15fr) minmax(0,0.85fr);gap:64px;align-items:start}
+.koll-detail-main{aspect-ratio:3/4;background:#f6f6f4;overflow:hidden;position:relative}
 .koll-detail-main img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
 .koll-detail-noimg{width:100%;height:100%;background:#f0f0ec}
-.koll-detail-thumbs{display:flex;gap:10px;margin-top:14px;flex-wrap:wrap}
-.koll-thumb{width:66px;height:82px;border:2px solid transparent;border-radius:10px;overflow:hidden;
-  cursor:pointer;background:#f4f5f3;padding:0}
-.koll-thumb.active{border-color:#10b981}
+.koll-detail-thumbs{display:flex;gap:8px;margin-top:8px;flex-wrap:wrap}
+.koll-thumb{width:60px;height:78px;border:1px solid transparent;overflow:hidden;
+  cursor:pointer;background:#f6f6f4;padding:0}
+.koll-thumb.active{border-color:#111}
 .koll-thumb img{width:100%;height:100%;object-fit:cover;display:block}
-.koll-detail-info{padding-top:8px}
-.koll-detail-name{font-family:var(--display);font-size:2.1rem;line-height:1.15;color:var(--ink);margin:0 0 8px}
-.koll-detail-sub{color:var(--muted);font-size:1.05rem;margin:0 0 20px}
-.koll-detail-price{font-size:1.7rem;font-weight:800;color:#065f46;margin-bottom:32px}
-.koll-detail-soldout{display:inline-block;background:#6b7280;color:#fff;padding:10px 20px;
-  border-radius:8px;font-weight:700;font-size:15px}
-.koll-detail-label{display:block;font-size:12px;font-weight:700;color:var(--ink);
-  text-transform:uppercase;letter-spacing:.6px;margin-bottom:12px}
-.koll-detail-sizes{margin-bottom:28px}
-.koll-size-btns{display:flex;flex-wrap:wrap;gap:10px}
-.koll-size-btn{min-width:56px;padding:13px 18px;border:1.5px solid var(--line);background:#fff;
-  border-radius:10px;font-size:15px;font-weight:700;cursor:pointer;transition:.15s;color:var(--ink)}
-.koll-size-btn:hover{border-color:#10b981}
-.koll-size-btn.active{background:#10b981;border-color:#10b981;color:#fff}
+.koll-detail-info{padding-top:12px;max-width:400px}
+.koll-detail-name{font-family:var(--display);font-size:1.5rem;font-weight:500;line-height:1.25;
+  color:#111;margin:0 0 10px;letter-spacing:.2px}
+.koll-detail-sub{color:#777;font-size:.9rem;margin:0 0 18px;font-weight:400}
+.koll-detail-price{font-size:1.15rem;font-weight:600;color:#111;margin-bottom:36px;letter-spacing:.3px}
+.koll-detail-soldout{display:inline-block;background:#111;color:#fff;padding:9px 18px;
+  font-weight:600;font-size:13px;letter-spacing:.5px;text-transform:uppercase}
+.koll-detail-label{display:block;font-size:11px;font-weight:600;color:#111;
+  text-transform:uppercase;letter-spacing:1px;margin-bottom:12px}
+.koll-detail-sizes{margin-bottom:32px}
+.koll-size-btns{display:flex;flex-wrap:wrap;gap:0;border-top:1px solid #e5e5e5;border-left:1px solid #e5e5e5}
+.koll-size-btn{min-width:52px;padding:14px 16px;border:none;border-right:1px solid #e5e5e5;
+  border-bottom:1px solid #e5e5e5;background:#fff;font-size:13px;font-weight:500;cursor:pointer;
+  transition:.15s;color:#111;letter-spacing:.3px}
+.koll-size-btn:hover{background:#f6f6f4}
+.koll-size-btn.active{background:#111;color:#fff}
 .koll-detail-qty{margin-bottom:28px}
-.koll-qty-ctrl{display:inline-flex;align-items:center;gap:0;border:1.5px solid var(--line);border-radius:10px;overflow:hidden}
-.koll-qty-ctrl button{width:46px;height:48px;border:none;background:#fff;font-size:20px;cursor:pointer;color:var(--ink)}
-.koll-qty-ctrl button:hover{background:#ecfdf5}
-.koll-qty-ctrl input{width:60px;height:48px;border:none;border-left:1px solid var(--line);
-  border-right:1px solid var(--line);text-align:center;font-size:16px;font-weight:700}
-.koll-stock-hint{display:block;margin-top:10px;font-size:13px;color:#dc2626;font-weight:600}
-.koll-add-btn{width:100%;padding:17px 24px;background:#10b981;color:#fff;
-  border:none;border-radius:12px;font-size:16px;font-weight:700;cursor:pointer;transition:.15s;
-  box-shadow:0 4px 14px rgba(16,185,129,.28)}
-.koll-add-btn:hover{background:#059669;box-shadow:0 6px 18px rgba(16,185,129,.36)}
-.koll-detail-desc{margin-top:36px;padding-top:28px;border-top:1px solid #eef0ee}
-.koll-detail-desc h2{font-size:1.1rem;color:var(--ink);margin:0 0 12px}
-.koll-desc-html{color:#475569;line-height:1.75;font-size:.95rem}
+.koll-qty-ctrl{display:inline-flex;align-items:center;gap:0;border:1px solid #ddd}
+.koll-qty-ctrl button{width:42px;height:44px;border:none;background:#fff;font-size:18px;cursor:pointer;color:#111}
+.koll-qty-ctrl button:hover{background:#f6f6f4}
+.koll-qty-ctrl input{width:52px;height:44px;border:none;border-left:1px solid #eee;
+  border-right:1px solid #eee;text-align:center;font-size:14px;font-weight:500}
+.koll-stock-hint{display:block;margin-top:10px;font-size:12px;color:#c0392b;font-weight:500;letter-spacing:.3px}
+.koll-add-btn{width:100%;padding:16px 24px;background:#111;color:#fff;
+  border:none;font-size:13px;font-weight:600;cursor:pointer;transition:.2s;
+  text-transform:uppercase;letter-spacing:1.2px}
+.koll-add-btn:hover{background:#333}
+.koll-detail-desc{margin-top:40px;padding-top:24px;border-top:1px solid #e5e5e5}
+.koll-detail-desc h2{font-size:11px;color:#111;margin:0 0 12px;text-transform:uppercase;
+  letter-spacing:1px;font-weight:600}
+.koll-desc-html{color:#555;line-height:1.75;font-size:.88rem}
 .koll-desc-html p{margin:0 0 12px}
-.koll-desc-html strong{color:var(--ink)}
+.koll-desc-html strong{color:#111;font-weight:600}
 @media(max-width:820px){
-  .koll-detail-grid{grid-template-columns:1fr;gap:28px}
-  .koll-detail-name{font-size:1.7rem}
-  .koll-detail-main{max-width:440px}
+  .koll-detail-grid{grid-template-columns:1fr;gap:24px}
+  .koll-detail-info{max-width:none}
+  .koll-detail-name{font-size:1.35rem}
 }
 
 /* === Kollektionen Hover-Mega-Menü (Navbar) === */
@@ -5331,13 +5334,13 @@ body:has(.hero-full) header.site .brand-other img{filter:none;height:52px}
 .u-koll-mega{position:absolute;top:100%;left:50%;transform:translateX(-50%) translateY(8px);
   opacity:0;visibility:hidden;transition:.2s;z-index:1000;padding-top:12px}
 .u-koll-wrap:hover .u-koll-mega{opacity:1;visibility:visible;transform:translateX(-50%) translateY(0)}
-.u-koll-mega-inner{background:#fff;border:1px solid #eef0ee;border-radius:14px;
-  box-shadow:0 18px 50px rgba(0,0,0,.16);padding:16px;display:flex;gap:12px;
+.u-koll-mega-inner{background:#fff;border:1px solid #ececec;border-radius:2px;
+  box-shadow:0 16px 44px rgba(0,0,0,.14);padding:14px;display:flex;gap:10px;
   min-width:max-content}
-.u-koll-box{display:block !important;width:150px;text-decoration:none !important;border-radius:10px;
+.u-koll-box{display:block !important;width:150px;text-decoration:none !important;
   overflow:hidden;transition:.18s;border:1px solid transparent}
-.u-koll-box:hover{border-color:#10b981;transform:translateY(-2px)}
-.u-koll-box-img{aspect-ratio:4/5;background:#f4f5f3;overflow:hidden;border-radius:8px}
+.u-koll-box:hover{border-color:#111}
+.u-koll-box-img{aspect-ratio:4/5;background:#f6f6f4;overflow:hidden}
 .u-koll-box-img img{width:100%;height:100%;object-fit:cover;display:block}
-.u-koll-box-noimg{width:100%;height:100%;background:linear-gradient(135deg,#ecfdf5,#d1fae5)}
-.u-koll-box-name{display:block;padding:8px 4px 4px;font-size:13px;font-weight:700;text-align:center;color:#1f2937 !important}
+.u-koll-box-noimg{width:100%;height:100%;background:#f0f0ec}
+.u-koll-box-name{display:block;padding:8px 4px 4px;font-size:12px;font-weight:500;text-align:center;color:#111 !important;letter-spacing:.4px;text-transform:uppercase}
