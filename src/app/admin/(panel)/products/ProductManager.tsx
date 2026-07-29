@@ -712,16 +712,13 @@ export default function ProductManager({
                   <p style={{ fontSize: 12, color: "#047857", margin: "0 0 10px 0" }}>
                     Aktivieren für eigene fertige Designs, die unter <strong>/kollektionen</strong> direkt verkauft werden (mit Preis, Größe, Warenkorb). Nicht für kundenspezifische Werbeartikel.
                   </p>
-                  <label style={{ fontSize: 13, fontWeight: 600, display: "block", marginBottom: 4 }}>Kollektion-Kategorie</label>
-                  <select name="collectionCategory" defaultValue={modal.collectionCategory ?? ""} style={{ width: "100%" }}>
-                    <option value="">— keine —</option>
-                    <option value="bestseller">Bestseller</option>
-                    <option value="sommer">Sommer</option>
-                    <option value="winter">Winter</option>
-                    <option value="weihnachten">Weihnachten</option>
-                    <option value="neu">Neuheiten</option>
-                    <option value="basics">Basics</option>
-                  </select>
+                  <label style={{ fontSize: 13, fontWeight: 600, display: "block", marginBottom: 4 }}>Kollektion-Kategorie (Slug)</label>
+                  <input
+                    name="collectionCategory"
+                    defaultValue={modal.collectionCategory ?? ""}
+                    placeholder="z.B. sommer, winter, bestseller (muss zum Kategorie-Slug passen)"
+                    style={{ width: "100%" }}
+                  />
                 </div>
                 <div className="field" data-pf-tab="allgemein">
                   <label>Produktname</label>

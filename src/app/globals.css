@@ -5280,8 +5280,8 @@ body:has(.hero-full) header.site .brand-other img{filter:none;height:52px}
 
 /* === Kollektion Produktdetail === */
 .koll-detail{padding:24px 0 72px}
-.koll-detail-grid{display:grid;grid-template-columns:1fr 1fr;gap:48px}
-.koll-detail-main{aspect-ratio:3/4;background:#f4f5f3;border-radius:12px;overflow:hidden;position:relative}
+.koll-detail-grid{display:grid;grid-template-columns:minmax(0,420px) 1fr;gap:48px;align-items:start}
+.koll-detail-main{aspect-ratio:3/4;background:#f4f5f3;border-radius:12px;overflow:hidden;position:relative;max-width:420px}
 .koll-detail-main img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
 .koll-detail-noimg{width:100%;height:100%;background:#f0f0ec}
 .koll-detail-thumbs{display:flex;gap:10px;margin-top:12px;flex-wrap:wrap}
@@ -5319,3 +5319,20 @@ body:has(.hero-full) header.site .brand-other img{filter:none;height:52px}
   .koll-detail-grid{grid-template-columns:1fr;gap:24px}
   .koll-detail-name{font-size:1.6rem}
 }
+
+/* === Kollektionen Hover-Mega-Menü (Navbar) === */
+.u-koll-wrap{position:relative;display:inline-block}
+.u-collection-link{font-weight:700 !important;color:#10b981 !important}
+.u-koll-mega{position:absolute;top:100%;left:50%;transform:translateX(-50%) translateY(8px);
+  opacity:0;visibility:hidden;transition:.2s;z-index:1000;padding-top:10px}
+.u-koll-wrap:hover .u-koll-mega{opacity:1;visibility:visible;transform:translateX(-50%) translateY(0)}
+.u-koll-mega-inner{background:#fff;border:1px solid #eef0ee;border-radius:14px;
+  box-shadow:0 18px 50px rgba(0,0,0,.16);padding:16px;display:flex;gap:12px;
+  min-width:max-content}
+.u-koll-box{display:block;width:150px;text-decoration:none;color:inherit;border-radius:10px;
+  overflow:hidden;transition:.18s;border:1px solid transparent}
+.u-koll-box:hover{border-color:#10b981;transform:translateY(-2px)}
+.u-koll-box-img{aspect-ratio:4/5;background:#f4f5f3;overflow:hidden;border-radius:8px}
+.u-koll-box-img img{width:100%;height:100%;object-fit:cover;display:block}
+.u-koll-box-noimg{width:100%;height:100%;background:linear-gradient(135deg,#ecfdf5,#d1fae5)}
+.u-koll-box-name{display:block;padding:8px 4px 4px;font-size:13px;font-weight:700;text-align:center;color:var(--ink)}

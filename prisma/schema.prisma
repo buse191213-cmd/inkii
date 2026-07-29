@@ -95,6 +95,17 @@ model TeamMember {
   createdAt  DateTime @default(now())
 }
 
+// Kollektion-Kategorien: vom Admin verwaltbar (Sommer, Winter, Bestseller …),
+// jede mit eigenem Titelbild für das Hover-Mega-Menü.
+model KollektionKategorie {
+  id        String   @id @default(cuid())
+  slug      String   @unique   // z.B. "sommer" (wird in Product.collectionCategory referenziert)
+  name      String              // Anzeigename z.B. "Sommer-Kollektion"
+  imageUrl  String   @default("")
+  sortOrder Int      @default(0)
+  createdAt DateTime @default(now())
+}
+
 // Galerie: unsere eigenen Druck-/Design-Arbeiten (Portfolio ohne Firmennamen)
 model GalleryItem {
   id        String   @id @default(cuid())

@@ -13,25 +13,23 @@ export const metadata: Metadata = {
   alternates: { canonical: "/kollektionen" },
 };
 
-// Feste Kategorien-Reihenfolge & Labels
-const COLLECTION_CATEGORIES: { key: string; label: string }[] = [
-  { key: "bestseller", label: "Bestseller" },
-  { key: "neu", label: "Neuheiten" },
-  { key: "sommer", label: "Sommer" },
-  { key: "winter", label: "Winter" },
-  { key: "weihnachten", label: "Weihnachten" },
-  { key: "basics", label: "Basics" },
-];
-
 export default async function KollektionenPage() {
   let dbProducts: Awaited<ReturnType<typeof db.product.findMany>> = [];
+  let dbCats: { slug: string; name: string; imageUrl: string }[] = [];
   try {
-    dbProducts = await db.product.findMany({
-      where: { status: "active", isCollection: true },
-      orderBy: [{ displayOrder: "desc" }, { createdAt: "desc" }],
-    });
+    [dbProducts, dbCats] = await Promise.all([
+      db.product.findMany({
+        where: { status: "active", isCollection: true },
+        orderBy: [{ displayOrder: "desc" }, { createdAt: "desc" }],
+      }),
+      db.kollektionKategorie.findMany({
+        orderBy: [{ sortOrder: "desc" }, { createdAt: "asc" }],
+        select: { slug: true, name: true, imageUrl: true },
+      }),
+    ]);
   } catch {
     dbProducts = [];
+    dbCats = [];
   }
 
   const products: KollektionProduct[] = dbProducts.map((p) => {
@@ -57,10 +55,10 @@ export default async function KollektionenPage() {
     };
   });
 
-  // Nur Kategorien anzeigen, die auch Produkte haben
-  const usedCats = COLLECTION_CATEGORIES.filter((c) =>
-    products.some((p) => p.category === c.key)
-  );
+  // Kategorien aus Admin; nur die mit Produkten anzeigen
+  const usedCats = dbCats
+    .filter((c) => products.some((p) => p.category === c.slug))
+    .map((c) => ({ key: c.slug, label: c.name, image: c.imageUrl }));
 
   return (
     <SiteShell>

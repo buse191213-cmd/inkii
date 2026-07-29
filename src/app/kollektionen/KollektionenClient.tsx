@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect } from "react";
 import Link from "next/link";
 import { formatPrice } from "@/lib/format";
 
@@ -23,9 +23,18 @@ export default function KollektionenClient({
   categories,
 }: {
   products: KollektionProduct[];
-  categories: { key: string; label: string }[];
+  categories: { key: string; label: string; image?: string }[];
 }) {
   const [activeCat, setActiveCat] = useState<string>("all");
+
+  // URL ?cat=slug → o kategoriyi seç (mega-menüden gelince)
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    const cat = params.get("cat");
+    if (cat && categories.some((c) => c.key === cat)) {
+      setActiveCat(cat);
+    }
+  }, [categories]);
 
   const filtered = useMemo(() => {
     if (activeCat === "all") return products;

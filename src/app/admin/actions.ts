@@ -846,3 +846,58 @@ export async function deleteGalleryItem(id: string): Promise<ActionResult> {
     return { ok: false, error: "Löschen fehlgeschlagen." };
   }
 }
+
+// ============================================================
+// KOLLEKTION-KATEGORIEN — vom Admin verwaltbar, mit Titelbild
+// ============================================================
+
+export async function saveKollektionKategorie(formData: FormData): Promise<ActionResult> {
+  const id = String(formData.get("id") ?? "");
+  const name = String(formData.get("name") ?? "").trim();
+  const slug = String(formData.get("slug") ?? "").trim().toLowerCase().replace(/[^a-z0-9-]/g, "-");
+  const sortOrder = parseInt(String(formData.get("sortOrder") ?? "0"), 10) || 0;
+
+  if (!name || !slug) return { ok: false, error: "Name und Slug sind erforderlich." };
+
+  // Optionales Titelbild
+  let imageUrl = String(formData.get("existingImageUrl") ?? "");
+  const file = formData.get("image");
+  if (file instanceof File && file.size > 0) {
+    if (!process.env.BLOB_READ_WRITE_TOKEN) {
+      return { ok: false, error: "Bild-Upload nicht konfiguriert." };
+    }
+    if (file.size > MAX_FILE_BYTES) return { ok: false, error: "Bild zu groß (max. 12 MB)." };
+    const ext = EXT[file.type] ?? "jpg";
+    const blob = await put(`kollektion-cat/${Date.now()}-${Math.random().toString(36).slice(2, 8)}.${ext}`, file, { access: "public" });
+    imageUrl = blob.url;
+  }
+
+  try {
+    if (id) {
+      await db.kollektionKategorie.update({ where: { id }, data: { name, slug, sortOrder, imageUrl } });
+    } else {
+      await db.kollektionKategorie.create({ data: { name, slug, sortOrder, imageUrl } });
+    }
+    revalidatePath("/admin/kollektionen");
+    revalidatePath("/kollektionen");
+    return { ok: true };
+  } catch (e) {
+    const msg = e instanceof Error && e.message.includes("Unique") ? "Dieser Slug existiert bereits." : "Speichern fehlgeschlagen.";
+    return { ok: false, error: msg };
+  }
+}
+
+export async function deleteKollektionKategorie(id: string): Promise<ActionResult> {
+  try {
+    const cat = await db.kollektionKategorie.findUnique({ where: { id } });
+    if (cat?.imageUrl) {
+      try { await del(cat.imageUrl); } catch { /* ignorieren */ }
+    }
+    await db.kollektionKategorie.delete({ where: { id } });
+    revalidatePath("/admin/kollektionen");
+    revalidatePath("/kollektionen");
+    return { ok: true };
+  } catch {
+    return { ok: false, error: "Löschen fehlgeschlagen." };
+  }
+}

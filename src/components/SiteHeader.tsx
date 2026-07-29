@@ -29,6 +29,7 @@ type HeaderProps = {
   marketingLogo?: string | null;
   navItems?: NavItem[];
   customer?: { firstName: string; lastName: string } | null;
+  kollektionCats?: { slug: string; name: string; imageUrl: string }[];
 };
 
 export default function SiteHeader(props: HeaderProps) {
@@ -47,6 +48,7 @@ function SiteHeaderInner({
   marketingLogo,
   navItems,
   customer,
+  kollektionCats,
 }: HeaderProps) {
   const pathname = usePathname();
   // INKII MARKETING sayfasında farklı nav linkleri göster
@@ -97,7 +99,28 @@ function SiteHeaderInner({
       <div className="utility">
         <div className="utility-inner">
           <div className="u-right">
-            <Link href="/kollektionen" className="u-collection-link">{nav.kollektionen ?? "Kollektionen"}</Link>
+            <div className="u-koll-wrap">
+              <Link href="/kollektionen" className="u-collection-link">{nav.kollektionen ?? "Kollektionen"}</Link>
+              {kollektionCats && kollektionCats.length > 0 && (
+                <div className="u-koll-mega">
+                  <div className="u-koll-mega-inner">
+                    {kollektionCats.map((c) => (
+                      <Link key={c.slug} href={`/kollektionen?cat=${c.slug}`} className="u-koll-box">
+                        <div className="u-koll-box-img">
+                          {c.imageUrl ? (
+                            /* eslint-disable-next-line @next/next/no-img-element */
+                            <img src={c.imageUrl} alt={c.name} loading="lazy" />
+                          ) : (
+                            <div className="u-koll-box-noimg" />
+                          )}
+                        </div>
+                        <span className="u-koll-box-name">{c.name}</span>
+                      </Link>
+                    ))}
+                  </div>
+                </div>
+              )}
+            </div>
             <Link href="/ueber-uns">{nav.ueberUns}</Link>
             <Link href="/nachhaltigkeit">{nav.nachhaltigkeit}</Link>
             <Link href="/bereiche">{nav.bereiche}</Link>
