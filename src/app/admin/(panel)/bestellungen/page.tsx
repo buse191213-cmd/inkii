@@ -43,13 +43,26 @@ export default async function BestellungenPage({
   // Tüm siparişleri çek
   const orders = await db.order.findMany({
     where: {
-      // Wenn kein Status-Filter aktiv ist: unbezahlte/abgebrochene PayPal-
-      // Aufträge (WARTEND_ZAHLUNG) ausblenden — das sind meist nur geöffnete,
-      // aber nicht abgeschlossene Zahlungen. Sie sind über den Filter-Chip
-      // „Zahlung offen" weiterhin einsehbar.
+      // Ohne aktiven Status-Filter: nicht abgeschlossene Online-Zahlungen
+      // ausblenden. Das betrifft:
+      //  1) neue Aufträge mit Status WARTEND_ZAHLUNG (aktuelle Logik)
+      //  2) alte „Geister"-Aufträge: Status NEU, aber Zahlung nie abgeschlossen
+      //     (paymentMethod PayPal/Klarna und paymentStatus ≠ PAID)
+      // Beide sind über den Chip „Zahlung offen" bzw. „Neu" weiterhin sichtbar.
       ...(statusFilter
         ? { status: statusFilter }
-        : { status: { not: "WARTEND_ZAHLUNG" } }),
+        : {
+            NOT: [
+              { status: "WARTEND_ZAHLUNG" },
+              {
+                AND: [
+                  { status: "NEU" },
+                  { paymentMethod: { not: "rechnung" } },
+                  { paymentStatus: { not: "PAID" } },
+                ],
+              },
+            ],
+          }),
       ...(search
         ? {
             OR: [
