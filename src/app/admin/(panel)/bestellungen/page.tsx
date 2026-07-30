@@ -40,29 +40,30 @@ export default async function BestellungenPage({
   const statusFilter = params.status ?? "";
   const search = params.search ?? "";
 
+  // Einmalige Bereinigung: alte „Geister"-Aufträge (Status NEU, Online-Zahlung
+  // nie abgeschlossen) auf WARTEND_ZAHLUNG umstellen, damit sie konsistent im
+  // Chip „Zahlung offen" landen und nicht mehr unter „Neu" auftauchen.
+  try {
+    await db.order.updateMany({
+      where: {
+        status: "NEU",
+        paymentMethod: { not: "rechnung" },
+        paymentStatus: { not: "PAID" },
+      },
+      data: { status: "WARTEND_ZAHLUNG" },
+    });
+  } catch {
+    // still weiter, Anzeige funktioniert auch ohne Migration
+  }
+
   // Tüm siparişleri çek
   const orders = await db.order.findMany({
     where: {
       // Ohne aktiven Status-Filter: nicht abgeschlossene Online-Zahlungen
-      // ausblenden. Das betrifft:
-      //  1) neue Aufträge mit Status WARTEND_ZAHLUNG (aktuelle Logik)
-      //  2) alte „Geister"-Aufträge: Status NEU, aber Zahlung nie abgeschlossen
-      //     (paymentMethod PayPal/Klarna und paymentStatus ≠ PAID)
-      // Beide sind über den Chip „Zahlung offen" bzw. „Neu" weiterhin sichtbar.
+      // (WARTEND_ZAHLUNG) ausblenden. Über den Chip „Zahlung offen" sichtbar.
       ...(statusFilter
         ? { status: statusFilter }
-        : {
-            NOT: [
-              { status: "WARTEND_ZAHLUNG" },
-              {
-                AND: [
-                  { status: "NEU" },
-                  { paymentMethod: { not: "rechnung" } },
-                  { paymentStatus: { not: "PAID" } },
-                ],
-              },
-            ],
-          }),
+        : { status: { not: "WARTEND_ZAHLUNG" } }),
       ...(search
         ? {
             OR: [
