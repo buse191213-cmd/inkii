@@ -53,9 +53,18 @@ export default function PayPalInlineButtons({
             try {
               const result = await validateAndCreateOrder();
               if (!result.ok || !result.orderId || !result.orderNumber) {
-                // Form validation hatası — parent göstersin, PayPal hata göstermesin
+                // Form-/Konto-Fehler: eigene Meldung anzeigen, aber PayPals
+                // generische Fehlermeldung unterdrücken (skip=true).
                 skipPayPalError.current = true;
-                throw new Error(result.error || "Validation failed");
+                const msg = result.error || "Bitte füllen Sie alle Pflichtfelder aus.";
+                setError(msg);
+                // Fehler-Box in Sichtweite scrollen
+                if (typeof window !== "undefined") {
+                  setTimeout(() => {
+                    document.querySelector(".paypal-inline-error")?.scrollIntoView({ behavior: "smooth", block: "center" });
+                  }, 50);
+                }
+                throw new Error(msg);
               }
               setCurrentOrder({ orderId: result.orderId, orderNumber: result.orderNumber });
 
@@ -115,15 +124,25 @@ export default function PayPalInlineButtons({
       </PayPalScriptProvider>
 
       {error && (
-        <div style={{
-          padding: 10,
+        <div className="paypal-inline-error" style={{
+          padding: "12px 14px",
           background: "#fef2f2",
           color: "#991b1b",
-          marginTop: 10,
-          fontSize: 13,
-          borderRadius: 4,
+          border: "1px solid #fecaca",
+          marginTop: 12,
+          fontSize: 14,
+          borderRadius: 6,
+          fontWeight: 500,
+          lineHeight: 1.5,
         }}>
           {error}
+          {error.toLowerCase().includes("konto") && (
+            <div style={{ marginTop: 8 }}>
+              <a href="/login?redirect=/kasse" style={{ color: "#004537", fontWeight: 700, textDecoration: "underline" }}>
+                → Jetzt anmelden
+              </a>
+            </div>
+          )}
         </div>
       )}
 
