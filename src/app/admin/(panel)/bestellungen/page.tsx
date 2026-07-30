@@ -6,6 +6,7 @@ export const dynamic = "force-dynamic";
 
 const STATUS_LABELS: Record<string, { label: string; color: string; bg: string }> = {
   NEU: { label: "Neu", color: "#1d4ed8", bg: "#dbeafe" },
+  WARTEND_ZAHLUNG: { label: "Zahlung offen", color: "#64748b", bg: "#f1f5f9" },
   WARTEND: { label: "Wartend", color: "#92400e", bg: "#fef3c7" },
   BEZAHLT: { label: "Bezahlt", color: "#065f46", bg: "#d1fae5" },
   IN_PRODUKTION: { label: "In Produktion", color: "#6b21a8", bg: "#f3e8ff" },
@@ -42,7 +43,13 @@ export default async function BestellungenPage({
   // Tüm siparişleri çek
   const orders = await db.order.findMany({
     where: {
-      ...(statusFilter ? { status: statusFilter } : {}),
+      // Wenn kein Status-Filter aktiv ist: unbezahlte/abgebrochene PayPal-
+      // Aufträge (WARTEND_ZAHLUNG) ausblenden — das sind meist nur geöffnete,
+      // aber nicht abgeschlossene Zahlungen. Sie sind über den Filter-Chip
+      // „Zahlung offen" weiterhin einsehbar.
+      ...(statusFilter
+        ? { status: statusFilter }
+        : { status: { not: "WARTEND_ZAHLUNG" } }),
       ...(search
         ? {
             OR: [

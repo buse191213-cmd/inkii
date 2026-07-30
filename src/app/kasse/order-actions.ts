@@ -269,8 +269,14 @@ export async function createOrder(
     // 2) Order oluştur
     const orderNumber = await generateOrderNumber();
 
-    // Status: Rechnung → WARTEND, anderen → NEU (PayPal/Klarna sonra ödeyince BEZAHLT olur)
-    const initialStatus = input.paymentMethod === "rechnung" ? "WARTEND" : "NEU";
+    // Status-Logik:
+    // - Rechnung → WARTEND (Kunde überweist, wir warten)
+    // - PayPal/Klarna → WARTEND_ZAHLUNG (Zahlung noch nicht abgeschlossen).
+    //   Erst wenn PayPal die Zahlung bestätigt, wird daraus BEZAHLT.
+    //   Bricht der Kunde ab, bleibt es WARTEND_ZAHLUNG und wird im Panel
+    //   standardmäßig ausgeblendet (kein „Geister"-Auftrag mehr).
+    const initialStatus =
+      input.paymentMethod === "rechnung" ? "WARTEND" : "WARTEND_ZAHLUNG";
 
     // Design görsellerini (base64) Vercel Blob'a taşı → mailde çalışan https URL
     const itemsWithBlobDesigns = await Promise.all(

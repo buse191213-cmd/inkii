@@ -16,6 +16,7 @@ function germanDate(d: Date): string {
 const STATUS_LABELS: Record<string, { label: string; color: string; bg: string }> = {
   NEU: { label: "Neu", color: "#1d4ed8", bg: "#dbeafe" },
   WARTEND: { label: "Wartend", color: "#92400e", bg: "#fef3c7" },
+  WARTEND_ZAHLUNG: { label: "Zahlung offen", color: "#64748b", bg: "#f1f5f9" },
   BEZAHLT: { label: "Bezahlt", color: "#065f46", bg: "#d1fae5" },
   IN_PRODUKTION: { label: "In Produktion", color: "#6b21a8", bg: "#f3e8ff" },
   VERSANDBEREIT: { label: "Versandbereit", color: "#9a3412", bg: "#fed7aa" },
