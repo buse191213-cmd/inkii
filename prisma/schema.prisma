@@ -200,6 +200,9 @@ model Order {
   // Rechnung
   invoiceUrl      String      @default("") // PDF Rechnung URL
   invoiceNumber   String      @default("")
+  // Zahlungserinnerungen für unbezahlte Online-Bestellungen (0 = keine, 1 = 1h-Mail
+  // gesendet, 2 = 24h-Mail gesendet). Verhindert doppelte Erinnerungen.
+  paymentReminders Int        @default(0)
   createdAt       DateTime    @default(now())
   updatedAt       DateTime    @updatedAt
 }
