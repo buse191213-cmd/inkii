@@ -509,3 +509,23 @@ export async function createOrder(
     };
   }
 }
+
+/**
+ * Prüft, ob für eine E-Mail bereits ein registriertes Konto (mit Passwort)
+ * existiert. Wird im Checkout beim Verlassen des E-Mail-Felds aufgerufen, damit
+ * der Kunde SOFORT einen Hinweis bekommt — statt erst nach Klick auf PayPal.
+ */
+export async function checkEmailHasAccount(email: string): Promise<{ exists: boolean }> {
+  try {
+    const normalized = email.trim().toLowerCase();
+    if (!normalized || !normalized.includes("@")) return { exists: false };
+    const account = await db.customer.findUnique({
+      where: { email: normalized },
+      select: { password: true },
+    });
+    const hasPassword = !!account?.password && account.password.trim().length > 0;
+    return { exists: hasPassword };
+  } catch {
+    return { exists: false };
+  }
+}

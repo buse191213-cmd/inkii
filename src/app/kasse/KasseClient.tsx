@@ -5,7 +5,7 @@ import Link from "next/link";
 import { useCart, cartItemTotalCents } from "@/components/CartProvider";
 import CheckoutSteps from "@/components/CheckoutSteps";
 import { colorLabel } from "@/lib/catalog-options";
-import { createOrder } from "./order-actions";
+import { createOrder, checkEmailHasAccount } from "./order-actions";
 import PayPalInlineButtons from "./PayPalInlineButtons";
 import type { Dictionary } from "@/dictionaries/types";
 
@@ -141,6 +141,8 @@ export default function KasseClient({ paymentMethods, shipping, prefill, isLogge
   const [firstName, setFirstName] = useState(prefill?.firstName || "");
   const [lastName, setLastName] = useState(prefill?.lastName || "");
   const [email, setEmail] = useState(prefill?.email || "");
+  // Warnung, wenn E-Mail bereits ein registriertes Konto hat (nicht eingeloggt)
+  const [emailAccountWarning, setEmailAccountWarning] = useState(false);
   const [phoneCountry, setPhoneCountry] = useState("+49");
   const [phoneNumber, setPhoneNumber] = useState(prefill?.phone?.replace(/^\+\d+\s?/, "") || "");
   const [firmname, setFirmname] = useState(prefill?.firmname || "");
@@ -436,12 +438,32 @@ export default function KasseClient({ paymentMethods, shipping, prefill, isLogge
                   ref={refs.email}
                   type="email"
                   value={email}
-                  onChange={(e) => setEmail(e.target.value)}
+                  onChange={(e) => { setEmail(e.target.value); if (emailAccountWarning) setEmailAccountWarning(false); }}
+                  onBlur={async (e) => {
+                    // Sofort prüfen, ob diese E-Mail bereits ein Konto hat —
+                    // dann kann der Kunde nicht als Gast bezahlen (Hinweis zeigen).
+                    if (isLoggedIn) return;
+                    const val = e.target.value.trim();
+                    if (!val || !val.includes("@")) { setEmailAccountWarning(false); return; }
+                    try {
+                      const res = await checkEmailHasAccount(val);
+                      setEmailAccountWarning(res.exists);
+                    } catch { /* ignorieren */ }
+                  }}
                   style={showErr && errors.email ? inputErr : input}
                   placeholder="name@beispiel.de"
                 />
                 {showErr && errors.email === "required" && <span style={errMsg}>{t.form.required}</span>}
                 {showErr && errors.email === "format" && <span style={errMsg}>{t.form.invalidEmail}</span>}
+                {emailAccountWarning && (
+                  <span style={{ display: "block", marginTop: 6, fontSize: 13, color: "#92400e", background: "#fef3c7", border: "1px solid #fde68a", borderRadius: 6, padding: "8px 10px", lineHeight: 1.5 }}>
+                    Für diese E-Mail existiert bereits ein Konto. Bitte{" "}
+                    <a href={`/login?next=/kasse${email ? `&email=${encodeURIComponent(email)}` : ""}`} style={{ color: "#004537", fontWeight: 700, textDecoration: "underline" }}>
+                      melden Sie sich an
+                    </a>
+                    , um fortzufahren.
+                  </span>
+                )}
               </div>
               <div style={field}>
                 <label style={showErr && errors.phone ? labelErr : undefined}>{t.form.phone}</label>
@@ -862,7 +884,7 @@ export default function KasseClient({ paymentMethods, shipping, prefill, isLogge
                   clearCart();
                   window.location.href = `/bestellung-erfolg?nr=${orderNumber}`;
                 }}
-                disabled={isPending}
+                disabled={isPending || emailAccountWarning}
               />
             </div>
           ) : (
