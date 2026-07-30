@@ -7,12 +7,13 @@ import ProductManager, {
 export const dynamic = "force-dynamic";
 
 export default async function ProductsPage() {
-  const [dbProducts, dbCategories] = await Promise.all([
+  const [dbProducts, dbCategories, dbKollektionCats] = await Promise.all([
     db.product.findMany({
       include: { category: true },
       orderBy: [{ displayOrder: "desc" }, { createdAt: "desc" }],
     }),
     db.category.findMany({ orderBy: { name: "asc" } }),
+    db.kollektionKategorie.findMany({ orderBy: [{ sortOrder: "desc" }, { createdAt: "asc" }] }).catch(() => []),
   ]);
 
   const products: AdminProduct[] = dbProducts.map((p) => ({
@@ -64,5 +65,7 @@ export default async function ProductsPage() {
     name: c.name,
   }));
 
-  return <ProductManager products={products} categories={categories} />;
+  const kollektionCategories = (dbKollektionCats as { slug: string; name: string }[]).map((c) => ({ slug: c.slug, name: c.name }));
+
+  return <ProductManager products={products} categories={categories} kollektionCategories={kollektionCategories} />;
 }

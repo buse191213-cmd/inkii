@@ -206,7 +206,7 @@ export async function saveProduct(formData: FormData): Promise<ActionResult> {
     status: String(formData.get("status") ?? "active"),
     supplierNote: String(formData.get("supplierNote") ?? ""),
     isCollection: formData.get("isCollection") === "on" || formData.get("isCollection") === "true",
-    collectionCategory: String(formData.get("collectionCategory") ?? ""),
+    collectionCategory: String(formData.get("collectionCategory") ?? "").trim().toLowerCase().replace(/[^a-z0-9-]/g, "-").replace(/^-+|-+$/g, ""),
     isNew: formData.get("isNew") === "on",
     isEco: formData.get("isEco") === "on",
     isBestseller: formData.get("isBestseller") === "on",

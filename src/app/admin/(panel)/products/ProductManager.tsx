@@ -94,9 +94,11 @@ function truncate(s: string, n: number): string {
 export default function ProductManager({
   products,
   categories,
+  kollektionCategories = [],
 }: {
   products: AdminProduct[];
   categories: AdminCategory[];
+  kollektionCategories?: { slug: string; name: string }[];
 }) {
   const router = useRouter();
   const [filter, setFilter] = useState("all");
@@ -712,13 +714,23 @@ export default function ProductManager({
                   <p style={{ fontSize: 12, color: "#047857", margin: "0 0 10px 0" }}>
                     Aktivieren für eigene fertige Designs, die unter <strong>/kollektionen</strong> direkt verkauft werden (mit Preis, Größe, Warenkorb). Nicht für kundenspezifische Werbeartikel.
                   </p>
-                  <label style={{ fontSize: 13, fontWeight: 600, display: "block", marginBottom: 4 }}>Kollektion-Kategorie (Slug)</label>
-                  <input
-                    name="collectionCategory"
-                    defaultValue={modal.collectionCategory ?? ""}
-                    placeholder="z.B. sommer, winter, bestseller (muss zum Kategorie-Slug passen)"
-                    style={{ width: "100%" }}
-                  />
+                  <label style={{ fontSize: 13, fontWeight: 600, display: "block", marginBottom: 4 }}>Kollektion-Kategorie</label>
+                  {kollektionCategories.length > 0 ? (
+                    <select
+                      name="collectionCategory"
+                      defaultValue={modal.collectionCategory ?? ""}
+                      style={{ width: "100%" }}
+                    >
+                      <option value="">— keine Kategorie —</option>
+                      {kollektionCategories.map((kc) => (
+                        <option key={kc.slug} value={kc.slug}>{kc.name} ({kc.slug})</option>
+                      ))}
+                    </select>
+                  ) : (
+                    <p style={{ fontSize: 12, color: "#dc2626", margin: 0 }}>
+                      Noch keine Kollektion-Kategorien. Legen Sie zuerst welche unter <strong>Admin → Kollektionen</strong> an.
+                    </p>
+                  )}
                 </div>
                 <div className="field" data-pf-tab="allgemein">
                   <label>Produktname</label>
