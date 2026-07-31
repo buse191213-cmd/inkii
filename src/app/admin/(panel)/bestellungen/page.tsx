@@ -1,6 +1,7 @@
 import { db } from "@/lib/db";
 import Link from "next/link";
 import DeleteOrderButton from "./DeleteOrderButton";
+import { runPaymentReminders } from "@/lib/payment-reminders";
 
 export const dynamic = "force-dynamic";
 
@@ -39,6 +40,12 @@ export default async function BestellungenPage({
   const params = await searchParams;
   const statusFilter = params.status ?? "";
   const search = params.search ?? "";
+
+  // Best-effort: beim Öffnen des Panels ausstehende Zahlungserinnerungen
+  // verschicken. Nicht blockierend — Fehler werden ignoriert, damit die Seite
+  // immer sofort lädt. Zusammen mit dem täglichen Cron ergibt das eine
+  // zuverlässige Abdeckung ohne externe Dienste.
+  runPaymentReminders().catch(() => { /* ignorieren */ });
 
   // Einmalige Bereinigung: alte „Geister"-Aufträge (Status NEU, Online-Zahlung
   // nie abgeschlossen) auf WARTEND_ZAHLUNG umstellen, damit sie konsistent im
