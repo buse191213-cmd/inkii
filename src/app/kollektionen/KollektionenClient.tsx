@@ -3,6 +3,7 @@
 import { useState, useMemo, useEffect } from "react";
 import Link from "next/link";
 import { formatPrice } from "@/lib/format";
+import { optimizedImage } from "@/lib/image-opt";
 
 export type KollektionProduct = {
   id: string;
@@ -80,7 +81,7 @@ export default function KollektionenClient({
                   <div className="koll-card-img">
                     {p.image ? (
                       /* eslint-disable-next-line @next/next/no-img-element */
-                      <img src={p.image} alt={p.name} loading="lazy" />
+                      <img src={optimizedImage(p.image, 400)} alt={p.name} loading="lazy" decoding="async" />
                     ) : (
                       <div className="koll-card-noimg" />
                     )}

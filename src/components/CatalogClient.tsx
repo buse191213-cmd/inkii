@@ -5,6 +5,7 @@ import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 import { ProductIcon } from "@/lib/icons";
 import { formatPrice } from "@/lib/format";
+import { optimizedImage } from "@/lib/image-opt";
 import { colorHex, colorLabel, materialLabel } from "@/lib/catalog-options";
 import { SHOW_PRICES } from "@/lib/feature-flags";
 import type { Dictionary } from "@/dictionaries/types";
@@ -273,8 +274,10 @@ export default function CatalogClient({
                       return (
                         // eslint-disable-next-line @next/next/no-img-element
                         <img
-                          src={p.images[0]}
+                          src={optimizedImage(p.images[0], 400)}
                           alt={p.name}
+                          loading="lazy"
+                          decoding="async"
                           style={{
                             position: "absolute",
                             inset: 0,

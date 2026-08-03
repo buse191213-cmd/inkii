@@ -8,6 +8,7 @@ import DesignUploadTabs from "@/components/DesignUploadTabs";
 import MerkenButton from "@/components/MerkenButton";
 import { db } from "@/lib/db";
 import { formatPrice, formatNumber } from "@/lib/format";
+import { optimizedImage } from "@/lib/image-opt";
 import { colorHex, colorLabel, materialLabel } from "@/lib/catalog-options";
 import { parsePriceTiers } from "@/lib/price-tiers";
 import { parseSizes } from "@/lib/sizes";
@@ -483,7 +484,7 @@ export default async function ProductDetailPage({
                         {rImg ? (
                           /* eslint-disable-next-line @next/next/no-img-element */
                           <img
-                            src={rImg}
+                            src={optimizedImage(rImg, 400)}
                             alt={r.name}
                             loading="lazy"
                             decoding="async"
