@@ -777,8 +777,9 @@ footer.site ul a:hover{color:var(--leaf)}
 .detail-grid{display:grid;grid-template-columns:1fr 1fr;gap:48px;align-items:start}
 .gallery{display:flex;flex-direction:column;gap:12px}
 .gallery-main{aspect-ratio:1;border:1px solid var(--line);background:#f7f8f6;
-  display:grid;place-items:center;overflow:hidden;border-radius:5px}
-.gallery-main img{width:100%;height:100%;object-fit:contain}
+  position:relative;overflow:hidden;border-radius:5px}
+.gallery-main img{position:absolute;inset:0;width:100%;height:100%;object-fit:contain}
+.gallery-empty{position:absolute;inset:0;display:flex;align-items:center;justify-content:center}
 .gallery-empty svg{width:160px;height:160px;color:#2f7a47}
 .gallery-thumbs{display:flex;gap:10px;flex-wrap:wrap}
 .gallery-thumb{width:78px;height:78px;border:1px solid var(--line);background:#f7f8f6;
@@ -5099,6 +5100,8 @@ body:has(.hero-full) header.site .brand-other img{filter:none;height:52px}
    width/height:100 % wird ein Hochkant-Bild zentriert verkleinert und die
    Koordinaten verschieben sich (seitlich schmaler, nach oben versetzt). === */
 .mm-detail-gallery .gallery-main img {
+  position: absolute !important;
+  inset: 0 !important;
   width: 100% !important;
   height: 100% !important;
   object-fit: contain !important;
