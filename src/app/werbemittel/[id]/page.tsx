@@ -485,6 +485,8 @@ export default async function ProductDetailPage({
                           <img
                             src={rImg}
                             alt={r.name}
+                            loading="lazy"
+                            decoding="async"
                             style={{
                               position: "absolute",
                               inset: 0,

@@ -741,7 +741,7 @@ export default function ProductGallery({
       >
         {activeImage ? (
           /* eslint-disable-next-line @next/next/no-img-element */
-          <img src={activeImage} alt={`${name} — ${side === "front" ? "Vorderseite" : "Rückseite"}`} draggable={false} />
+          <img src={activeImage} alt={`${name} — ${side === "front" ? "Vorderseite" : "Rückseite"}`} draggable={false} decoding="async" fetchPriority="high" />
         ) : (
           <div className="gallery-empty"><ProductIcon name={iconName} /></div>
         )}
