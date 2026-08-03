@@ -29,6 +29,10 @@ function refreshAll() {
   revalidatePath("/admin/products");
   revalidatePath("/admin/categories");
   revalidatePath("/werbemittel");
+  // Alle Produktdetailseiten (durch revalidate=60 gecacht) mit-invalidieren,
+  // damit Änderungen sofort sichtbar sind.
+  revalidatePath("/werbemittel/[id]", "page");
+  revalidatePath("/kollektionen");
 }
 
 function refreshPublicPages() {

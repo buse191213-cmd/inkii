@@ -19,7 +19,11 @@ import { CARE_SYMBOLS } from "@/lib/care-symbols";
 import { getShopConfig } from "@/app/admin/(panel)/settings/shop-config-actions";
 import RelatedLogoPreview from "@/components/RelatedLogoPreview";
 
-export const dynamic = "force-dynamic";
+// Statt bei jedem Aufruf neu zu rendern (force-dynamic → langsam, jede DB-
+// Abfrage kostet einen Round-Trip nach Frankfurt), cachen wir die Seite für
+// 60 Sekunden. Produktänderungen im Admin lösen revalidatePath aus, sodass
+// Aktualisierungen trotzdem sofort sichtbar sind.
+export const revalidate = 60;
 
 function split(s: string): string[] {
   return s ? s.split(",").map((x) => x.trim()).filter(Boolean) : [];
@@ -64,14 +68,16 @@ export default async function ProductDetailPage({
   params: Promise<{ id: string }>;
 }) {
   const { id } = await params;
-  const locale = await getLocale();
+
+  // Unabhängige Daten parallel laden (spart mehrere Round-Trips zur DB).
+  const [locale, product, shopConfig] = await Promise.all([
+    getLocale(),
+    db.product.findUnique({ where: { id }, include: { category: true } }),
+    getShopConfig(),
+  ]);
   const d = getDictionary(locale);
   const dt = d.detail;
 
-  const product = await db.product.findUnique({
-    where: { id },
-    include: { category: true },
-  });
   if (!product) notFound();
 
   // Cross-sell: önce ADMIN'in manuel seçtiği öneriler, yoksa aynı kategori
@@ -128,7 +134,6 @@ export default async function ProductDetailPage({
   const materials = split(product.material);
   const tiers = parsePriceTiers(product.priceTiers);
   const sizesList = parseSizes(product.sizes);
-  const shopConfig = await getShopConfig();
   const transferPriceCents = shopConfig.shipping.transferPriceCents ?? 900;
 
   // Renk başına görseller (JSON: { "weiß": ["url1","url2"], "schwarz": ["url3"] })
