@@ -5290,7 +5290,7 @@ body:has(.hero-full) header.site .brand-other img{filter:none;height:52px}
 .koll-back-link{display:inline-flex;align-items:center;gap:7px;font-size:13px;font-weight:600;
   color:#111;text-decoration:none;letter-spacing:.3px;transition:.15s}
 .koll-back-link:hover{color:#555;gap:10px}
-.koll-detail{padding:28px 0 96px;max-width:1200px;margin:0 auto}
+.koll-detail{padding:12px 0 96px;max-width:1200px;margin:0 auto}
 .koll-detail-grid{display:grid;grid-template-columns:minmax(0,1.15fr) minmax(0,0.85fr);gap:64px;align-items:start}
 .koll-detail-main{aspect-ratio:3/4;background:#f6f6f4;overflow:hidden;position:relative}
 .koll-nav{position:absolute;top:50%;transform:translateY(-50%);z-index:3;
