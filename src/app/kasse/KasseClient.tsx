@@ -225,9 +225,11 @@ export default function KasseClient({ paymentMethods, shipping, prefill, isLogge
   );
 
   const shippingCents = subtotalCents >= shipping.freeShippingFromCents ? 0 : shipping.standardCostCents;
-  // Fiyatlar KDV DAHİL — total = subtotal + shipping, KDV içeriden
+  // Produktpreise sind Brutto (inkl. MwSt.). Die ausgewiesene MwSt. bezieht sich
+  // nur auf die Ware (Zwischensumme); die Versandkosten werden zusätzlich
+  // obendrauf gerechnet und hier ohne MwSt.-Ausweis behandelt.
   const totalCents = subtotalCents + shippingCents;
-  const taxCents = Math.round(totalCents - totalCents / 1.19);
+  const taxCents = Math.round(subtotalCents - subtotalCents / 1.19);
 
   // Form validate (returns true if valid, else handles scroll/error display)
   function validateForm(): boolean {

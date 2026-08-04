@@ -36,10 +36,10 @@ export default function WarenkorbClient({ t, tSteps, shipping }: Props) {
   // Versandkosten aus Admin-Einstellungen (identisch zur Kasse)
   const FREE_FROM = shipping.freeShippingFromCents;
   const shippingCents = subtotalCents >= FREE_FROM ? 0 : shipping.standardCostCents;
-  // Fiyatlar KDV DAHİL — total = subtotal + shipping (KDV zaten içinde)
+  // Fiyatlar KDV DAHİL — total = subtotal + shipping
   const totalCents = subtotalCents + shippingCents;
-  // KDV içerden hesaplanır (brutto / 1.19 * 0.19)
-  const taxCents = Math.round(totalCents - totalCents / 1.19);
+  // MwSt. nur auf die Ware (Zwischensumme); Versand wird obendrauf gerechnet.
+  const taxCents = Math.round(subtotalCents - subtotalCents / 1.19);
 
   if (items.length === 0) {
     return (
