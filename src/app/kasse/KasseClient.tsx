@@ -850,13 +850,13 @@ export default function KasseClient({ paymentMethods, shipping, prefill, isLogge
               <span>{tCart.zwischensumme}</span>
               <span>{euro(subtotalCents)} €</span>
             </div>
-            <div style={{ display: "flex", justifyContent: "space-between" }}>
-              <span>{tCart.shipping} {shippingCents === 0 && <small style={{ color: "#0d9488" }}>({tCart.free})</small>}</span>
-              <span>{euro(shippingCents)} €</span>
-            </div>
             <div style={{ display: "flex", justifyContent: "space-between", color: "#64748b" }}>
               <span>{tCart.davonMwst}</span>
               <span>{euro(taxCents)} €</span>
+            </div>
+            <div style={{ display: "flex", justifyContent: "space-between" }}>
+              <span>{tCart.shipping} {shippingCents === 0 && <small style={{ color: "#0d9488" }}>({tCart.free})</small>}</span>
+              <span>{euro(shippingCents)} €</span>
             </div>
             <div
               style={{

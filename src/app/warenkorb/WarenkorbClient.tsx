@@ -382,13 +382,13 @@ export default function WarenkorbClient({ t, tSteps, shipping }: Props) {
                     <span>{t.zwischensumme}</span>
                     <span>{euro(subtotalCents)} €</span>
                   </div>
-                  <div style={{ display: "flex", justifyContent: "space-between" }}>
-                    <span>{t.shipping} {shippingCents === 0 && <small style={{ color: "#0d9488" }}>({t.free})</small>}</span>
-                    <span>{euro(shippingCents)} €</span>
-                  </div>
                   <div style={{ display: "flex", justifyContent: "space-between", color: "#64748b" }}>
                     <span>{t.davonMwst}</span>
                     <span>{euro(taxCents)} €</span>
+                  </div>
+                  <div style={{ display: "flex", justifyContent: "space-between" }}>
+                    <span>{t.shipping} {shippingCents === 0 && <small style={{ color: "#0d9488" }}>({t.free})</small>}</span>
+                    <span>{euro(shippingCents)} €</span>
                   </div>
                   <div
                     style={{
