@@ -63,6 +63,31 @@ export default function KollektionDetailClient({ product }: { product: Kollektio
             ) : (
               <div className="koll-detail-noimg" />
             )}
+            {product.images.length > 1 && (
+              <>
+                <button
+                  type="button"
+                  className="koll-nav koll-nav-prev"
+                  aria-label="Vorheriges Bild"
+                  onClick={() => setActiveImg((activeImg - 1 + product.images.length) % product.images.length)}
+                >
+                  <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                    <path d="M15 18l-6-6 6-6" />
+                  </svg>
+                </button>
+                <button
+                  type="button"
+                  className="koll-nav koll-nav-next"
+                  aria-label="Nächstes Bild"
+                  onClick={() => setActiveImg((activeImg + 1) % product.images.length)}
+                >
+                  <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                    <path d="M9 18l6-6-6-6" />
+                  </svg>
+                </button>
+                <div className="koll-img-count">{activeImg + 1} / {product.images.length}</div>
+              </>
+            )}
           </div>
           {product.images.length > 1 && (
             <div className="koll-detail-thumbs">
